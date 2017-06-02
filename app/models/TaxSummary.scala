@@ -14,29 +14,16 @@
  * limitations under the License.
  */
 
-package controllers
+package models
 
-import javax.inject.Inject
+import play.api.libs.json.JsValue
 
-import play.api.mvc._
-import services._
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.controller.FrontendController
+case class TaxSummary(taxSummaryDetails: JsValue)
 
+object TaxSummary {
 
+  def fromJsonTaxSummaryDetails(taxSummaryDetails: JsValue): TaxSummary = {
 
-class MainController @Inject() (
-  val taiService: TaiService
-) extends FrontendController {
-
-  val index = Action.async { implicit request =>
-
-    taiService.taxSummary(Nino("AA000003B"), 2016) map {
-      case TaxSummarySuccessResponse(taxSummary) =>
-        Ok(taxSummary.taxSummaryDetails)
-      case _ =>
-        NotFound("Record not found")
-    }
-
+    TaxSummary(taxSummaryDetails)
   }
 }
