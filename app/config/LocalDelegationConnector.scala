@@ -16,15 +16,14 @@
 
 package config
 
-import javax.inject.Inject
+import javax.inject.{Inject, Singleton}
 
 import services.http.WsAllMethods
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.frontend.auth.connectors.DelegationConnector
 
 
-class FrontendAuthConnector @Inject() (
-  val http: WsAllMethods
-) extends AuthConnector with ServicesConfig {
-  val serviceUrl = baseUrl("auth")
+@Singleton
+class LocalDelegationConnector @Inject()(override val http: WsAllMethods) extends DelegationConnector  with ServicesConfig {
+  override protected def serviceUrl: String = baseUrl("delegation")
 }

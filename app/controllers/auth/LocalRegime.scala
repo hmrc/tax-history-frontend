@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package config
+package controllers.auth
 
 import javax.inject.Inject
 
-import services.http.WsAllMethods
-import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.connectors.AuthConnector
+import uk.gov.hmrc.play.frontend.auth.TaxRegime
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.Accounts
 
-
-class FrontendAuthConnector @Inject() (
-  val http: WsAllMethods
-) extends AuthConnector with ServicesConfig {
-  val serviceUrl = baseUrl("auth")
+class LocalRegime @Inject()(val localAuthenticationProvider: LocalAuthenticationProvider) extends TaxRegime {
+  def isAuthorised(accounts: Accounts) = true
+  def authenticationType = localAuthenticationProvider
 }

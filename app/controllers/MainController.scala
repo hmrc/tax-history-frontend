@@ -18,25 +18,44 @@ package controllers
 
 import javax.inject.Inject
 
+import config.{ConfigDecorator, FrontendAuthConnector, LocalDelegationConnector}
+import controllers.auth.{LocalActions, LocalRegime}
 import play.api.mvc._
 import services._
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.play.frontend.auth.DelegationAwareActions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.time.TaxYearResolver
+
+import scala.concurrent.Future
 
 
+trait BaseController extends FrontendController with LocalActions with DelegationAwareActions
 
 class MainController @Inject() (
-  val taiService: TaiService
-) extends FrontendController {
+  val taiService: TaiService,
+  val configDecorator: ConfigDecorator,
+  val localRegime: LocalRegime,
+  val authConnector: FrontendAuthConnector,
+  val delegationConnector: LocalDelegationConnector
+) extends BaseController {
 
-  val index = Action.async { implicit request =>
+  val index = ProtectedAction { implicit localContext =>
 
-    taiService.taxSummary(Nino("AA000003B"), 2016) map {
-      case TaxSummarySuccessResponse(taxSummary) =>
-        Ok(taxSummary.taxSummaryDetails)
-      case _ =>
-        NotFound("Record not found")
+    val cy1 = TaxYearResolver.currentTaxYear-1
+
+    localContext.nino match {
+      case Some(nino) =>
+        taiService.taxSummary(nino, cy1) map {
+          case TaxSummarySuccessResponse(taxSummary) =>
+            Ok(taxSummary.taxSummaryDetails)
+          case _ =>
+            NotFound("Record not found")
+        }
+      case None =>
+        Future.successful(NotFound("User had no nino"))
     }
+
 
   }
 }
