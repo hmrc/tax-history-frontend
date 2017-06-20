@@ -14,16 +14,26 @@
  * limitations under the License.
  */
 
-package config
+package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.{Inject,Singleton}
 
-import services.http.WsAllMethods
+import models.taxhistory.Employment
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.connectors.DelegationConnector
+import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 
+import scala.concurrent.Future
 
 @Singleton
-class LocalDelegationConnector @Inject()(override val http: WsAllMethods) extends DelegationConnector  with ServicesConfig {
-  override protected def serviceUrl: String = baseUrl("delegation")
+class TaxHistoryConnector @Inject()(val httpGet: HttpGet) extends ServicesConfig {
+
+  def getTaxHistory(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[Seq[Employment]] = {
+
+    val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
+
+    httpGet.GET[Seq[Employment]](s"$taxHistoryUrl/$nino/$taxYear")
+  }
+
 }

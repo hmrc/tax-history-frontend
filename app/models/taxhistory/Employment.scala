@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package services.http
+package models.taxhistory
 
-import javax.inject.{Inject, Singleton}
+import play.api.libs.json.Json
 
-import config.FrontendAuditConnector
-import uk.gov.hmrc.play.audit.http.HttpAuditing
-import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.ws.WSHttp
+case class Employment(payeReference:String,
+                      employerName:String,
+                      taxablePayTotal:BigDecimal,
+                      taxTotal:BigDecimal,
+                      taxablePayEYU:Option[BigDecimal] = None,
+                      taxEYU:Option[BigDecimal] = None)
 
-
-@Singleton
-class WsAllMethods @Inject() (override val auditConnector: FrontendAuditConnector) extends WSHttp with HttpAuditing with AppName with RunMode {
-  override val hooks = Seq (AuditingHook)
+object Employment {
+  implicit val formats = Json.format[Employment]
 }
