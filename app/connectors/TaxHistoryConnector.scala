@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package services.http
+package connectors
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
 
-import config.FrontendAuditConnector
-import uk.gov.hmrc.play.audit.http.HttpAuditing
-import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.ws.WSHttp
+import models.taxhistory.Employment
+import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.play.frontend.auth.AuthContext
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 
+import scala.concurrent.Future
 
 @Singleton
-class WsAllMethods @Inject() (override val auditConnector: FrontendAuditConnector) extends WSHttp with HttpAuditing with AppName with RunMode {
-  override val hooks = Seq (AuditingHook)
+class TaxHistoryConnector @Inject()(val httpGet: HttpGet) extends ServicesConfig {
+
+  def getTaxHistory(nino: String, taxYear: String)(implicit hc: HeaderCarrier, ac: AuthContext): Future[Seq[Employment]] = {
+
+    val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
+
+    httpGet.GET[Seq[Employment]](s"$taxHistoryUrl/$nino/$taxYear")
+  }
+
 }

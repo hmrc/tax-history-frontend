@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package connectors
 
+import config.{ConfigDecorator, FrontendAuthConnector}
+import org.mockito.Matchers.{eq => meq}
+import org.mockito.Mockito._
+import org.scalatest.mock.MockitoSugar
+import play.api.Application
+import play.api.inject.bind
+import play.api.inject.guice.GuiceApplicationBuilder
+import support.{BaseSpec, Fixtures}
+import uk.gov.hmrc.play.http.HttpGet
 import config.{ConfigDecorator, FrontendAuthConnector}
 import controllers.auth.LocalRegime
 import models.TaxSummary
+import models.taxhistory.Employment
 import org.joda.time.DateTime
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -35,46 +45,32 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.http.SessionKeys
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
+class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
 
-class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
+  val http = mock[HttpGet]
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
+    .overrides(bind[HttpGet].toInstance(http))
     .build()
 
   trait LocalSetup {
 
-    lazy val authority = buildFakeAuthority(true)
-
-    val fakeRequest = FakeRequest("GET", "/").withSession(
-      SessionKeys.sessionId -> "SessionId",
-      SessionKeys.token -> "Token",
-      SessionKeys.userId -> "/auth/oid/tuser",
-      SessionKeys.authToken -> ""
-    )
-
-    lazy val controller = {
-      val c = injected[MainController]
-
-      when(c.authConnector.currentAuthority(org.mockito.Matchers.any())) thenReturn {
-        Future.successful(Some(authority))
-      }
-      c
+    lazy val connector = {
+      injected[TaxHistoryConnector]
     }
   }
 
-  "GET /tax-history-frontend" should {
+  "TaxHistoryConnector" should {
 
-    "return 200" in new LocalSetup {
-      val result = controller.index(fakeRequest)
-      println(contentAsString(result))
-      status(result) shouldBe Status.OK
+    "fetch tax history" in new LocalSetup {
+      when(connector.httpGet.GET[Seq[Employment]](any())).thenReturn(
+        Future.successful(Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))))
+
     }
-
   }
 
 }
