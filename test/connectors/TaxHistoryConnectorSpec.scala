@@ -17,33 +17,16 @@
 package connectors
 
 import config.{ConfigDecorator, FrontendAuthConnector}
-import org.mockito.Matchers.{eq => meq}
+import models.taxhistory.Employment
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import support.{BaseSpec, Fixtures}
-import uk.gov.hmrc.play.http.HttpGet
-import config.{ConfigDecorator, FrontendAuthConnector}
-import controllers.auth.LocalRegime
-import models.TaxSummary
-import models.taxhistory.Employment
-import org.joda.time.DateTime
-import org.mockito.Matchers.{eq => meq, _}
-import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
-import play.api.Application
-import play.api.http.Status
-import play.api.inject._
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
-import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.play.http.HttpGet
 
 import scala.concurrent.Future
 
@@ -67,8 +50,12 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
   "TaxHistoryConnector" should {
 
     "fetch tax history" in new LocalSetup {
-      when(connector.httpGet.GET[Seq[Employment]](any())).thenReturn(
+      when(connector.httpGet.GET[Seq[Employment]](any())(any(), any())).thenReturn(
         Future.successful(Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))))
+
+      val result = await(connector.getTaxHistory(Nino("AA000000A"),2017))
+
+      result shouldBe Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))
 
     }
   }

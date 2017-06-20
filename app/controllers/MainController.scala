@@ -18,9 +18,10 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{ConfigDecorator, FrontendAuthConnector, LocalDelegationConnector}
+import config.{ConfigDecorator, FrontendAuthConnector}
+import connectors.TaxHistoryConnector
+import play.api.libs.json.Json
 import play.api.mvc.Action
-import services._
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{Enrolment, _}
 import uk.gov.hmrc.domain.Nino
@@ -32,13 +33,12 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-trait BaseController extends FrontendController with Actions with DelegationAwareActions
+trait BaseController extends FrontendController with Actions
 
 class MainController @Inject()(
-                                val taiService: TaiService,
                                 val configDecorator: ConfigDecorator,
-                                override val authConnector: FrontendAuthConnector,
-                                val delegationConnector: LocalDelegationConnector
+                                val taxHistoryConnector: TaxHistoryConnector,
+                                override val authConnector: FrontendAuthConnector
                               ) extends BaseController with AuthorisedFunctions{
 
 
@@ -47,14 +47,13 @@ class MainController @Inject()(
     implicit request => {
       var nino:Option[Nino] = Some(Nino("AA000003A"))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
+
         val cy1 = TaxYearResolver.currentTaxYear - 1
         nino match {
           case Some(nino) =>
-            taiService.taxSummary(nino, cy1) map {
-              case TaxSummarySuccessResponse(taxSummary) =>
-                Ok(taxSummary.taxSummaryDetails)
-              case _ =>
-                NotFound("Record not found")
+            taxHistoryConnector.getTaxHistory(nino, cy1) map {
+              taxHistory =>
+                Ok(Json.toJson(taxHistory))
             }
           case None =>
             Future.successful(NotFound("User had no nino"))

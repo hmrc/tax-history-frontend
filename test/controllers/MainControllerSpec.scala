@@ -17,7 +17,7 @@
 package controllers
 
 import config.{ConfigDecorator, FrontendAuthConnector}
-import controllers.auth.LocalRegime
+import connectors.TaxHistoryConnector
 import models.TaxSummary
 import org.joda.time.DateTime
 import org.mockito.Matchers.{eq => meq, _}
@@ -31,6 +31,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{BaseSpec, Fixtures}
+import uk.gov.hmrc.auth.core.EmptyRetrieval
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
 import uk.gov.hmrc.play.http.SessionKeys
@@ -41,9 +42,12 @@ import scala.concurrent.Future
 
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
+  val mockConnector = mock[TaxHistoryConnector]
+
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
+    .overrides(bind[TaxHistoryConnector].toInstance(mockConnector))
     .build()
 
   trait LocalSetup {
@@ -60,9 +64,8 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     lazy val controller = {
       val c = injected[MainController]
 
-      when(c.authConnector.currentAuthority(org.mockito.Matchers.any())) thenReturn {
-        Future.successful(Some(authority))
-      }
+      when(c.authConnector.authorise(any(), meq(EmptyRetrieval))(any())).thenReturn(Future.successful())
+      when(c.taxHistoryConnector.getTaxHistory(any(),any())(any())).thenReturn(Future.successful(Nil))
       c
     }
   }
@@ -70,8 +73,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   "GET /tax-history-frontend" should {
 
     "return 200" in new LocalSetup {
-      val result = controller.index(fakeRequest)
-      println(contentAsString(result))
+      val result = controller.get()(fakeRequest)
       status(result) shouldBe Status.OK
     }
 
