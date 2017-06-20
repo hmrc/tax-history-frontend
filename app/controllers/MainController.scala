@@ -19,43 +19,48 @@ package controllers
 import javax.inject.Inject
 
 import config.{ConfigDecorator, FrontendAuthConnector, LocalDelegationConnector}
-import controllers.auth.{LocalActions, LocalRegime}
-import play.api.mvc._
+import play.api.mvc.Action
 import services._
+import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
+import uk.gov.hmrc.auth.core.{Enrolment, _}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.auth.DelegationAwareActions
+import uk.gov.hmrc.play.frontend.auth.{Actions, DelegationAwareActions}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.time.TaxYearResolver
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-trait BaseController extends FrontendController with LocalActions with DelegationAwareActions
+trait BaseController extends FrontendController with Actions with DelegationAwareActions
 
-class MainController @Inject() (
-  val taiService: TaiService,
-  val configDecorator: ConfigDecorator,
-  val localRegime: LocalRegime,
-  val authConnector: FrontendAuthConnector,
-  val delegationConnector: LocalDelegationConnector
-) extends BaseController {
+class MainController @Inject()(
+                                val taiService: TaiService,
+                                val configDecorator: ConfigDecorator,
+                                override val authConnector: FrontendAuthConnector,
+                                val delegationConnector: LocalDelegationConnector
+                              ) extends BaseController with AuthorisedFunctions{
 
-  val index = ProtectedAction { implicit localContext =>
 
-    val cy1 = TaxYearResolver.currentTaxYear-1
+  def get() = Action.async {
 
-    localContext.nino match {
-      case Some(nino) =>
-        taiService.taxSummary(nino, cy1) map {
-          case TaxSummarySuccessResponse(taxSummary) =>
-            Ok(taxSummary.taxSummaryDetails)
-          case _ =>
-            NotFound("Record not found")
+    implicit request => {
+      var nino:Option[Nino] = Some(Nino("AA000003A"))
+      authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
+        val cy1 = TaxYearResolver.currentTaxYear - 1
+        nino match {
+          case Some(nino) =>
+            taiService.taxSummary(nino, cy1) map {
+              case TaxSummarySuccessResponse(taxSummary) =>
+                Ok(taxSummary.taxSummaryDetails)
+              case _ =>
+                NotFound("Record not found")
+            }
+          case None =>
+            Future.successful(NotFound("User had no nino"))
         }
-      case None =>
-        Future.successful(NotFound("User had no nino"))
+      }
+
     }
-
-
   }
 }
