@@ -26,16 +26,9 @@ import uk.gov.hmrc.play.config.ServicesConfig
 class ConfigDecorator @Inject()(configuration: Configuration, langs: Langs) extends ServicesConfig {
 
   lazy val companyAuthHost = configuration.getString(s"external-url.company-auth.host").getOrElse("")
-  lazy val pertaxFrontendHost = configuration.getString(s"external-url.pertax-frontend.host").getOrElse("")
   lazy val taxHistoryFrontendHost = configuration.getString(s"external-url.tax-history-frontend.host").getOrElse("")
-
-
-  // Define the web contexts to access the IV-FE and AUTH frontend applications.
-  lazy val ivfe_web_context = configuration.getString(s"external-url.identity-verification.web-context").getOrElse("mdtp")
-  lazy val ida_web_context = configuration.getString(s"external-url.ida.web-context").getOrElse("ida")
   lazy val gg_web_context = configuration.getString(s"external-url.gg.web-context").getOrElse("gg")
 
-  lazy val identityVerificationHost = configuration.getString(s"external-url.identity-verification.host").getOrElse("")
-  lazy val identityVerificationUpliftUrl = s"$identityVerificationHost/$ivfe_web_context/uplift"
+
 
 }

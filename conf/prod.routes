@@ -1,5 +1,5 @@
 
-GET        /tax-history-frontend       @controllers.MainController.index
+GET        /tax-history-frontend       @controllers.MainController.get
 ->         /                             health.Routes
 ->     	   /template                     template.Routes
 
