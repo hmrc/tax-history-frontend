@@ -16,8 +16,9 @@
 
 package connectors
 
-import javax.inject.{Inject,Singleton}
+import javax.inject.{Inject, Singleton}
 
+import config.{WSHttp, WSHttpT}
 import models.taxhistory.Employment
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.config.ServicesConfig
@@ -27,7 +28,7 @@ import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
 import scala.concurrent.Future
 
 @Singleton
-class TaxHistoryConnector @Inject()(val httpGet: HttpGet) extends ServicesConfig {
+class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig {
 
   def getTaxHistory(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[Seq[Employment]] = {
 

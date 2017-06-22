@@ -20,32 +20,42 @@ import javax.inject.Inject
 
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
+import models.taxhistory.Employment
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.{Configuration, Environment, Logger}
 import play.api.libs.json.Json
-import play.api.mvc.Action
+import play.api.mvc.{Action, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.{Enrolment, _}
+import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.{Actions, DelegationAwareActions}
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.play.http.BadGatewayException
 import uk.gov.hmrc.time.TaxYearResolver
+import play.api.i18n.Messages.Implicits._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-trait BaseController extends FrontendController with Actions
+trait BaseController extends FrontendController with Actions with Redirects with I18nSupport
 
 class MainController @Inject()(
                                 val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
-                                override val authConnector: FrontendAuthConnector
-                              ) extends BaseController with AuthorisedFunctions{
+                                override val authConnector: FrontendAuthConnector,
+                                override val config: Configuration,
+                                override val env: Environment,
+                                implicit val messagesApi: MessagesApi
+                              ) extends BaseController with AuthorisedFunctions {
 
+  lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
 
   def get() = Action.async {
 
     implicit request => {
-      var nino:Option[Nino] = Some(Nino("AA000003A"))
+      val nino: Option[Nino] = Some(Nino("AA000003A"))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
 
         val cy1 = TaxYearResolver.currentTaxYear - 1
@@ -53,13 +63,18 @@ class MainController @Inject()(
           case Some(nino) =>
             taxHistoryConnector.getTaxHistory(nino, cy1) map {
               taxHistory =>
-                Ok(Json.toJson(taxHistory))
+                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, 2016, taxHistory))
             }
           case None =>
             Future.successful(NotFound("User had no nino"))
         }
+      }.recoverWith {
+        case _: BadGatewayException => {
+          val message = "Tax History Connector not available"
+          Future.successful(Ok(views.html.error_template(message, message, message)))
+        }
+        case _ => Future.successful(ggSignInRedirect)
       }
-
     }
   }
 }

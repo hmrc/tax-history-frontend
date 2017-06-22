@@ -19,10 +19,12 @@ package modules
 import com.google.inject.AbstractModule
 import config.WSHttp
 import filters._
+import play.api.i18n.MessagesApi
 import uk.gov.hmrc.play.filters.CacheControlFilter
 import uk.gov.hmrc.play.filters.frontend._
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
 import uk.gov.hmrc.play.http.HttpGet
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 class LocalGuiceModule extends AbstractModule {
   override def configure() = {
@@ -34,6 +36,6 @@ class LocalGuiceModule extends AbstractModule {
     bind(classOf[CSRFExceptionsFilter]).toProvider(classOf[CSRFExceptionsFilterProvider])
     bind(classOf[SessionTimeoutFilter]).toProvider(classOf[SessionTimeoutFilterProvider])
     bind(classOf[CacheControlFilter]).toInstance(CacheControlFilter.fromConfig("caching.allowedContentTypes"))
-    bind(classOf[HttpGet]).toInstance(WSHttp)
+
   }
 }
