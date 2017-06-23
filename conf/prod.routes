@@ -1,5 +1,5 @@
-
-GET        /tax-history-frontend       @controllers.MainController.get
+GET        /assets/*file                @controllers.AssetsController.at(path="/public", file)
+GET        /tax-history                  @controllers.MainController.get
 ->         /                             health.Routes
 ->     	   /template                     template.Routes
 

@@ -21,11 +21,12 @@ import javax.inject.Inject
 import uk.gov.hmrc.auth.core.PlayAuthConnector
 import uk.gov.hmrc.play.config.ServicesConfig
 import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector => LegacyFrontendAuthConnector}
-import uk.gov.hmrc.play.http.ws.WSHttp
+
+
 
 
 class FrontendAuthConnector @Inject() (
-  val http: WSHttp
+  val http: WSHttpT
 ) extends PlayAuthConnector with LegacyFrontendAuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
 }

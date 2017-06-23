@@ -23,6 +23,7 @@ import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.bootstrap.Routing.RemovingOfTrailingSlashes
 import uk.gov.hmrc.play.graphite.GraphiteConfig
 
+import play.api.i18n.Messages.Implicits._
 //TODO - remove this global object
 object FrontendGlobal extends GlobalSettings with GraphiteConfig
   with RemovingOfTrailingSlashes with ErrorAuditingSettings with RunMode {

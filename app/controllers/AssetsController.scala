@@ -14,17 +14,12 @@
  * limitations under the License.
  */
 
-package config
+package controllers
 
-import javax.inject.{Inject, Singleton}
+import com.google.inject.{Inject, Singleton}
+import play.api.http.HttpErrorHandler
 
-import com.google.inject.ImplementedBy
-import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+//object AssetsController extends AssetsBuilder
 
-@ImplementedBy(classOf[WSHttp])
-trait WSHttpT extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode
 @Singleton
-class WSHttp extends WSHttpT {
-  override val hooks = NoneRequired
-}
+class AssetsController @Inject()(errorHandler: HttpErrorHandler) extends AssetsBuilder(errorHandler)

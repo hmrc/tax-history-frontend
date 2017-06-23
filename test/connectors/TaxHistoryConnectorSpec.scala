@@ -16,7 +16,7 @@
 
 package connectors
 
-import config.{ConfigDecorator, FrontendAuthConnector}
+import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
 import models.taxhistory.Employment
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
@@ -24,20 +24,22 @@ import org.scalatest.mock.MockitoSugar
 import play.api.Application
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.i18n.MessagesApi
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.http.HttpGet
+import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
 
 class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
 
-  val http = mock[HttpGet]
+  val http = mock[WSHttpT]
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
-    .overrides(bind[HttpGet].toInstance(http))
+    .overrides(bind[WSHttpT].toInstance(http))
     .build()
 
   trait LocalSetup {
@@ -53,7 +55,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
       when(connector.httpGet.GET[Seq[Employment]](any())(any(), any())).thenReturn(
         Future.successful(Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))))
 
-      val result = await(connector.getTaxHistory(Nino("AA000000A"),2017))
+      val result = await(connector.getTaxHistory(Nino("AA000000A"), 2017))
 
       result shouldBe Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))
 

@@ -14,16 +14,22 @@
  * limitations under the License.
  */
 
-package models
+package utils
 
-import play.api.libs.json.JsValue
+case class Currency(value: BigDecimal) {
 
-case class TaxSummary(taxSummaryDetails: JsValue)
+  override def toString: String =
+    f"£$value%1.2f"
+}
 
-object TaxSummary {
+object Currency {
 
-  def fromJsonTaxSummaryDetails(taxSummaryDetails: JsValue): TaxSummary = {
+  implicit def fromBD(value: BigDecimal): Currency = Currency(value)
 
-    TaxSummary(taxSummaryDetails)
-  }
+  implicit def fromInt(value: Int): Currency = Currency(value)
+
+  implicit def currencyToDouble(c: Currency): Double = c.value.toDouble
+
+  implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
+
 }

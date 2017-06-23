@@ -16,10 +16,9 @@
 
 package controllers
 
+import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
-import models.TaxSummary
-import org.joda.time.DateTime
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
@@ -27,22 +26,19 @@ import play.api.Application
 import play.api.http.Status
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import support.{BaseSpec, Fixtures}
-import uk.gov.hmrc.auth.core.EmptyRetrieval
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.auth.connectors.domain._
-import uk.gov.hmrc.play.http.SessionKeys
+import uk.gov.hmrc.auth.core.{EmptyRetrieval, MissingBearerToken}
+import uk.gov.hmrc.play.http.{BadGatewayException, SessionKeys}
+import akka.actor.ActorSystem
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   val mockConnector = mock[TaxHistoryConnector]
+
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
@@ -65,7 +61,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       val c = injected[MainController]
 
       when(c.authConnector.authorise(any(), meq(EmptyRetrieval))(any())).thenReturn(Future.successful())
-      when(c.taxHistoryConnector.getTaxHistory(any(),any())(any())).thenReturn(Future.successful(Nil))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(Nil))
       c
     }
   }
@@ -75,6 +71,22 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     "return 200" in new LocalSetup {
       val result = controller.get()(fakeRequest)
       status(result) shouldBe Status.OK
+    }
+
+    "return error page when connector not available" in new LocalSetup {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val materializer = ActorMaterializer()
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
+      val result = controller.get()(fakeRequest)
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include("Tax History Connector not available")
+    }
+
+    "redirect to gg when not logged in" in new LocalSetup {
+
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new MissingBearerToken))
+      val result = controller.get()(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
     }
 
   }
