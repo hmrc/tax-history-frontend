@@ -55,7 +55,7 @@ class MainController @Inject()(
   def get() = Action.async {
 
     implicit request => {
-      val nino: Option[Nino] = Some(Nino("AA000003A"))
+      val nino: Option[Nino] = Some(Nino("PJ523813B"))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
 
         val cy1 = TaxYearResolver.currentTaxYear - 1
