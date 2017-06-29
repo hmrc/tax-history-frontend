@@ -69,7 +69,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   "GET /tax-history-frontend" should {
 
     "return 200" in new LocalSetup {
-      val result = controller.get()(fakeRequest)
+      val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
     }
 
@@ -77,7 +77,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       implicit val actorSystem = ActorSystem("test")
       implicit val materializer = ActorMaterializer()
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
-      val result = controller.get()(fakeRequest)
+      val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include("Tax History Connector not available")
     }
@@ -85,7 +85,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     "redirect to gg when not logged in" in new LocalSetup {
 
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new MissingBearerToken))
-      val result = controller.get()(fakeRequest)
+      val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.SEE_OTHER
     }
 
