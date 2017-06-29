@@ -55,7 +55,7 @@ class MainController @Inject()(
   def get() = Action.async {
 
     implicit request => {
-      val nino: Option[Nino] = Some(Nino("PJ523813B"))
+      val nino: Option[Nino] = request.session.get("USER_NINO").map(Nino(_))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
 
         val cy1 = TaxYearResolver.currentTaxYear - 1
@@ -63,7 +63,7 @@ class MainController @Inject()(
           case Some(nino) =>
             taxHistoryConnector.getTaxHistory(nino, cy1) map {
               taxHistory =>
-                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, 2016, taxHistory))
+                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, 2016, taxHistory)).removingFromSession("USER_NINO")
             }
           case None =>
             Future.successful(NotFound("User had no nino"))
@@ -71,7 +71,7 @@ class MainController @Inject()(
       }.recoverWith {
         case _: BadGatewayException => {
           val message = "Tax History Connector not available"
-          Future.successful(Ok(views.html.error_template(message, message, message)))
+          Future.successful(Ok(views.html.error_template(message, message, message)).removingFromSession("USER_NINO"))
         }
         case _ => Future.successful(ggSignInRedirect)
       }
