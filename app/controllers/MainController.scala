@@ -63,7 +63,7 @@ class MainController @Inject()(
           case Some(nino) =>
             taxHistoryConnector.getTaxHistory(nino, cy1) map {
               taxHistory =>
-                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, 2016, taxHistory)).removingFromSession("USER_NINO")
+                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
             }
           case None =>
             Future.successful(NotFound("User had no nino"))
