@@ -37,7 +37,7 @@ class EmploymentSpec extends UnitSpec {
       "taxEYU": 250.0
     }""")
 
-      val testEmployment = Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0))
+      val testEmployment = Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))
 
       Employment.formats.reads(json) shouldBe JsSuccess(testEmployment)
 

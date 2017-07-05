@@ -55,7 +55,7 @@ class MainController @Inject()(
   def get() = Action.async {
 
     implicit request => {
-      val nino: Option[Nino] = request.session.get("USER_NINO").map(Nino(_))
+      val nino = Some(Nino("AE123456B"))//request.session.get("USER_NINO").map(Nino(_))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
 
         val cy1 = TaxYearResolver.currentTaxYear - 1
@@ -65,7 +65,7 @@ class MainController @Inject()(
               taxHistory =>
                 Ok(views.html.taxhistory.employments_main("Test User", nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
             }
-          case None =>
+          case _ =>
             Future.successful(NotFound("User had no nino"))
         }
       }.recoverWith {

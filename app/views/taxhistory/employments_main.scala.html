@@ -32,9 +32,9 @@
 <table class="employment-table">
  <thead></thead>
  <tbody>
- <tr><td>Pay:</td><td class="numeric">@Currency(employment.taxablePayTotal)</td></tr>
+ <tr><td>Pay:</td><td class="numeric">@Currency(employment.taxablePayTotal.getOrElse(0))</td></tr>
  <tr><td>EYU Pay:</td><td class="numeric">@Currency(employment.taxablePayEYU.getOrElse(0))</td></tr>
- <tr><td>Tax:</td><td class="numeric">@Currency(employment.taxTotal)</td></tr>
+ <tr><td>Tax:</td><td class="numeric">@Currency(employment.taxTotal.getOrElse(0))</td></tr>
  <tr><td>EYU Tax:</td><td class="numeric">@Currency(employment.taxEYU.getOrElse(0))</td></tr>
  </tbody>
 </table>

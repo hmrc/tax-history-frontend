@@ -36,7 +36,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
   "employments_main view" must {
     "have correct title and heading" in new ViewFixture {
 
-      val employments = Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))
+      val employments = Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))
       val view = views.html.taxhistory.employments_main(name, nino, taxYear, employments)
 
       val title = Messages("employmenthistory.title")
@@ -48,12 +48,12 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
 
     "include employment breakdown" in new ViewFixture {
 
-      val employments = Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))
+      val employments = Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))
       val view = views.html.taxhistory.employments_main(name, nino, taxYear, employments)
 
       val tableRowPay = doc.select(".employment-table tbody tr").get(0)
 
-      tableRowPay.text must include(employments.head.taxablePayTotal.toString())
+      tableRowPay.text must include(employments.head.taxablePayTotal.get.toString())
 
     }
   }

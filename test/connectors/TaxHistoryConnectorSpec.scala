@@ -53,11 +53,11 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     "fetch tax history" in new LocalSetup {
       when(connector.httpGet.GET[Seq[Employment]](any())(any(), any())).thenReturn(
-        Future.successful(Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))))
+        Future.successful(Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))))
 
       val result = await(connector.getTaxHistory(Nino("AA000000A"), 2017))
 
-      result shouldBe Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))
+      result shouldBe Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))
 
     }
   }
