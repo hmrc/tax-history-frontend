@@ -1,2 +1,10 @@
 employmenthistory.heading = Employment History for {0} {1} ({2})
 employmenthistory.title = Employment History
+
+mtdfi.select_client.continue=Continue
+mtdfi.select_client.title=View your client''s employment history data
+mtdfi.select_client.form.title=Enter a National Insurance number
+mtdfi.select_client.clients.nino=Your client''s National Insurance number
+mtdfi.select_client.nino.hint=For example, ‘AA123456B’.
+mtdfi.select_client.form.need-value=National Insurance number cannot be empty
+mtdfi.select_client.form.invalid-value-length=National Insurance number was longer then 9 characters

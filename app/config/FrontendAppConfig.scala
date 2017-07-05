@@ -28,6 +28,9 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
+  val AfiHomePage: String = getConfString("afi-home-page.url", "")
+  val AfiNoAgentServicesAccountPage: String = getConfString(" afi-not-an-agent-page.url", "")
+  val AfiErrorPage: String = getConfString("afi-error.url", "")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 }
