@@ -17,27 +17,37 @@
 @import models.taxhistory.Employment
 @import utils.Currency
 
-@(name: String, nino: String, taxYear: Int, employments: Seq[Employment])(implicit request: Request[_], messages: Messages)
+@(nino: String, taxYear: Int, employments: Seq[Employment])(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.title"), bodyClasses = None) {
-    <h1>@Messages("employmenthistory.heading",name,nino,taxYear+"/"+(taxYear+1))</h1>
+<h1>@nino</h1>
+<h2>@Messages("employmenthistory.taxyear",s"$taxYear/${taxYear+1}")</h2>
 
-@employments.map { employment =>
-<div class="grid-layout">
- <div class="grid-layout__column grid-layout__column--1-3">@employment.payeReference</div>
- <div class="grid-layout__column grid-layout__column--2-3">@employment.employerName</div>
-</div>
-<p></p>
-<div class="grid-layout">
-<table class="employment-table">
- <thead></thead>
- <tbody>
- <tr><td>Pay:</td><td class="numeric">@Currency(employment.taxablePayTotal.getOrElse(0))</td></tr>
- <tr><td>EYU Pay:</td><td class="numeric">@Currency(employment.taxablePayEYU.getOrElse(0))</td></tr>
- <tr><td>Tax:</td><td class="numeric">@Currency(employment.taxTotal.getOrElse(0))</td></tr>
- <tr><td>EYU Tax:</td><td class="numeric">@Currency(employment.taxEYU.getOrElse(0))</td></tr>
- </tbody>
-</table>
-</div>
+ @employments.map { employment =>
+
+  <div class="grid-layout">
+  <table class="employment-table">
+   <thead>
+    <tr>
+     <th>@employment.employerName</th>
+     <th class="numeric">PAYE ref:</th>
+     <th class="numeric">@employment.payeReference</th>
+    </tr>
+   </thead>
+   <tbody>
+    <tr>
+     <td>Pay:</td>
+     <td></td>
+     <td class="numeric">@Currency(employment.taxablePayTotal.getOrElse(0))</td>
+    </tr>
+    <tr>
+     <td>Tax:</td>
+     <td></td>
+     <td class="numeric">@Currency(employment.taxTotal.getOrElse(0))</td>
+    </tr>
+   </tbody>
+  </table>
+  </div>
+ }
 }
-}
+

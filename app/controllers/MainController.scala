@@ -55,15 +55,31 @@ class MainController @Inject()(
   def get() = Action.async {
 
     implicit request => {
-      val nino = Some(Nino("AE123456B"))//request.session.get("USER_NINO").map(Nino(_))
+      val nino = request.session.get("USER_NINO").map(Nino(_))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
 
         val cy1 = TaxYearResolver.currentTaxYear - 1
         nino match {
           case Some(nino) =>
             taxHistoryConnector.getTaxHistory(nino, cy1) map {
-              taxHistory =>
-                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
+              loghistoryResponse
+              historyResponse => historyResponse.status match {
+                case OK => {
+                  val taxHistory = historyResponse.json.as[Seq[Employment]]
+                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
+                }
+                case NOT_FOUND => {
+                  Ok(views.html.error_template("No Employments Found","No Employments Found","We have no record of any employments for this person."))
+                }
+                case UNAUTHORIZED => {
+                  Ok(views.html.error_template("Unauthorised","Unauthorised","You are not authorised to view employment history information for this user."))
+                }
+                case _ => {
+                  Ok(views.html.error_template("Technical Error","Technical Error","This service is currently experiencing a technical problem."))
+                }
+              }
+              //taxHistory =>
+              //  Ok(views.html.taxhistory.employments_main("Test User", nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
             }
           case _ =>
             Future.successful(NotFound("User had no nino"))
