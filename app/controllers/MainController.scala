@@ -25,6 +25,7 @@ import form.SelectClientForm.selectClientForm
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.{Configuration, Environment, Logger}
+import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.domain.Nino
@@ -52,13 +53,10 @@ class MainController @Inject()(
 
   lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
 
-  def get() = agentAuth.authorisedForAfi {
-    implicit request =>
-      implicit arn ⇒ {
-        val clientId: Option[String] = request.session.get("USER_NINO")
+  def get() = Action.async {
+    implicit request => {
       val nino: Option[Nino] = request.session.get("USER_NINO").map(Nino(_))
-        agentAuth.authorisedForPAYE(clientId, {
-          implicit valid =>
+      authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
         val cy1 = TaxYearResolver.currentTaxYear - 1
         nino match {
           case Some(nino) =>
@@ -69,31 +67,29 @@ class MainController @Inject()(
           case None =>
             Future.successful(NotFound("User had no nino"))
         }
-        }).recoverWith {
+      }.recoverWith {
         case _: BadGatewayException => {
           val message = "Tax History Connector not available"
           Future.successful(Ok(views.html.error_template(message, message, message)).removingFromSession("USER_NINO"))
         }
-        case ex =>
-          Logger.info("I am god")
-          Future.successful(ggSignInRedirect)
+        case _ => Future.successful(ggSignInRedirect)
       }
     }
   }
 
-  def getSelectClientPage(): Action[AnyContent] = agentAuth.authorisedForAfi { implicit request =>
-    implicit arn ⇒
-      Future successful Ok(select_client(selectClientForm))
-  }
+  def getSelectClientPage(): Action[AnyContent] =
+    agentAuth.authorisedForAfi { implicit request => {
+        Future.successful(Ok(select_client(selectClientForm)))
+      }
+    }
 
   def submitSelectClientPage(): Action[AnyContent] = agentAuth.authorisedForAfi { implicit request =>
-    implicit arn ⇒
-      selectClientForm.bindFromRequest().fold(
-        formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
-        validFormData => {
-          Future successful Redirect(routes.MainController.get()).addingToSession("USER_NINO" -> s"${validFormData.clientId}")
-        }
-      )
+    selectClientForm.bindFromRequest().fold(
+      formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
+      validFormData => {
+        Future successful Redirect(routes.MainController.get()).addingToSession("USER_NINO" -> s"${validFormData.clientId}")
+      }
+    )
   }
 
 

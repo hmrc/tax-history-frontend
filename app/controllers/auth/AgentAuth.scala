@@ -40,7 +40,7 @@ import config.FrontendAuthConnector
 
 @Singleton
 class AgentAuth @Inject()(app: Application, frontendAuthConnector: FrontendAuthConnector) extends FrontendController with AuthorisedFunctions with Redirects {
-  //todo redirect to our pages
+
   override def authConnector: AuthConnector = frontendAuthConnector
 
   override def config: Configuration = app.configuration
@@ -56,31 +56,20 @@ class AgentAuth @Inject()(app: Application, frontendAuthConnector: FrontendAuthC
   private def extractArn(enrolls: Set[Enrolment]): Option[String] =
     enrolls.find(_.key equals "HMRC-AS-AGENT").flatMap(_.identifiers.find(_.key equals "AgentReferenceNumber").map(_.value))
 
-  private type AfiActionWithArn = Request[AnyContent] => String => Future[Result]
-  private type AfiActionForPAYE = Boolean => Future[Result]
+  private type AfiActionWithArn = Request[AnyContent] => Future[Result]
   lazy val affinityGroupAllEnrolls = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment = Enrolment("HMRC-AS-AGENT")
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)
   private val isAnAgent = true
   private val isAuthorisedForPAYE = true
   private val isNotAuthorisedForPAYE = false
-  def authorisedForPAYE(clientId: Option[String], action: AfiActionForPAYE)(implicit request: Request[AnyContent]): Future[Result] = {
-    if (clientId.isDefined) {
-      authorised(AgentEnrolmentForPAYE.withIdentifier("MTDITID", clientId.get) and AuthProviderAgents) {
-        action(isAuthorisedForPAYE)
-      } recoverWith {
-        case _ => action(isNotAuthorisedForPAYE)
-      }
-    } else Future successful Redirect(AfiHomePage)
-  }
 
-
-  def authorisedForAfi(action: AfiActionWithArn): Action[AnyContent] = {
+  def authorisedForAfi(action: AfiActionWithArn) = {
     Action.async { implicit request ⇒
       authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
         case Some(affinityG) ~ allEnrols ⇒
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-            case (`isAnAgent`, Some(arn)) => action(request)(arn)
+            case (`isAnAgent`, Some(arn)) => action(request)
             case (`isAnAgent`, None) => redirectToSubPage
             case _ => redirectToExitPage
           }
