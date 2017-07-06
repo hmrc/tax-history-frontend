@@ -44,12 +44,11 @@ trait BaseController extends FrontendController with Actions with Redirects with
 class MainController @Inject()(
                                 val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
-                                val agentAuth: AgentAuth,
                                 override val authConnector: FrontendAuthConnector,
                                 override val config: Configuration,
                                 override val env: Environment,
                                 implicit val messagesApi: MessagesApi
-                              ) extends BaseController with AuthorisedFunctions {
+                              ) extends BaseController with AgentAuth {
 
   lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
 
@@ -77,20 +76,42 @@ class MainController @Inject()(
     }
   }
 
-  def getSelectClientPage(): Action[AnyContent] =
-    agentAuth.authorisedForAfi { implicit request => {
-        Future.successful(Ok(select_client(selectClientForm)))
-      }
+  def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
+    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+      case Some(affinityG) ~ allEnrols ⇒
+        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
+          case (`isAnAgent`, Some(_)) => Future.successful(Ok(select_client(selectClientForm)))
+          case (`isAnAgent`, None) => redirectToSubPage
+          case _ => redirectToExitPage
+        }
+      case _ =>
+        redirectToExitPage
+    } recover {
+      case e ⇒
+        handleFailure(e)
     }
+  }
 
-  def submitSelectClientPage(): Action[AnyContent] = agentAuth.authorisedForAfi { implicit request =>
+  def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
       validFormData => {
-        Future successful Redirect(routes.MainController.get()).addingToSession("USER_NINO" -> s"${validFormData.clientId}")
+        authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+          case Some(affinityG) ~ allEnrols ⇒
+            (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
+              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.MainController.get())
+                .addingToSession("USER_NINO" -> s"${validFormData.clientId}")
+              case (`isAnAgent`, None) => redirectToSubPage
+              case _ => redirectToExitPage
+            }
+          case _ =>
+            redirectToExitPage
+        } recover {
+          case e ⇒
+            handleFailure(e)
+        }
       }
     )
   }
-
 
 }
