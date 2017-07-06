@@ -38,44 +38,44 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import javax.inject.{Inject, Singleton}
 import config.FrontendAuthConnector
 
-trait AgentAuth  extends FrontendController with AuthorisedFunctions with Redirects {
+trait AgentAuth extends FrontendController with AuthorisedFunctions with Redirects {
 
-  private def redirectToSubPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
+  def redirectToSubPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
 
-  private def redirectToExitPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
+  def redirectToExitPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
 
-  private def isAgent(group: AffinityGroup): Boolean = group.toString.contains("Agent")
+  def isAgent(group: AffinityGroup): Boolean = group.toString.contains("Agent")
 
-  private def extractArn(enrolls: Set[Enrolment]): Option[String] =
+  def extractArn(enrolls: Set[Enrolment]): Option[String] =
     enrolls.find(_.key equals "HMRC-AS-AGENT").flatMap(_.identifiers.find(_.key equals "AgentReferenceNumber").map(_.value))
 
-  private type AfiActionWithArn = Request[AnyContent] => Future[Result]
+  type AfiActionWithArn = Request[AnyContent] => Future[Result]
   lazy val affinityGroupAllEnrolls = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment = Enrolment("HMRC-AS-AGENT")
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)
-  private val isAnAgent = true
-  private val isAuthorisedForPAYE = true
-  private val isNotAuthorisedForPAYE = false
+  val isAnAgent = true
+  val isAuthorisedForPAYE = true
+  val isNotAuthorisedForPAYE = false
 
-  def authorisedForAfi(action: AfiActionWithArn) = {
-    Action.async { implicit request ⇒
-      authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-        case Some(affinityG) ~ allEnrols ⇒
-          (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-            case (`isAnAgent`, Some(arn)) => action(request)
-            case (`isAnAgent`, None) => redirectToSubPage
-            case _ => redirectToExitPage
-          }
-        case _ =>
-          println("\n\n It goes bang2 \n\n")
-          redirectToExitPage
-      } recover {
-        case e ⇒
-          println("\n\n It goes bang3 \n\n")
-          handleFailure(e)
-      }
-    }
-  }
+//  def authorisedForAfi(action: AfiActionWithArn) = {
+//    Action.async { implicit request ⇒
+//      authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+//        case Some(affinityG) ~ allEnrols ⇒
+//          (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
+//            case (`isAnAgent`, Some(arn)) => action(request)
+//            case (`isAnAgent`, None) => redirectToSubPage
+//            case _ => redirectToExitPage
+//          }
+//        case _ =>
+//          println("\n\n It goes bang2 \n\n")
+//          redirectToExitPage
+//      } recover {
+//        case e ⇒
+//          println("\n\n It goes bang3 \n\n")
+//          handleFailure(e)
+//      }
+//    }
+//  }
 
   def handleFailure(e: Throwable): Result =
     e match {
