@@ -28,20 +28,37 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import support.{BaseSpec, Fixtures}
-import uk.gov.hmrc.auth.core.{EmptyRetrieval, MissingBearerToken}
-import uk.gov.hmrc.play.http.{BadGatewayException, SessionKeys}
+import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
 import akka.actor.ActorSystem
+import models.taxhistory.Employment
+import org.mockito.Matchers
+import play.api.libs.json.Json
 
 import scala.concurrent.Future
 
 
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
-  val mockConnector = mock[TaxHistoryConnector]
+  private val mockConnector = mock[TaxHistoryConnector]
+  private val mockFrontendAuthConnector = mock[FrontendAuthConnector]
 
+//  val newEnrolments = Set(
+//    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")), confidenceLevel = ConfidenceLevel.L200,
+//      state="",delegatedAuthRule = None)
+//  )
+  /* val UnAuthorisedAgentEnrolments = Set(
+     Enrolment("HMRC-AS-UNAUTHORISED-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")), confidenceLevel = ConfidenceLevel.L200,
+       state="",delegatedAuthRule = None)
+   )
+
+   override def beforeEach = {
+     reset(mockEmploymentHistoryService)
+     reset(mockPlayAuthConnector)
+   }*/
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
+    .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
     .overrides(bind[TaxHistoryConnector].toInstance(mockConnector))
     .build()
@@ -58,10 +75,10 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     )
 
     lazy val controller = {
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
       val c = injected[MainController]
-
       when(c.authConnector.authorise(any(), meq(EmptyRetrieval))(any())).thenReturn(Future.successful())
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(Nil))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(employment))))))
       c
     }
   }
@@ -71,6 +88,16 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     "return 200" in new LocalSetup {
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
+    }
+
+    "return 404 and show not found error page" in new LocalSetup {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val materializer = ActorMaterializer()
+      when(controller.authConnector.authorise(any(), meq(EmptyRetrieval))(any())).thenReturn(Future.successful())
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson("[]")))))
+      val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include("We have no record of any employments for this person.")
     }
 
     "return error page when connector not available" in new LocalSetup {
@@ -83,7 +110,6 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     }
 
     "redirect to gg when not logged in" in new LocalSetup {
-
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new MissingBearerToken))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.SEE_OTHER

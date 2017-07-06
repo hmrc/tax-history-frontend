@@ -19,19 +19,24 @@
 
 @(nino: String, taxYear: Int, employments: Seq[Employment])(implicit request: Request[_], messages: Messages)
 
-@views.html.main_template(title = Messages("employmenthistory.title"), bodyClasses = None) {
+@sidebarLinks = {
+<section class="section section--blue-top">
+ <a href="#">Return to Agent account</a>
+</section>
+}
+
+@views.html.main_template(title = Messages("employmenthistory.title"), bodyClasses = None, sidebarLinks = Some(sidebarLinks)) {
 <h1>@nino</h1>
-<h2>@Messages("employmenthistory.taxyear",s"$taxYear/${taxYear+1}")</h2>
+<h2 id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear/${taxYear+1}")</h2>
 
  @employments.map { employment =>
 
-  <div class="grid-layout">
   <table class="employment-table">
    <thead>
     <tr>
-     <th>@employment.employerName</th>
-     <th class="numeric">PAYE ref:</th>
-     <th class="numeric">@employment.payeReference</th>
+     <th style="width:50%;border-bottom: 5px solid #005ea5">@employment.employerName</th>
+     <th style="width:30%;text-align:right;border-bottom: 0px">PAYE ref:</th>
+     <th style="width:20%;text-align:right;border-bottom: 0px;font-weight:normal">@employment.payeReference</th>
     </tr>
    </thead>
    <tbody>
@@ -47,7 +52,6 @@
     </tr>
    </tbody>
   </table>
-  </div>
  }
 }
 

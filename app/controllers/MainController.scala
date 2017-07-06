@@ -62,7 +62,6 @@ class MainController @Inject()(
         nino match {
           case Some(nino) =>
             taxHistoryConnector.getTaxHistory(nino, cy1) map {
-              loghistoryResponse
               historyResponse => historyResponse.status match {
                 case OK => {
                   val taxHistory = historyResponse.json.as[Seq[Employment]]
