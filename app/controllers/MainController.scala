@@ -44,12 +44,11 @@ trait BaseController extends FrontendController with Actions with Redirects with
 class MainController @Inject()(
                                 val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
-                                val agentAuth: AgentAuth,
                                 override val authConnector: FrontendAuthConnector,
                                 override val config: Configuration,
                                 override val env: Environment,
                                 implicit val messagesApi: MessagesApi
-                              ) extends BaseController with AuthorisedFunctions {
+                              ) extends BaseController with AuthorisedFunctions with AgentAuth{
 
   lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
 
@@ -77,13 +76,12 @@ class MainController @Inject()(
     }
   }
 
-  def getSelectClientPage(): Action[AnyContent] =
-    agentAuth.authorisedForAfi { implicit request => {
+  def getSelectClientPage(): Action[AnyContent] = authorisedForAfi { implicit request => {
         Future.successful(Ok(select_client(selectClientForm)))
       }
     }
 
-  def submitSelectClientPage(): Action[AnyContent] = agentAuth.authorisedForAfi { implicit request =>
+  def submitSelectClientPage(): Action[AnyContent] = authorisedForAfi { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
       validFormData => {
@@ -91,6 +89,5 @@ class MainController @Inject()(
       }
     )
   }
-
 
 }

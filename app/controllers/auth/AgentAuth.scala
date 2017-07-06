@@ -38,14 +38,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import javax.inject.{Inject, Singleton}
 import config.FrontendAuthConnector
 
-@Singleton
-class AgentAuth @Inject()(app: Application, frontendAuthConnector: FrontendAuthConnector) extends FrontendController with AuthorisedFunctions with Redirects {
-
-  override def authConnector: AuthConnector = frontendAuthConnector
-
-  override def config: Configuration = app.configuration
-
-  override def env: Environment = Environment(app.path, app.classloader, app.mode)
+trait AgentAuth  extends FrontendController with AuthorisedFunctions with Redirects {
 
   private def redirectToSubPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
 
@@ -73,9 +66,13 @@ class AgentAuth @Inject()(app: Application, frontendAuthConnector: FrontendAuthC
             case (`isAnAgent`, None) => redirectToSubPage
             case _ => redirectToExitPage
           }
-        case _ => redirectToExitPage
+        case _ =>
+          println("\n\n It goes bang2 \n\n")
+          redirectToExitPage
       } recover {
-        case e ⇒ handleFailure(e)
+        case e ⇒
+          println("\n\n It goes bang3 \n\n")
+          handleFailure(e)
       }
     }
   }
