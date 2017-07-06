@@ -16,27 +16,16 @@
 
 package controllers.auth
 
-import controllers.routes
-import form.SelectClientForm.selectClientForm
+import config.FrontendAppConfig.{AfiErrorPage, AfiHomePage, AfiNoAgentServicesAccountPage}
 import play.api.Logger
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.Retrievals.{affinityGroup, allEnrolments}
 import uk.gov.hmrc.auth.core._
-import config.FrontendAppConfig.{AfiErrorPage, AfiHomePage, AfiNoAgentServicesAccountPage}
-import views.html.select_client
-
-import scala.concurrent.Future
-import play.api.mvc.Results.Redirect
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.frontend.Redirects
-import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.{Application, Configuration, Environment, Logger}
-import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import javax.inject.{Inject, Singleton}
-import config.FrontendAuthConnector
+
+import scala.concurrent.Future
 
 trait AgentAuth extends FrontendController with AuthorisedFunctions with Redirects {
 
@@ -56,26 +45,6 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with Redirec
   val isAnAgent = true
   val isAuthorisedForPAYE = true
   val isNotAuthorisedForPAYE = false
-
-//  def authorisedForAfi(action: AfiActionWithArn) = {
-//    Action.async { implicit request ⇒
-//      authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-//        case Some(affinityG) ~ allEnrols ⇒
-//          (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-//            case (`isAnAgent`, Some(arn)) => action(request)
-//            case (`isAnAgent`, None) => redirectToSubPage
-//            case _ => redirectToExitPage
-//          }
-//        case _ =>
-//          println("\n\n It goes bang2 \n\n")
-//          redirectToExitPage
-//      } recover {
-//        case e ⇒
-//          println("\n\n It goes bang3 \n\n")
-//          handleFailure(e)
-//      }
-//    }
-//  }
 
   def handleFailure(e: Throwable): Result =
     e match {
