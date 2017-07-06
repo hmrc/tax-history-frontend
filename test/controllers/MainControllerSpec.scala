@@ -16,10 +16,11 @@
 
 package controllers
 
+import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Matchers.{eq ⇒ meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.api.Application
@@ -28,13 +29,10 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import support.{BaseSpec, Fixtures}
-import uk.gov.hmrc.auth.core.{EmptyRetrieval, MissingBearerToken}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.http.{BadGatewayException, SessionKeys}
-import akka.actor.ActorSystem
 
 import scala.concurrent.Future
-
-
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   val mockConnector = mock[TaxHistoryConnector]
@@ -59,7 +57,6 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val c = injected[MainController]
-
       when(c.authConnector.authorise(any(), meq(EmptyRetrieval))(any())).thenReturn(Future.successful())
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(Nil))
       c

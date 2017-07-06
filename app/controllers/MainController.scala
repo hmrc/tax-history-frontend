@@ -20,20 +20,20 @@ import javax.inject.Inject
 
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
-import models.taxhistory.Employment
+import controllers.auth.AgentAuth
+import form.SelectClientForm.selectClientForm
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, Result}
 import play.api.{Configuration, Environment, Logger}
-import play.api.libs.json.Json
-import play.api.mvc.{Action, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.{Enrolment, _}
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.auth.{Actions, DelegationAwareActions}
+import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.BadGatewayException
 import uk.gov.hmrc.time.TaxYearResolver
-import play.api.i18n.Messages.Implicits._
+import views.html.select_client
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -44,6 +44,7 @@ trait BaseController extends FrontendController with Actions with Redirects with
 class MainController @Inject()(
                                 val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
+                                val agentAuth: AgentAuth,
                                 override val authConnector: FrontendAuthConnector,
                                 override val config: Configuration,
                                 override val env: Environment,
@@ -53,11 +54,9 @@ class MainController @Inject()(
   lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
 
   def get() = Action.async {
-
     implicit request => {
       val nino: Option[Nino] = request.session.get("USER_NINO").map(Nino(_))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
-
         val cy1 = TaxYearResolver.currentTaxYear - 1
         nino match {
           case Some(nino) =>
@@ -77,4 +76,21 @@ class MainController @Inject()(
       }
     }
   }
+
+  def getSelectClientPage(): Action[AnyContent] =
+    agentAuth.authorisedForAfi { implicit request => {
+        Future.successful(Ok(select_client(selectClientForm)))
+      }
+    }
+
+  def submitSelectClientPage(): Action[AnyContent] = agentAuth.authorisedForAfi { implicit request =>
+    selectClientForm.bindFromRequest().fold(
+      formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
+      validFormData => {
+        Future successful Redirect(routes.MainController.get()).addingToSession("USER_NINO" -> s"${validFormData.clientId}")
+      }
+    )
+  }
+
+
 }
