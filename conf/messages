@@ -1,2 +1,10 @@
 employmenthistory.taxyear =Tax year {0}
 employmenthistory.title = Employment History
+employmenthistory.unauthorised.title = Unauthorised
+employmenthistory.unauthorised.message = You are not authorised to view employment history information for this user.
+employmenthistory.notfound.title = No Employments Found
+employmenthistory.notfound.message = We have no record of any employments for this person.
+employmenthistory.nonino.title = No Nino Specified
+employmenthistory.nonino.message = Please specify a nino to be able to view tax history details.
+employmenthistory.technicalerror.title = Technical Error
+employmenthistory.error.message = This service is currently experiencing a technical problem.

@@ -33,6 +33,7 @@ import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
 import akka.actor.ActorSystem
 import models.taxhistory.Employment
 import org.mockito.Matchers
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 
 import scala.concurrent.Future
@@ -43,19 +44,8 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   private val mockConnector = mock[TaxHistoryConnector]
   private val mockFrontendAuthConnector = mock[FrontendAuthConnector]
 
-//  val newEnrolments = Set(
-//    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")), confidenceLevel = ConfidenceLevel.L200,
-//      state="",delegatedAuthRule = None)
-//  )
-  /* val UnAuthorisedAgentEnrolments = Set(
-     Enrolment("HMRC-AS-UNAUTHORISED-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")), confidenceLevel = ConfidenceLevel.L200,
-       state="",delegatedAuthRule = None)
-   )
-
-   override def beforeEach = {
-     reset(mockEmploymentHistoryService)
-     reset(mockPlayAuthConnector)
-   }*/
+  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages = messagesApi.preferred(FakeRequest())
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
@@ -90,14 +80,40 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       status(result) shouldBe Status.OK
     }
 
-    "return 404 and show not found error page" in new LocalSetup {
+    "show not found error page when 404 returned from connector" in new LocalSetup {
       implicit val actorSystem = ActorSystem("test")
       implicit val materializer = ActorMaterializer()
-      when(controller.authConnector.authorise(any(), meq(EmptyRetrieval))(any())).thenReturn(Future.successful())
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson("[]")))))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include("We have no record of any employments for this person.")
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.message").toString)
+    }
+
+    "show not authorised error page when 401 returned from connector" in new LocalSetup {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val materializer = ActorMaterializer()
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,Some(Json.toJson("{Message:Unauthorised}")))))
+      val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.message"))
+    }
+
+    "show technical error page when any response other than 200, 401, 404 returned from connector" in new LocalSetup {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val materializer = ActorMaterializer()
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
+      val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.message"))
+    }
+
+    "show technical error page when no nino has been set in session" in new LocalSetup {
+      implicit val actorSystem = ActorSystem("test")
+      implicit val materializer = ActorMaterializer()
+      //when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
+      val result = controller.get()(fakeRequest)
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.nonino.message"))
     }
 
     "return error page when connector not available" in new LocalSetup {
@@ -106,7 +122,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include("Tax History Connector not available")
+      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.message"))
     }
 
     "redirect to gg when not logged in" in new LocalSetup {

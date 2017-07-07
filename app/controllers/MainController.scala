@@ -68,27 +68,35 @@ class MainController @Inject()(
                   Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
                 }
                 case NOT_FOUND => {
-                  Ok(views.html.error_template("No Employments Found","No Employments Found","We have no record of any employments for this person."))
+                  Logger.warn(messagesApi("employmenthistory.notfound.message"))
+                  Ok(views.html.error_template(messagesApi("employmenthistory.notfound.title"),messagesApi("employmenthistory.notfound.title"),messagesApi("employmenthistory.notfound.message"))).removingFromSession("USER_NINO")
                 }
                 case UNAUTHORIZED => {
-                  Ok(views.html.error_template("Unauthorised","Unauthorised","You are not authorised to view employment history information for this user."))
+                  Logger.warn(messagesApi("employmenthistory.unauthorised.message"))
+                  Ok(views.html.error_template(messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.message"))).removingFromSession("USER_NINO")
                 }
                 case _ => {
-                  Ok(views.html.error_template("Technical Error","Technical Error","This service is currently experiencing a technical problem."))
+                  Logger.warn(messagesApi("employmenthistory.technicalerror.message"))
+                  Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO")
                 }
               }
-              //taxHistory =>
-              //  Ok(views.html.taxhistory.employments_main("Test User", nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
             }
           case _ =>
-            Future.successful(NotFound("User had no nino"))
+            Logger.warn(messagesApi("employmenthistory.nonino.message"))
+            Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.message"))))
         }
       }.recoverWith {
         case _: BadGatewayException => {
-          val message = "Tax History Connector not available"
-          Future.successful(Ok(views.html.error_template(message, message, message)).removingFromSession("USER_NINO"))
+          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException")
+          Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO"))
         }
-        case _ => Future.successful(ggSignInRedirect)
+        case _: MissingBearerToken => {
+          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken")
+          Future.successful(ggSignInRedirect)
+        }
+        case e =>
+          Logger.warn("Exception thrown :"+e.getMessage)
+          Future.successful(ggSignInRedirect)
       }
     }
   }
