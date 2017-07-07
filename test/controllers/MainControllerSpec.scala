@@ -16,11 +16,12 @@
 
 package controllers
 
+import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
-import org.mockito.Matchers.{eq => meq, _}
-import org.mockito.Mockito._
+import org.mockito.Matchers.{eq ⇒ meq, _}
+import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar
 import play.api.Application
 import play.api.http.Status
@@ -38,7 +39,6 @@ import play.api.libs.json.Json
 
 import scala.concurrent.Future
 
-
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   private val mockConnector = mock[TaxHistoryConnector]
@@ -52,6 +52,19 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
     .overrides(bind[TaxHistoryConnector].toInstance(mockConnector))
     .build()
+
+
+  val validTestNINO = "AB123456B"
+  val invalidTestNINO = "9999999999999999"
+
+
+  val validSelectClientForm = Seq(
+    "clientId" -> validTestNINO
+  )
+
+  val invalidSelectClientForm = Seq(
+    "clientId" -> invalidTestNINO
+  )
 
   trait LocalSetup {
 
@@ -131,6 +144,11 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       status(result) shouldBe Status.SEE_OTHER
     }
 
-  }
+    "return Status: 400 when invalid data is input" in new LocalSetup {
+      val result = controller.submitSelectClientPage().apply(FakeRequest()
+        .withFormUrlEncodedBody(invalidSelectClientForm: _*))
 
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+  }
 }
