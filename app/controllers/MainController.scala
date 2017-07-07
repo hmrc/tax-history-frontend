@@ -74,8 +74,8 @@ class MainController @Inject()(
                   Logger.warn(messagesApi("employmenthistory.unauthorised.message"))
                   Ok(views.html.error_template(messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.message"))).removingFromSession("USER_NINO")
                 }
-                case _ => {
-                  Logger.warn(messagesApi("employmenthistory.technicalerror.message"))
+                case s => {
+                  Logger.warn(messagesApi("employmenthistory.technicalerror.message")+": With status:"+s)
                   Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO")
                 }
               }
@@ -85,12 +85,12 @@ class MainController @Inject()(
             Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.message"))))
         }
       }.recoverWith {
-        case _: BadGatewayException => {
-          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException")
+        case b: BadGatewayException => {
+          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException:"+b.getMessage)
           Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO"))
         }
-        case _: MissingBearerToken => {
-          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken")
+        case m: MissingBearerToken => {
+          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken:"+m.getMessage)
           Future.successful(ggSignInRedirect)
         }
         case e =>

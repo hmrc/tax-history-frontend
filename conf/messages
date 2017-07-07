@@ -7,7 +7,7 @@ employmenthistory.notfound.message = We have no record of any employments for th
 employmenthistory.nonino.title = No Nino Specified
 employmenthistory.nonino.message = Please specify a nino to be able to view tax history details.
 employmenthistory.technicalerror.title = Technical Error
-employmenthistory.error.message = This service is currently experiencing a technical problem.
+employmenthistory.technicalerror.message = This service is currently experiencing a technical problem.
 
 mtdfi.select_client.continue=Continue
 mtdfi.select_client.title=View your client''s employment history data
