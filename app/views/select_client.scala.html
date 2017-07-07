@@ -25,7 +25,9 @@
 @views.html.main_template(title = Messages("mtdfi.select_client.title"), bodyClasses = None) {
     <header class="page-header"><h1>@Messages("mtdfi.select_client.title")</h1></header>
     @form(routes.MainController.submitSelectClientPage()) {
-        @formErrorSummary(Messages("mtdfi.select_client.form.title"), sCForm, Seq.empty)
+        @if(sCForm.hasErrors) {
+            @formErrorSummary(Messages("mtdfi.select_client.form.title"), sCForm, Seq.empty)
+        }
         <fieldset class="form-field-group">
         @selectclientfields(sCForm("clientId"))
         </fieldset>

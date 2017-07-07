@@ -27,7 +27,7 @@ object SelectClientForm {
       "clientId" -> text
         .verifying("mtdfi.select_client.form.need-value", _.nonEmpty)
         .verifying("mtdfi.select_client.form.invalid-value-length", _.length <= 9)
-        .verifying("mtdfi.create_relationship.invalid-nino-format", text ⇒ isValid(text))
+        .verifying("mtdfi.select_client.invalid-nino-format", text ⇒ isValid(text))
     )(SelectClient.apply)(SelectClient.unapply))
   }
 }
