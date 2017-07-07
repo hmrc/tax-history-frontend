@@ -55,7 +55,7 @@ class SelectClientFormSpec extends PlaySpec {
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.create_relationship.invalid-nino-format"))))
+      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.invalid-nino-format"))))
     }
   }
 }
