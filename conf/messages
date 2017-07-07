@@ -1,5 +1,13 @@
-employmenthistory.heading = Employment History for {0} {1} ({2})
+employmenthistory.taxyear =Tax year {0}
 employmenthistory.title = Employment History
+employmenthistory.unauthorised.title = Unauthorised
+employmenthistory.unauthorised.message = You are not authorised to view employment history information for this user.
+employmenthistory.notfound.title = No Employments Found
+employmenthistory.notfound.message = We have no record of any employments for this person.
+employmenthistory.nonino.title = No Nino Specified
+employmenthistory.nonino.message = Please specify a nino to be able to view tax history details.
+employmenthistory.technicalerror.title = Technical Error
+employmenthistory.technicalerror.message = This service is currently experiencing a technical problem.
 
 mtdfi.select_client.continue=Continue
 mtdfi.select_client.title=View your client''s employment history data
@@ -9,3 +17,4 @@ mtdfi.select_client.nino.hint=For example, ‘AA123456B’.
 mtdfi.select_client.form.need-value=National Insurance number cannot be empty
 mtdfi.select_client.form.invalid-value-length=National Insurance number was longer then 9 characters
 mtdfi.select_client.invalid-nino-format=Enter a valid National Insurance number
+

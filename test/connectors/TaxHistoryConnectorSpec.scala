@@ -22,12 +22,14 @@ import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import org.scalatest.mock.MockitoSugar
 import play.api.Application
+import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.i18n.MessagesApi
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.http.HttpGet
+import uk.gov.hmrc.play.http.{HttpGet, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
 
 import scala.concurrent.Future
@@ -52,12 +54,13 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
   "TaxHistoryConnector" should {
 
     "fetch tax history" in new LocalSetup {
-      when(connector.httpGet.GET[Seq[Employment]](any())(any(), any())).thenReturn(
-        Future.successful(Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))))
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any())).thenReturn(
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))))))))
 
       val result = await(connector.getTaxHistory(Nino("AA000000A"), 2017))
 
-      result shouldBe Seq(Employment("AA12341234", "Test Employer Name", 25000.0, 2000.0, Some(1000.0), Some(250.0)))
+      result.status shouldBe Status.OK
+      result.json shouldBe Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))))
 
     }
   }

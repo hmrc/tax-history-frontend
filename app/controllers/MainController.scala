@@ -22,6 +22,7 @@ import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
+import models.taxhistory.Employment
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Result}
 import play.api.{Configuration, Environment, Logger}
@@ -54,24 +55,47 @@ class MainController @Inject()(
 
   def get() = Action.async {
     implicit request => {
-      val nino: Option[Nino] = request.session.get("USER_NINO").map(Nino(_))
+      val nino = request.session.get("USER_NINO").map(Nino(_))
       authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
         val cy1 = TaxYearResolver.currentTaxYear - 1
         nino match {
           case Some(nino) =>
             taxHistoryConnector.getTaxHistory(nino, cy1) map {
-              taxHistory =>
-                Ok(views.html.taxhistory.employments_main("Test User", nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
+              historyResponse => historyResponse.status match {
+                case OK => {
+                  val taxHistory = historyResponse.json.as[Seq[Employment]]
+                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
+                }
+                case NOT_FOUND => {
+                  Logger.warn(messagesApi("employmenthistory.notfound.message"))
+                  Ok(views.html.error_template(messagesApi("employmenthistory.notfound.title"),messagesApi("employmenthistory.notfound.title"),messagesApi("employmenthistory.notfound.message"))).removingFromSession("USER_NINO")
+                }
+                case UNAUTHORIZED => {
+                  Logger.warn(messagesApi("employmenthistory.unauthorised.message"))
+                  Ok(views.html.error_template(messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.message"))).removingFromSession("USER_NINO")
+                }
+                case s => {
+                  Logger.warn(messagesApi("employmenthistory.technicalerror.message")+": With status:"+s)
+                  Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO")
+                }
+              }
             }
-          case None =>
-            Future.successful(NotFound("User had no nino"))
+          case _ =>
+            Logger.warn(messagesApi("employmenthistory.nonino.message"))
+            Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.message"))))
         }
       }.recoverWith {
-        case _: BadGatewayException => {
-          val message = "Tax History Connector not available"
-          Future.successful(Ok(views.html.error_template(message, message, message)).removingFromSession("USER_NINO"))
+        case b: BadGatewayException => {
+          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException:"+b.getMessage)
+          Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO"))
         }
-        case _ => Future.successful(ggSignInRedirect)
+        case m: MissingBearerToken => {
+          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken:"+m.getMessage)
+          Future.successful(ggSignInRedirect)
+        }
+        case e =>
+          Logger.warn("Exception thrown :"+e.getMessage)
+          Future.successful(ggSignInRedirect)
       }
     }
   }

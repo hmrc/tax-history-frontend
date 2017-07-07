@@ -18,23 +18,26 @@ package connectors
 
 import javax.inject.{Inject, Singleton}
 
-import config.{WSHttp, WSHttpT}
-import models.taxhistory.Employment
+import config.WSHttpT
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.AuthContext
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpGet}
+import uk.gov.hmrc.play.http.{HeaderCarrier, HttpReads, HttpResponse}
 
 import scala.concurrent.Future
 
 @Singleton
 class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig {
 
-  def getTaxHistory(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[Seq[Employment]] = {
+  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
+    override def read(method: String, url: String, response: HttpResponse) = response
+  }
+
+
+  def getTaxHistory(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
     val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
 
-    httpGet.GET[Seq[Employment]](s"$taxHistoryUrl/$nino/$taxYear")
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear")
   }
 
 }
