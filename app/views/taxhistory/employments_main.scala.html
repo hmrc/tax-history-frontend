@@ -17,7 +17,11 @@
 @import models.taxhistory.Employment
 @import utils.Currency
 
-@(nino: String, taxYear: Int, employments: Seq[Employment], sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+@(nino: String,
+ taxYear: Int,
+ employments: Seq[Employment],
+ sideBarLink: Option[Html] = None,
+ headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 
 @sidebarLinks = {
@@ -28,7 +32,10 @@
 
 
 
-@views.html.main_template(title = Messages("employmenthistory.title"), bodyClasses = None, sidebarLinks = Some(sidebarLinks)) {
+@views.html.main_template(title = Messages("employmenthistory.title"),
+                          bodyClasses = None,
+                          sidebarLinks = Some(sidebarLinks),
+                          headerNavLink = headerNavLink) {
 <h1>@nino</h1>
 <h2 id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear/${taxYear+1}")</h2>
 
