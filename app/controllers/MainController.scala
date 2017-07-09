@@ -54,6 +54,14 @@ class MainController @Inject()(
 
   lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
 
+  lazy val logoutLink = Link.toInternalPage(url=controllers.routes.MainController.logout.url,value=Some("Sign out")).toHtml
+
+  def logout() = Action.async {
+    implicit request => {
+       Future.successful(ggSignInRedirect.withNewSession)
+    }
+  }
+
   def get() = Action.async {
     implicit request => {
       val nino = request.session.get("USER_NINO").map(Nino(_))
@@ -65,57 +73,69 @@ class MainController @Inject()(
               historyResponse => historyResponse.status match {
                 case OK => {
                   val taxHistory = historyResponse.json.as[Seq[Employment]]
-                  val link = Link.toExternalPage(
+                  val sidebarLink = Link.toExternalPage(
                     url=FrontendAppConfig.AfiHomePage,
                     value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(link))).removingFromSession("USER_NINO")
+                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
                 }
                 case NOT_FOUND => {
                   Logger.warn(messagesApi("employmenthistory.notfound.message"))
-                  val link = Link.toInternalPage(
+                  val sidebarLink = Link.toInternalPage(
                     url=controllers.routes.MainController.getSelectClientPage().url,
                     value = Some(messagesApi("employmenthistory.notfound.linktext"))).toHtml
                   Ok(views.html.error_template(
                     messagesApi("employmenthistory.notfound.title"),
                     messagesApi("employmenthistory.notfound.title"),
                     messagesApi("employmenthistory.notfound.message"),
-                    Some(link))).removingFromSession("USER_NINO")
+                    Some(sidebarLink),
+                    headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
                 }
                 case UNAUTHORIZED => {
                   Logger.warn(messagesApi("employmenthistory.unauthorised.message"))
-                  val link = Link.toExternalPage(
+                  val sidebarLink = Link.toExternalPage(
                     url=FrontendAppConfig.AfiHomePage,
                     value = Some(messagesApi("employmenthistory.unauthorised.linktext"))).toHtml
                   Ok(views.html.error_template(
                     messagesApi("employmenthistory.unauthorised.title"),
                     messagesApi("employmenthistory.unauthorised.title"),
                     messagesApi("employmenthistory.unauthorised.message"),
-                    Some(link))).removingFromSession("USER_NINO")
+                    Some(sidebarLink),
+                    headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
                 }
                 case s => {
                   Logger.warn(messagesApi("employmenthistory.technicalerror.message")+": With status:"+s)
-                  val link = Link.toExternalPage(
+                  val sidebarLink = Link.toExternalPage(
                     url=FrontendAppConfig.AfiHomePage,
                     value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
                   Ok(views.html.error_template(
                     messagesApi("employmenthistory.technicalerror.title"),
                     messagesApi("employmenthistory.technicalerror.title"),
                     messagesApi("employmenthistory.technicalerror.message"),
-                    Some(link))).removingFromSession("USER_NINO")
+                    Some(sidebarLink),
+                    headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
                 }
               }
             }
           case _ =>
             Logger.warn("No nino supplied.")
-            val link = Link.toExternalPage(
+            val sidebarLink = Link.toExternalPage(
               url=FrontendAppConfig.AfiHomePage,
               value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
-            Future.successful(Ok(views.html.select_client(selectClientForm, Some(link))))
+            Future.successful(Ok(views.html.select_client(selectClientForm, Some(sidebarLink),
+              headerNavLink=Some(logoutLink))))
         }
       }.recoverWith {
         case b: BadGatewayException => {
           Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException:"+b.getMessage)
-          Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO"))
+          val sidebarLink = Link.toExternalPage(
+            url=FrontendAppConfig.AfiHomePage,
+            value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
+          Future.successful(Ok(views.html.error_template(
+            messagesApi("employmenthistory.technicalerror.title"),
+            messagesApi("employmenthistory.technicalerror.title"),
+            messagesApi("employmenthistory.technicalerror.message"),
+            Some(sidebarLink),
+            headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO"))
         }
         case m: MissingBearerToken => {
           Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken:"+m.getMessage)
@@ -133,10 +153,12 @@ class MainController @Inject()(
       case Some(affinityG) ~ allEnrols ⇒
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
           case (`isAnAgent`, Some(_)) => {
-            val link = Link.toExternalPage(
+            val sidebarLink = Link.toExternalPage(
               url=FrontendAppConfig.AfiHomePage,
               value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Future.successful(Ok(select_client(selectClientForm,Some(link))))
+            Future.successful(Ok(select_client(selectClientForm,
+                                              Some(sidebarLink),
+                                              headerNavLink=Some(logoutLink))))
           }
           case (`isAnAgent`, None) => redirectToSubPage
           case _ => redirectToExitPage
@@ -152,10 +174,12 @@ class MainController @Inject()(
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        val link = Link.toExternalPage(
+        val sidebarLink = Link.toExternalPage(
           url=FrontendAppConfig.AfiHomePage,
           value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-        Future.successful(BadRequest(select_client(formWithErrors,Some(link))))
+        Future.successful(BadRequest(select_client(formWithErrors,
+                                                   Some(sidebarLink),
+                                                   headerNavLink=Some(logoutLink))))
       },
       validFormData => {
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {

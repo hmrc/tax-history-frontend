@@ -14,7 +14,11 @@
  * limitations under the License.
  *@
 
-@(pageTitle: String, heading: String, message: String, sidebarLink: Option[Html]=None)(implicit request: Request[_], messages: Messages)
+@(pageTitle: String,
+ heading: String,
+ message: String,
+ sidebarLink: Option[Html]=None,
+ headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = {
  <section id="sidebar-link-section" class="section section--blue-top">
@@ -29,4 +33,8 @@
   <p id="error-message">@message</p>
 }
 
-@views.html.main_template(title = pageTitle, bodyClasses = None, sidebarLinks = Some(sidebarLinks), contentHeader = Some(contentHeader)){@mainContent}
+@views.html.main_template(title = pageTitle,
+                          bodyClasses = None,
+                          sidebarLinks = Some(sidebarLinks),
+                          contentHeader = Some(contentHeader),
+                          headerNavLink = headerNavLink){@mainContent}

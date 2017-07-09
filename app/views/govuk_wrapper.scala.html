@@ -23,7 +23,8 @@
   contentHeader: Option[Html] = None,
   mainContent: Html = HtmlFormat.empty,
   serviceInfoContent: Html = HtmlFormat.empty,
-  scriptElem: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+  scriptElem: Option[Html] = None,
+  headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
@@ -42,8 +43,7 @@
 }
 
 @headerNavLinks = {
-  <li><a id="homeNavHref" href="http://www.google.com"
-         data-journey-click="primary-navigation:Click:Home">Home</a></li>
+  <li>@headerNavLink.map{link=>@link}</li>
 }
 
 @insideHeader = {
@@ -51,7 +51,7 @@
       navTitle = Some("Tax History"),
       navTitleLink = None,
       showBetaLink = false,
-      navLinks = None)
+      navLinks = Some(headerNavLinks))
 }
 
 @afterHeader = {}
