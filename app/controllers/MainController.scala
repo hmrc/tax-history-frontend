@@ -107,7 +107,10 @@ class MainController @Inject()(
             }
           case _ =>
             Logger.warn("No nino supplied.")
-            Future.successful(Ok(views.html.select_client(selectClientForm)))
+            val link = Link.toExternalPage(
+              url=FrontendAppConfig.AfiHomePage,
+              value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
+            Future.successful(Ok(views.html.select_client(selectClientForm, Some(link))))
         }
       }.recoverWith {
         case b: BadGatewayException => {
@@ -129,7 +132,12 @@ class MainController @Inject()(
     authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols ⇒
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => Future.successful(Ok(select_client(selectClientForm)))
+          case (`isAnAgent`, Some(_)) => {
+            val link = Link.toExternalPage(
+              url=FrontendAppConfig.AfiHomePage,
+              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+            Future.successful(Ok(select_client(selectClientForm,Some(link))))
+          }
           case (`isAnAgent`, None) => redirectToSubPage
           case _ => redirectToExitPage
         }
@@ -143,7 +151,12 @@ class MainController @Inject()(
 
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
-      formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
+      formWithErrors ⇒ {
+        val link = Link.toExternalPage(
+          url=FrontendAppConfig.AfiHomePage,
+          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+        Future.successful(BadRequest(select_client(formWithErrors,Some(link))))
+      },
       validFormData => {
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
           case Some(affinityG) ~ allEnrols ⇒
