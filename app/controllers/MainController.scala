@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{ConfigDecorator, FrontendAuthConnector}
+import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
@@ -34,6 +34,7 @@ import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.BadGatewayException
 import uk.gov.hmrc.time.TaxYearResolver
+import uk.gov.hmrc.urls.Link
 import views.html.select_client
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -64,25 +65,49 @@ class MainController @Inject()(
               historyResponse => historyResponse.status match {
                 case OK => {
                   val taxHistory = historyResponse.json.as[Seq[Employment]]
-                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory)).removingFromSession("USER_NINO")
+                  val link = Link.toExternalPage(
+                    url=FrontendAppConfig.AfiHomePage,
+                    value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(link))).removingFromSession("USER_NINO")
                 }
                 case NOT_FOUND => {
                   Logger.warn(messagesApi("employmenthistory.notfound.message"))
-                  Ok(views.html.error_template(messagesApi("employmenthistory.notfound.title"),messagesApi("employmenthistory.notfound.title"),messagesApi("employmenthistory.notfound.message"))).removingFromSession("USER_NINO")
+                  val link = Link.toInternalPage(
+                    url=controllers.routes.MainController.getSelectClientPage().url,
+                    value = Some(messagesApi("employmenthistory.notfound.linktext"))).toHtml
+                  Ok(views.html.error_template(
+                    messagesApi("employmenthistory.notfound.title"),
+                    messagesApi("employmenthistory.notfound.title"),
+                    messagesApi("employmenthistory.notfound.message"),
+                    Some(link))).removingFromSession("USER_NINO")
                 }
                 case UNAUTHORIZED => {
                   Logger.warn(messagesApi("employmenthistory.unauthorised.message"))
-                  Ok(views.html.error_template(messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.title"),messagesApi("employmenthistory.unauthorised.message"))).removingFromSession("USER_NINO")
+                  val link = Link.toExternalPage(
+                    url=FrontendAppConfig.AfiHomePage,
+                    value = Some(messagesApi("employmenthistory.unauthorised.linktext"))).toHtml
+                  Ok(views.html.error_template(
+                    messagesApi("employmenthistory.unauthorised.title"),
+                    messagesApi("employmenthistory.unauthorised.title"),
+                    messagesApi("employmenthistory.unauthorised.message"),
+                    Some(link))).removingFromSession("USER_NINO")
                 }
                 case s => {
                   Logger.warn(messagesApi("employmenthistory.technicalerror.message")+": With status:"+s)
-                  Ok(views.html.error_template(messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.title"),messagesApi("employmenthistory.technicalerror.message"))).removingFromSession("USER_NINO")
+                  val link = Link.toExternalPage(
+                    url=FrontendAppConfig.AfiHomePage,
+                    value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
+                  Ok(views.html.error_template(
+                    messagesApi("employmenthistory.technicalerror.title"),
+                    messagesApi("employmenthistory.technicalerror.title"),
+                    messagesApi("employmenthistory.technicalerror.message"),
+                    Some(link))).removingFromSession("USER_NINO")
                 }
               }
             }
           case _ =>
-            Logger.warn(messagesApi("employmenthistory.nonino.message"))
-            Future.successful(Ok(views.html.error_template(messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.title"),messagesApi("employmenthistory.nonino.message"))))
+            Logger.warn("No nino supplied.")
+            Future.successful(Ok(views.html.select_client(selectClientForm)))
         }
       }.recoverWith {
         case b: BadGatewayException => {

@@ -17,13 +17,16 @@
 @import models.taxhistory.Employment
 @import utils.Currency
 
-@(nino: String, taxYear: Int, employments: Seq[Employment])(implicit request: Request[_], messages: Messages)
+@(nino: String, taxYear: Int, employments: Seq[Employment], sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+
 
 @sidebarLinks = {
-<section class="section section--blue-top">
- <a href="#">Return to Agent account</a>
-</section>
+    <section id="sidebar-link-section" class="section section--blue-top">
+     @sideBarLink.map{link=>@link}
+     </section>
 }
+
+
 
 @views.html.main_template(title = Messages("employmenthistory.title"), bodyClasses = None, sidebarLinks = Some(sidebarLinks)) {
 <h1>@nino</h1>

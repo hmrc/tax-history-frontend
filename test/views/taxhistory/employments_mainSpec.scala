@@ -20,6 +20,7 @@ import models.taxhistory.Employment
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.urls.Link
 import views.{Fixture, GenericTestHelper}
 
 class employments_mainSpec extends GenericTestHelper with MustMatchers {
@@ -52,7 +53,17 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       val tableRowPay = doc.select(".employment-table tbody tr").get(0)
 
       tableRowPay.text must include(employments.head.taxablePayTotal.get.toString())
+    }
 
+    "include sidebar links" in new ViewFixture {
+      val link = Link.toExternalPage(id=Some("sidebarLink"), url="http://www.google.com", value=Some("Back To Google")).toHtml
+      val employments = Seq()
+      val view = views.html.taxhistory.employments_main(nino, taxYear, employments, Some(link))
+
+      val sideBarLinks = doc.select("#sidebarLink")
+      sideBarLinks.size mustBe 1
+      val sideBarLink = sideBarLinks.get(0)
+      sideBarLink.text must include("Back To Google")
     }
   }
 
