@@ -20,9 +20,15 @@
 @import views.html.helpers.selectclientfields
 @import views.html.helpers.formErrorSummary
 
-@(sCForm: Form[SelectClient])(implicit request: Request[_], messages: Messages)
+@(sCForm: Form[SelectClient], sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
-@views.html.main_template(title = Messages("mtdfi.select_client.title"), bodyClasses = None) {
+@sidebarLinks = {
+<section id="sidebar-link-section" class="section section--blue-top">
+    @sideBarLink.map{link=>@link}
+</section>
+}
+
+@views.html.main_template(title = Messages("mtdfi.select_client.title"), bodyClasses = None, sidebarLinks = Some(sidebarLinks)) {
     <header class="page-header"><h1>@Messages("mtdfi.select_client.title")</h1></header>
     @form(routes.MainController.submitSelectClientPage()) {
         @if(sCForm.hasErrors) {

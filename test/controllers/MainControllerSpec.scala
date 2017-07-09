@@ -126,7 +126,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       //when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.get()(fakeRequest)
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.nonino.message"))
+      bodyOf(await(result)) should include(Messages("mtdfi.select_client.title"))
     }
 
     "return error page when connector not available" in new LocalSetup {
