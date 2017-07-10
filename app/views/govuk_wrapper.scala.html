@@ -48,7 +48,7 @@
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("Tax History"),
+      navTitle = Some("Agents for Individuals"),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))
@@ -68,9 +68,18 @@
 @footerTop = {}
 @footerLinks = {}
 
+@betaBanner = {
+    @uiLayouts.betaBanner(
+        userLoggedIn = true,
+        betaFeedbackUrl = "",
+        betaFeedbackUnauthenticatedUrl = "",
+        showFeedbackLinkInBetaBanner = false
+    )
+}
+
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = HtmlFormat.empty,
+      betaBanner = betaBanner,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
 }
@@ -90,7 +99,7 @@
       mainDataAttributes = mainDataAttributes,
       mainContentHeader = mainContentHeader,
       serviceInfo = serviceInfo,
-      getHelpForm = getHelpForm,
+      getHelpForm = HtmlFormat.empty,
       sidebar = sidebar)
 }
 

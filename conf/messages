@@ -1,15 +1,15 @@
 employmenthistory.taxyear =Tax year {0}
 employmenthistory.title = Employment History
-employmenthistory.unauthorised.title = Unauthorised
-employmenthistory.unauthorised.message = You are not authorised to view employment history information for this user.
-employmenthistory.unauthorised.linktext = Return to Agent account
-employmenthistory.notfound.title = No Employments Found
-employmenthistory.notfound.message = We have no record of any employments for this person.
-employmenthistory.notfound.linktext = Return to Select client
-employmenthistory.technicalerror.title = Technical Error
-employmenthistory.technicalerror.message = This service is currently experiencing a technical problem.
-employmenthistory.technicalerror.linktext = Return to Agent account
-employmenthistory.afihomepage.linktext = Return to Agent account
+employmenthistory.unauthorised.title =
+employmenthistory.unauthorised.message = You are not authorised to view this data.
+employmenthistory.unauthorised.linktext = Select a new client
+employmenthistory.notfound.title =
+employmenthistory.notfound.message = No data available for this National Insurance number.
+employmenthistory.notfound.linktext = Return to agent account
+employmenthistory.technicalerror.title = We’re experiencing technical difficulties
+employmenthistory.technicalerror.message = You can’t access this page right now.
+employmenthistory.technicalerror.linktext = Return to agent account
+employmenthistory.afihomepage.linktext = Return to agent account
 
 mtdfi.select_client.continue=Continue
 mtdfi.select_client.title=View your client’s employment history data
