@@ -101,15 +101,7 @@ class MainController @Inject()(
       }.recoverWith {
         case b: BadGatewayException => {
           Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException:"+b.getMessage)
-          val sidebarLink = Link.toInternalPage(
-            url=FrontendAppConfig.AfiHomePage,
-            value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
-          Future.successful(Ok(views.html.error_template(
-            messagesApi("employmenthistory.technicalerror.title"),
-            messagesApi("employmenthistory.technicalerror.title"),
-            messagesApi("employmenthistory.technicalerror.message"),
-            Some(sidebarLink),
-            headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO"))
+          Future.successful( handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
         }
         case m: MissingBearerToken => {
           Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken:"+m.getMessage)
