@@ -26,15 +26,13 @@
  </section>
 }
 
-@contentHeader = {
-  <h1 id="error-heading">@heading</h1>
-}
 @mainContent = {
+  <h1 id="error-heading">@heading</h1>
   <p id="error-message">@message</p>
 }
 
 @views.html.main_template(title = pageTitle,
                           bodyClasses = None,
                           sidebarLinks = Some(sidebarLinks),
-                          contentHeader = Some(contentHeader),
+                          contentHeader = None,
                           headerNavLink = headerNavLink){@mainContent}

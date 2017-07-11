@@ -50,16 +50,24 @@
     </tr>
    </thead>
    <tbody>
-    <tr>
-     <td>Pay:</td>
-     <td></td>
-     <td class="numeric">@Currency(employment.taxablePayTotal.getOrElse(0))</td>
-    </tr>
-    <tr>
-     <td>Tax:</td>
-     <td></td>
-     <td class="numeric">@Currency(employment.taxTotal.getOrElse(0))</td>
-    </tr>
+   @if(employment.taxablePayTotal.isDefined){
+     <tr>
+      <td>Taxable pay:</td>
+      <td></td>
+      <td class="numeric">@Currency(employment.taxablePayTotal.getOrElse(0))</td>
+     </tr>
+     <tr>
+      <td>Tax:</td>
+      <td></td>
+      <td class="numeric">@Currency(employment.taxTotal.getOrElse(0))</td>
+     </tr>
+   } else {
+   <tr>
+    <td>@Messages("employmenthistory.nopaydata")</td>
+    <td></td>
+    <td></td>
+   </tr>
+   }
    </tbody>
   </table>
  }

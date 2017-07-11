@@ -20,7 +20,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
-import org.mockito.Matchers.{eq ⇒ meq, _}
+import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar
 import play.api.Application
@@ -36,6 +36,7 @@ import models.taxhistory.Employment
 import org.mockito.Matchers
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
+import play.mvc.Http.Context
 
 import scala.concurrent.Future
 
@@ -86,7 +87,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     }
   }
 
-  "GET /tax-history-frontend" should {
+  "GET /tax-history" should {
 
     "return 200" in new LocalSetup {
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
@@ -149,6 +150,13 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
         .withFormUrlEncodedBody(invalidSelectClientForm: _*))
 
       status(result) shouldBe Status.BAD_REQUEST
+    }
+  }
+
+  "GET /tax-history/logout" should {
+    "redirect to gg and clear session data" in new LocalSetup{
+      val result = controller.logout()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.SEE_OTHER
     }
   }
 }
