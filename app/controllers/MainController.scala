@@ -73,7 +73,7 @@ class MainController @Inject()(
               historyResponse => historyResponse.status match {
                 case OK => {
                   val taxHistory = historyResponse.json.as[Seq[Employment]]
-                  val sidebarLink = Link.toExternalPage(
+                  val sidebarLink = Link.toInternalPage(
                     url=FrontendAppConfig.AfiHomePage,
                     value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
                   Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
@@ -92,7 +92,7 @@ class MainController @Inject()(
             }
           case _ =>
             Logger.warn("No nino supplied.")
-            val sidebarLink = Link.toExternalPage(
+            val sidebarLink = Link.toInternalPage(
               url=FrontendAppConfig.AfiHomePage,
               value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
             Future.successful(Ok(views.html.select_client(selectClientForm, Some(sidebarLink),
@@ -101,7 +101,7 @@ class MainController @Inject()(
       }.recoverWith {
         case b: BadGatewayException => {
           Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException:"+b.getMessage)
-          val sidebarLink = Link.toExternalPage(
+          val sidebarLink = Link.toInternalPage(
             url=FrontendAppConfig.AfiHomePage,
             value = Some(messagesApi("employmenthistory.technicalerror.linktext"))).toHtml
           Future.successful(Ok(views.html.error_template(
@@ -140,7 +140,7 @@ class MainController @Inject()(
       case Some(affinityG) ~ allEnrols ⇒
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
           case (`isAnAgent`, Some(_)) => {
-            val sidebarLink = Link.toExternalPage(
+            val sidebarLink = Link.toInternalPage(
               url=FrontendAppConfig.AfiHomePage,
               value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
             Future.successful(Ok(select_client(selectClientForm,
@@ -161,7 +161,7 @@ class MainController @Inject()(
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        val sidebarLink = Link.toExternalPage(
+        val sidebarLink = Link.toInternalPage(
           url=FrontendAppConfig.AfiHomePage,
           value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
         Future.successful(BadRequest(select_client(formWithErrors,
