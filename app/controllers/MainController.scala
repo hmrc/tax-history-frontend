@@ -124,7 +124,8 @@ class MainController @Inject()(
       if(nino.isDefined) nino.getOrElse("") else messagesApi(s"employmenthistory.${message}.title"),
       messagesApi(s"employmenthistory.${message}.message"),
       Some(sidebarLink),
-      headerNavLink = Some(logoutLink))).removingFromSession("USER_NINO")
+      headerNavLink = Some(logoutLink),
+      gaEventId = Some(message))).removingFromSession("USER_NINO")
   }
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>

@@ -18,7 +18,8 @@
  heading: String,
  message: String,
  sidebarLink: Option[Html]=None,
- headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+ headerNavLink: Option[Html] = None,
+ gaEventId:Option[String]=None)(implicit request: Request[_], messages: Messages)
 
 @sidebarLinks = {
  <section id="sidebar-link-section" class="section section--blue-top">
@@ -30,6 +31,11 @@
   <h1 id="error-heading">@heading</h1>
   <p id="error-message">@message</p>
 }
+
+@analyticsAdditionalJs = {
+ga('send', { hitType: 'event', eventCategory: '@gaEventId', eventAction: 'accessed', eventLabel: 'N/A'});
+}
+
 
 @views.html.main_template(title = pageTitle,
                           bodyClasses = None,
