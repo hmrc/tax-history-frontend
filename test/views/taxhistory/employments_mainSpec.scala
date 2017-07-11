@@ -55,6 +55,16 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       tableRowPay.text must include(employments.head.taxablePayTotal.get.toString())
     }
 
+    "allow partial employment top be displayed" in new ViewFixture {
+
+      val employments = Seq(Employment("AA12341234", "Test Employer Name", None, None, None, None))
+      val view = views.html.taxhistory.employments_main(nino, taxYear, employments)
+
+      val tableRowPay = doc.select(".employment-table tbody tr").get(0)
+
+      tableRowPay.text must include(messagesApi("employmenthistory.nopaydata"))
+    }
+
     "include sidebar links" in new ViewFixture {
       val link = Link.toExternalPage(id=Some("sidebarLink"), url="http://www.google.com", value=Some("Back To Google")).toHtml
       val employments = Seq()

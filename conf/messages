@@ -11,6 +11,8 @@ employmenthistory.technicalerror.message = You can’t access this page right no
 employmenthistory.technicalerror.linktext = Return to agent account
 employmenthistory.afihomepage.linktext = Return to agent account
 
+employmenthistory.nopaydata = No data available
+
 mtdfi.select_client.continue=Continue
 mtdfi.select_client.title=View your client’s employment history data
 mtdfi.select_client.form.title=Enter a National Insurance number
