@@ -1,4 +1,4 @@
-GET         /assets/*file                           @controllers.AssetsController.at(path="/public", file)
+GET         /assets/*file                           @controllers.Assets.at(path="/public", file)
 GET         /tax-history                            @controllers.MainController.get
 GET         /tax-history/logout                     @controllers.MainController.logout()
 GET         /tax-history/agent/select-client        @controllers.MainController.getSelectClientPage()
