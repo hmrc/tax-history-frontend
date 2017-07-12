@@ -28,9 +28,14 @@ import play.filters.csrf.{CSRFConfigProvider, CSRFFilter}
 trait GenericTestHelper extends PlaySpec with OneAppPerSuite with MockitoSugar {
 
   protected val bindModules: Seq[GuiceableModule] = Seq()
+  private val additionalConfig = Map(
+    "google-analytics.host" -> "host",
+    "google-analytics.token" -> "aToken")
+
+  import play.api.inject.guice.GuiceApplicationBuilder
 
 
-  implicit override lazy val app: Application = new GuiceApplicationBuilder()
+  implicit override lazy val app: Application = new GuiceApplicationBuilder().configure(additionalConfig)
     .bindings(bindModules:_*).in(Mode.Test)
     .build()
 
