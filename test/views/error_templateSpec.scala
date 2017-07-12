@@ -32,7 +32,7 @@ class error_templateSpec extends GenericTestHelper with MustMatchers {
 
   "error_template view" must {
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.error_template(titleText, headingText,messageText,gaEventId=Some("TESTEVENT"))
+      val view = views.html.error_template(titleText, headingText,messageText)
 
       doc.title must be(titleText)
       val foundHeading = doc.body().select("#error-heading")
