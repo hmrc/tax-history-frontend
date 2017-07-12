@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-
-
 td.numeric,
 th.numeric {
   text-align: right;
 }
 
 #wrapper {
-  text-align: left !important;
+  text-align: left;
 }
