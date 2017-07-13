@@ -31,16 +31,12 @@
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 
-@styles = {
-<link href='@routes.Assets.at("stylesheets/th.css")' rel="stylesheet"/>
-
-}
-
 @head = {
     @uiLayouts.head(
-      linkElem = Some(styles),
+      linkElem = None,
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
+    <link href='@routes.Assets.at("stylesheets/th.css")' rel="stylesheet"/>
 }
 
 @headerNavLinks = {
