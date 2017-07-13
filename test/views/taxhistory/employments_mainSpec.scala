@@ -43,7 +43,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       heading.html must be(nino)
       doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+"/"+(taxYear+1)))
       doc.select("script").toString contains
-        ("ga('send', { hitType: 'event', eventCategory: 'TaxHistory', eventAction: 'EmploymentDetails', eventLabel: 'N/A'}") mustBe true
+        ("ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}") mustBe true
     }
 
     "include employment breakdown" in new ViewFixture {

@@ -34,7 +34,7 @@
 
 @analyticsAdditionalJs = {
     @gaEventId.fold(HtmlFormat.empty){ eventId =>
-        ga('send', { hitType: 'event', eventCategory: 'TaxHistory', eventAction: '@eventId', eventLabel: 'N/A'});
+        ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: '@eventId'});
     }
 
 }

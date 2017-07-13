@@ -68,7 +68,7 @@
       analyticsHost = appConfig.analyticsHost,
       ssoUrl = None,
       scriptElem = scriptElem,
-      gaCalls = Some(gaCalls))
+      gaCalls = analyticsAdditionalJs.map{ga => gaCalls})
 }
 
 @footerTop = {}
