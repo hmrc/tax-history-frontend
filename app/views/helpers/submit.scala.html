@@ -24,7 +24,7 @@
     }
     a.toVector
 }) { buttonArgs =>
-<div class="form-field form-field--submit@if(argsMap.get('_modifierClass).isDefined){ @argsMap.get('_modifierClass)}">
+<div class="form-field @if(argsMap.get('_modifierClass).isDefined){ @argsMap.get('_modifierClass)}">
     @button(buttonArgs: _*)(content)
 </div>
 }

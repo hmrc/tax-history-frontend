@@ -21,14 +21,9 @@
  headerNavLink: Option[Html] = None,
  gaEventId:Option[String]=None)(implicit request: Request[_], messages: Messages)
 
-@sidebarLinks = {
- <section id="sidebar-link-section" class="section section--blue-top">
-   @sidebarLink.map{link=>@link}
- </section>
-}
 
 @mainContent = {
-  <h1 id="error-heading">@heading</h1>
+  <h1 class="heading-xlarge" id="error-heading">@heading</h1>
   <p id="error-message">@message</p>
 }
 
@@ -36,13 +31,14 @@
     @gaEventId.fold(HtmlFormat.empty){ eventId =>
         ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: '@eventId'});
     }
-
 }
-
 
 @views.html.main_template(title = pageTitle,
                           bodyClasses = None,
-                          sidebarLinks = Some(sidebarLinks),
+                          sidebarLinks =None,
                           contentHeader = None,
                           headerNavLink = headerNavLink,
-                          analyticsAdditionalJs = Some(analyticsAdditionalJs)){@mainContent}
+                          analyticsAdditionalJs = Some(analyticsAdditionalJs)){
+    @mainContent
+    @sidebarLink.map{link=>@link}
+}

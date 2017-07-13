@@ -31,6 +31,7 @@
 }
 <div@if(wrapperClass.nonEmpty){ class="@wrapperClass"}>
     @labelWrap('labelText -> argsMap.getOrElse('label, ""), 'for -> elements.field.name, '_modifierClass -> argsMap.get('_labelClass)){
+}
         @if(argsMap.get('hint).isDefined) {<div class="form-hint form-hint--small">@argsMap.get('hint)</div>}
 
         <input type="text"@if(inputClass.nonEmpty){ class="@inputClass" } name="@elements.field.name" id="@elements.field.name" value="@value"
@@ -50,5 +51,5 @@
                 }
             </datalist>
         }
-    }
+
 </div>

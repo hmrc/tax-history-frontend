@@ -121,8 +121,8 @@ class MainController @Inject()(
       value = Some(messagesApi(s"employmenthistory.${message}.linktext"))).toHtml
     Ok(views.html.error_template(
       messagesApi(s"employmenthistory.${message}.title"),
-      if(nino.isDefined) nino.getOrElse("") else messagesApi(s"employmenthistory.${message}.title"),
-      messagesApi(s"employmenthistory.${message}.message"),
+      if(nino.isDefined) messagesApi(s"employmenthistory.${message}.header", nino.getOrElse("")) else messagesApi(s"employmenthistory.${message}.header"),
+      "",
       Some(sidebarLink),
       headerNavLink = Some(logoutLink),
       gaEventId = Some(message))).removingFromSession("USER_NINO")
