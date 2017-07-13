@@ -32,7 +32,7 @@ class error_templateSpec extends GenericTestHelper with MustMatchers {
 
   "error_template view" must {
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.error_template(titleText, headingText,messageText,gaEventId = Some("GA_EVENT"))
+      val view = views.html.error_template(titleText, headingText,messageText,gaEventId = Some("ErrorPage"))
 
       doc.title must be(titleText)
       val foundHeading = doc.body().select("#error-heading")
@@ -42,7 +42,7 @@ class error_templateSpec extends GenericTestHelper with MustMatchers {
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
       doc.select("script").toString contains
-      ("ga('send', { hitType: 'event', eventCategory: 'GA_EVENT', eventAction: 'ErrorPage', eventLabel: 'N/A'})") mustBe true
+      ("ga('send', { hitType: 'event', eventCategory: 'TaxHistory', eventAction: 'ErrorPage', eventLabel: 'N/A'})") mustBe true
 
     }
 
