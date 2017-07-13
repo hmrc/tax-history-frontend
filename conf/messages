@@ -1,9 +1,9 @@
 employmenthistory.taxyear =Tax year {0}
-employmenthistory.title = Client employment PAYE data
+employmenthistory.title = Client PAYE data
 employmenthistory.unauthorised.title = You are not authorised to view this data
 employmenthistory.unauthorised.message = You are not authorised to view this data.
 employmenthistory.unauthorised.linktext = Select a new client
-employmenthistory.notfound.title = Client employment PAYE data
+employmenthistory.notfound.title = Client PAYE data
 employmenthistory.notfound.message = No data available for this National Insurance number.
 employmenthistory.notfound.linktext = Return to agent account
 employmenthistory.technicalerror.title = Service unavailable
@@ -13,7 +13,7 @@ employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
 
 mtdfi.select_client.continue=Continue
-mtdfi.select_client.title=View your client’s employment PAYE data
+mtdfi.select_client.title=View your client’s PAYE data
 mtdfi.select_client.form.title=Enter a National Insurance number
 mtdfi.select_client.clients.nino=Client National Insurance number
 mtdfi.select_client.nino.hint=For example, ‘QQ123456C’.
