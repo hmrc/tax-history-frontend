@@ -53,14 +53,18 @@
 
 @afterHeader = {}
 
+@gaCalls(analyticsHost: String, token: String) = {
+    ga('create', '@token', '@analyticsHost');
+    @analyticsAdditionalJs
+}
+
 @bodyEnd = {
     @uiLayouts.footer(
       analyticsToken = Some(appConfig.analyticsToken),
       analyticsHost = appConfig.analyticsHost,
       ssoUrl = None,
       scriptElem = scriptElem,
-      gaCalls = None,
-      analyticsAdditionalJs = analyticsAdditionalJs)
+      gaCalls = Some(gaCalls))
 }
 
 @footerTop = {}

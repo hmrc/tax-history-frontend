@@ -33,7 +33,10 @@
 }
 
 @analyticsAdditionalJs = {
-ga('send', { hitType: 'event', eventCategory: 'TEST', eventAction: 'errorPage', eventLabel: 'N/A'});
+    @gaEventId.fold(HtmlFormat.empty){ eventId =>
+        ga('send', { hitType: 'event', eventCategory: '@eventId', eventAction: 'ErrorPage', eventLabel: 'N/A'});
+    }
+
 }
 
 

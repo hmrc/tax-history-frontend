@@ -30,10 +30,15 @@
 </section>
 }
 
+@analyticsAdditionalJs = {
+    ga('send', { hitType: 'event', eventCategory: 'SelectClientPage', eventAction: 'SelectClientPage', eventLabel: 'N/A'});
+}
+
 @views.html.main_template(title = Messages("mtdfi.select_client.title"),
                           bodyClasses = None,
                           sidebarLinks = Some(sidebarLinks),
-                          headerNavLink = headerNavLink) {
+                          headerNavLink = headerNavLink,
+                          analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
     <header class="page-header"><h1>@Messages("mtdfi.select_client.title")</h1></header>
     @form(routes.MainController.submitSelectClientPage()) {
         @if(sCForm.hasErrors) {

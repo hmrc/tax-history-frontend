@@ -30,12 +30,16 @@
      </section>
 }
 
+@analyticsAdditionalJs = {
+   ga('send', { hitType: 'event', eventCategory: 'TaxHistoryPage', eventAction: 'TaxHistoryPage', eventLabel: 'N/A'});
+}
 
 
 @views.html.main_template(title = Messages("employmenthistory.title"),
                           bodyClasses = None,
                           sidebarLinks = Some(sidebarLinks),
-                          headerNavLink = headerNavLink) {
+                          headerNavLink = headerNavLink,
+                          analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
 <h1>@nino</h1>
 <h2 id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear/${taxYear+1}")</h2>
 

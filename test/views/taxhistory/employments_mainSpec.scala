@@ -42,7 +42,8 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       val title = Messages("employmenthistory.title")
       heading.html must be(nino)
       doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+"/"+(taxYear+1)))
-
+      doc.select("script").toString contains
+        ("ga('send', { hitType: 'event', eventCategory: 'TaxHistoryPage', eventAction: 'TaxHistoryPage', eventLabel: 'N/A'}") mustBe true
     }
 
     "include employment breakdown" in new ViewFixture {
