@@ -24,28 +24,27 @@
     sideBarLink: Option[Html] = None,
     headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
-@sidebarLinks = {
-<section id="sidebar-link-section" class="section section--blue-top">
-    @sideBarLink.map{link=>@link}
-</section>
-}
-
 
 
 @views.html.main_template(title = Messages("mtdfi.select_client.title"),
                           bodyClasses = None,
-                          sidebarLinks = Some(sidebarLinks),
+                          sidebarLinks = None,
                           headerNavLink = headerNavLink) {
-    <header class="page-header"><h1>@Messages("mtdfi.select_client.title")</h1></header>
-    @form(routes.MainController.submitSelectClientPage()) {
-        @if(sCForm.hasErrors) {
-            @formErrorSummary(Messages("mtdfi.select_client.form.title"), sCForm, Seq.empty)
+    <header class="page-header"><h1 class="heading-xlarge">@Messages("mtdfi.select_client.title")</h1></header>
+    <section class="section" >
+        @form(routes.MainController.submitSelectClientPage()) {
+            @if(sCForm.hasErrors) {
+                @formErrorSummary(Messages("mtdfi.select_client.form.title"), sCForm, Seq.empty)
+            }
+            <fieldset class="form-field-group">
+            @selectclientfields(sCForm("clientId"))
+            </fieldset>
+            @submit('id -> "continueButton") {
+                @Messages("mtdfi.select_client.continue")
+            }
         }
-        <fieldset class="form-field-group">
-        @selectclientfields(sCForm("clientId"))
-        </fieldset>
-        @submit('id -> "continueButton") {
-            @Messages("mtdfi.select_client.continue")
-        }
-    }
+    </section>
+<div class="section">
+    @sideBarLink.map{link=>@link}
+</div>
 }

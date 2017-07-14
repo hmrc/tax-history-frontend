@@ -24,12 +24,6 @@
  headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 
-@sidebarLinks = {
-    <section id="sidebar-link-section" class="section section--blue-top">
-     @sideBarLink.map{link=>@link}
-     </section>
-}
-
 @analyticsAdditionalJs = {
    ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'});
 }
@@ -37,43 +31,50 @@
 
 @views.html.main_template(title = Messages("employmenthistory.title"),
                           bodyClasses = None,
-                          sidebarLinks = Some(sidebarLinks),
+                          sidebarLinks = None,
                           headerNavLink = headerNavLink,
                           analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
-<h1>@nino</h1>
-<h2 id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear/${taxYear+1}")</h2>
+<h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
+<h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
  @employments.map { employment =>
 
-  <table class="employment-table">
-   <thead>
-    <tr>
-     <th style="width:50%;">@employment.employerName</th>
-     <th style="width:30%;text-align:right;border-bottom: 0px">PAYE ref:</th>
-     <th style="width:20%;text-align:right;border-bottom: 0px;font-weight:normal">@employment.payeReference</th>
-    </tr>
-   </thead>
-   <tbody>
-   @if(employment.taxablePayTotal.isDefined){
-     <tr>
-      <td>Taxable pay:</td>
-      <td></td>
-      <td class="numeric">@Currency(employment.taxablePayTotal.getOrElse(0))</td>
-     </tr>
-     <tr>
-      <td>Tax:</td>
-      <td></td>
-      <td class="numeric">@Currency(employment.taxTotal.getOrElse(0))</td>
-     </tr>
-   } else {
+<table class="employment-table">
+ <tbody>
+  <tr>
+   <th>Organisation name</th>
+   <td>@employment.employerName</td>
+  </tr>
+  <tr>
+   <th>PAYE reference</th>
+   <td>PAYE ref @employment.payeReference</td>
+  </tr>
    <tr>
-    <td>@Messages("employmenthistory.nopaydata")</td>
-    <td></td>
-    <td></td>
+    <th>Taxable pay</th>
+    <td>
+    @if(employment.taxablePayTotal.isDefined){
+     @Currency(employment.taxablePayTotal.getOrElse(0))
+    } else {
+     @Messages("employmenthistory.nopaydata")
+    }
+    </td>
    </tr>
-   }
-   </tbody>
-  </table>
+   <tr>
+    <th>Income tax</th>
+    <td>
+     @if(employment.taxTotal.isDefined){
+      @Currency(employment.taxTotal.getOrElse(0))
+     } else {
+      @Messages("employmenthistory.nopaydata")
+     }
+    </td>
+   </tr>
+ </tbody>
+</table>
+
  }
+
+@sideBarLink.map{link=>@link}
+
 }
 
