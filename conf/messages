@@ -1,10 +1,10 @@
 employmenthistory.taxyear =Tax year {0}
 employmenthistory.title = View client’s PAYE record
 employmenthistory.header = View {0}’s PAYE record
-employmenthistory.unauthorised.title = You are not authorised
+employmenthistory.unauthorised.title = You are not authorised to view this PAYE record
 employmenthistory.unauthorised.header = You are not authorised to view {0}’s PAYE record
 employmenthistory.unauthorised.linktext = Select a new client
-employmenthistory.notfound.title = No data available
+employmenthistory.notfound.title = No data available for this PAYE record
 employmenthistory.notfound.header = No data available for {0}’s PAYE record
 employmenthistory.notfound.linktext = Return to agent account
 employmenthistory.technicalerror.title = Sorry, there is a technical problem
