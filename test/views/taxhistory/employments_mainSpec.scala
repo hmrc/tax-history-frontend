@@ -40,8 +40,8 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       val view = views.html.taxhistory.employments_main( nino, taxYear, employments)
 
       val title = Messages("employmenthistory.title")
-      heading.html must be(nino)
-      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+"/"+(taxYear+1)))
+      heading.html must be(Messages("employmenthistory.header",nino))
+      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
       doc.select("script").toString contains
         ("ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}") mustBe true
     }
@@ -51,7 +51,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       val employments = Seq(Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))
       val view = views.html.taxhistory.employments_main(nino, taxYear, employments)
 
-      val tableRowPay = doc.select(".employment-table tbody tr").get(0)
+      val tableRowPay = doc.select(".employment-table tbody tr").get(2)
 
       tableRowPay.text must include(employments.head.taxablePayTotal.get.toString())
     }
@@ -61,9 +61,10 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       val employments = Seq(Employment("AA12341234", "Test Employer Name", None, None, None, None))
       val view = views.html.taxhistory.employments_main(nino, taxYear, employments)
 
-      val tableRowPay = doc.select(".employment-table tbody tr").get(0)
-
+      val tableRowPay = doc.select(".employment-table tbody tr").get(2)
       tableRowPay.text must include(messagesApi("employmenthistory.nopaydata"))
+      val tableRowTax = doc.select(".employment-table tbody tr").get(3)
+      tableRowTax.text must include(messagesApi("employmenthistory.nopaydata"))
     }
 
     "include sidebar links" in new ViewFixture {

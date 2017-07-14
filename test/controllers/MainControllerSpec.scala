@@ -100,7 +100,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson("[]")))))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.message").toString)
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", "AA000003A").toString)
     }
 
     "show not authorised error page when 401 returned from connector" in new LocalSetup {
@@ -109,7 +109,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,Some(Json.toJson("{Message:Unauthorised}")))))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.message"))
+      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", "AA000003A"))
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new LocalSetup {
@@ -118,7 +118,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.message"))
+      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
 
     "show technical error page when no nino has been set in session" in new LocalSetup {
@@ -136,7 +136,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
       val result = controller.get()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.message"))
+      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
 
     "redirect to gg when not logged in" in new LocalSetup {
