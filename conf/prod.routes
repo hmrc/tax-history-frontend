@@ -1,5 +1,5 @@
 GET         /assets/*file                           @controllers.Assets.at(path="/public", file)
-GET         /tax-history                            @controllers.MainController.get
+GET         /tax-history                            @controllers.MainController.getTaxHistory()
 GET         /tax-history/logout                     @controllers.MainController.logout()
 GET         /tax-history/agent/select-client        @controllers.MainController.getSelectClientPage()
 POST        /tax-history/agent/select-client        @controllers.MainController.submitSelectClientPage()
