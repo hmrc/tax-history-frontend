@@ -42,7 +42,7 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with Redirec
   lazy val affinityGroupAllEnrolls = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment = Enrolment("HMRC-AS-AGENT")
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)
-  val isAnAgent = true
+  val isAnAgent:Boolean  = true
   val isAuthorisedForPAYE = true
   val isNotAuthorisedForPAYE = false
 

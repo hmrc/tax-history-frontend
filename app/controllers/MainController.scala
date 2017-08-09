@@ -24,15 +24,15 @@ import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
 import models.taxhistory.Employment
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc._
+import play.api.mvc.{AnyContent, _}
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.{~, _}
 import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.BadGatewayException
+import uk.gov.hmrc.play.http.{BadGatewayException, HeaderCarrier}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 import views.html.select_client
@@ -62,56 +62,68 @@ class MainController @Inject()(
     }
   }
 
-  def get() = Action.async {
+  def getTaxHistory() = Action.async {
     implicit request => {
       val nino = request.session.get("USER_NINO").map(Nino(_))
-      authorised(Enrolment("HMRC-AS-AGENT") and AuthProviders(GovernmentGateway)) {
-        val cy1 = TaxYearResolver.currentTaxYear - 1
-        nino match {
-          case Some(nino) =>
-            taxHistoryConnector.getTaxHistory(nino, cy1) map {
-              historyResponse => historyResponse.status match {
-                case OK => {
-                  val taxHistory = historyResponse.json.as[Seq[Employment]]
-                  val sidebarLink = Link.toInternalPage(
-                    url=FrontendAppConfig.AfiHomePage,
-                    value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-                  Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
-                }
-                case NOT_FOUND => {
-                  handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))
-                 }
-                case UNAUTHORIZED => {
-                  handleHttpResponse("unauthorised",controllers.routes.MainController.getSelectClientPage().url,Some(nino.toString()))
-                }
-                case s => {
-                  Logger.warn("Error response returned with status:"+s)
-                  handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None)
-                }
-              }
+
+      authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+        case Some(affinityG) ~ allEnrols =>
+          (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
+            case (`isAnAgent`, Some(_)) => {
+              retrieveTaxHistoryData(nino)
             }
-          case _ =>
-            Logger.warn("No nino supplied.")
-            val sidebarLink = Link.toInternalPage(
-              url=FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Future.successful(Ok(views.html.select_client(selectClientForm, Some(sidebarLink),
-              headerNavLink=Some(logoutLink))))
-        }
+            case (`isAnAgent`, None) => redirectToSubPage
+            case _ => redirectToExitPage
+          }
+        case _ =>
+          redirectToExitPage
       }.recoverWith {
-        case b: BadGatewayException => {
-          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to BadGatewayException:"+b.getMessage)
-          Future.successful( handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
+          case b: BadGatewayException => {
+            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to BadGatewayException:${b.getMessage}")
+            Future.successful( handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
+          }
+          case m: MissingBearerToken => {
+            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to MissingBearerToken:${m.getMessage}")
+            Future.successful(ggSignInRedirect)
+          }
+          case e =>
+            Logger.warn("Exception thrown :" + e.getMessage)
+            Future.successful(ggSignInRedirect)
         }
-        case m: MissingBearerToken => {
-          Logger.warn(messagesApi("employmenthistory.technicalerror.message")+" : Due to MissingBearerToken:"+m.getMessage)
-          Future.successful(ggSignInRedirect)
-        }
-        case e =>
-          Logger.warn("Exception thrown :"+e.getMessage)
-          Future.successful(ggSignInRedirect)
-      }
     }
+  }
+
+  def retrieveTaxHistoryData(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
+      case Some(nino) =>
+        val cy1 = TaxYearResolver.currentTaxYear - 1
+        taxHistoryConnector.getTaxHistory(nino, cy1) map {
+          historyResponse => historyResponse.status match {
+            case OK => {
+              val taxHistory = historyResponse.json.as[Seq[Employment]]
+              val sidebarLink = Link.toInternalPage(
+                url=FrontendAppConfig.AfiHomePage,
+                value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+              Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
+            }
+            case NOT_FOUND => {
+              handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))
+            }
+            case UNAUTHORIZED => {
+              handleHttpResponse("unauthorised",controllers.routes.MainController.getSelectClientPage().url,Some(nino.toString()))
+            }
+            case s => {
+              Logger.warn("Error response returned with status:"+s)
+              handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None)
+            }
+          }
+        }
+      case _ =>
+        Logger.warn("No nino supplied.")
+        val sidebarLink = Link.toInternalPage(
+          url=FrontendAppConfig.AfiHomePage,
+          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+        Future.successful(Ok(views.html.select_client(selectClientForm, Some(sidebarLink),
+          headerNavLink=Some(logoutLink))))
   }
 
   private def handleHttpResponse(message:String,sideBarUrl:String,nino:Option[String])(implicit request:Request[_]) = {
@@ -130,7 +142,7 @@ class MainController @Inject()(
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-      case Some(affinityG) ~ allEnrols ⇒
+      case Some(affinityG) ~ allEnrols =>
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
           case (`isAnAgent`, Some(_)) => {
             val sidebarLink = Link.toInternalPage(
@@ -146,7 +158,7 @@ class MainController @Inject()(
       case _ =>
         redirectToExitPage
     } recover {
-      case e ⇒
+      case e =>
         handleFailure(e)
     }
   }
@@ -165,7 +177,7 @@ class MainController @Inject()(
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
           case Some(affinityG) ~ allEnrols ⇒
             (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.MainController.get())
+              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.MainController.getTaxHistory())
                 .addingToSession("USER_NINO" -> s"${validFormData.clientId}")
               case (`isAnAgent`, None) => redirectToSubPage
               case _ => redirectToExitPage
