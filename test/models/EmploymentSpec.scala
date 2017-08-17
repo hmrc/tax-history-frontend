@@ -16,7 +16,7 @@
 
 package models
 
-import models.taxhistory.Employment
+import models.taxhistory._
 import play.api.libs.json.Json
 import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.play.test.UnitSpec
@@ -29,19 +29,22 @@ class EmploymentSpec extends UnitSpec {
 
       val json = Json.parse(
         """{
-      "payeReference": "AA12341234",
-      "employerName": "Test Employer Name",
-      "taxablePayTotal": 25000.0,
-      "taxTotal": 2000.0,
-      "taxablePayEYU": 1000.0,
-      "taxEYU": 250.0
-    }""")
-
-      val testEmployment = Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))
-
-      Employment.formats.reads(json) shouldBe JsSuccess(testEmployment)
+           "employments":[{"payeReference":"AA12341234",
+                         "employerName":"Test Employer Name",
+                         "taxablePayTotal":25000,
+                         "taxTotal":2000,
+                         "taxablePayEYU":1000,
+                         "taxEYU":250,
+                         "companyBenefits":[{"typeDescription":"Benifit1","amount":1000},{"typeDescription":"Benifit2","amount":2000}]}],
+           "allowances":[{"typeDescription":"desc","amount":222}]
+        }""")
 
 
+      val testEmployment = Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
+        List(CompanyBenefit("Benifit1", 1000.00), CompanyBenefit("Benifit2", 2000.00)))
+      val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
+
+      PayAsYouEarnDetails.formats.reads(json) shouldBe JsSuccess(paye)
     }
   }
 

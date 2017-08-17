@@ -22,7 +22,7 @@ import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
-import models.taxhistory.Employment
+import models.taxhistory.{Employment, PayAsYouEarnDetails}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, _}
 import play.api.{Configuration, Environment, Logger}
@@ -93,13 +93,13 @@ class MainController @Inject()(
     }
   }
 
-  def retrieveTaxHistoryData(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
+  private def retrieveTaxHistoryData(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
       case Some(nino) =>
         val cy1 = TaxYearResolver.currentTaxYear - 1
         taxHistoryConnector.getTaxHistory(nino, cy1) map {
           historyResponse => historyResponse.status match {
             case OK => {
-              val taxHistory = historyResponse.json.as[Seq[Employment]]
+              val taxHistory = historyResponse.json.as[PayAsYouEarnDetails]
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml

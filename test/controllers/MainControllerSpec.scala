@@ -20,23 +20,21 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
+import models.taxhistory.Employment
+import org.mockito.Matchers
 import org.mockito.Matchers.{eq => meq, _}
-import org.mockito.Mockito.{reset, when}
+import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar
 import play.api.Application
 import play.api.http.Status
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
-import akka.actor.ActorSystem
-import models.taxhistory.Employment
-import org.mockito.Matchers
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.mvc.Http.Context
 
 import scala.concurrent.Future
 

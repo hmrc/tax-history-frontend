@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import models.taxhistory.Employment
+@import models.taxhistory.PayAsYouEarnDetails
 @import utils.Currency
 
 @(nino: String,
  taxYear: Int,
- employments: Seq[Employment],
+ payeDetails: PayAsYouEarnDetails,
  sideBarLink: Option[Html] = None,
  headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
@@ -37,7 +37,7 @@
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
- @employments.map { employment =>
+ @payeDetails.employments.map { employment =>
 
 <table class="employment-table">
  <tbody>
@@ -71,7 +71,6 @@
    </tr>
  </tbody>
 </table>
-
  }
 
 @sideBarLink.map{link=>@link}
