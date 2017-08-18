@@ -37,41 +37,87 @@
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
- @payeDetails.employments.map { employment =>
 
-<table class="employment-table">
- <tbody>
-  <tr>
-   <th>Organisation name</th>
-   <td>@employment.employerName</td>
-  </tr>
-  <tr>
-   <th>PAYE reference</th>
-   <td>@employment.payeReference</td>
-  </tr>
-   <tr>
-    <th>Taxable pay</th>
-    <td>
-    @if(employment.taxablePayTotal.isDefined){
-     @Currency(employment.taxablePayTotal.getOrElse(0))
-    } else {
-     @Messages("employmenthistory.nopaydata")
+
+@payeDetails.employments.map { employment =>
+    <table class="employment-table">
+        <tbody>
+        <tr>
+            <th>@Messages("lbl.organisation.name")</th>
+            <td>@employment.employerName</td>
+        </tr>
+        <tr>
+            <th>@Messages("lbl.paye.reference")</th>
+            <td>@employment.payeReference</td>
+        </tr>
+        <tr>
+            <th>@Messages("lbl.taxable.pay")</th>
+            <td>
+                @if(employment.taxablePayTotal.isDefined){
+                    @Currency(employment.taxablePayTotal.getOrElse(0))
+                } else {
+                    @Messages("employmenthistory.nopaydata")
+                }
+            </td>
+        </tr>
+        <tr>
+            <th>@Messages("lbl.income.tax")</th>
+            <td>
+                @if(employment.taxTotal.isDefined){
+                    @Currency(employment.taxTotal.getOrElse(0))
+                } else {
+                    @Messages("employmenthistory.nopaydata")
+                }
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+            <section>
+                <h3>@Messages("lbl.company.benefits")</h3>
+            </section>
+            <table>
+                <thead>
+                    <tr>
+                        <th>@Messages("lbl.company.benefits.desc")</th>
+                        <th>@Messages("lbl.company.benefits.amount")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @employment.companyBenefits.map {cb =>
+                <tr>
+                    <td>@cb.typeDescription</td>
+                    <td>@cb.amount</td>
+                </tr>
+                }
+                </tbody>
+
+            </table>
+
+}
+
+<section>
+    <h3>@Messages("lbl.allowance")</h3>
+</section>
+
+<table>
+    <thead>
+    <tr>
+        <th>@Messages("lbl.company.benefits.desc")</th>
+        <th>@Messages("lbl.company.benefits.amount")</th>
+    </tr>
+    </thead>
+    <tbody>
+    @payeDetails.allowances.map {allowance =>
+    <tr>
+        <td>@allowance.typeDescription</td>
+        <td>@allowance.amount</td>
+    </tr>
     }
-    </td>
-   </tr>
-   <tr>
-    <th>Income tax</th>
-    <td>
-     @if(employment.taxTotal.isDefined){
-      @Currency(employment.taxTotal.getOrElse(0))
-     } else {
-      @Messages("employmenthistory.nopaydata")
-     }
-    </td>
-   </tr>
- </tbody>
+    </tbody>
+
 </table>
- }
+
 
 @sideBarLink.map{link=>@link}
 

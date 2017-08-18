@@ -1,3 +1,15 @@
+################################### Generic Labels ###########################################
+lbl.organisation.name = Organisation name
+lbl.paye.reference = PAYE reference
+lbl.taxable.pay = Taxable pay
+lbl.income.tax = Income tax
+lbl.company.benefits = Company Benefits
+lbl.allowance = Allowances
+lbl.company.benefits.desc = Benefits
+lbl.company.benefits.amount = Amount
+
+
+################################## employmenthistory ##############################################
 employmenthistory.taxyear =Tax year {0}
 employmenthistory.title = View client’s PAYE record
 employmenthistory.header = View {0}’s PAYE record
@@ -13,6 +25,7 @@ employmenthistory.technicalerror.linktext = Return to agent account
 employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
 
+################################ Select Client ##############################################
 mtdfi.select_client.continue=Continue
 mtdfi.select_client.title=Enter a client’s National Insurance number
 mtdfi.select_client.form.title=Enter a National Insurance number
