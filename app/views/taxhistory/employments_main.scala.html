@@ -34,16 +34,17 @@
                           sidebarLinks = None,
                           headerNavLink = headerNavLink,
                           analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
+
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
-
-
 @payeDetails.employments.map { employment =>
+
     <table class="employment-table">
+        <h2 class="heading-medium heading--underlined"></h2>
         <tbody>
         <tr>
-            <th>@Messages("lbl.organisation.name")</th>
+            <th width="50%">@Messages("lbl.organisation.name")</th>
             <td>@employment.employerName</td>
         </tr>
         <tr>
@@ -73,37 +74,30 @@
         </tbody>
     </table>
 
-            <section>
-                <h3>@Messages("lbl.company.benefits")</h3>
-            </section>
-            <table>
-                <thead>
-                    <tr>
-                        <th>@Messages("lbl.company.benefits.desc")</th>
-                        <th>@Messages("lbl.company.benefits.amount")</th>
-                    </tr>
-                </thead>
-                <tbody>
-                @employment.companyBenefits.map {cb =>
-                <tr>
-                    <td>@cb.typeDescription</td>
-                    <td>@cb.amount</td>
-                </tr>
-                }
-                </tbody>
+    <table class="employment-table">
+        <thead>
+            <tr>
+                <th width="50%">@Messages("lbl.company.benefits")</th>
+                <th>@Messages("lbl.company.benefits.amount")</th>
+            </tr>
+        </thead>
+        <tbody>
+        @employment.companyBenefits.map {cb =>
+            <tr>
+                <td>@cb.typeDescription</td>
+                <td>@cb.amount</td>
+            </tr>
+        }
+        </tbody>
 
-            </table>
-
+    </table>
 }
 
-<section>
-    <h3>@Messages("lbl.allowance")</h3>
-</section>
-
-<table>
+<h2 class="heading-medium heading--underlined">@Messages("lbl.allowance")</h2>
+<table class="employment-table">
     <thead>
     <tr>
-        <th>@Messages("lbl.company.benefits.desc")</th>
+        <th width="50%">@Messages("lbl.allowance")</th>
         <th>@Messages("lbl.company.benefits.amount")</th>
     </tr>
     </thead>
@@ -117,7 +111,6 @@
     </tbody>
 
 </table>
-
 
 @sideBarLink.map{link=>@link}
 
