@@ -4,9 +4,9 @@ lbl.paye.reference = PAYE reference
 lbl.taxable.pay = Taxable pay
 lbl.income.tax = Income tax
 lbl.company.benefits = Company Benefits
-lbl.allowance = Allowances
+lbl.allowance = Allowance
 lbl.company.benefits.desc = Benefits
-lbl.company.benefits.amount = Amount
+lbl.amount = Amount
 
 
 ################################## employmenthistory ##############################################
@@ -24,6 +24,7 @@ employmenthistory.technicalerror.header = Sorry, there is a technical problem
 employmenthistory.technicalerror.linktext = Return to agent account
 employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
+employmenthistory.allowance.heading = Allowances
 
 ################################ Select Client ##############################################
 mtdfi.select_client.continue=Continue

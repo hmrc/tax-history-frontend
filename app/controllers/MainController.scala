@@ -93,6 +93,7 @@ class MainController @Inject()(
     }
   }
 
+  //TODO need to remove this code
   val testEmployment = Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
     List(CompanyBenefit("Benifit1", 1000.00), CompanyBenefit("Benifit2", 2000.00)))
   val paye = PayAsYouEarnDetails(List(testEmployment, testEmployment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))

@@ -73,44 +73,47 @@
         </tr>
         </tbody>
     </table>
+    @if(employment.companyBenefits.nonEmpty) {
+        <table>
+            <thead>
+                <tr>
+                    <th width="50%">@Messages("lbl.company.benefits")</th>
+                    <th>@Messages("lbl.amount")</th>
+                </tr>
+            </thead>
+            <tbody>
+            @employment.companyBenefits.map {cb =>
+                <tr>
+                    <td>@cb.typeDescription</td>
+                    <td>@cb.amount</td>
+                </tr>
+            }
+            </tbody>
 
-    <table class="employment-table">
+        </table>
+    }
+}
+
+@if(payeDetails.allowances.nonEmpty) {
+    <h2 class="heading-medium heading--underlined">@Messages("employmenthistory.allowance.heading")</h2>
+    <table>
         <thead>
-            <tr>
-                <th width="50%">@Messages("lbl.company.benefits")</th>
-                <th>@Messages("lbl.company.benefits.amount")</th>
-            </tr>
+        <tr>
+            <th width="50%">@Messages("lbl.allowance")</th>
+            <th>@Messages("lbl.amount")</th>
+        </tr>
         </thead>
         <tbody>
-        @employment.companyBenefits.map {cb =>
+        @payeDetails.allowances.map {allowance =>
             <tr>
-                <td>@cb.typeDescription</td>
-                <td>@cb.amount</td>
+                <td>@allowance.typeDescription</td>
+                <td>@allowance.amount</td>
             </tr>
         }
         </tbody>
 
     </table>
 }
-
-<h2 class="heading-medium heading--underlined">@Messages("lbl.allowance")</h2>
-<table class="employment-table">
-    <thead>
-    <tr>
-        <th width="50%">@Messages("lbl.allowance")</th>
-        <th>@Messages("lbl.company.benefits.amount")</th>
-    </tr>
-    </thead>
-    <tbody>
-    @payeDetails.allowances.map {allowance =>
-    <tr>
-        <td>@allowance.typeDescription</td>
-        <td>@allowance.amount</td>
-    </tr>
-    }
-    </tbody>
-
-</table>
 
 @sideBarLink.map{link=>@link}
 
