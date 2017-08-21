@@ -20,11 +20,34 @@ import play.api.libs.json.Json
 
 case class Employment(payeReference:String,
                       employerName:String,
-                      taxablePayTotal:Option[BigDecimal],
-                      taxTotal:Option[BigDecimal],
+                      taxablePayTotal:Option[BigDecimal] = None,
+                      taxTotal:Option[BigDecimal] = None,
                       taxablePayEYU:Option[BigDecimal] = None,
-                      taxEYU:Option[BigDecimal] = None)
+                      taxEYU:Option[BigDecimal] = None,
+                      companyBenefits: List[CompanyBenefit]=Nil)
+
+
+
+case class CompanyBenefit(typeDescription:String,amount:BigDecimal)
+
+
+object CompanyBenefit {
+  implicit val formats = Json.format[CompanyBenefit]
+}
+
 
 object Employment {
   implicit val formats = Json.format[Employment]
+}
+
+
+case class Allowance(typeDescription:String,amount:BigDecimal)
+
+object Allowance {
+  implicit val formats = Json.format[Allowance]
+}
+case class PayAsYouEarnDetails(employments: List[Employment],allowances: List[Allowance]=Nil)
+
+object PayAsYouEarnDetails {
+  implicit val formats = Json.format[PayAsYouEarnDetails]
 }
