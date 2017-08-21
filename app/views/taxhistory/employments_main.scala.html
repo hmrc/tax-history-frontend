@@ -15,11 +15,14 @@
  *@
 
 @import models.taxhistory.PayAsYouEarnDetails
+@import models.taxhistory.Employment
+@import models.taxhistory.Person
 @import utils.Currency
 
 @(nino: String,
  taxYear: Int,
  payeDetails: PayAsYouEarnDetails,
+ person: Option[Person],
  sideBarLink: Option[Html] = None,
  headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
@@ -36,8 +39,14 @@
                           analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
 
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
+
+@person.map { pson =>
+  <h2 class="heading-medium" id="name">@pson.firstName.getOrElse("") @pson.lastName.getOrElse("")</h2>
+}
+
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
+<<<<<<< HEAD
 @payeDetails.employments.map { employment =>
 
     <table class="employment-table">
@@ -89,7 +98,6 @@
                 </tr>
             }
             </tbody>
-
         </table>
     }
 }

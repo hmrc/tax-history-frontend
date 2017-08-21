@@ -19,9 +19,11 @@ package controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
-import connectors.TaxHistoryConnector
+
 import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails}
 import org.mockito.Matchers
+
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar
@@ -36,6 +38,13 @@ import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
 
+import akka.actor.ActorSystem
+import models.taxhistory.{Employment, Person}
+import org.mockito.Matchers
+import play.api.i18n.{Messages, MessagesApi}
+import play.api.libs.json.Json
+import play.mvc.Http.Context
+
 import scala.concurrent.Future
 
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
@@ -47,6 +56,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
     .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
+    .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
     .build()
 
   val invalidTestNINO = "9999999999999999"
@@ -73,12 +83,30 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
-      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
 
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val person = Some(Person(Some("Barry"),Some("Evans")))
       val c = injected[MainController]
+
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
+  trait NoCitizenDetails {
+
+    lazy val controller = {
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val c = injected[MainController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,None)))
       c
     }
   }
@@ -113,6 +141,11 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   "GET /tax-history" should {
     "return 200" in new LocalSetup {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.OK
+    }
+
+    "return 200 even when no citizen details available" in new NoCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
     }
