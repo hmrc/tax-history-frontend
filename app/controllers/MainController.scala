@@ -19,10 +19,10 @@ package controllers
 import javax.inject.Inject
 
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
-import connectors.TaxHistoryConnector
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
-import models.taxhistory.Employment
+import models.taxhistory.{Employment, Person}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, _}
 import play.api.{Configuration, Environment, Logger}
@@ -46,6 +46,7 @@ trait BaseController extends FrontendController with Actions with Redirects with
 class MainController @Inject()(
                                 val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
+                                val citizenDetailsConnector: CitizenDetailsConnector,
                                 override val authConnector: FrontendAuthConnector,
                                 override val config: Configuration,
                                 override val env: Environment,
@@ -70,7 +71,12 @@ class MainController @Inject()(
         case Some(affinityG) ~ allEnrols =>
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
             case (`isAnAgent`, Some(_)) => {
-              retrieveTaxHistoryData(nino)
+             for{person <- retrieveCitizenDetails(nino)
+                  taxHistoryResponse <- retrieveTaxHistoryData(nino,person)}
+              yield{
+                taxHistoryResponse
+              }
+
             }
             case (`isAnAgent`, None) => redirectToSubPage
             case _ => redirectToExitPage
@@ -93,7 +99,22 @@ class MainController @Inject()(
     }
   }
 
-  def retrieveTaxHistoryData(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
+  def retrieveCitizenDetails(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Option[Person]] = ninoField match {
+    case Some(nino) => {
+      citizenDetailsConnector.getPersonDetails(nino) map {
+        personResponse =>
+          personResponse.status match {
+            case OK => Some(personResponse.json.as[Person])
+            case _ => None
+          }
+      }
+    }.recoverWith {
+      case _ => Future.successful(None)
+    }
+    case _ => Future.successful(None)
+  }
+
+  def retrieveTaxHistoryData(ninoField:Option[Nino], person:Option[Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
       case Some(nino) =>
         val cy1 = TaxYearResolver.currentTaxYear - 1
         taxHistoryConnector.getTaxHistory(nino, cy1) map {
@@ -103,7 +124,7 @@ class MainController @Inject()(
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-              Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
+              Ok(views.html.taxhistory.employments_main(nino.nino, cy1, person, taxHistory, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
             }
             case NOT_FOUND => {
               handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))
@@ -191,5 +212,4 @@ class MainController @Inject()(
       }
     )
   }
-
 }
