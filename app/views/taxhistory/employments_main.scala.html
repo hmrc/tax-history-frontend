@@ -94,7 +94,7 @@
             @employment.companyBenefits.map {cb =>
                 <tr>
                     <td>@cb.typeDescription</td>
-                    <td>@cb.amount</td>
+                    <td>@Currency(cb.amount)</td>
                 </tr>
             }
             </tbody>
@@ -115,7 +115,7 @@
         @payeDetails.allowances.map {allowance =>
             <tr>
                 <td>@allowance.typeDescription</td>
-                <td>@allowance.amount</td>
+                <td>@Currency(allowance.amount)</td>
             </tr>
         }
         </tbody>
