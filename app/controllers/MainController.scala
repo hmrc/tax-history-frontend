@@ -105,7 +105,7 @@ class MainController @Inject()(
         taxHistoryConnector.getTaxHistory(nino, cy1) map {
           historyResponse => historyResponse.status match {
             case OK => {
-              val taxHistory = paye //historyResponse.json.as[PayAsYouEarnDetails]
+              val taxHistory = historyResponse.json.as[PayAsYouEarnDetails]
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml

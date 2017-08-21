@@ -20,7 +20,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.TaxHistoryConnector
-import models.taxhistory.Employment
+import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails}
 import org.mockito.Matchers
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.when
@@ -73,10 +73,12 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+
       val c = injected[MainController]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(employment))))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       c
     }
   }
@@ -85,10 +87,12 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+
       val c = injected[MainController]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(employment))))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       c
     }
   }
@@ -97,10 +101,12 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+
       val c = injected[MainController]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(Set()))))
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(employment))))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       c
     }
   }

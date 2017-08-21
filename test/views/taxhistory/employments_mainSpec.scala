@@ -19,7 +19,6 @@ package views.taxhistory
 import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails}
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.urls.Link
 import views.{Fixture, GenericTestHelper}
 
