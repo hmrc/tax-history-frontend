@@ -20,6 +20,8 @@ import play.api.libs.json.Json
 
 case class Employment(payeReference:String,
                       employerName:String,
+                      startDate:String,
+                      endDate:Option[String] = None,
                       taxablePayTotal:Option[BigDecimal] = None,
                       taxTotal:Option[BigDecimal] = None,
                       taxablePayEYU:Option[BigDecimal] = None,
