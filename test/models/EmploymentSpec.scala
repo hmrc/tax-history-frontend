@@ -31,6 +31,7 @@ class EmploymentSpec extends UnitSpec {
         """{
            "employments":[{"payeReference":"AA12341234",
                          "employerName":"Test Employer Name",
+                         "startDate":"21/01/2016",
                          "taxablePayTotal":25000,
                          "taxTotal":2000,
                          "taxablePayEYU":1000,
@@ -40,7 +41,7 @@ class EmploymentSpec extends UnitSpec {
         }""")
 
 
-      val testEmployment = Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
+      val testEmployment = Employment("AA12341234", "Test Employer Name", "21/01/2016", None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
         List(CompanyBenefit("Benifit1", 1000.00), CompanyBenefit("Benifit2", 2000.00)))
       val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
 

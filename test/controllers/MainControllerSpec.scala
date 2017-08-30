@@ -82,7 +82,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait LocalSetup {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
 
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
       val person = Some(Person(Some("Barry"),Some("Evans")))
@@ -99,7 +99,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait NoCitizenDetails {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
       val c = injected[MainController]
 
@@ -114,7 +114,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait NotAgentSetup {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
 
       val c = injected[MainController]
@@ -128,7 +128,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait NoEnrolmentsSetup {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)))
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
 
       val c = injected[MainController]
