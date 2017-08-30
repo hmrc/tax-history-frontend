@@ -16,12 +16,13 @@
 
 package models.taxhistory
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
 case class Employment(payeReference:String,
                       employerName:String,
-                      startDate:String,
-                      endDate:Option[String] = None,
+                      startDate:LocalDate,
+                      endDate:Option[LocalDate] = None,
                       taxablePayTotal:Option[BigDecimal] = None,
                       taxTotal:Option[BigDecimal] = None,
                       taxablePayEYU:Option[BigDecimal] = None,

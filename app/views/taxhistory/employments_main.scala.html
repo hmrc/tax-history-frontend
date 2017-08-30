@@ -57,13 +57,13 @@
         </tr>
         <tr>
             <th>@Messages("lbl.date.start")</th>
-            <td>@employment.startDate</td>
+            <td>@employment.startDate.toString("d MMMM yyyy")</td>
         </tr>
         <tr>
             <th>@Messages("lbl.date.end")</th>
             <td>
                 @if(employment.endDate.isDefined){
-                @employment.endDate.getOrElse("")
+                @employment.endDate.get.toString("d MMMM yyyy")
                 } else {
                 @Messages("employmenthistory.nopaydata")
                 }
