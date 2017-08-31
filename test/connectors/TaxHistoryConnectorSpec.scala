@@ -31,12 +31,14 @@ import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.http.{HttpGet, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
+import org.joda.time.LocalDate
 
 import scala.concurrent.Future
 
 class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   val http = mock[WSHttpT]
+  val startDate = new LocalDate("2016-01-21")
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
@@ -55,12 +57,12 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     "fetch tax history" in new LocalSetup {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", "21/01/2016", None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))))))))
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))))))))
 
       val result = await(connector.getTaxHistory(Nino("AA000000A"), 2017))
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", "21/01/2016", None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))))
+      result.json shouldBe Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0))))
 
     }
   }

@@ -16,13 +16,16 @@
 
 package views.taxhistory
 
-import models.taxhistory.{Allowance, CompanyBenefit, Employment,Person, PayAsYouEarnDetails}
+import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails, Person}
+import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import uk.gov.hmrc.urls.Link
 import views.{Fixture, GenericTestHelper}
 
 class employments_mainSpec extends GenericTestHelper with MustMatchers {
+
+  val startDate = new LocalDate("2016-01-21")
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
@@ -34,9 +37,9 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
   }
 
   "employments_main view" must {
-    val employments = List(Employment("AA12341234", "Test Employer Name", "21/01/2016", None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
+    val employments = List(Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
       List(CompanyBenefit("Benifit1", 1000.00), CompanyBenefit("Benifit2", 2000.00))),
-      Employment("AA111111", "Test Employer Name", "21/01/2016", None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
+      Employment("AA111111", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
         List(CompanyBenefit("Benifit2", 2000.00), CompanyBenefit("Benifit2", 2000.00))))
     val allowance = List(Allowance("desc", 222.00),Allowance("desc1", 333.00))
     val paye = PayAsYouEarnDetails(employments, allowance)
@@ -54,7 +57,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
 
     "include employment breakdown" in new ViewFixture {
 
-      val employments = Seq(Employment("AA12341234", "Test Employer Name", "21/01/2016", None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))
+      val employments = Seq(Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0)))
       val view = views.html.taxhistory.employments_main(nino, taxYear, paye, None)
 
       val tableRowPay = doc.select(".employment-table tbody tr").get(4)
@@ -72,7 +75,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
     "allow partial employment top be displayed" in new ViewFixture {
 
 
-      val employments = List(Employment("AA12341234", "Test Employer Name", "21/01/2016", None, None, None, None, None))
+      val employments = List(Employment("AA12341234", "Test Employer Name", startDate, None, None, None, None, None))
       val paye1 = PayAsYouEarnDetails(employments, List.empty)
 
       val view = views.html.taxhistory.employments_main(nino, taxYear, paye1, None)

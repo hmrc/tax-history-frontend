@@ -19,10 +19,8 @@ package controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
-
 import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails}
 import org.mockito.Matchers
-
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.when
@@ -37,9 +35,9 @@ import play.api.test.FakeRequest
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
-
 import akka.actor.ActorSystem
 import models.taxhistory.{Employment, Person}
+import org.joda.time.LocalDate
 import org.mockito.Matchers
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
@@ -60,6 +58,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     .build()
 
   val invalidTestNINO = "9999999999999999"
+  val startDate = new LocalDate("2016-01-21")
 
   val invalidSelectClientForm = Seq(
     "clientId" -> invalidTestNINO
@@ -82,7 +81,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait LocalSetup {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
 
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
       val person = Some(Person(Some("Barry"),Some("Evans")))
@@ -99,7 +98,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait NoCitizenDetails {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
       val c = injected[MainController]
 
@@ -114,7 +113,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait NotAgentSetup {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
 
       val c = injected[MainController]
@@ -128,7 +127,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
   trait NoEnrolmentsSetup {
 
     lazy val controller = {
-      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = "21/01/2016", endDate = None)
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
 
       val c = injected[MainController]
