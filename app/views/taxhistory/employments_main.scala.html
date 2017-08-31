@@ -93,8 +93,8 @@
             <tbody>
             @employment.earlierYearUpdates.map {cb =>
             <tr>
-                <td>@cb.taxablePayEYU</td>
-                <td>@cb.taxEYU</td>
+                <td>@Currency(cb.taxablePayEYU)</td>
+                <td>@Currency(cb.taxEYU)</td>
                 <td>@DateHelper.formatDate(cb.receivedDate)</td>
             </tr>
             }
