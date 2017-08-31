@@ -17,7 +17,7 @@
 @import models.taxhistory.PayAsYouEarnDetails
 @import models.taxhistory.Employment
 @import models.taxhistory.Person
-@import utils.Currency
+@import utils.{Currency, DateHelper}
 
 @(nino: String,
  taxYear: Int,
@@ -81,7 +81,26 @@
         </tr>
         </tbody>
     </table>
-
+    @if(employment.earlierYearUpdates.nonEmpty) {
+        <table>
+            <thead>
+            <tr>
+                <th width="50%">@Messages("employmenthistory.eyu.pay")</th>
+                <th>@Messages("employmenthistory.eyu.tax")</th>
+                <th>@Messages("employmenthistory.eyu.date.received")</th>
+            </tr>
+            </thead>
+            <tbody>
+            @employment.earlierYearUpdates.map {cb =>
+            <tr>
+                <td>@cb.taxablePayEYU</td>
+                <td>@cb.taxEYU</td>
+                <td>@DateHelper.formatDate(cb.receivedDate)</td>
+            </tr>
+            }
+            </tbody>
+        </table>
+    }
     @if(employment.companyBenefits.nonEmpty) {
         <table>
             <thead>
