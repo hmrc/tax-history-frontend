@@ -56,6 +56,20 @@
             <td>@employment.employerName</td>
         </tr>
         <tr>
+            <th>@Messages("lbl.date.start")</th>
+            <td>@employment.startDate.toString("d MMMM yyyy")</td>
+        </tr>
+        <tr>
+            <th>@Messages("lbl.date.end")</th>
+            <td>
+                @if(employment.endDate.isDefined){
+                @employment.endDate.get.toString("d MMMM yyyy")
+                } else {
+                @Messages("employmenthistory.nopaydata")
+                }
+            </td>
+        </tr>
+        <tr>
             <th>@Messages("lbl.paye.reference")</th>
             <td>@employment.payeReference</td>
         </tr>

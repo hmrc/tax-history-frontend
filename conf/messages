@@ -7,6 +7,8 @@ lbl.company.benefits = Company Benefits
 lbl.allowance = Allowance
 lbl.company.benefits.desc = Benefits
 lbl.amount = Amount
+lbl.date.start = Start date
+lbl.date.end = End date
 
 
 ################################## employmenthistory ##############################################

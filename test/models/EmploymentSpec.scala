@@ -17,12 +17,15 @@
 package models
 
 import models.taxhistory._
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import play.api.libs.json.JsSuccess
 import uk.gov.hmrc.play.test.UnitSpec
 
 
 class EmploymentSpec extends UnitSpec {
+
+  val startDate = new LocalDate("2016-01-21")
 
   "Employment" should {
     "deserialize from json correctly" in {
@@ -31,6 +34,7 @@ class EmploymentSpec extends UnitSpec {
         """{
            "employments":[{"payeReference":"AA12341234",
                          "employerName":"Test Employer Name",
+                         "startDate":"2016-01-21",
                          "taxablePayTotal":25000,
                          "taxTotal":2000,
                          "taxablePayEYU":1000,
@@ -40,7 +44,7 @@ class EmploymentSpec extends UnitSpec {
         }""")
 
 
-      val testEmployment = Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
+      val testEmployment = Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0), Some(1000.0), Some(250.0),
         List(CompanyBenefit("Benifit1", 1000.00), CompanyBenefit("Benifit2", 2000.00)))
       val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
 
