@@ -51,8 +51,12 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
       val view = views.html.taxhistory.employments_main(nino, taxYear, payeCompleteModel, None)
 
-      val tableRowPay = doc.select(".employment-table tbody tr").get(2)
+      val tableRowStartDate = doc.select(".employment-table tbody tr").get(1)
+      val tableRowEndDate = doc.select(".employment-table tbody tr").get(2)
+      val tableRowPay = doc.select(".employment-table tbody tr").get(4)
 
+      tableRowStartDate.text must include(employments.head.startDate.toString("d MMMM yyyy"))
+      tableRowEndDate.text must include(messagesApi("employmenthistory.nopaydata"))
       tableRowPay.text must include(employments.head.taxablePayTotal.get.toString())
       doc.getElementsMatchingOwnText(Messages("lbl.company.benefits")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe true
@@ -69,13 +73,18 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
     }
 
-    "allow partial employment top be displayed" in new ViewFixture {
+    "allow partial employment to be displayed" in new ViewFixture {
 
       val view = views.html.taxhistory.employments_main(nino, taxYear, payePartialModel, None)
+      val tableRowStartDate = doc.select(".employment-table tbody tr").get(1)
+      val tableRowEndDate = doc.select(".employment-table tbody tr").get(2)
+      val tableRowPay = doc.select(".employment-table tbody tr").get(4)
+      val tableRowTax = doc.select(".employment-table tbody tr").get(5)
 
-      val tableRowPay = doc.select(".employment-table tbody tr").get(2)
+      tableRowStartDate.text must include(payePartialModel.employments.head.startDate.toString("d MMMM yyyy"))
+      tableRowEndDate.text must include(payePartialModel.employments.head.endDate.get.toString("d MMMM yyyy"))
+
       tableRowPay.text must include(messagesApi("employmenthistory.nopaydata"))
-      val tableRowTax = doc.select(".employment-table tbody tr").get(3)
       tableRowTax.text must include(messagesApi("employmenthistory.nopaydata"))
       doc.getElementsMatchingOwnText(Messages("lbl.company.benefits")).hasText mustBe false
       doc.getElementsMatchingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe false
@@ -106,17 +115,21 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 }
 
 trait EmpConstants {
+
+  val startDate = new LocalDate("2016-01-21")
+  val endDate = new LocalDate("2016-11-01")
+
   val companyBenefit1 = CompanyBenefit("Benefit1", 1000.00)
   val companyBenefit2 = CompanyBenefit("Benefit2", 2000.00)
   val EarlierYearUpdateList = List(EarlierYearUpdate(BigDecimal.valueOf(-21.00), BigDecimal.valueOf(-4.56), LocalDate.parse("2017-08-30")))
-  val emp1 =  Employment("AA12341234", "Test Employer Name", Some(25000.0), Some(2000.0), EarlierYearUpdateList,
+  val emp1 =  Employment("AA12341234", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), EarlierYearUpdateList,
     List(companyBenefit1, companyBenefit2))
-  val emp2 = Employment("AA111111", "Test Employer Name", Some(25000.0), Some(2000.0), List.empty,
+  val emp2 = Employment("AA111111", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), List.empty,
     List(companyBenefit1, companyBenefit2))
   val employments = List(emp1,emp2)
   val allowances = List(Allowance("desc", 222.00),Allowance("desc1", 333.00))
   val payeCompleteModel = PayAsYouEarnDetails(employments, allowances)
 
-  val partialEmploymentList = List(Employment("AA12341234", "Test Employer Name", None, None))
+  val partialEmploymentList = List(Employment("AA12341234", "Test Employer Name", startDate, Some(endDate),None, None))
   val payePartialModel = PayAsYouEarnDetails(partialEmploymentList, List.empty)
 }
