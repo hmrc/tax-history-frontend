@@ -18,7 +18,15 @@ package models.taxhistory
 
 import play.api.libs.json.Json
 
-case class Person(firstName:Option[String], lastName:Option[String])
+case class Person(firstName:Option[String], lastName:Option[String]){
+  def getName = {
+    for {
+      f <- this.firstName
+      l <- this.lastName
+    }yield (f + " " + l)
+  }
+}
+
 object Person {
   implicit val formats = Json.format[Person]
 }

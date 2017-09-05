@@ -31,6 +31,12 @@
    ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'});
 }
 
+@getName=@{
+    person.fold(Messages("employmenthistory.missing.client.name")) {
+        p => p.getName.fold(Messages("employmenthistory.missing.client.name"))(name => name)
+    }
+}
+
 
 @views.html.main_template(title = Messages("employmenthistory.title"),
                           bodyClasses = None,
@@ -38,7 +44,7 @@
                           headerNavLink = headerNavLink,
                           analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
 
-<h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
+<h1 class="heading-xlarge" >@Messages("employmenthistory.header",getName)</h1>
 
 @person.map { pson =>
   <h2 class="heading-medium" id="name">@pson.firstName.getOrElse("") @pson.lastName.getOrElse("")</h2>
