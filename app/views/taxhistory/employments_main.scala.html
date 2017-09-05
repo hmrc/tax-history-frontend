@@ -46,9 +46,6 @@
 
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",getName)</h1>
 
-@person.map { pson =>
-  <h2 class="heading-medium" id="name">@pson.firstName.getOrElse("") @pson.lastName.getOrElse("")</h2>
-}
 
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 

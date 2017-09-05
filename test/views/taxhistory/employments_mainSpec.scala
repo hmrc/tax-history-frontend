@@ -122,10 +122,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
     "include persons first and last name" in new ViewFixture {
       val employments = Seq()
       val view = views.html.taxhistory.employments_main(nino, taxYear, paye, person)
-      val names = doc.select("#name")
-      names.size mustBe 1
-      val name = names.get(0)
-      name.text must include("James Dean")
+      heading.toString must include("James Dean")
 
     }
   }
