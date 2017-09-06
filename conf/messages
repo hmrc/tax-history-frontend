@@ -27,6 +27,9 @@ employmenthistory.technicalerror.linktext = Return to agent account
 employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
 employmenthistory.allowance.heading = Allowances
+employmenthistory.eyu.pay = EYU pay
+employmenthistory.eyu.tax = EYU tax
+employmenthistory.eyu.date.received = Date received
 
 ################################ Select Client ##############################################
 mtdfi.select_client.continue=Continue
