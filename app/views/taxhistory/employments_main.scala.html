@@ -32,8 +32,8 @@
 }
 
 @getName=@{
-    person.fold(Messages("employmenthistory.missing.client.name")) {
-        p => p.getName.fold(Messages("employmenthistory.missing.client.name"))(name => name)
+    person.fold(nino) {
+        p => p.getName.fold(nino)(name => name)
     }
 }
 

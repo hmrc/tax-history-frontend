@@ -50,7 +50,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers {
       val view = views.html.taxhistory.employments_main( nino, taxYear, paye, None)
 
       val title = Messages("employmenthistory.title")
-      heading.html must be(Messages("employmenthistory.header","client"))
+      heading.html must be(Messages("employmenthistory.header",nino))
       doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
       doc.select("script").toString contains
         "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
