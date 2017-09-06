@@ -19,9 +19,9 @@ package controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
-import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails}
-import org.mockito.Matchers
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import models.taxhistory.{Allowance, Employment, PayAsYouEarnDetails, Person}
+import org.mockito.Matchers
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito.when
 import org.scalatest.mock.MockitoSugar
@@ -32,16 +32,10 @@ import play.api.inject._
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import org.joda.time.LocalDate
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
-import akka.actor.ActorSystem
-import models.taxhistory.{Employment, Person}
-import org.joda.time.LocalDate
-import org.mockito.Matchers
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
-import play.mvc.Http.Context
 
 import scala.concurrent.Future
 
