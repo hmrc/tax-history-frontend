@@ -31,6 +31,12 @@
    ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'});
 }
 
+@getName=@{
+    person.fold(nino) {
+        p => p.getName.fold(nino)(name => name)
+    }
+}
+
 
 @views.html.main_template(title = Messages("employmenthistory.title"),
                           bodyClasses = None,
@@ -38,11 +44,8 @@
                           headerNavLink = headerNavLink,
                           analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
 
-<h1 class="heading-xlarge" >@Messages("employmenthistory.header",nino)</h1>
+<h1 class="heading-xlarge" >@Messages("employmenthistory.header",getName)</h1>
 
-@person.map { pson =>
-  <h2 class="heading-medium" id="name">@pson.firstName.getOrElse("") @pson.lastName.getOrElse("")</h2>
-}
 
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 

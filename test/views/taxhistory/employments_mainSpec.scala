@@ -47,6 +47,16 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
         "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
     }
 
+    "have correct title and heading for the person" in new ViewFixture {
+      val view = views.html.taxhistory.employments_main( nino, taxYear, paye, person)
+
+      val title = Messages("employmenthistory.title")
+      heading.html must be(Messages("employmenthistory.header","James Dean"))
+      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
+      doc.select("script").toString contains
+        "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
+    }
+
     "include employment breakdown" in new ViewFixture {
 
       val view = views.html.taxhistory.employments_main(nino, taxYear, payeCompleteModel, None)
@@ -103,13 +113,8 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
     }
 
     "include persons first and last name" in new ViewFixture {
-      val employments = Seq()
       val view = views.html.taxhistory.employments_main(nino, taxYear, payePartialModel, person)
-      val names = doc.select("#name")
-      names.size mustBe 1
-      val name = names.get(0)
-      name.text must include("James Dean")
-
+      heading.toString must include("James Dean")
     }
   }
 }
