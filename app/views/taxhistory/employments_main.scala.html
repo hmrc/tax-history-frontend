@@ -37,7 +37,6 @@
     }
 }
 
-
 @views.html.main_template(title = Messages("employmenthistory.title"),
                           bodyClasses = None,
                           sidebarLinks = None,
@@ -46,17 +45,24 @@
 
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",getName)</h1>
 
+<h2 class="heading-medium" id="nino">@Messages("employmenthistory.nino",nino)</h2>
 
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
+<div class="panel-indent panel-border-wide"><p>@Messages("employmenthistory.notice")</p></div>
+
+
 @payeDetails.employments.map { employment =>
 
+    <p>@Messages("lbl.organisation.name")</p>
+    <h2 class="heading-medium">
+        @employment.employerName
+    </h2>
     <table class="employment-table">
-        <h2 class="heading-medium heading--underlined"></h2>
         <tbody>
         <tr>
-            <th width="50%">@Messages("lbl.organisation.name")</th>
-            <td>@employment.employerName</td>
+            <th>@Messages("lbl.paye.reference")</th>
+            <td>@employment.payeReference</td>
         </tr>
         <tr>
             <th>@Messages("lbl.date.start")</th>
@@ -71,10 +77,6 @@
                 @Messages("employmenthistory.nopaydata")
                 }
             </td>
-        </tr>
-        <tr>
-            <th>@Messages("lbl.paye.reference")</th>
-            <td>@employment.payeReference</td>
         </tr>
         <tr>
             <th>@Messages("lbl.taxable.pay")</th>
@@ -98,11 +100,12 @@
         </tr>
         </tbody>
     </table>
+
     @if(employment.earlierYearUpdates.nonEmpty) {
         <table>
             <thead>
             <tr>
-                <th width="50%">@Messages("employmenthistory.eyu.pay")</th>
+                <th>@Messages("employmenthistory.eyu.pay")</th>
                 <th>@Messages("employmenthistory.eyu.tax")</th>
                 <th>@Messages("employmenthistory.eyu.date.received")</th>
             </tr>
@@ -118,19 +121,20 @@
             </tbody>
         </table>
     }
+
     @if(employment.companyBenefits.nonEmpty) {
         <table>
             <thead>
                 <tr>
                     <th width="50%">@Messages("lbl.company.benefits")</th>
-                    <th>@Messages("lbl.amount")</th>
+                    <th class="numeric">@Messages("lbl.amount")</th>
                 </tr>
             </thead>
             <tbody>
             @employment.companyBenefits.map {cb =>
                 <tr>
                     <td>@cb.typeDescription</td>
-                    <td>@Currency(cb.amount)</td>
+                    <td class="numeric">@Currency(cb.amount)</td>
                 </tr>
             }
             </tbody>
@@ -139,19 +143,19 @@
 }
 
 @if(payeDetails.allowances.nonEmpty) {
-    <h2 class="heading-medium heading--underlined">@Messages("employmenthistory.allowance.heading")</h2>
+    <h2 class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
     <table>
         <thead>
         <tr>
             <th width="50%">@Messages("lbl.allowance")</th>
-            <th>@Messages("lbl.amount")</th>
+            <th class="numeric">@Messages("lbl.amount")</th>
         </tr>
         </thead>
         <tbody>
         @payeDetails.allowances.map {allowance =>
             <tr>
                 <td>@allowance.typeDescription</td>
-                <td>@Currency(allowance.amount)</td>
+                <td class="numeric">@Currency(allowance.amount)</td>
             </tr>
         }
         </tbody>

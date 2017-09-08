@@ -16,6 +16,9 @@ employmenthistory.taxyear =Tax year {0}
 employmenthistory.title = View client’s PAYE record
 employmenthistory.header = View {0}’s PAYE record
 employmenthistory.missing.client.name = client
+employmenthistory.nino=Tax number: {0}
+employmenthistory.notice=Please note: Dates of employment we display are the dates we hold on the record. They are not necessarily accurate dates.
+
 
 employmenthistory.unauthorised.title = You are not authorised to view this PAYE record
 employmenthistory.unauthorised.header = You are not authorised to view {0}’s PAYE record
