@@ -110,6 +110,21 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     }
   }
 
+  trait LockedCitizenDetails {
+
+    lazy val controller = {
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val c = injected[MainController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(paye)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,None)))
+      c
+    }
+  }
+
   trait NotAgentSetup {
 
     lazy val controller = {
@@ -147,6 +162,12 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     "return 200 even when no citizen details available" in new NoCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
+    }
+
+    "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", "AA000003A").toString)
     }
 
     "show not found error page when 404 returned from connector" in new LocalSetup {

@@ -22,7 +22,7 @@ import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
-import models.taxhistory.{Allowance, CompanyBenefit, Employment,Person, PayAsYouEarnDetails}
+import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails, Person}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, _}
 import play.api.{Configuration, Environment, Logger}
@@ -32,7 +32,7 @@ import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{BadGatewayException, HeaderCarrier}
+import uk.gov.hmrc.play.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 import views.html.select_client
@@ -71,8 +71,8 @@ class MainController @Inject()(
         case Some(affinityG) ~ allEnrols =>
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
             case (`isAnAgent`, Some(_)) => {
-             for{person <- retrieveCitizenDetails(nino)
-                  taxHistoryResponse <- retrieveTaxHistoryData(nino,person)}
+             for{maybePerson<- retrieveCitizenDetails(nino)
+                  taxHistoryResponse <- renderTaxHistoryPage(nino,maybePerson)}
               yield{
                 taxHistoryResponse
               }
@@ -101,19 +101,31 @@ class MainController @Inject()(
 
 
 
-  def retrieveCitizenDetails(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Option[Person]] = ninoField match {
+  def retrieveCitizenDetails(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Either[Int, Person]] = ninoField match {
     case Some(nino) => {
       citizenDetailsConnector.getPersonDetails(nino) map {
         personResponse =>
           personResponse.status match {
-            case OK => Some(personResponse.json.as[Person])
-            case _ => None
+            case OK => Right(personResponse.json.as[Person])
+            case status => Left(status)
           }
       }
     }.recoverWith {
-      case _ => Future.successful(None)
+      case _ => Future.successful(Left(BAD_REQUEST))
     }
-    case _ => Future.successful(None)
+    case _ => Future.successful(Left(BAD_REQUEST))
+  }
+
+
+
+  def renderTaxHistoryPage(ninoField:Option[Nino],  maybePerson:Either[Int,Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] ={
+    maybePerson match {
+      case Left(status) => status match {
+        case LOCKED => Future.successful(handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.fold("")(nino => nino.toString()))))
+        case _ => retrieveTaxHistoryData(ninoField,None)
+      }
+      case Right(person) => retrieveTaxHistoryData(ninoField,Some(person))
+    }
   }
 
   def retrieveTaxHistoryData(ninoField:Option[Nino], person:Option[Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
