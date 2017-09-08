@@ -14,19 +14,17 @@
  * limitations under the License.
  */
 
-package models.taxhistory
+package utils
 
-import play.api.libs.json.Json
+import org.joda.time.LocalDate
+import org.scalatestplus.play.PlaySpec
 
-case class Person(firstName:Option[String], lastName:Option[String]){
-  def getName = {
-    for {
-      f <- this.firstName
-      l <- this.lastName
-    }yield (f + " " + l)
+class DateHelperSpec extends PlaySpec {
+
+  "DateHelper" must {
+    "convert input to the expected date format" in {
+      DateHelper.formatDate(LocalDate.parse("2001-10-11")) mustBe "11 October 2001"
+    }
   }
-}
 
-object Person {
-  implicit val formats = Json.format[Person]
 }

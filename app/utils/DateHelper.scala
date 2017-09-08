@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-package models.taxhistory
+package utils
 
-import play.api.libs.json.Json
+import org.joda.time.LocalDate
+import org.joda.time.format.DateTimeFormat
 
-case class Person(firstName:Option[String], lastName:Option[String]){
-  def getName = {
-    for {
-      f <- this.firstName
-      l <- this.lastName
-    }yield (f + " " + l)
+object DateHelper {
+  def formatDate(date: LocalDate) = {
+    DateTimeFormat.forPattern("d MMMM yyyy").print(date)
   }
-}
-
-object Person {
-  implicit val formats = Json.format[Person]
 }

@@ -16,17 +16,15 @@
 
 package models.taxhistory
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
-case class Person(firstName:Option[String], lastName:Option[String]){
-  def getName = {
-    for {
-      f <- this.firstName
-      l <- this.lastName
-    }yield (f + " " + l)
-  }
-}
+case class EarlierYearUpdate(
+                              taxablePayEYU: BigDecimal,
+                              taxEYU: BigDecimal,
+                              receivedDate:LocalDate
+                            )
 
-object Person {
-  implicit val formats = Json.format[Person]
+object EarlierYearUpdate {
+  implicit val format =  Json.format[EarlierYearUpdate]
 }
