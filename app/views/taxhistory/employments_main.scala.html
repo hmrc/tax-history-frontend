@@ -62,15 +62,15 @@
         <tbody>
         <tr>
             <th>@Messages("lbl.paye.reference")</th>
-            <td>@employment.payeReference</td>
+            <td class="numeric">@employment.payeReference</td>
         </tr>
-        <tr>
+        <tr class="border-none">
             <th>@Messages("lbl.date.start")</th>
-            <td>@employment.startDate.toString("d MMMM yyyy")</td>
+            <td class="numeric">@employment.startDate.toString("d MMMM yyyy")</td>
         </tr>
         <tr>
             <th>@Messages("lbl.date.end")</th>
-            <td>
+            <td class="numeric">
                 @if(employment.endDate.isDefined){
                 @employment.endDate.get.toString("d MMMM yyyy")
                 } else {
@@ -80,7 +80,7 @@
         </tr>
         <tr>
             <th>@Messages("lbl.taxable.pay")</th>
-            <td>
+            <td class="numeric">
                 @if(employment.taxablePayTotal.isDefined){
                     @Currency(employment.taxablePayTotal.getOrElse(0))
                 } else {
@@ -90,7 +90,7 @@
         </tr>
         <tr>
             <th>@Messages("lbl.income.tax")</th>
-            <td>
+            <td class="numeric">
                 @if(employment.taxTotal.isDefined){
                     @Currency(employment.taxTotal.getOrElse(0))
                 } else {
@@ -105,9 +105,9 @@
         <table>
             <thead>
             <tr>
-                <th>@Messages("employmenthistory.eyu.pay")</th>
-                <th>@Messages("employmenthistory.eyu.tax")</th>
-                <th>@Messages("employmenthistory.eyu.date.received")</th>
+                <th width="40%">@Messages("employmenthistory.eyu.pay")</th>
+                <th width="30%">@Messages("employmenthistory.eyu.tax")</th>
+                <th  width="30%" class="numeric">@Messages("employmenthistory.eyu.date.received")</th>
             </tr>
             </thead>
             <tbody>
@@ -115,7 +115,7 @@
             <tr>
                 <td>@Currency(cb.taxablePayEYU)</td>
                 <td>@Currency(cb.taxEYU)</td>
-                <td>@DateHelper.formatDate(cb.receivedDate)</td>
+                <td class="numeric">@DateHelper.formatDate(cb.receivedDate)</td>
             </tr>
             }
             </tbody>

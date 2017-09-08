@@ -31,9 +31,13 @@
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
 @import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
 
+@linkElement = {
+  <link rel="stylesheet" href='@controllers.routes.Assets.at("stylesheets/taxhistory.css")' />
+}
+
 @head = {
     @uiLayouts.head(
-      linkElem = None,
+      linkElem = Some(linkElement),
       headScripts = None)
     <meta name="format-detection" content="telephone=no" />
 }

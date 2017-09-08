@@ -1,0 +1,24 @@
+
+// Some joker added !important on h2 margin-top in Assets Frontend application.min.css
+
+h2#nino {
+    margin-top: -1.5em !important;
+    margin-bottom: 1.8em;
+}
+
+.panel-indent {
+    margin: 2em 0;
+}
+
+.panel-border-wide {
+    border-left-width: 10px;
+}
+
+table tr.border-none th,
+table tr.border-none td {
+    border: none;
+}
+
+table .numeric {
+    text-align: right;
+}
