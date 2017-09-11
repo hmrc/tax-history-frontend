@@ -45,12 +45,7 @@
 
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",getName)</h1>
 
-<h2 class="heading-medium" id="nino">@Messages("employmenthistory.nino",nino)</h2>
-
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
-
-<div class="panel-indent panel-border-wide"><p>@Messages("employmenthistory.notice")</p></div>
-
 
 @payeDetails.employments.map { employment =>
 
