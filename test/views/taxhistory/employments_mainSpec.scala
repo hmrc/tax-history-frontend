@@ -31,7 +31,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
     val nino = "AA000000A"
     val taxYear = 2017
-    val person = Some(Person(Some("James"),Some("Dean")))
+    val person = Some(Person(Some("James"),Some("Dean"),false))
 
   }
 

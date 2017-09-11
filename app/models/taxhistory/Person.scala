@@ -18,7 +18,7 @@ package models.taxhistory
 
 import play.api.libs.json.Json
 
-case class Person(firstName:Option[String], lastName:Option[String]){
+case class Person(firstName:Option[String], lastName:Option[String], deceased:Boolean){
   def getName = {
     for {
       f <- this.firstName

@@ -106,7 +106,11 @@ class MainController @Inject()(
       citizenDetailsConnector.getPersonDetails(nino) map {
         personResponse =>
           personResponse.status match {
-            case OK => Right(personResponse.json.as[Person])
+            case OK => {
+              //Right(personResponse.json.as[Person])
+              val person =personResponse.json.as[Person]
+              if(person.deceased) Left(LOCKED) else Right(person)
+            }
             case status => Left(status)
           }
       }

@@ -78,7 +78,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
 
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
-      val person = Some(Person(Some("Barry"),Some("Evans")))
+      val person = Some(Person(Some("Barry"),Some("Evans"),false))
       val c = injected[MainController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
@@ -106,6 +106,8 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   trait LockedCitizenDetails {
 
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
@@ -113,8 +115,26 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
+      c
+    }
+  }
+
+  trait DeceasedCitizenDetails {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
+      val person = Some(Person(Some("James"),Some("Bond"),true))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val c = injected[MainController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(paye)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,None)))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
   }
@@ -159,6 +179,12 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     }
 
     "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", "AA000003A").toString)
+    }
+
+    "return not found error page when citizen details returns deceased indicator" in new DeceasedCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", "AA000003A").toString)

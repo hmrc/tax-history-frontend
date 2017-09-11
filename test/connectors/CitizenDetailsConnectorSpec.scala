@@ -53,12 +53,12 @@ class CitizenDetailsConnectorSpec extends BaseSpec with MockitoSugar with Fixtur
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(Person(Some("Davey"),Some("Jones"))))))))
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(Person(Some("Davey"),Some("Jones"), false)))))))
 
       val result = await(connector.getPersonDetails(Nino("AA000000A")))
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Some(Person(Some("Davey"),Some("Jones"))))
+      result.json shouldBe Json.toJson(Some(Person(Some("Davey"),Some("Jones"), false)))
 
     }
   }
