@@ -37,7 +37,6 @@
     }
 }
 
-
 @views.html.main_template(title = Messages("employmenthistory.title"),
                           bodyClasses = None,
                           sidebarLinks = None,
@@ -46,25 +45,27 @@
 
 <h1 class="heading-xlarge" >@Messages("employmenthistory.header",getName)</h1>
 
-
 <h2 class="heading-medium" id="taxYear">@Messages("employmenthistory.taxyear",s"$taxYear to ${taxYear+1}")</h2>
 
 @payeDetails.employments.map { employment =>
 
+    <p>@Messages("lbl.organisation.name")</p>
+    <h2 class="heading-medium">
+        @employment.employerName
+    </h2>
     <table class="employment-table">
-        <h2 class="heading-medium heading--underlined"></h2>
         <tbody>
         <tr>
-            <th width="50%">@Messages("lbl.organisation.name")</th>
-            <td>@employment.employerName</td>
+            <th>@Messages("lbl.paye.reference")</th>
+            <td class="numeric">@employment.payeReference</td>
         </tr>
-        <tr>
+        <tr class="border-none">
             <th>@Messages("lbl.date.start")</th>
-            <td>@employment.startDate.toString("d MMMM yyyy")</td>
+            <td class="numeric">@employment.startDate.toString("d MMMM yyyy")</td>
         </tr>
         <tr>
             <th>@Messages("lbl.date.end")</th>
-            <td>
+            <td class="numeric">
                 @if(employment.endDate.isDefined){
                 @employment.endDate.get.toString("d MMMM yyyy")
                 } else {
@@ -73,12 +74,8 @@
             </td>
         </tr>
         <tr>
-            <th>@Messages("lbl.paye.reference")</th>
-            <td>@employment.payeReference</td>
-        </tr>
-        <tr>
             <th>@Messages("lbl.taxable.pay")</th>
-            <td>
+            <td class="numeric">
                 @if(employment.taxablePayTotal.isDefined){
                     @Currency(employment.taxablePayTotal.getOrElse(0))
                 } else {
@@ -88,7 +85,7 @@
         </tr>
         <tr>
             <th>@Messages("lbl.income.tax")</th>
-            <td>
+            <td class="numeric">
                 @if(employment.taxTotal.isDefined){
                     @Currency(employment.taxTotal.getOrElse(0))
                 } else {
@@ -98,13 +95,14 @@
         </tr>
         </tbody>
     </table>
+
     @if(employment.earlierYearUpdates.nonEmpty) {
         <table>
             <thead>
             <tr>
-                <th width="50%">@Messages("employmenthistory.eyu.pay")</th>
-                <th>@Messages("employmenthistory.eyu.tax")</th>
-                <th>@Messages("employmenthistory.eyu.date.received")</th>
+                <th width="40%">@Messages("employmenthistory.eyu.pay")</th>
+                <th width="30%">@Messages("employmenthistory.eyu.tax")</th>
+                <th  width="30%" class="numeric">@Messages("employmenthistory.eyu.date.received")</th>
             </tr>
             </thead>
             <tbody>
@@ -112,25 +110,26 @@
             <tr>
                 <td>@Currency(cb.taxablePayEYU)</td>
                 <td>@Currency(cb.taxEYU)</td>
-                <td>@DateHelper.formatDate(cb.receivedDate)</td>
+                <td class="numeric">@DateHelper.formatDate(cb.receivedDate)</td>
             </tr>
             }
             </tbody>
         </table>
     }
+
     @if(employment.companyBenefits.nonEmpty) {
         <table>
             <thead>
                 <tr>
                     <th width="50%">@Messages("lbl.company.benefits")</th>
-                    <th>@Messages("lbl.amount")</th>
+                    <th class="numeric">@Messages("lbl.amount")</th>
                 </tr>
             </thead>
             <tbody>
             @employment.companyBenefits.map {cb =>
                 <tr>
                     <td>@cb.typeDescription</td>
-                    <td>@Currency(cb.amount)</td>
+                    <td class="numeric">@Currency(cb.amount)</td>
                 </tr>
             }
             </tbody>
@@ -139,19 +138,20 @@
 }
 
 @if(payeDetails.allowances.nonEmpty) {
-    <h2 class="heading-medium heading--underlined">@Messages("employmenthistory.allowance.heading")</h2>
+    <br />
+    <h2 class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
     <table>
         <thead>
         <tr>
             <th width="50%">@Messages("lbl.allowance")</th>
-            <th>@Messages("lbl.amount")</th>
+            <th class="numeric">@Messages("lbl.amount")</th>
         </tr>
         </thead>
         <tbody>
         @payeDetails.allowances.map {allowance =>
             <tr>
                 <td>@allowance.typeDescription</td>
-                <td>@Currency(allowance.amount)</td>
+                <td class="numeric">@Currency(allowance.amount)</td>
             </tr>
         }
         </tbody>
