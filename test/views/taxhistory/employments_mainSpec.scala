@@ -63,7 +63,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
       val tableRowStartDate = doc.select(".employment-table tbody tr").get(1)
       val tableRowEndDate = doc.select(".employment-table tbody tr").get(2)
-      val tableRowPay = doc.select(".employment-table tbody tr").get(4)
+      val tableRowPay = doc.select(".employment-table tbody tr").get(3)
 
       tableRowStartDate.text must include(employments.head.startDate.toString("d MMMM yyyy"))
       tableRowEndDate.text must include(messagesApi("employmenthistory.nopaydata"))
@@ -88,8 +88,8 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
       val view = views.html.taxhistory.employments_main(nino, taxYear, payePartialModel, None)
       val tableRowStartDate = doc.select(".employment-table tbody tr").get(1)
       val tableRowEndDate = doc.select(".employment-table tbody tr").get(2)
-      val tableRowPay = doc.select(".employment-table tbody tr").get(4)
-      val tableRowTax = doc.select(".employment-table tbody tr").get(5)
+      val tableRowPay = doc.select(".employment-table tbody tr").get(3)
+      val tableRowTax = doc.select(".employment-table tbody tr").get(4)
 
       tableRowStartDate.text must include(payePartialModel.employments.head.startDate.toString("d MMMM yyyy"))
       tableRowEndDate.text must include(payePartialModel.employments.head.endDate.get.toString("d MMMM yyyy"))
