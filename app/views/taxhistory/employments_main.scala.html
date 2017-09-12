@@ -128,7 +128,7 @@
             <tbody>
             @employment.companyBenefits.map {cb =>
                 <tr>
-                    <td>@Messages(s"cb_${cb.iabdMessageKey}")</td>
+                    <td>@Messages(s"employmenthistory.cb.${cb.iabdMessageKey}")</td>
                     <td class="numeric">@Currency(cb.amount)</td>
                 </tr>
             }
@@ -150,7 +150,7 @@
         <tbody>
         @payeDetails.allowances.map {allowance =>
             <tr>
-                <td>@Messages(s"al_${allowance.iabdMessageKey}")</td>
+                <td>@Messages(s"employmenthistory.al.${allowance.iabdMessageKey}")</td>
                 <td class="numeric">@Currency(allowance.amount)</td>
             </tr>
         }

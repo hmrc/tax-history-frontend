@@ -20,7 +20,6 @@ import models.taxhistory._
 import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.urls.Link
 import utils.DateHelper
 import views.{Fixture, GenericTestHelper}
@@ -72,7 +71,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
       doc.getElementsMatchingOwnText(Messages("lbl.company.benefits")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe true
       doc.getElementsMatchingOwnText(allowances.head.amount.toString()).hasText mustBe true
-      doc.getElementsMatchingOwnText(allowances.last.typeDescription).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages(s"employmenthistory.al.${allowances.last.iabdMessageKey}")).hasText mustBe true
       doc.getElementsMatchingOwnText(allowances.last.amount.toString()).hasText mustBe true
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.eyu.pay")).hasText mustBe true
@@ -88,7 +87,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
       val companyBenefits = payeModelWithCompleteListOfCBAndAllowances.employments.head.companyBenefits
       companyBenefits.foreach(cb => {
-        doc.getElementsMatchingOwnText(Messages(s"cb_${cb.iabdMessageKey}")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages(s"employmenthistory.cb.${cb.iabdMessageKey}")).hasText mustBe true
       })
     }
 
@@ -133,7 +132,7 @@ trait EmpConstants {
   val startDate = new LocalDate("2016-01-21")
   val endDate = new LocalDate("2016-11-01")
 
-  val companyBenefit1 = CompanyBenefit("Benefit1", 1000.00, "NonQualifyingRelocationExpense")
+  val companyBenefit1 = CompanyBenefit("Benefit1", 1000.00, "IncomeTaxPaidNotDeductedFromDirectorsRemuneration")
   val companyBenefit2 = CompanyBenefit("Benefit2", 2000.00, "ExpensesPay")
   val EarlierYearUpdateList = List(EarlierYearUpdate(BigDecimal.valueOf(-21.00), BigDecimal.valueOf(-4.56), LocalDate.parse("2017-08-30")))
   val emp1 =  Employment("AA12341234", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), EarlierYearUpdateList,
