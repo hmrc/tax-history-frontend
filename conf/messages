@@ -66,9 +66,9 @@ cb_VoucherAndCreditCards=Vouchers and credit cards
 cb_NonCashBenefit=Non Cash benefit
 
 
-cb_FlatRateJobExpenses=Flat rate job expenses
-cb_ProfessionalSubscriptions=Professional subscriptions
-cb_EarlierYearsAdjustment=Earlier years adjustment
+al_FlatRateJobExpenses=Flat rate job expenses
+al_ProfessionalSubscriptions=Professional subscriptions
+al_EarlierYearsAdjustment=Earlier years adjustment
 
 ################################ Select Client ####################################################
 mtdfi.select_client.continue=Continue

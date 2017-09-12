@@ -85,10 +85,10 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
     "innclude correct type descriptions of Company benefits and Allowance" in new ViewFixture {
       val view = views.html.taxhistory.employments_main(nino, taxYear, payeModelWithCompleteListOfCBAndAllowances, None)
+
       val companyBenefits = payeModelWithCompleteListOfCBAndAllowances.employments.head.companyBenefits
-      companyBenefits.foreach(x => {
-        println(s"cb_${x.iabdMessageKey}")
-        doc.getElementsMatchingOwnText(Messages(s"cb_${x.iabdMessageKey}")).hasText mustBe true
+      companyBenefits.foreach(cb => {
+        doc.getElementsMatchingOwnText(Messages(s"cb_${cb.iabdMessageKey}")).hasText mustBe true
       })
     }
 
@@ -181,6 +181,6 @@ trait EmpConstants {
   )
   val employmentWithCB = List(emp1.copy(companyBenefits = completeCBList))
 
-  val payeModelWithCompleteListOfCBAndAllowances = PayAsYouEarnDetails(employments, allowances)
+  val payeModelWithCompleteListOfCBAndAllowances = PayAsYouEarnDetails(employmentWithCB, allowances)
 
 }
