@@ -20,13 +20,16 @@ import org.scalatestplus.play.PlaySpec
 import play.api.data.FormError
 import play.api.libs.json.Json
 import form.SelectClientForm.selectClientForm
-class SelectClientFormSpec extends PlaySpec {
+import utils.TestUtil
+class SelectClientFormSpec extends PlaySpec with TestUtil{
+
+  lazy val nino =randomNino.toString()
 
   "SelectClientForm" must {
 
     "return no errors with valid data" in {
       val postData = Json.obj(
-        "clientId" -> "WM123456C"
+        "clientId" -> nino
       )
 
       val validatedForm = selectClientForm.bind(postData)
@@ -51,7 +54,7 @@ class SelectClientFormSpec extends PlaySpec {
     }
     "return an invalid format value error when an  invalid nino entered" in {
       val postData = Json.obj(
-        "clientId" -> "WM1234XXXX"
+        "clientId" -> "1234XXXXAA"
       )
 
       val validatedForm = selectClientForm.bind(postData)
