@@ -21,7 +21,7 @@ import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import uk.gov.hmrc.urls.Link
-import utils.DateHelper
+import utils.{DateHelper, TestUtil}
 import views.{Fixture, GenericTestHelper}
 
 class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpConstants {
@@ -29,9 +29,9 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
 
-    val nino = "AA000000A"
+    val nino = TestUtil.randomNino.toString()
     val taxYear = 2017
-    val person = Some(Person(Some("James"),Some("Dean")))
+    val person = Some(Person(Some("James"),Some("Dean"),false))
 
   }
 
@@ -127,14 +127,14 @@ trait EmpConstants {
   val companyBenefit1 = CompanyBenefit("Benefit1", 1000.00)
   val companyBenefit2 = CompanyBenefit("Benefit2", 2000.00)
   val EarlierYearUpdateList = List(EarlierYearUpdate(BigDecimal.valueOf(-21.00), BigDecimal.valueOf(-4.56), LocalDate.parse("2017-08-30")))
-  val emp1 =  Employment("AA12341234", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), EarlierYearUpdateList,
+  val emp1 =  Employment("12341234", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), EarlierYearUpdateList,
     List(companyBenefit1, companyBenefit2))
-  val emp2 = Employment("AA111111", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), List.empty,
+  val emp2 = Employment("11111111", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), List.empty,
     List(companyBenefit1, companyBenefit2))
   val employments = List(emp1,emp2)
   val allowances = List(Allowance("desc", 222.00),Allowance("desc1", 333.00))
   val payeCompleteModel = PayAsYouEarnDetails(employments, allowances)
 
-  val partialEmploymentList = List(Employment("AA12341234", "Test Employer Name", startDate, Some(endDate),None, None))
+  val partialEmploymentList = List(Employment("12341234", "Test Employer Name", startDate, Some(endDate),None, None))
   val payePartialModel = PayAsYouEarnDetails(partialEmploymentList, List.empty)
 }

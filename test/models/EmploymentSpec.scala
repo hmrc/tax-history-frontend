@@ -21,18 +21,20 @@ import org.joda.time.LocalDate
 import play.api.data.validation.ValidationError
 import play.api.libs.json.{JsError, JsPath, JsSuccess, Json}
 import uk.gov.hmrc.play.test.UnitSpec
+import utils.TestUtil
 
 
-class EmploymentSpec extends UnitSpec {
+class EmploymentSpec extends UnitSpec with TestUtil{
 
   val startDate = new LocalDate("2016-01-21")
+  lazy val nino =randomNino.toString()
 
   "Employment" should {
     "deserialize from json correctly" in {
 
       val json = Json.parse(
         """{
-           "employments":[{"payeReference":"AA12341234",
+           "employments":[{"payeReference":"12341234",
                          "employerName":"Test Employer Name",
                          "startDate":"2016-01-21",
                          "taxablePayTotal":25000,
@@ -44,15 +46,15 @@ class EmploymentSpec extends UnitSpec {
                              "receivedDate":"2017-08-30"
                            }
                          ],
-                         "companyBenefits":[{"typeDescription":"Benifit1","amount":1000},{"typeDescription":"Benifit2","amount":2000}]}],
+                         "companyBenefits":[{"typeDescription":"Benefit1","amount":1000},{"typeDescription":"Benefit2","amount":2000}]}],
            "allowances":[{"typeDescription":"desc","amount":222}]
         }""")
 
 
-      val testEmployment = Employment("AA12341234", "Test Employer Name", startDate, None,Some(25000.0), Some(2000.0),
+      val testEmployment = Employment("12341234", "Test Employer Name", startDate, None,Some(25000.0), Some(2000.0),
         List(EarlierYearUpdate(taxablePayEYU = BigDecimal.valueOf(1000), taxEYU = BigDecimal.valueOf(250),
           LocalDate.parse("2017-08-30"))),
-        List(CompanyBenefit("Benifit1", 1000.00), CompanyBenefit("Benifit2", 2000.00)))
+        List(CompanyBenefit("Benefit1", 1000.00), CompanyBenefit("Benefit2", 2000.00)))
       val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
 
       PayAsYouEarnDetails.formats.reads(json) shouldBe JsSuccess(paye)
@@ -63,7 +65,7 @@ class EmploymentSpec extends UnitSpec {
 
         val json = Json.parse(
           """{
-           "employments":[{"payeReference":"AA12341234",
+           "employments":[{"payeReference":"12341234",
                          "employerName":"Test Employer Name",
                           "startDate":"2016-01-21",
                          "taxablePayTotal":25000,
@@ -74,7 +76,7 @@ class EmploymentSpec extends UnitSpec {
         }""")
 
 
-        val testEmployment = Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0),
+        val testEmployment = Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0),
           List.empty,
           List(CompanyBenefit("Benefit1", 1000.00), CompanyBenefit("Benefit2", 2000.00)))
         val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
@@ -86,7 +88,7 @@ class EmploymentSpec extends UnitSpec {
 
         val json = Json.parse(
           """{
-           "employments":[{"payeReference":"AA12341234",
+           "employments":[{"payeReference":"12341234",
                          "employerName":"Test Employer Name",
                          "startDate":"2016-01-21",
                          "taxablePayTotal":25000,

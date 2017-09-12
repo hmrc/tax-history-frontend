@@ -36,10 +36,11 @@ import org.joda.time.LocalDate
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
+import utils.TestUtil
 
 import scala.concurrent.Future
 
-class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
+class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages = messagesApi.preferred(FakeRequest())
@@ -53,6 +54,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   val invalidTestNINO = "9999999999999999"
   val startDate = new LocalDate("2016-01-21")
+  lazy val nino =randomNino.toString()
 
   val invalidSelectClientForm = Seq(
     "clientId" -> invalidTestNINO
@@ -78,7 +80,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
 
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
-      val person = Some(Person(Some("Barry"),Some("Evans")))
+      val person = Some(Person(Some("Barry"),Some("Evans"),false))
       val c = injected[MainController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
@@ -100,6 +102,41 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,None)))
+      c
+    }
+  }
+
+  trait LockedCitizenDetails {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val c = injected[MainController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
+      c
+    }
+  }
+
+  trait DeceasedCitizenDetails {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+      val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
+      val person = Some(Person(Some("James"),Some("Bond"),true))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val c = injected[MainController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(paye)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
   }
@@ -134,38 +171,50 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   "GET /tax-history" should {
     "return 200" in new LocalSetup {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
     }
 
     "return 200 even when no citizen details available" in new NoCitizenDetails {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
+    }
+
+    "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
+    }
+
+    "return not found error page when citizen details returns deceased indicator" in new DeceasedCitizenDetails {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
     }
 
     "show not found error page when 404 returned from connector" in new LocalSetup {
       implicit val actorSystem = ActorSystem("test")
       implicit val materializer = ActorMaterializer()
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson("[]")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", "AA000003A").toString)
+      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
     }
 
     "show not authorised error page when 401 returned from connector" in new LocalSetup {
       implicit val actorSystem = ActorSystem("test")
       implicit val materializer = ActorMaterializer()
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,Some(Json.toJson("{Message:Unauthorised}")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", "AA000003A"))
+      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", nino))
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new LocalSetup {
       implicit val actorSystem = ActorSystem("test")
       implicit val materializer = ActorMaterializer()
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
@@ -182,14 +231,14 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
       implicit val actorSystem = ActorSystem("test")
       implicit val materializer = ActorMaterializer()
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
 
     "redirect to gg when not logged in" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new MissingBearerToken))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }
@@ -201,13 +250,13 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     }
 
     "redirect to when agent has no enrolments" in new NoEnrolmentsSetup {
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")) shouldBe Some(FrontendAppConfig.AfiNoAgentServicesAccountPage)
     }
 
     "redirect when user is not an agent" in new NotAgentSetup {
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")) shouldBe Some(FrontendAppConfig.AfiNoAgentServicesAccountPage)
     }
@@ -215,7 +264,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
   "GET /tax-history/logout" should {
     "redirect to gg and clear session data" in new LocalSetup{
-      val result = controller.logout()(fakeRequest.withSession("USER_NINO" -> "AA000003A"))
+      val result = controller.logout()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
     }
   }
