@@ -77,7 +77,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
 
-      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "ProfessionalSubscriptions"),Allowance("desc1", 333.00,"FlatRateJobExpenses")))
       val person = Some(Person(Some("Barry"),Some("Evans")))
       val c = injected[MainController]
 
@@ -93,7 +93,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
-      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
       val c = injected[MainController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
@@ -108,7 +108,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
-      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
 
       val c = injected[MainController]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
@@ -122,7 +122,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     lazy val controller = {
       val employment = Employment(payeReference = "ABC", employerName = "Fred West Shoes", taxTotal = Some(BigDecimal.valueOf(123.12)), taxablePayTotal = Some(BigDecimal.valueOf(45.32)), startDate = startDate, endDate = None)
-      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00),Allowance("desc1", 333.00)))
+      val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
 
       val c = injected[MainController]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(

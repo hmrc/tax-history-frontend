@@ -33,7 +33,44 @@ employmenthistory.eyu.pay = EYU pay
 employmenthistory.eyu.tax = EYU tax
 employmenthistory.eyu.date.received = Date received
 
-################################ Select Client ##############################################
+################################## Company Benefits & Allowances ##################################
+
+cb_EmployerProvidedServices=Employer provided services
+cb_TotalBenefitInKind=Benefits in kind
+cb_CarFuelBenefit=Car fuel benefit
+cb_MedicalInsurance=Medical insurance
+cb_CarBenefit=Car benefit
+cb_TelephoneBenefit=Telephone
+cb_ServiceBenefit=Service benefits
+cb_TaxableExpenseBenefit=Taxable expenses benefits
+cb_VanBenefit=Van benefit
+cb_VanFuelBenefit=Van fuel benefit
+cb_BeneficialLoan=Beneficial loan
+cb_Accommodation=Accommodation
+cb_Assets=Assets
+cb_AssetTransfer=Assets transferred
+cb_EducationalService=Education services
+cb_Entertaining=Entertaining
+cb_ExpensesPay=Expenses
+cb_Mileage=Mileage
+cb_NonQualifyingRelocationExpense=Non-qualifying relocation expenses
+cb_NurseryPlaces=Nursery places
+cb_OtherItems=Other items
+cb_PaymentEmployeesBehalf=Payments on employee’s behalf
+cb_PersonalIncidentExpenses=Personal incidental expenses
+cb_QualifyingRelocationExpenses=Qualifying relocation expenses
+cb_EmployerProvidedProfessionalSubscription=Employer provided professional subscriptions
+cb_IncomeTaxPaidNotDeductedFromDirectorsRemuneration=Income Tax paid (but not deducted from director’s remuneration)
+cb_TravelAndSubsistence=Travel and subsistence
+cb_VoucherAndCreditCards=Vouchers and credit cards
+cb_NonCashBenefit=Non Cash benefit
+
+
+cb_FlatRateJobExpenses=Flat rate job expenses
+cb_ProfessionalSubscriptions=Professional subscriptions
+cb_EarlierYearsAdjustment=Earlier years adjustment
+
+################################ Select Client ####################################################
 mtdfi.select_client.continue=Continue
 mtdfi.select_client.title=Enter a client’s National Insurance number
 mtdfi.select_client.form.title=Enter a National Insurance number

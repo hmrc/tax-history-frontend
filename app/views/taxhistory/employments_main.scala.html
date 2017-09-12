@@ -128,7 +128,7 @@
             <tbody>
             @employment.companyBenefits.map {cb =>
                 <tr>
-                    <td>@cb.typeDescription</td>
+                    <td>@Messages(s"cb_${x.iabdMessageKey}")</td>
                     <td class="numeric">@Currency(cb.amount)</td>
                 </tr>
             }
