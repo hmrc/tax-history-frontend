@@ -89,6 +89,11 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
       companyBenefits.foreach(cb => {
         doc.getElementsContainingOwnText(Messages(s"employmenthistory.cb.${cb.iabdMessageKey}")).hasText mustBe true
       })
+
+      payeModelWithCompleteListOfCBAndAllowances.allowances.foreach(al => {
+        doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdMessageKey}")).hasText mustBe true
+      })
+
     }
 
     "allow partial employment to be displayed" in new ViewFixture {
