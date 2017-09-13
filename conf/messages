@@ -36,7 +36,6 @@ employmenthistory.eyu.date.received = Date received
 ################################## Company Benefits & Allowances ##################################
 
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
-employmenthistory.cb.TotalBenefitInKind=Benefits in kind
 employmenthistory.cb.CarFuelBenefit=Car fuel benefit
 employmenthistory.cb.MedicalInsurance=Medical insurance
 employmenthistory.cb.CarBenefit=Car benefit
@@ -46,6 +45,8 @@ employmenthistory.cb.TaxableExpenseBenefit=Taxable expenses benefits
 employmenthistory.cb.VanBenefit=Van benefit
 employmenthistory.cb.VanFuelBenefit=Van fuel benefit
 employmenthistory.cb.BeneficialLoan=Beneficial loan
+
+employmenthistory.cb.TotalBenefitInKind=Benefits in kind
 employmenthistory.cb.Accommodation=Accommodation
 employmenthistory.cb.Assets=Assets
 employmenthistory.cb.AssetTransfer=Assets transferred
