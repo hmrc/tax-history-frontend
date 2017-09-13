@@ -23,26 +23,28 @@ class PersonSpecs  extends UnitSpec{
 
   "GetName from Person Model" should {
     "unable to retrieve name when Person is not populated" in {
-      val person = Person(None ,None)
+      val person = Person(None ,None, false)
       person.getName shouldBe None
-
     }
 
     "able to retrieve name when Person is populated" in {
-      val person = Person(Some("FirstName") ,Some("LastName"))
+      val person = Person(Some("FirstName") ,Some("LastName"), false)
       person.getName shouldBe Some("FirstName LastName")
+    }
 
+    "able to retrieve name when Person is populated and deceased" in {
+      val person = Person(Some("FirstName") ,Some("LastName"), true)
+      person.getName shouldBe Some("FirstName LastName")
     }
 
     "not able to retrieve name when Person's lastName is not populated" in {
-      val person = Person(Some("FirstName") ,None)
+      val person = Person(Some("FirstName") ,None, false)
       person.getName shouldBe None
 
     }
     "not able to retrieve name when Person's first Name is not populated" in {
-      val person = Person(None ,Some("LastName"))
+      val person = Person(None ,Some("LastName"), false)
       person.getName shouldBe None
-
     }
   }
 

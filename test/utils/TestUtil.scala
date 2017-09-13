@@ -14,19 +14,15 @@
  * limitations under the License.
  */
 
-package models.taxhistory
+package utils
 
-import play.api.libs.json.Json
+import uk.gov.hmrc.domain.{Generator, Nino}
+import scala.util.Random
 
-case class Person(firstName:Option[String], lastName:Option[String], deceased:Boolean){
-  def getName = {
-    for {
-      f <- this.firstName
-      l <- this.lastName
-    }yield (f + " " + l)
+object TestUtil extends TestUtil
+
+trait TestUtil {
+  def randomNino() = {
+    Nino(new Generator(new Random()).nextNino.value.replaceFirst("MA", "AA"))
   }
-}
-
-object Person {
-  implicit val formats = Json.format[Person]
 }

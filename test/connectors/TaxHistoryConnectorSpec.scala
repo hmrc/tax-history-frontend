@@ -32,10 +32,11 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.http.{HttpGet, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
 import org.joda.time.LocalDate
+import utils.TestUtil
 
 import scala.concurrent.Future
 
-class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
+class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 
   val http = mock[WSHttpT]
   val startDate = new LocalDate("2016-01-21")
@@ -47,7 +48,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
     .build()
 
   trait LocalSetup {
-
+    lazy val nino =randomNino.toString()
     lazy val connector = {
       injected[TaxHistoryConnector]
     }
@@ -57,12 +58,12 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures {
 
     "fetch tax history" in new LocalSetup {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))))))
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))))))
 
-      val result = await(connector.getTaxHistory(Nino("AA000000A"), 2017))
+      val result = await(connector.getTaxHistory(Nino(nino), 2017))
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Seq(Employment("AA12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))
+      result.json shouldBe Json.toJson(Seq(Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))
 
     }
   }

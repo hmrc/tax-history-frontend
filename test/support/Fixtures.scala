@@ -19,10 +19,11 @@ package support
 import org.joda.time.DateTime
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.connectors.domain._
+import utils.TestUtil
 
 trait Fixtures {
   def buildFakeAuthority(withPaye: Boolean = true, withSa: Boolean = false,
-                         confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200, nino: Nino = Nino("AA123456A"),
+                         confidenceLevel: ConfidenceLevel = ConfidenceLevel.L200, nino: Nino = Nino(TestUtil.randomNino.toString()),
                          userDetailsLink: Option[String] = Some("/userDetailsLink")) = Authority(
     uri = "/auth/oid/tuser",
     accounts = Accounts(
