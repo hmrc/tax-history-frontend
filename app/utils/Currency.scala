@@ -16,10 +16,12 @@
 
 package utils
 
+import java.util.Locale
+
 case class Currency(value: BigDecimal) {
 
   override def toString: String = {
-    val formatter = java.text.NumberFormat.getCurrencyInstance
+    val formatter = java.text.NumberFormat.getCurrencyInstance(Locale.UK)
     formatter.format(value)
   }
 
