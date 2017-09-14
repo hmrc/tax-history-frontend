@@ -18,8 +18,11 @@ package utils
 
 case class Currency(value: BigDecimal) {
 
-  override def toString: String =
-    f"£$value%1.2f"
+  override def toString: String = {
+    val formatter = java.text.NumberFormat.getCurrencyInstance
+    formatter.format(value)
+  }
+
 }
 
 object Currency {
