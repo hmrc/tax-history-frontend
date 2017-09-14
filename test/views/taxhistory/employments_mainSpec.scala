@@ -21,7 +21,7 @@ import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import uk.gov.hmrc.urls.Link
-import utils.{DateHelper, TestUtil}
+import utils.{Currency, DateHelper, TestUtil}
 import views.{Fixture, GenericTestHelper}
 
 class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpConstants {
@@ -67,7 +67,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
       tableRowStartDate.text must include(employments.head.startDate.toString("d MMMM yyyy"))
       tableRowEndDate.text must include(messagesApi("employmenthistory.nopaydata"))
-      tableRowPay.text must include(employments.head.taxablePayTotal.get.toString())
+      tableRowPay.text must include(Currency(employments.head.taxablePayTotal.get).toString())
       doc.getElementsMatchingOwnText(Messages("lbl.company.benefits")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe true
       doc.getElementsMatchingOwnText(allowances.head.amount.toString()).hasText mustBe true
@@ -77,8 +77,8 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
       doc.getElementsMatchingOwnText(Messages("employmenthistory.eyu.pay")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.eyu.tax")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.eyu.date.received")).hasText mustBe true
-      doc.getElementsMatchingOwnText(employments.head.earlierYearUpdates.head.taxablePayEYU.toString()).hasText mustBe true
-      doc.getElementsMatchingOwnText(employments.head.earlierYearUpdates.head.taxEYU.toString()).hasText mustBe true
+      doc.getElementsMatchingOwnText(Currency(employments.head.earlierYearUpdates.head.taxablePayEYU).toString()).hasText mustBe true
+      doc.getElementsMatchingOwnText(Currency(employments.head.earlierYearUpdates.head.taxEYU).toString()).hasText mustBe true
       doc.getElementsMatchingOwnText(DateHelper.formatDate(employments.head.earlierYearUpdates.head.receivedDate)).hasText mustBe true
     }
 
