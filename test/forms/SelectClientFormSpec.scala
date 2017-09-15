@@ -20,8 +20,9 @@ import org.scalatestplus.play.PlaySpec
 import play.api.data.FormError
 import play.api.libs.json.Json
 import form.SelectClientForm.selectClientForm
+import support.BaseSpec
 import utils.TestUtil
-class SelectClientFormSpec extends PlaySpec with TestUtil{
+class SelectClientFormSpec extends BaseSpec with TestUtil{
 
   lazy val nino =randomNino.toString()
 
@@ -33,32 +34,45 @@ class SelectClientFormSpec extends PlaySpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData)
-
-      assert(validatedForm.errors.isEmpty)
+      val errors = validatedForm.errors
+      errors shouldBe empty
     }
-    "return an need value error with no nino entered" in {
+    "return an invalid length error when no nino is entered" in {
       val postData = Json.obj(
         "clientId" -> ""
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.form.need-value"))))
+      val errors = validatedForm.errors
+      errors shouldBe List(FormError("clientId", List("selectclient.error.invalid-length")))
     }
-    "return an longer then 9  error with no nino entered" in {
+    "return an invalid length error when nino is shorter than nine characters" in {
+      val postData = Json.obj(
+        "clientId" -> "123456"
+      )
+
+      val validatedForm = selectClientForm.bind(postData)
+      val errors = validatedForm.errors
+      errors shouldBe List(FormError("clientId", List("selectclient.error.invalid-length")))
+    }
+
+    "return an invalid length error when nino is longer than nine characters" in {
       val postData = Json.obj(
         "clientId" -> "1234567890"
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.form.invalid-value-length"))))
+      val errors = validatedForm.errors
+      errors shouldBe List(FormError("clientId", List("selectclient.error.invalid-length")))
     }
-    "return an invalid format value error when an  invalid nino entered" in {
+    "return an invalid format value error when an invalid nino entered" in {
       val postData = Json.obj(
-        "clientId" -> "1234XXXXAA"
+        "clientId" -> "1234XXXXA"
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.invalid-nino-format"))))
+      val errors = validatedForm.errors
+      errors shouldBe List(FormError("clientId", List("selectclient.error.invalid-format")))
     }
   }
 }
