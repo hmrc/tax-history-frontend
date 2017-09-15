@@ -46,16 +46,20 @@ class EmploymentSpec extends UnitSpec with TestUtil{
                              "receivedDate":"2017-08-30"
                            }
                          ],
-                         "companyBenefits":[{"typeDescription":"Benefit1","amount":1000},{"typeDescription":"Benefit2","amount":2000}]}],
-           "allowances":[{"typeDescription":"desc","amount":222}]
+                         "companyBenefits":[
+                         {"typeDescription":"Benefit1","amount":1000,"iabdMessageKey":"CarFuelBenefit"},
+                         {"typeDescription":"Benefit2","amount":2000,"iabdMessageKey":"VanBenefit"}
+                         ]
+                         }],
+           "allowances":[{"typeDescription":"desc","amount":222, "iabdMessageKey":"EarlierYearsAdjustment"}]
         }""")
 
 
       val testEmployment = Employment("12341234", "Test Employer Name", startDate, None,Some(25000.0), Some(2000.0),
         List(EarlierYearUpdate(taxablePayEYU = BigDecimal.valueOf(1000), taxEYU = BigDecimal.valueOf(250),
           LocalDate.parse("2017-08-30"))),
-        List(CompanyBenefit("Benefit1", 1000.00), CompanyBenefit("Benefit2", 2000.00)))
-      val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
+        List(CompanyBenefit("Benefit1", 1000.00, "CarFuelBenefit"), CompanyBenefit("Benefit2", 2000.00, "VanBenefit")))
+      val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00, "EarlierYearsAdjustment")))
 
       PayAsYouEarnDetails.formats.reads(json) shouldBe JsSuccess(paye)
     }
@@ -71,15 +75,15 @@ class EmploymentSpec extends UnitSpec with TestUtil{
                          "taxablePayTotal":25000,
                          "taxTotal":2000,
                          "earlierYearUpdates" : [],
-                         "companyBenefits":[{"typeDescription":"Benefit1","amount":1000},{"typeDescription":"Benefit2","amount":2000}]}],
-           "allowances":[{"typeDescription":"desc","amount":222}]
+                         "companyBenefits":[]}],
+           "allowances":[]
         }""")
 
 
         val testEmployment = Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0),
           List.empty,
-          List(CompanyBenefit("Benefit1", 1000.00), CompanyBenefit("Benefit2", 2000.00)))
-        val paye = PayAsYouEarnDetails(List(testEmployment), List(Allowance("desc", 222.00)))
+          List.empty)
+        val paye = PayAsYouEarnDetails(List(testEmployment), List.empty)
 
         PayAsYouEarnDetails.formats.reads(json) shouldBe JsSuccess(paye)
       }
@@ -93,8 +97,8 @@ class EmploymentSpec extends UnitSpec with TestUtil{
                          "startDate":"2016-01-21",
                          "taxablePayTotal":25000,
                          "taxTotal":2000,
-                         "companyBenefits":[{"typeDescription":"Benifit1","amount":1000},{"typeDescription":"Benifit2","amount":2000}]}],
-           "allowances":[{"typeDescription":"desc","amount":222}]
+                         "companyBenefits":[]}],
+           "allowances":[]
         }""")
 
         PayAsYouEarnDetails.formats.reads(json) shouldBe JsError((JsPath \ "employments" \0 \"earlierYearUpdates", ValidationError(List("error.path.missing"))))

@@ -30,7 +30,7 @@ case class Employment(payeReference:String,
 
 
 
-case class CompanyBenefit(typeDescription:String,amount:BigDecimal)
+case class CompanyBenefit(typeDescription:String,amount:BigDecimal, iabdMessageKey: String)
 
 
 object CompanyBenefit {
@@ -43,7 +43,7 @@ object Employment {
 }
 
 
-case class Allowance(typeDescription:String,amount:BigDecimal)
+case class Allowance(typeDescription:String,amount:BigDecimal, iabdMessageKey: String)
 
 object Allowance {
   implicit val formats = Json.format[Allowance]

@@ -42,7 +42,7 @@ class SelectClientFormSpec extends PlaySpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.form.need-value"))))
+      assert(validatedForm.errors.contains(FormError("clientId", List("employmenthistory.select.client.form.need-value"))))
     }
     "return an longer then 9  error with no nino entered" in {
       val postData = Json.obj(
@@ -50,7 +50,7 @@ class SelectClientFormSpec extends PlaySpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.form.invalid-value-length"))))
+      assert(validatedForm.errors.contains(FormError("clientId", List("employmenthistory.select.client.form.invalid-value-length"))))
     }
     "return an invalid format value error when an  invalid nino entered" in {
       val postData = Json.obj(
@@ -58,7 +58,7 @@ class SelectClientFormSpec extends PlaySpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData)
-      assert(validatedForm.errors.contains(FormError("clientId", List("mtdfi.select_client.invalid-nino-format"))))
+      assert(validatedForm.errors.contains(FormError("clientId", List("employmenthistory.select.client.invalid-nino-format"))))
     }
   }
 }

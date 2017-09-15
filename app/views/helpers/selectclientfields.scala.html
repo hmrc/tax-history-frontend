@@ -18,9 +18,9 @@
 @(clientId:Field)(implicit messages: play.api.i18n.Messages)
 
 @textinput(clientId,
- 'label -> Messages("mtdfi.select_client.clients.nino"),
+ 'label -> Messages("employmenthistory.select.client.clients.nino"),
 '_labelClass -> "visuallyhidden",
 '_maxlength -> "39",
  '_inputClass -> "form-control form-control--block",
- 'hint -> Messages("mtdfi.select_client.nino.hint")
+ 'hint -> Messages("employmenthistory.select.client.nino.hint")
 )
