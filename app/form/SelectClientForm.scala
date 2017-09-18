@@ -16,8 +16,6 @@
 
 package form
 
-import java.util.Optional
-
 import models.taxhistory.SelectClient
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
@@ -27,28 +25,13 @@ object SelectClientForm {
   val selectClientForm: Form[SelectClient] = {
     Form(mapping(
       "clientId" -> text
-        .verifying("selectclient.error.empty", text => nonEmptyInput(text))
-        .verifying("selectclient.error.invalid-length", text => nestedCheck(text, nonEmptyInput, lengthCheck))
-        .verifying("selectclient.error.invalid-format", text => nestedCheck(text), )
+        .verifying("selectclient.error.empty", isNonEmpty(_))
+        .verifying("selectclient.error.invalid-length", text => if(isNonEmpty(text)) isValidLength(text) else true )
+        .verifying("selectclient.error.invalid-format",text => if(isNonEmpty(text) && isValidLength(text)) isValidNino(text) else true)
     )(SelectClient.apply)(SelectClient.unapply))
   }
 
-
-  def lengthCheck(nino: String): Boolean = {
-    nino.length == 9
-  }
-
-  def nonEmptyInput (nino: String): Boolean = {
-    nino.nonEmpty
-  }
-
-  def nestedCheck(nino: String, functionA :String => Boolean, functionB :String => Boolean): Boolean = {
-    if (!functionA(nino)) true else functionB(nino)
-  }
-
-  def genericCheck[T:(String,T, T) => Boolean](nino: String, randomFunction: (String,T, T) => Boolean, otherFunction: (String, Option[T], Option[T])  => Boolean): Boolean = {
-    if (!randomFunction(nino)) true else otherFunction(nino, None, None)
-    }
-  }
+  private def isNonEmpty(nino: String):    Boolean = nino.nonEmpty
+  private def isValidLength(nino: String): Boolean = nino.length == 9
+  private def isValidNino(nino: String):   Boolean = isValid(nino)
 }
-

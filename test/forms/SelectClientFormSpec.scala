@@ -45,7 +45,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
 
       val validatedForm = selectClientForm.bind(postData)
       val errors = validatedForm.errors
-      errors shouldBe List(FormError("clientId", List("selectclient.error.invalid-length")))
+      errors shouldBe List(FormError("clientId", List("selectclient.error.empty")))
     }
 
     "return an invalid length error when nino is shorter than nine characters" in {
