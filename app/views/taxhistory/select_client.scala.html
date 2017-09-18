@@ -26,21 +26,21 @@
 
 
 
-@views.html.main_template(title = Messages("mtdfi.select_client.title"),
+@views.html.main_template(title = Messages("selectclient.title"),
                           bodyClasses = None,
                           sidebarLinks = None,
                           headerNavLink = headerNavLink) {
-    <header class="page-header"><h1 class="heading-xlarge">@Messages("mtdfi.select_client.title")</h1></header>
+    <header class="page-header"><h1 class="heading-xlarge">@Messages("selectclient.heading")</h1></header>
     <section class="section" >
         @form(routes.MainController.submitSelectClientPage()) {
             @if(sCForm.hasErrors) {
-                @formErrorSummary(Messages("mtdfi.select_client.form.title"), sCForm, Seq.empty)
+                @formErrorSummary(sCForm, Seq.empty)
             }
             <fieldset class="form-field-group">
             @selectclientfields(sCForm("clientId"))
             </fieldset>
             @submit('id -> "continueButton") {
-                @Messages("mtdfi.select_client.continue")
+                @Messages("selectclient.continue")
             }
         }
     </section>

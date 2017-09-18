@@ -14,23 +14,22 @@
  * limitations under the License.
  *@
 
-@(heading: String, form: Form[_], classes: Seq[String] = Seq.empty, dataJourney: Option[String] = None)(implicit messages: play.api.i18n.Messages)
+@(form: Form[_], classes: Seq[String] = Seq.empty, dataJourney: Option[String] = None)(implicit messages: play.api.i18n.Messages)
 <div class="flash error-summary@if(form.hasErrors) { error-summary--show} @classes.mkString(" ")"
 id="error-summary-display"
 role="alert"
 aria-labelledby="error-summary-heading"
 tabindex="-1">
-    <h2 id="error-summary-heading" class="h3-heading">@heading</h2>
-    <ul class="js-error-summary-messages">
     @if(form.hasErrors) {
         @form.errors.map { error =>
-            <li role="tooltip" @dataJourney.map(page => Html(s"""data-journey="${page}:error:${error.key}""""))>
-                <a href="#@error.key" id="@{error.key}-error-summary" data-focuses="@error.key">
-                @error.messages.map(x => Messages(x))
-                </a>
-            </li>
-
+            <h2 id="error-summary-heading" class="h3-heading">@error.messages.map(x => Messages(s"$x.title"))</h2>
+                <ul class="js-error-summary-messages">
+                    <li role="tooltip" @dataJourney.map(page => Html(s"""data-journey="${page}:error:${error.key}""""))>
+                        <a href="#@error.key" id="@{error.key}-error-summary" data-focuses="@error.key">
+                            @error.messages.map(x => Messages(s"$x.link"))
+                        </a>
+                    </li>
+                </ul>
         }
     }
-    </ul>
 </div>

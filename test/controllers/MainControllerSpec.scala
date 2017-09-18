@@ -224,7 +224,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       implicit val materializer = ActorMaterializer()
       val result = controller.getTaxHistory()(fakeRequest)
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("mtdfi.select_client.title"))
+      bodyOf(await(result)) should include(Messages("selectclient.title"))
     }
 
     "return error page when connector not available" in new LocalSetup {

@@ -41,6 +41,7 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
       val view = views.html.taxhistory.employments_main( nino, taxYear, payePartialModel, None)
 
       val title = Messages("employmenthistory.title")
+      doc.title mustBe title
       heading.html must be(Messages("employmenthistory.header",nino))
       doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
       doc.select("script").toString contains
@@ -49,8 +50,8 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
     "have correct title and heading for the person" in new ViewFixture {
       val view = views.html.taxhistory.employments_main( nino, taxYear, payePartialModel, person)
-
       val title = Messages("employmenthistory.title")
+      doc.title mustBe title
       heading.html must be(Messages("employmenthistory.header","James Dean"))
       doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
       doc.select("script").toString contains
