@@ -42,9 +42,9 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
       val title = Messages("employmenthistory.title")
       heading.html must be(Messages("employmenthistory.header",nino))
-      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
+      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear.toString,(taxYear+1).toString))
       doc.select("script").toString contains
-        "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
+        "ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
     }
 
     "have correct title and heading for the person" in new ViewFixture {
@@ -52,9 +52,9 @@ class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpC
 
       val title = Messages("employmenthistory.title")
       heading.html must be(Messages("employmenthistory.header","James Dean"))
-      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear+" to "+(taxYear+1)))
+      doc.body().getElementById("taxYear").text() must be(Messages("employmenthistory.taxyear",taxYear.toString,(taxYear+1).toString))
       doc.select("script").toString contains
-        "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
+        "ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
     }
 
     "include employment breakdown" in new ViewFixture {
