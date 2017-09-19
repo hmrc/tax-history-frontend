@@ -82,9 +82,11 @@
     )
 }
 
+@alphaBanner = {@helpers.phase_banner()}
+
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = betaBanner,
+      betaBanner = alphaBanner,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
 }
