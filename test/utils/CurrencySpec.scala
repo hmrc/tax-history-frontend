@@ -16,25 +16,17 @@
 
 package utils
 
-import java.util.Locale
+import org.scalatestplus.play.PlaySpec
 
-case class Currency(value: BigDecimal) {
+class CurrencySpec extends PlaySpec {
 
-  override def toString: String = {
-    val formatter = java.text.NumberFormat.getCurrencyInstance(Locale.UK)
-    formatter.format(value)
+  "Currency" must {
+    "format +ve value successfully" in {
+      Currency(BigDecimal(100.55)).toString must be("£100.55")
+    }
+
+    "format -ve value successfully" in {
+      Currency(BigDecimal(-100.55)).toString must be("-£100.55")
+    }
   }
-
-}
-
-object Currency {
-
-  implicit def fromBD(value: BigDecimal): Currency = Currency(value)
-
-  implicit def fromInt(value: Int): Currency = Currency(value)
-
-  implicit def currencyToDouble(c: Currency): Double = c.value.toDouble
-
-  implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
-
 }

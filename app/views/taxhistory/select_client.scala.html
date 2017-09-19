@@ -24,13 +24,11 @@
     sideBarLink: Option[Html] = None,
     headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
-
-
-@views.html.main_template(title = Messages("selectclient.title"),
+@views.html.main_template(title = Messages("employmenthistory.select.client.title"),
                           bodyClasses = None,
                           sidebarLinks = None,
                           headerNavLink = headerNavLink) {
-    <header class="page-header"><h1 class="heading-xlarge">@Messages("selectclient.heading")</h1></header>
+    <header class="page-header"><h1 class="heading-xlarge">@Messages("employmenthistory.select.client.heading")</h1></header>
     <section class="section" >
         @form(routes.MainController.submitSelectClientPage()) {
             @if(sCForm.hasErrors) {
@@ -40,7 +38,7 @@
             @selectclientfields(sCForm("clientId"))
             </fieldset>
             @submit('id -> "continueButton") {
-                @Messages("selectclient.continue")
+                @Messages("employmenthistory.select.client.continue")
             }
         }
     </section>

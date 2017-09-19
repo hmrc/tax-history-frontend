@@ -10,9 +10,8 @@ lbl.amount = Amount
 lbl.date.start = Start date
 lbl.date.end = End date
 
-
 ################################## employmenthistory ##############################################
-employmenthistory.taxyear =Tax year {0}
+employmenthistory.taxyear =Tax year 6 April {0} to 5 April {1}
 employmenthistory.title = View client’s PAYE record
 employmenthistory.header = View {0}’s PAYE record
 employmenthistory.missing.client.name = client
@@ -26,22 +25,59 @@ employmenthistory.technicalerror.header = Sorry, there is a technical problem
 employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
 employmenthistory.allowance.heading = Allowances
-employmenthistory.eyu.pay = EYU pay
-employmenthistory.eyu.tax = EYU tax
+employmenthistory.eyu.pay = Pay
+employmenthistory.eyu.tax = Tax
 employmenthistory.eyu.date.received = Date received
 
-################################ Select Client ##############################################
-selectclient.title=Enter a client’s National Insurance number
-selectclient.heading=Enter a client’s National Insurance number
-selectclient.clients.nino=Client National Insurance number
-selectclient.nino.hint=For example, ‘QQ123456C’
-selectclient.continue=Continue
+################################## Company Benefits & Allowances ##################################
 
-selectclient.error.invalid-length.title=National Insurance number must be 9 characters.
-selectclient.error.invalid-length.link=Please enter a valid National Insurance number
-selectclient.error.invalid-format.title=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
-selectclient.error.invalid-format.link=Please enter a valid National Insurance number
-selectclient.error.empty.title=National Insurance number must be 9 characters.
-selectclient.error.empty.link=Please enter a National Insurance number
+employmenthistory.cb.EmployerProvidedServices=Employer provided services
+employmenthistory.cb.CarFuelBenefit=Car fuel benefit
+employmenthistory.cb.MedicalInsurance=Medical insurance
+employmenthistory.cb.CarBenefit=Car benefit
+employmenthistory.cb.TelephoneBenefit=Telephone
+employmenthistory.cb.ServiceBenefit=Service benefits
+employmenthistory.cb.TaxableExpenseBenefit=Taxable expenses benefits
+employmenthistory.cb.VanBenefit=Van benefit
+employmenthistory.cb.VanFuelBenefit=Van fuel benefit
+employmenthistory.cb.BeneficialLoan=Beneficial loan
+
+employmenthistory.cb.TotalBenefitInKind=Benefits in kind
+employmenthistory.cb.Accommodation=Accommodation
+employmenthistory.cb.Assets=Assets
+employmenthistory.cb.AssetTransfer=Assets transferred
+employmenthistory.cb.EducationalService=Education services
+employmenthistory.cb.Entertaining=Entertaining
+employmenthistory.cb.ExpensesPay=Expenses
+employmenthistory.cb.Mileage=Mileage
+employmenthistory.cb.NonQualifyingRelocationExpense=Non-qualifying relocation expenses
+employmenthistory.cb.NurseryPlaces=Nursery places
+employmenthistory.cb.OtherItems=Other items
+employmenthistory.cb.PaymentEmployeesBehalf=Payments on employee’s behalf
+employmenthistory.cb.PersonalIncidentExpenses=Personal incidental expenses
+employmenthistory.cb.QualifyingRelocationExpenses=Qualifying relocation expenses
+employmenthistory.cb.EmployerProvidedProfessionalSubscription=Employer provided professional subscriptions
+employmenthistory.cb.IncomeTaxPaidNotDeductedFromDirectorsRemuneration=Income Tax paid (but not deducted from director’s remuneration)
+employmenthistory.cb.TravelAndSubsistence=Travel and subsistence
+employmenthistory.cb.VoucherAndCreditCards=Vouchers and credit cards
+employmenthistory.cb.NonCashBenefit=Non Cash benefit
+
+
+employmenthistory.al.FlatRateJobExpenses=Flat rate job expenses
+employmenthistory.al.ProfessionalSubscriptions=Professional subscriptions
+employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
+
+################################ Select Client ####################################################
+employmenthistory.select.client.continue=Continue
+employmenthistory.select.client.title=Enter a client’s National Insurance number
+employmenthistory.select.client.heading=Enter a client’s National Insurance number
+employmenthistory.select.client.clients.nino=Client National Insurance number
+employmenthistory.select.client.nino.hint=For example, ‘QQ123456C’
+employmenthistory.select.client.error.invalid-length.title=National Insurance number must be 9 characters.
+employmenthistory.select.client.error.invalid-length.link=Please enter a valid National Insurance number
+employmenthistory.select.client.error.invalid-format.title=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
+employmenthistory.select.client.error.invalid-format.link=Please enter a valid National Insurance number
+employmenthistory.select.client.error.empty.title=National Insurance number must be 9 characters.
+employmenthistory.select.client.error.empty.link=Please enter a National Insurance number
 
 

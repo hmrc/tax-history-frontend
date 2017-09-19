@@ -25,9 +25,9 @@ object SelectClientForm {
   val selectClientForm: Form[SelectClient] = {
     Form(mapping(
       "clientId" -> text
-        .verifying("selectclient.error.empty", isNonEmpty(_))
-        .verifying("selectclient.error.invalid-length", text => if(isNonEmpty(text)) isValidLength(text) else true )
-        .verifying("selectclient.error.invalid-format",text => if(isNonEmpty(text) && isValidLength(text)) isValidNino(text) else true)
+        .verifying("employmenthistory.select.client.error.empty", isNonEmpty(_))
+        .verifying("employmenthistory.select.client.error.invalid-length", text => if(isNonEmpty(text)) isValidLength(text) else true )
+        .verifying("employmenthistory.select.client.error.invalid-format",text => if(isNonEmpty(text) && isValidLength(text)) isValidNino(text) else true)
     )(SelectClient.apply)(SelectClient.unapply))
   }
 

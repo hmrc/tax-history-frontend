@@ -37,22 +37,22 @@ class select_clientSpec extends GenericTestHelper with MustMatchers with TestUti
 
     "have the correct title" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.title mustBe Messages("selectclient.title")
+      doc.title mustBe Messages("employmenthistory.select.client.title")
     }
 
     "have the correct heading" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      heading.html mustBe Messages("selectclient.heading")
+      heading.html mustBe Messages("employmenthistory.select.client.heading")
     }
 
     "display input field label for accessibility" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.select("label.visuallyhidden").text mustBe Messages("selectclient.clients.nino")
+      doc.select("label.visuallyhidden").text mustBe Messages("employmenthistory.select.client.clients.nino")
     }
 
     "display input field hint" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.body.getElementsByClass("form-hint").get(0).text mustBe Messages("selectclient.nino.hint")
+      doc.body.getElementsByClass("form-hint").get(0).text mustBe Messages("employmenthistory.select.client.nino.hint")
     }
 
     "display input field" in new ViewFixture {
@@ -67,26 +67,26 @@ class select_clientSpec extends GenericTestHelper with MustMatchers with TestUti
 
     "capitalise input characters" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.body.getElementById("clientId").className must include ("uppercaseOnly")
+      doc.body.getElementById("clientId").className must include ("uppercase-only")
     }
 
     "display continue button" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.body.getElementById("continueButton").text mustBe Messages("selectclient.continue")
+      doc.body.getElementById("continueButton").text mustBe Messages("employmenthistory.select.client.continue")
       doc.body.getElementById("continueButton").attr("type") mustBe "submit"
     }
 
     "display correct link for too short error hyperlink" in new ViewFixture {
       val view = views.html.taxhistory.select_client(invalidFormTooShort)
       val errorLink = doc.body.getElementById("clientId-error-summary")
-      errorLink.text mustBe Messages("selectclient.error.invalid-length.link")
+      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-length.link")
       errorLink.attr("href") mustBe "#clientId"
     }
 
     "display correct link for invalid format hyperlink" in new ViewFixture {
       val view = views.html.taxhistory.select_client(invalidFormWrongFormat)
       val errorLink = doc.body.getElementById("clientId-error-summary")
-      errorLink.text mustBe Messages("selectclient.error.invalid-format.link")
+      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-format.link")
       errorLink.attr("href") mustBe "#clientId"
     }
   }

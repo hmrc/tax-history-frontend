@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2017 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,11 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
-
-import java.util.Locale
-
-case class Currency(value: BigDecimal) {
-
-  override def toString: String = {
-    val formatter = java.text.NumberFormat.getCurrencyInstance(Locale.UK)
-    formatter.format(value)
-  }
-
-}
-
-object Currency {
-
-  implicit def fromBD(value: BigDecimal): Currency = Currency(value)
-
-  implicit def fromInt(value: Int): Currency = Currency(value)
-
-  implicit def currencyToDouble(c: Currency): Double = c.value.toDouble
-
-  implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
-
-}
+<div class="phase-banner">
+    <p>
+        <strong class="phase-tag">ALPHA</strong>
+        <span>This is a new service </span>
+    </p>
+</div>
