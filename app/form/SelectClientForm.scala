@@ -33,5 +33,5 @@ object SelectClientForm {
 
   private def isNonEmpty(nino: String):    Boolean = nino.nonEmpty
   private def isValidLength(nino: String): Boolean = nino.length == 9
-  private def isValidNino(nino: String):   Boolean = isValid(nino)
+  private def isValidNino(nino: String):   Boolean = isValid(nino.toUpperCase)
 }
