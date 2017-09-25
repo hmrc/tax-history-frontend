@@ -32,6 +32,11 @@ class PersonSpecs  extends UnitSpec{
       person.getName shouldBe Some("FirstName LastName")
     }
 
+    "make name title case when name is populated and uppercase" in {
+      val person = Person(Some("FIRSTNAME") ,Some("LASTNAME"), false)
+      person.getName shouldBe Some("Firstname Lastname")
+    }
+
     "able to retrieve name when Person is populated and deceased" in {
       val person = Person(Some("FirstName") ,Some("LastName"), true)
       person.getName shouldBe Some("FirstName LastName")
