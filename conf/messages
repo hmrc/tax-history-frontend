@@ -10,7 +10,6 @@ lbl.amount = Amount
 lbl.date.start = Start date
 lbl.date.end = End date
 
-
 ################################## employmenthistory ##############################################
 employmenthistory.taxyear =Tax year 6 April {0} to 5 April {1}
 employmenthistory.title = View client’s PAYE record
@@ -74,10 +73,14 @@ employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
 employmenthistory.select.client.title=Enter a client’s National Insurance number
-employmenthistory.select.client.form.title=Enter a National Insurance number
+employmenthistory.select.client.heading=Enter a client’s National Insurance number
 employmenthistory.select.client.clients.nino=Client National Insurance number
 employmenthistory.select.client.nino.hint=For example, ‘QQ123456C’
-employmenthistory.select.client.form.need-value=National Insurance number cannot be empty
-employmenthistory.select.client.form.invalid-value-length=National Insurance number was longer then 9 characters
-employmenthistory.select.client.invalid-nino-format=Enter a valid National Insurance number
+employmenthistory.select.client.error.invalid-length.title=National Insurance number must be 9 characters.
+employmenthistory.select.client.error.invalid-length.link=Please enter a valid National Insurance number
+employmenthistory.select.client.error.invalid-format.title=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
+employmenthistory.select.client.error.invalid-format.link=Please enter a valid National Insurance number
+employmenthistory.select.client.error.empty.title=National Insurance number must be 9 characters.
+employmenthistory.select.client.error.empty.link=Please enter a National Insurance number
+
 

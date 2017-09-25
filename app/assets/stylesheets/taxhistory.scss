@@ -19,6 +19,10 @@ table tr.border-none td {
   }
 }
 
+.uppercase-only {
+  text-transform: uppercase;
+}
+
 // Some joker added !important on h2 margin-top in Assets Frontend application.min.css
 article h2.org-name {
   margin-top: 2em !important;

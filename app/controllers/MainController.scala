@@ -35,7 +35,7 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.play.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
-import views.html.select_client
+import views.html.taxhistory.select_client
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -161,7 +161,7 @@ class MainController @Inject()(
         val sidebarLink = Link.toInternalPage(
           url=FrontendAppConfig.AfiHomePage,
           value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-        Future.successful(Ok(views.html.select_client(selectClientForm, Some(sidebarLink),
+        Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(sidebarLink),
           headerNavLink=Some(logoutLink))))
   }
 
@@ -217,7 +217,7 @@ class MainController @Inject()(
           case Some(affinityG) ~ allEnrols ⇒
             (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
               case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.MainController.getTaxHistory())
-                .addingToSession("USER_NINO" -> s"${validFormData.clientId}")
+                .addingToSession("USER_NINO" -> s"${validFormData.clientId.toUpperCase}")
               case (`isAnAgent`, None) => redirectToSubPage
               case _ => redirectToExitPage
             }
