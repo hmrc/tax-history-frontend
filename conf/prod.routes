@@ -1,4 +1,4 @@
-GET         /stylesheets/*file                      @controllers.Assets.at(path="/public/stylesheets", file)
+
 GET         /tax-history                            @controllers.MainController.getTaxHistory()
 GET         /tax-history/logout                     @controllers.MainController.logout()
 GET         /tax-history/agent/select-client        @controllers.MainController.getSelectClientPage()
@@ -7,3 +7,6 @@ POST        /tax-history/agent/select-client        @controllers.MainController.
 ->          /template                               template.Routes
 
 GET         /admin/metrics                          @com.kenshoo.play.metrics.MetricsController.metrics
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /assets/*file                           @controllers.Assets.at(path="/public", file)
