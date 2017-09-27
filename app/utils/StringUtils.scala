@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-package models.taxhistory
+package utils
 
-import play.api.libs.json.Json
-import utils.StringUtils.uppcaseToTitleCase
-
-case class Person(firstName:Option[String], lastName:Option[String], deceased:Boolean){
-  def getName = {
-    for {
-      f <- this.firstName
-      l <- this.lastName
-    }yield (uppcaseToTitleCase(f) + " " + uppcaseToTitleCase(l))
+object StringUtils {
+  def uppcaseToTitleCase(s:String): String ={
+    if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
-}
-
-object Person {
-  implicit val formats = Json.format[Person]
 }
