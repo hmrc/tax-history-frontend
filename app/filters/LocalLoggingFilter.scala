@@ -22,8 +22,8 @@ import com.typesafe.config.Config
 import net.ceedubs.ficus.Ficus._
 import play.api.Configuration
 import uk.gov.hmrc.play.config.ControllerConfig
-import uk.gov.hmrc.play.filters.MicroserviceFilterSupport
 import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
+import uk.gov.hmrc.play.microservice.filters.MicroserviceFilterSupport
 
 
 @Singleton

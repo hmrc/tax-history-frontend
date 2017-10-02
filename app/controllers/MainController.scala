@@ -32,13 +32,13 @@ import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.frontend.auth.Actions
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 import views.html.taxhistory.select_client
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ BadGatewayException, HeaderCarrier }
 
 
 trait BaseController extends FrontendController with Actions with Redirects with I18nSupport

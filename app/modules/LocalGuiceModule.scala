@@ -20,11 +20,10 @@ import com.google.inject.AbstractModule
 import config.WSHttp
 import filters._
 import play.api.i18n.MessagesApi
-import uk.gov.hmrc.play.filters.CacheControlFilter
 import uk.gov.hmrc.play.filters.frontend._
 import uk.gov.hmrc.play.frontend.filters.SessionCookieCryptoFilter
-import uk.gov.hmrc.play.http.HttpGet
 import uk.gov.hmrc.play.http.ws.WSHttp
+import uk.gov.hmrc.play.microservice.filters.CacheControlFilter
 
 class LocalGuiceModule extends AbstractModule {
   override def configure() = {

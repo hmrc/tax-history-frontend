@@ -29,12 +29,12 @@ import play.api.libs.json.Json
 import play.i18n.MessagesApi
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.http.{HttpGet, HttpResponse}
 import uk.gov.hmrc.play.http.ws.WSHttp
 import org.joda.time.LocalDate
 import utils.TestUtil
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpResponse
 
 class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 

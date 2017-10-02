@@ -35,10 +35,10 @@ import play.api.test.FakeRequest
 import org.joda.time.LocalDate
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
 import utils.TestUtil
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{ BadGatewayException, HttpResponse, SessionKeys }
 
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 
