@@ -19,11 +19,18 @@ package config
 import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
+import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.config.{AppName, RunMode}
-import uk.gov.hmrc.play.http.ws.{WSDelete, WSGet, WSPost, WSPut}
+import uk.gov.hmrc.play.http.ws._
 
 @ImplementedBy(classOf[WSHttp])
-trait WSHttpT extends WSGet with WSPut with WSPost with WSDelete with AppName with RunMode
+trait WSHttpT extends HttpGet with WSGet
+  with HttpPut with WSPut
+  with HttpPost with WSPost
+  with HttpDelete with WSDelete
+  with HttpPatch with WSPatch
+  with AppName with RunMode
+
 @Singleton
 class WSHttp extends WSHttpT {
   override val hooks = NoneRequired

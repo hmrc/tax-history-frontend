@@ -21,7 +21,7 @@ import javax.inject.Singleton
 
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.config.AppName
-import uk.gov.hmrc.play.microservice.config.LoadAuditingConfig
+import uk.gov.hmrc.play.frontend.config.LoadAuditingConfig
 
 
 @Singleton

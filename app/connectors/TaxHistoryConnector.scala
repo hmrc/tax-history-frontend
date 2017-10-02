@@ -23,6 +23,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.config.ServicesConfig
 
 import scala.concurrent.Future
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import uk.gov.hmrc.http.{ HeaderCarrier, HttpReads, HttpResponse }
 
 @Singleton

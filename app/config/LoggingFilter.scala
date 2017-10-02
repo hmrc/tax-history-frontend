@@ -16,8 +16,7 @@
 
 package config
 
-import uk.gov.hmrc.play.http.logging.filters.FrontendLoggingFilter
-import uk.gov.hmrc.play.microservice.filters.MicroserviceFilterSupport
+import uk.gov.hmrc.play.frontend.filters.{FrontendLoggingFilter, MicroserviceFilterSupport}
 
 object LoggingFilter extends FrontendLoggingFilter with MicroserviceFilterSupport {
   override def controllerNeedsLogging(controllerName: String) = ControllerConfiguration.paramsForController(controllerName).needsLogging

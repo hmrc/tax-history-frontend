@@ -57,7 +57,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures w
   "TaxHistoryConnector" should {
 
     "fetch tax history" in new LocalSetup {
-      when(connector.httpGet.GET[HttpResponse](any())(any(), any())).thenReturn(
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))))))
 
       val result = await(connector.getTaxHistory(Nino(nino), 2017))

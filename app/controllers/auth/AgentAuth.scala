@@ -20,14 +20,14 @@ import config.FrontendAppConfig.{AfiErrorPage, AfiHomePage, AfiNoAgentServicesAc
 import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.Retrievals.{affinityGroup, allEnrolments}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.frontend.Redirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
+import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.play.frontend.config.AuthRedirects
 
 import scala.concurrent.Future
 
-trait AgentAuth extends FrontendController with AuthorisedFunctions with Redirects {
+trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRedirects {
 
   def redirectToSubPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
 
