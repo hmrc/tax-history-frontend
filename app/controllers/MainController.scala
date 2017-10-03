@@ -22,17 +22,17 @@ import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
-import models.taxhistory.{Allowance, CompanyBenefit, Employment, PayAsYouEarnDetails, Person}
+import models.taxhistory.{PayAsYouEarnDetails, Person}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, _}
+import uk.gov.hmrc.auth.core.retrieve.~
 import play.api.{Configuration, Environment, Logger}
-import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
-import uk.gov.hmrc.auth.core.{~, _}
-import uk.gov.hmrc.auth.frontend.Redirects
+import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
 import uk.gov.hmrc.play.frontend.auth.Actions
+import uk.gov.hmrc.play.frontend.config.AuthRedirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
-import uk.gov.hmrc.play.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 import views.html.taxhistory.select_client
@@ -41,7 +41,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-trait BaseController extends FrontendController with Actions with Redirects with I18nSupport
+trait BaseController extends FrontendController with Actions with AuthRedirects with I18nSupport
 
 class MainController @Inject()(
                                 val configDecorator: ConfigDecorator,

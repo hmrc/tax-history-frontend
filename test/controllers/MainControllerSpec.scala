@@ -35,10 +35,11 @@ import play.api.test.FakeRequest
 import org.joda.time.LocalDate
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.play.http.{BadGatewayException, HttpResponse, SessionKeys}
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import utils.TestUtil
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.{BadGatewayException, HttpResponse, SessionKeys}
 
 class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 
@@ -63,7 +64,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
   lazy val authority = buildFakeAuthority(true)
 
   lazy val newEnrolments = Set(
-    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")), confidenceLevel = ConfidenceLevel.L200,
+    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
       state="",delegatedAuthRule = None)
   )
 
@@ -83,7 +84,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       val person = Some(Person(Some("Barry"),Some("Evans"), false))
       val c = injected[MainController]
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
@@ -98,7 +99,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
       val c = injected[MainController]
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,None)))
@@ -115,7 +116,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00 ,"ProfessionalSubscriptions")))
       val c = injected[MainController]
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
@@ -133,7 +134,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
       val c = injected[MainController]
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(paye)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
@@ -148,7 +149,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
 
       val c = injected[MainController]
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       c
@@ -162,7 +163,7 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       val paye = PayAsYouEarnDetails(List(employment), List(Allowance("desc", 222.00, "FlatRateJobExpenses"),Allowance("desc1", 333.00, "ProfessionalSubscriptions")))
 
       val c = injected[MainController]
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any())).thenReturn(
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(Set()))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(paye)))))
       c
