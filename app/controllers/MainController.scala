@@ -142,7 +142,7 @@ class MainController @Inject()(
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-              Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
+              Ok(views.html.taxhistory.employment_summary(nino.nino, cy1, taxHistory, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
             }
             case NOT_FOUND => {
               handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))

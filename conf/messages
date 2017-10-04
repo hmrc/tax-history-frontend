@@ -9,11 +9,13 @@ lbl.company.benefits.desc = Benefits
 lbl.amount = Amount
 lbl.date.start = Start date
 lbl.date.end = End date
+lbl.to = to
+lbl.present = present
 
 ################################## employmenthistory ##############################################
 employmenthistory.taxyear =Tax year 6 April {0} to 5 April {1}
 employmenthistory.title = View client’s PAYE record
-employmenthistory.header = View {0}’s PAYE record
+employmenthistory.header = PAYE record for {0}
 employmenthistory.missing.client.name = client
 
 employmenthistory.unauthorised.title = You are not authorised to view this PAYE record
@@ -31,6 +33,7 @@ employmenthistory.allowance.heading = Allowances
 employmenthistory.eyu.pay = Pay
 employmenthistory.eyu.tax = Tax
 employmenthistory.eyu.date.received = Date received
+employmenthistory.view.record = View record
 
 ################################## Company Benefits & Allowances ##################################
 
