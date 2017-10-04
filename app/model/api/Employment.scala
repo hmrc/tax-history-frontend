@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package utils
+package model.api
 
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.domain.{Generator, Nino}
+import java.time.LocalDate
+import java.util.UUID
 
-import scala.io.Source
-import scala.util.Random
+import play.api.libs.json.Json
 
-object TestUtil extends TestUtil
+case class Employment(employmentId:UUID = UUID.randomUUID(),
+                      startDate:LocalDate,
+                      endDate:Option[LocalDate] = None,
+                      payeReference:String,
+                      employerName:String)
 
-trait TestUtil {
-
-  def loadFile(path:String): JsValue = {
-    val jsonString = Source.fromURL(getClass.getResource(path)).mkString
-    Json.parse(jsonString)
-  }
-
-  def randomNino() = Nino(new Generator(new Random()).nextNino.value.replaceFirst("MA", "AA"))
+object Employment {
+  implicit val formats = Json.format[Employment]
 }
+
