@@ -28,10 +28,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.http.HttpResponse
 import utils.TestUtil
 
 import scala.concurrent.Future
+import uk.gov.hmrc.http.HttpResponse
 
 class CitizenDetailsConnectorSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 
@@ -54,7 +54,7 @@ class CitizenDetailsConnectorSpec extends BaseSpec with MockitoSugar with Fixtur
   "CitizenDetailsConnector" should {
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(connector.httpGet.GET[HttpResponse](any())(any(), any())).thenReturn(
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(Person(Some("Davey"),Some("Jones"), false)))))))
 
       val result = await(connector.getPersonDetails(Nino(nino)))

@@ -21,9 +21,10 @@ import javax.inject.{Inject, Singleton}
 import config.WSHttpT
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.http.{HeaderCarrier, HttpReads, HttpResponse}
 
 import scala.concurrent.Future
+import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
+import uk.gov.hmrc.http.{ HeaderCarrier, HttpReads, HttpResponse }
 
 @Singleton
 class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig {
