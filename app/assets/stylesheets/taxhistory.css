@@ -64,14 +64,3 @@ table caption {
   text-transform: none;
 }
 
-.clearfix {
-  overflow: auto;
-}
-
-.float-left{
-  float:left;
-}
-
-.float-right{
-  float:right;
-}
