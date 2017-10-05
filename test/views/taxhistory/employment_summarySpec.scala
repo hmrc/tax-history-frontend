@@ -16,12 +16,14 @@
 
 package views.taxhistory
 
-import models.taxhistory._
+import java.util.UUID
+
+import model.api.Employment
+import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
-import uk.gov.hmrc.urls.Link
-import utils.{Currency, DateHelper, TestUtil}
+import utils.{DateHelper, TestUtil}
 import views.{Fixture, GenericTestHelper}
 
 class employment_summarySpec extends GenericTestHelper with MustMatchers with Constants {
@@ -32,13 +34,12 @@ class employment_summarySpec extends GenericTestHelper with MustMatchers with Co
     val nino = TestUtil.randomNino.toString()
     val taxYear = 2017
     val person = Some(Person(Some("James"),Some("Dean"),false))
-
   }
 
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, payePartialModel, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, None)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -49,6 +50,18 @@ class employment_summarySpec extends GenericTestHelper with MustMatchers with Co
         "ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
     }
   }
+
+  "have correct employment content" in new ViewFixture {
+
+    val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, None)
+
+    employments.foreach(emp => {
+      doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
+      doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
+      doc.getElementsContainingOwnText(emp.endDate.fold("present")(d => DateHelper.formatDate(d))).hasText mustBe true
+
+    })
+  }
 }
 
 trait Constants {
@@ -56,13 +69,19 @@ trait Constants {
   val startDate = new LocalDate("2016-01-21")
   val endDate = new LocalDate("2016-11-01")
 
-  val emp1 =  Employment("12341234", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), List.empty,
-    List.empty)
-  val emp2 = Employment("11111111", "Test Employer Name",  startDate, None, Some(25000.0), Some(2000.0), List.empty,
-    List.empty)
+  val emp1 =  Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-1",
+    employerName = "employer-1",
+    startDate = LocalDate.parse("2016-01-21"),
+    endDate = Some(LocalDate.parse("2017-01-01")))
+
+  val emp2 =  Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-2",
+    employerName = "employer-2",
+    startDate = LocalDate.parse("2016-01-21"),
+    endDate = Some(LocalDate.parse("2017-01-01")))
+
   val employments = List(emp1,emp2)
-
-
-  val partialEmploymentList = List(Employment("12341234", "Test Employer Name", startDate, Some(endDate),None, None))
-  val payePartialModel = PayAsYouEarnDetails(partialEmploymentList, List.empty)
 }

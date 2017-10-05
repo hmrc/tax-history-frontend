@@ -32,9 +32,9 @@ package model.api
  * limitations under the License.
  */
 
-import java.time.LocalDate
 import java.util.UUID
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestUtil

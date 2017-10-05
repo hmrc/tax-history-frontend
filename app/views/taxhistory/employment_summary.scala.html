@@ -14,14 +14,13 @@
  * limitations under the License.
  *@
 
-@import models.taxhistory.PayAsYouEarnDetails
-@import models.taxhistory.Employment
+@import model.api.Employment
 @import models.taxhistory.Person
 @import utils.{Currency, DateHelper}
 
 @(nino: String,
     taxYear: Int,
-    payeDetails: PayAsYouEarnDetails,
+    employments: List[Employment],
     person: Option[Person],
     sideBarLink: Option[Html] = None,
     headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
@@ -49,14 +48,14 @@
         (taxYear+1).toString)</p>
 </header>
 <hr>
-    @payeDetails.employments.map { employment =>
+    @employments.map { employment =>
         <table class="employment-table">
             <tbody>
                 <td scope="row">@employment.employerName
                     <br/>
                     @DateHelper.formatDate(employment.startDate)
                     @Messages("lbl.to")
-                    @employment.endDate.fold(Messages("lbl.present"))(DateHelper.formatDate(_))
+                    @employment.endDate.fold(Messages("lbl.present"))(d =>DateHelper.formatDate(d))
                 </td>
                 <td>
                     <a href="#" class="float-right">@Messages("employmenthistory.view.record")</a>

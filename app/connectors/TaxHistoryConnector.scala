@@ -38,7 +38,7 @@ class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig
 
     val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
 
-    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear")
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments")
   }
 
 }
