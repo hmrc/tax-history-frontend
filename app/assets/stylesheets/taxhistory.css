@@ -64,3 +64,7 @@ table caption {
   text-transform: none;
 }
 
+
+.float-right{
+  float:right;
+}
