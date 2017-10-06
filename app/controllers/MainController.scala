@@ -22,12 +22,13 @@ import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
-import models.taxhistory.{PayAsYouEarnDetails, Person}
+import model.api.Employment
+import models.taxhistory.Person
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{AnyContent, _}
-import uk.gov.hmrc.auth.core.retrieve.~
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
 import uk.gov.hmrc.play.frontend.auth.Actions
@@ -138,11 +139,11 @@ class MainController @Inject()(
         taxHistoryConnector.getTaxHistory(nino, cy1) map {
           historyResponse => historyResponse.status match {
             case OK => {
-              val taxHistory = historyResponse.json.as[PayAsYouEarnDetails]
+              val employments = historyResponse.json.as[List[Employment]]
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-              Ok(views.html.taxhistory.employments_main(nino.nino, cy1, taxHistory, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
+              Ok(views.html.taxhistory.employment_summary(nino.nino, cy1, employments, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
             }
             case NOT_FOUND => {
               handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))

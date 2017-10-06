@@ -1,0 +1,72 @@
+@*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import model.api.Employment
+@import models.taxhistory.Person
+@import utils.{Currency, DateHelper}
+
+@(nino: String,
+    taxYear: Int,
+    employments: List[Employment],
+    person: Option[Person],
+    sideBarLink: Option[Html] = None,
+    headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+
+
+@analyticsAdditionalJs = {
+    ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'});
+}
+
+@getName=@{
+    person.fold(nino) {
+         p => p.getName.fold(nino)(name => name)
+    }
+}
+
+@views.html.main_template(title = Messages("employmenthistory.title"),
+                        bodyClasses = None,
+                        sidebarLinks = None,
+                        headerNavLink = headerNavLink,
+                        analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
+
+<header class="page-header">
+    <h1 class="heading-xlarge">@Messages("employmenthistory.header",getName)</h1>
+        <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
+        (taxYear+1).toString)</p>
+</header>
+<hr>
+    @employments.map { employment =>
+        <table class="employment-table">
+            <tbody>
+                <td scope="row">@employment.employerName
+                    <br/>
+                    @DateHelper.formatDate(employment.startDate)
+                    @Messages("lbl.to")
+                    @employment.endDate.fold(Messages("lbl.present"))(d =>DateHelper.formatDate(d))
+                </td>
+                <td>
+                    <a href="#" class="float-right">@Messages("employmenthistory.view.record")</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+    }
+    <div class="margin-top-large">
+        @sideBarLink.map{link=>@link}
+    </div>
+}
+
