@@ -123,11 +123,11 @@ class MainController @Inject()(
 
 
 
-  def renderTaxHistoryPage(ninoField:Option[Nino],  maybePerson:Either[Int,Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] ={
+  def renderTaxHistoryPage(ninoField:Option[Nino], maybePerson:Either[Int,Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] ={
     maybePerson match {
       case Left(status) => status match {
         case LOCKED => Future.successful(handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.fold("")(nino => nino.toString()))))
-        case _ => retrieveTaxHistoryData(ninoField,None)
+        case _ => Future.successful(handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))//retrieveTaxHistoryData(ninoField,None)
       }
       case Right(person) => retrieveTaxHistoryData(ninoField,Some(person))
     }
