@@ -16,43 +16,129 @@
 
 package controllers
 
-import models.taxhistory.Person
+import config.FrontendAppConfig.getString
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
+import play.api.i18n.Messages
 import play.api.test.FakeRequest
-import support.BaseSpec
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 import scala.concurrent.Future
 
-class SelectClientControllerSpec extends BaseSpec {
+class SelectClientControllerSpec extends BaseControllerSpec {
 
   trait LocalSetup {
 
     lazy val controller = {
 
-      val person = Some(Person(Some("first name"),Some("second name"), false))
       val c = injected[SelectClientController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       c
     }
   }
 
-  "return Status: 400 when invalid data is input" in new LocalSetup {
-    val invalidTestNINO = "9999999999999999"
+  trait NoEnrolmentsSetup {
 
-    val invalidSelectClientForm = Seq(
-      "clientId" -> invalidTestNINO
-    )
+    lazy val controller = {
+      val c = injected[SelectClientController]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(Set()))))
+      c
+    }
+  }
 
-    val result = controller.submitSelectClientPage().apply(FakeRequest()
-      .withFormUrlEncodedBody(invalidSelectClientForm: _*))
-    status(result) shouldBe Status.BAD_REQUEST
+  trait NoEnrolmentsAndNotAnAgentSetup {
+
+    lazy val controller = {
+      val c = injected[SelectClientController]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(Set()))))
+      c
+    }
+  }
+
+  trait NoEnrolmentsAndNoAffinityGroupSetup {
+
+    lazy val controller = {
+      val c = injected[SelectClientController]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(Set()))))
+      c
+    }
+  }
+
+  trait failureOnRetrievalOfEnrolment {
+
+    lazy val controller = {
+      val c = injected[SelectClientController]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.failed(new Exception))
+      c
+    }
+  }
+
+
+  "SelectClientController" must {
+
+    "load select client page" in new LocalSetup {
+      val result  = controller.getSelectClientPage()(fakeRequest)
+      status(result) shouldBe Status.OK
+      contentAsString(result) should include(Messages("employmenthistory.select.client.title"))
+    }
+
+    "redirect to afi-not-an-agent-page when there is no enrolment" in new NoEnrolmentsSetup {
+      val result  = controller.getSelectClientPage()(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
+    }
+
+    "redirect to afi-not-an-agent-page when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
+      val result  = controller.getSelectClientPage()(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
+    }
+
+    "redirect to afi-not-an-agent-page when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
+      val result  = controller.getSelectClientPage()(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
+    }
+
+    "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {
+      val result  = controller.getSelectClientPage()(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(getString("external-url.afi-error.url"))
+    }
+
+    "return Status: 400 when invalid data is entered" in new LocalSetup {
+      val invalidTestNINO = "9999999999999999"
+
+      val invalidSelectClientForm = Seq(
+        "clientId" -> invalidTestNINO
+      )
+
+      val result = controller.submitSelectClientPage().apply(FakeRequest()
+        .withFormUrlEncodedBody(invalidSelectClientForm: _*))
+      status(result) shouldBe Status.BAD_REQUEST
+    }
+
+    "successfully redirect to next page when valid nino is supplied as input" in new LocalSetup {
+
+      val validSelectClientForm = Seq(
+        "clientId" -> nino
+      )
+
+      val result = controller.submitSelectClientPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.MainController.getTaxHistory().url)
+    }
   }
 
 }
+

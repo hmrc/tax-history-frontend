@@ -35,7 +35,7 @@ class SelectClientController @Inject()(
                                         override val config: Configuration,
                                         override val env: Environment,
                                         implicit val messagesApi: MessagesApi
-                                      )  extends BaseController {
+                                      ) extends BaseController {
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {

@@ -31,18 +31,15 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import support.BaseSpec
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
-import utils.TestUtil
 
 import scala.concurrent.Future
 
-class MainControllerSpec extends BaseSpec with TestUtil {
+class MainControllerSpec extends BaseControllerSpec  {
 
   val startDate = new LocalDate("2016-01-21")
-  lazy val nino =randomNino.toString()
 
   val employment =  Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),

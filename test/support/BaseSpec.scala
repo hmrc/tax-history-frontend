@@ -16,54 +16,21 @@
 
 package support
 
-import config.{ConfigDecorator, FrontendAuthConnector}
-import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
-import play.api.Application
-import play.api.i18n.MessagesApi
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.reflect.ClassTag
-import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import uk.gov.hmrc.http.HeaderCarrier
 
-trait BaseSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with Fixtures with PatienceConfiguration with BeforeAndAfterEach { this: Suite =>
+trait BaseSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach { this: Suite =>
 
   implicit val hc = HeaderCarrier()
 
   def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]) = app.injector.instanceOf[T]
-
-
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages = messagesApi.preferred(FakeRequest())
-
-
-  lazy val authority = buildFakeAuthority(true)
-
-  lazy val newEnrolments = Set(
-    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
-      state="",delegatedAuthRule = None)
-  )
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
-    .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
-    .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
-    .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
-    .build()
-
-  lazy val fakeRequest = FakeRequest("GET", "/").withSession(
-    SessionKeys.sessionId -> "SessionId",
-    SessionKeys.token -> "Token",
-    SessionKeys.userId -> "/auth/oid/tuser",
-    SessionKeys.authToken -> ""
-  )
 
 
 }

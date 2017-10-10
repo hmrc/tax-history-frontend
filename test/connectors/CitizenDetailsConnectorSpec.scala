@@ -27,10 +27,10 @@ import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HttpResponse
 import utils.TestUtil
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HttpResponse
 
 class CitizenDetailsConnectorSpec extends BaseSpec with Fixtures with TestUtil{
 
