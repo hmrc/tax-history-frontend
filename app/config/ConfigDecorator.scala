@@ -32,6 +32,4 @@ class ConfigDecorator @Inject()(configuration: Configuration, langs: Langs) exte
   lazy val logoutUrl = configuration.getString("logout.url").getOrElse("")
   lazy val loginContinue = configuration.getString("login.continue").getOrElse("")
 
-
-
 }
