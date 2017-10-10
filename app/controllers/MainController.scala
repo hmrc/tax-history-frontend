@@ -20,49 +20,31 @@ import javax.inject.Inject
 
 import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import controllers.auth.AgentAuth
 import form.SelectClientForm.selectClientForm
 import model.api.Employment
 import models.taxhistory.Person
-import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{AnyContent, _}
+import play.api.i18n.MessagesApi
+import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
-import uk.gov.hmrc.play.frontend.auth.Actions
-import uk.gov.hmrc.play.frontend.config.AuthRedirects
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
-import views.html.taxhistory.select_client
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-
-trait BaseController extends FrontendController with Actions with AuthRedirects with I18nSupport
-
 class MainController @Inject()(
-                                val configDecorator: ConfigDecorator,
+                                override val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
                                 val citizenDetailsConnector: CitizenDetailsConnector,
                                 override val authConnector: FrontendAuthConnector,
                                 override val config: Configuration,
                                 override val env: Environment,
                                 implicit val messagesApi: MessagesApi
-                              ) extends BaseController with AgentAuth {
-
-  lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
-
-  lazy val logoutLink = Link.toInternalPage(url=controllers.routes.MainController.logout.url,value=Some("Sign out")).toHtml
-
-  def logout() = Action.async {
-    implicit request => {
-       Future.successful(ggSignInRedirect.withNewSession)
-    }
-  }
+                              ) extends BaseController {
 
   def getTaxHistory() = Action.async {
     implicit request => {
@@ -149,7 +131,7 @@ class MainController @Inject()(
               handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))
             }
             case UNAUTHORIZED => {
-              handleHttpResponse("unauthorised",controllers.routes.MainController.getSelectClientPage().url,Some(nino.toString()))
+              handleHttpResponse("unauthorised",controllers.routes.SelectClientController.getSelectClientPage().url,Some(nino.toString()))
             }
             case s => {
               Logger.warn("Error response returned with status:"+s)
@@ -180,55 +162,5 @@ class MainController @Inject()(
       gaEventId = Some(message))).removingFromSession("USER_NINO")
   }
 
-  def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-      case Some(affinityG) ~ allEnrols =>
-        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => {
-            val sidebarLink = Link.toInternalPage(
-              url=FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Future.successful(Ok(select_client(selectClientForm,
-                                              Some(sidebarLink),
-                                              headerNavLink=Some(logoutLink))))
-          }
-          case (`isAnAgent`, None) => redirectToSubPage
-          case _ => redirectToExitPage
-        }
-      case _ =>
-        redirectToExitPage
-    } recover {
-      case e =>
-        handleFailure(e)
-    }
-  }
 
-  def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
-    selectClientForm.bindFromRequest().fold(
-      formWithErrors ⇒ {
-        val sidebarLink = Link.toInternalPage(
-          url=FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-        Future.successful(BadRequest(select_client(formWithErrors,
-                                                   Some(sidebarLink),
-                                                   headerNavLink=Some(logoutLink))))
-      },
-      validFormData => {
-        authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-          case Some(affinityG) ~ allEnrols ⇒
-            (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.MainController.getTaxHistory())
-                .addingToSession("USER_NINO" -> s"${validFormData.clientId.toUpperCase}")
-              case (`isAnAgent`, None) => redirectToSubPage
-              case _ => redirectToExitPage
-            }
-          case _ =>
-            redirectToExitPage
-        } recover {
-          case e ⇒
-            handleFailure(e)
-        }
-      }
-    )
-  }
 }

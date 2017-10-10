@@ -20,7 +20,6 @@ import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
 import models.taxhistory.Person
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
@@ -33,7 +32,7 @@ import utils.TestUtil
 import scala.concurrent.Future
 import uk.gov.hmrc.http.HttpResponse
 
-class CitizenDetailsConnectorSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
+class CitizenDetailsConnectorSpec extends BaseSpec with Fixtures with TestUtil{
 
   val http = mock[WSHttpT]
 

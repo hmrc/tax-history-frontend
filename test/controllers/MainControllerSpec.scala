@@ -20,63 +20,29 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
-import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import config.FrontendAppConfig
 import model.api.Employment
 import models.taxhistory.Person
+import org.joda.time.LocalDate
 import org.mockito.Matchers
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import org.scalatest.mock.MockitoSugar
-import play.api.Application
 import play.api.http.Status
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject._
-import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
-import org.joda.time.LocalDate
-import support.{BaseSpec, Fixtures}
+import support.BaseSpec
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
 import utils.TestUtil
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{BadGatewayException, HttpResponse, SessionKeys}
 
-class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
+class MainControllerSpec extends BaseSpec with TestUtil {
 
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages = messagesApi.preferred(FakeRequest())
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
-    .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
-    .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
-    .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
-    .build()
-
-  val invalidTestNINO = "9999999999999999"
   val startDate = new LocalDate("2016-01-21")
   lazy val nino =randomNino.toString()
-
-  val invalidSelectClientForm = Seq(
-    "clientId" -> invalidTestNINO
-  )
-
-  lazy val authority = buildFakeAuthority(true)
-
-  lazy val newEnrolments = Set(
-    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
-      state="",delegatedAuthRule = None)
-  )
-
-  lazy val fakeRequest = FakeRequest("GET", "/").withSession(
-    SessionKeys.sessionId -> "SessionId",
-    SessionKeys.token -> "Token",
-    SessionKeys.userId -> "/auth/oid/tuser",
-    SessionKeys.authToken -> ""
-  )
 
   val employment =  Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -246,11 +212,6 @@ class MainControllerSpec extends BaseSpec with MockitoSugar with Fixtures with T
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }
 
-    "return Status: 400 when invalid data is input" in new LocalSetup {
-      val result = controller.submitSelectClientPage().apply(FakeRequest()
-        .withFormUrlEncodedBody(invalidSelectClientForm: _*))
-      status(result) shouldBe Status.BAD_REQUEST
-    }
 
     "redirect to when agent has no enrolments" in new NoEnrolmentsSetup {
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))

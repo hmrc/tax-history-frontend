@@ -18,23 +18,21 @@ package connectors
 
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
 import models.taxhistory.Employment
+import org.joda.time.LocalDate
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import play.i18n.MessagesApi
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.http.ws.WSHttp
-import org.joda.time.LocalDate
+import uk.gov.hmrc.http.HttpResponse
 import utils.TestUtil
 
 import scala.concurrent.Future
-import uk.gov.hmrc.http.HttpResponse
 
 class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil{
 

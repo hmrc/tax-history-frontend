@@ -1,8 +1,8 @@
 
 GET         /tax-history                            @controllers.MainController.getTaxHistory()
 GET         /tax-history/logout                     @controllers.MainController.logout()
-GET         /tax-history/agent/select-client        @controllers.MainController.getSelectClientPage()
-POST        /tax-history/agent/select-client        @controllers.MainController.submitSelectClientPage()
+GET         /tax-history/agent/select-client        @controllers.SelectClientController.getSelectClientPage()
+POST        /tax-history/agent/select-client        @controllers.SelectClientController.submitSelectClientPage()
 ->          /                                       health.Routes
 ->          /template                               template.Routes
 
