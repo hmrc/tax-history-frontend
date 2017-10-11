@@ -28,6 +28,7 @@ employmenthistory.notfound.header = No data available for {0}’s PAYE record
 employmenthistory.notfound.linktext = Return to agent account
 employmenthistory.technicalerror.title = Sorry, there is a technical problem
 employmenthistory.technicalerror.header = Sorry, there is a technical problem
+employmenthistory.technicalerror.button = Select a new client
 employmenthistory.technicalerror.linktext = Return to agent account
 employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
