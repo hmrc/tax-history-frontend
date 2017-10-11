@@ -31,7 +31,7 @@ import scala.concurrent.Future
 trait BaseController extends I18nSupport with AgentAuth {
   lazy val ggSignInRedirect: Result = toGGLogin(s"${FrontendAppConfig.loginContinue}")
 
-  lazy val logoutLink = Link.toInternalPage(url = controllers.routes.MainController.logout.url, value = Some("Sign out")).toHtml
+  lazy val logoutLink = Link.toInternalPage(url = controllers.routes.EmploymentSummaryController.logout.url, value = Some("Sign out")).toHtml
 
   def logout() = Action.async {
     implicit request => {
@@ -75,7 +75,7 @@ trait BaseController extends I18nSupport with AgentAuth {
 
     Ok(views.html.error_template(
       messagesApi(s"employmenthistory.$message.title"),
-      messagesApi(s"employmenthistory.$message.header", nino.getOrElse()),
+      messagesApi(s"employmenthistory.$message.header", nino.getOrElse("")),
       "",
       Some(sidebarLink),
       gaEventId = Some(message))).removingFromSession("USER_NINO")

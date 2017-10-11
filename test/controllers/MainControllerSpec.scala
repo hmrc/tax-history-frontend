@@ -37,7 +37,7 @@ import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
 
 import scala.concurrent.Future
 
-class MainControllerSpec extends BaseControllerSpec  {
+class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
 
   val startDate = new LocalDate("2016-01-21")
 
@@ -56,7 +56,7 @@ class MainControllerSpec extends BaseControllerSpec  {
     lazy val controller = {
 
       val person = Some(Person(Some("first name"),Some("second name"), false))
-      val c = injected[MainController]
+      val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
@@ -69,7 +69,7 @@ class MainControllerSpec extends BaseControllerSpec  {
   trait NoCitizenDetails {
 
     lazy val controller = {
-      val c = injected[MainController]
+      val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
@@ -85,7 +85,7 @@ class MainControllerSpec extends BaseControllerSpec  {
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val c = injected[MainController]
+      val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
@@ -103,7 +103,7 @@ class MainControllerSpec extends BaseControllerSpec  {
 
       val person = Some(Person(Some("James"),Some("Bond"),true))
 
-      val c = injected[MainController]
+      val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))

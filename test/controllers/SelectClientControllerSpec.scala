@@ -70,7 +70,7 @@ class SelectClientControllerSpec extends BaseControllerSpec {
 
       val result = controller.submitSelectClientPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.MainController.getTaxHistory().url)
+      redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory().url)
     }
   }
 
