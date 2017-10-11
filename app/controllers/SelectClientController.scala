@@ -30,7 +30,6 @@ import views.html.taxhistory.select_client
 import scala.concurrent.Future
 
 class SelectClientController @Inject()(
-                                        override val configDecorator: ConfigDecorator,
                                         override val authConnector: FrontendAuthConnector,
                                         override val config: Configuration,
                                         override val env: Environment,
@@ -46,8 +45,8 @@ class SelectClientController @Inject()(
               url=FrontendAppConfig.AfiHomePage,
               value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
             Future.successful(Ok(select_client(selectClientForm,
-              Some(sidebarLink),
-              headerNavLink=Some(logoutLink))))
+              Some(sidebarLink)
+              )))
           }
           case (`isAnAgent`, None) => redirectToSubPage
           case _ => redirectToExitPage
@@ -67,8 +66,8 @@ class SelectClientController @Inject()(
           url=FrontendAppConfig.AfiHomePage,
           value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
         Future.successful(BadRequest(select_client(formWithErrors,
-          Some(sidebarLink),
-          headerNavLink=Some(logoutLink))))
+          Some(sidebarLink)
+          )))
       },
       validFormData => {
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {

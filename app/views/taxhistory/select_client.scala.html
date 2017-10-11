@@ -20,13 +20,11 @@
 @import uk.gov.hmrc.play.views.html.helpers
 
 @(sCForm: Form[SelectClient],
-    sideBarLink: Option[Html] = None,
-    headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+    sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.client.title"),
                           bodyClasses = None,
-                          sidebarLinks = None,
-                          headerNavLink = headerNavLink) {
+                          sidebarLinks = None) {
     <header class="page-header"><h1 class="heading-xlarge">@Messages("employmenthistory.select.client.heading")</h1></header>
 
     <section class="section" >

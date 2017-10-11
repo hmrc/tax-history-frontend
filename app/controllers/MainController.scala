@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
 import model.api.Employment
@@ -37,7 +37,6 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class MainController @Inject()(
-                                override val configDecorator: ConfigDecorator,
                                 val taxHistoryConnector: TaxHistoryConnector,
                                 val citizenDetailsConnector: CitizenDetailsConnector,
                                 override val authConnector: FrontendAuthConnector,
@@ -125,7 +124,7 @@ class MainController @Inject()(
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-              Ok(views.html.taxhistory.employment_summary(nino.nino, cy1, employments, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
+              Ok(views.html.taxhistory.employment_summary(nino.nino, cy1, employments, person, Some(sidebarLink))).removingFromSession("USER_NINO")
             }
             case NOT_FOUND => {
               handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))
@@ -144,8 +143,7 @@ class MainController @Inject()(
         val sidebarLink = Link.toInternalPage(
           url=FrontendAppConfig.AfiHomePage,
           value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-        Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(sidebarLink),
-          headerNavLink=Some(logoutLink))))
+        Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(sidebarLink))))
   }
 
   private def handleHttpResponse(message:String,sideBarUrl:String,nino:Option[String])(implicit request:Request[_]) = {
@@ -158,7 +156,6 @@ class MainController @Inject()(
       if(nino.isDefined) messagesApi(s"employmenthistory.${message}.header", nino.getOrElse("")) else messagesApi(s"employmenthistory.${message}.header"),
       "",
       Some(sidebarLink),
-      headerNavLink = Some(logoutLink),
       gaEventId = Some(message))).removingFromSession("USER_NINO")
   }
 

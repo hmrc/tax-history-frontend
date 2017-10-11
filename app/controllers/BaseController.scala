@@ -16,18 +16,16 @@
 
 package controllers
 
-import config.ConfigDecorator
+import config.FrontendAppConfig
 import controllers.auth.AgentAuth
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, Result}
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.Future
 
-trait BaseController extends FrontendController with I18nSupport with AgentAuth {
-  val configDecorator: ConfigDecorator
-  lazy val ggSignInRedirect: Result = toGGLogin(s"${configDecorator.loginContinue}")
+trait BaseController extends I18nSupport with AgentAuth {
+  lazy val ggSignInRedirect: Result = toGGLogin(s"${FrontendAppConfig.loginContinue}")
 
   lazy val logoutLink = Link.toInternalPage(url = controllers.routes.MainController.logout.url, value = Some("Sign out")).toHtml
 

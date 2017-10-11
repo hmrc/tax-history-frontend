@@ -22,8 +22,7 @@
     taxYear: Int,
     employments: List[Employment],
     person: Option[Person],
-    sideBarLink: Option[Html] = None,
-    headerNavLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+    sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 
 @analyticsAdditionalJs = {
@@ -39,7 +38,6 @@
 @views.html.main_template(title = Messages("employmenthistory.title"),
                         bodyClasses = None,
                         sidebarLinks = None,
-                        headerNavLink = headerNavLink,
                         analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
 
 <header class="page-header">

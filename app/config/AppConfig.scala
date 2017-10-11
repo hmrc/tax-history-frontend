@@ -21,4 +21,9 @@ trait AppConfig {
   val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
+  val loginUrl: String
+  val logoutUrl: String
+  val loginContinue:String
+
 }
+
