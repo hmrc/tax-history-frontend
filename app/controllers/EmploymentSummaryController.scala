@@ -35,13 +35,13 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EmploymentSummaryController @Inject()(
-                                val taxHistoryConnector: TaxHistoryConnector,
-                                val citizenDetailsConnector: CitizenDetailsConnector,
-                                override val authConnector: FrontendAuthConnector,
-                                override val config: Configuration,
-                                override val env: Environment,
-                                implicit val messagesApi: MessagesApi
-                              ) extends BaseController {
+                                             val taxHistoryConnector: TaxHistoryConnector,
+                                             val citizenDetailsConnector: CitizenDetailsConnector,
+                                             override val authConnector: FrontendAuthConnector,
+                                             override val config: Configuration,
+                                             override val env: Environment,
+                                             implicit val messagesApi: MessagesApi
+                                           ) extends BaseController {
 
   def getTaxHistory() = Action.async {
     implicit request => {
@@ -67,16 +67,15 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-
-
-  def retrieveCitizenDetails(ninoField:Nino)(implicit hc:HeaderCarrier, request:Request[_]): Future[Either[Int, Person]] = {
-   val details =
-     { citizenDetailsConnector.getPersonDetails(ninoField) map {
+  def retrieveCitizenDetails(ninoField: Nino)
+                            (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
+    val details = {
+      citizenDetailsConnector.getPersonDetails(ninoField) map {
         personResponse =>
           personResponse.status match {
             case OK => {
-              val person =personResponse.json.as[Person]
-              if(person.deceased) Left(LOCKED) else Right(person)
+              val person = personResponse.json.as[Person]
+              if (person.deceased) Left(LOCKED) else Right(person)
             }
             case status => Left(status)
           }
@@ -87,41 +86,42 @@ class EmploymentSummaryController @Inject()(
     details
   }
 
-
-
-  def renderTaxHistoryPage(ninoField:Nino, maybePerson:Either[Int,Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] ={
+  def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person])
+                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
       case Left(status) => status match {
-        case LOCKED => Future.successful(handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.nino)))
-        case _ => Future.successful(handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
+        case LOCKED => Future.successful(handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino)))
+        case _ => Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
       }
-      case Right(person) => retrieveTaxHistoryData(ninoField,Some(person))
+      case Right(person) => retrieveTaxHistoryData(ninoField, Some(person))
     }
   }
 
-  def retrieveTaxHistoryData(ninoField:Nino, person:Option[Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = {
-        val cy1 = TaxYearResolver.currentTaxYear - 1
-        taxHistoryConnector.getTaxHistory(ninoField, cy1) map {
-          historyResponse => historyResponse.status match {
-            case OK => {
-              val employments = historyResponse.json.as[List[Employment]]
-              val sidebarLink = Link.toInternalPage(
-                url=FrontendAppConfig.AfiHomePage,
-                value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-              Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
-                employments, person, Some(sidebarLink))).removingFromSession("USER_NINO")
-            }
-            case NOT_FOUND => {
-              handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.nino))
-            }
-            case UNAUTHORIZED => {
-              handleHttpResponse("unauthorised",controllers.routes.SelectClientController.getSelectClientPage().url,Some(ninoField.nino))
-            }
-            case s => {
-              Logger.error("Error response returned with status:"+s)
-              handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None)
-            }
+  def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
+                            (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+    val cy1 = TaxYearResolver.currentTaxYear - 1
+    taxHistoryConnector.getTaxHistory(ninoField, cy1) map {
+      historyResponse =>
+        historyResponse.status match {
+          case OK => {
+            val employments = historyResponse.json.as[List[Employment]]
+            val sidebarLink = Link.toInternalPage(
+              url = FrontendAppConfig.AfiHomePage,
+              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+            Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
+              employments, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+          }
+          case NOT_FOUND => {
+            handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino))
+          }
+          case UNAUTHORIZED => {
+            handleHttpResponse("unauthorised", controllers.routes.SelectClientController.getSelectClientPage().url, Some(ninoField.nino))
+          }
+          case s => {
+            Logger.error("Error response returned with status:" + s)
+            handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
           }
         }
+    }
   }
 }
