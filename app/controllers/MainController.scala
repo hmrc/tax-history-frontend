@@ -86,15 +86,15 @@ class MainController @Inject()(
           redirectToExitPage
       }.recoverWith {
           case b: BadGatewayException => {
-            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to BadGatewayException:${b.getMessage}")
+            Logger.error(messagesApi("employmenthistory.technicalerror.title") + s" : Due to BadGatewayException:${b.getMessage}")
             Future.successful( handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
           }
           case m: MissingBearerToken => {
-            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to MissingBearerToken:${m.getMessage}")
+            Logger.warn(messagesApi("employmenthistory.technicalerror.title") + s" : Due to MissingBearerToken:${m.getMessage}")
             Future.successful(ggSignInRedirect)
           }
           case e =>
-            Logger.warn("Exception thrown :" + e.getMessage)
+            Logger.error("Exception thrown :" + e.getMessage)
             Future.successful(ggSignInRedirect)
         }
     }
@@ -127,7 +127,7 @@ class MainController @Inject()(
     maybePerson match {
       case Left(status) => status match {
         case LOCKED => Future.successful(handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.fold("")(nino => nino.toString()))))
-        case _ => Future.successful(handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))//retrieveTaxHistoryData(ninoField,None)
+        case _ => Future.successful(handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
       }
       case Right(person) => retrieveTaxHistoryData(ninoField,Some(person))
     }
@@ -152,7 +152,7 @@ class MainController @Inject()(
               handleHttpResponse("unauthorised",controllers.routes.MainController.getSelectClientPage().url,Some(nino.toString()))
             }
             case s => {
-              Logger.warn("Error response returned with status:"+s)
+              Logger.error("Error response returned with status:"+s)
               handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None)
             }
           }
@@ -167,7 +167,7 @@ class MainController @Inject()(
   }
 
   private def handleHttpResponse(message:String,sideBarUrl:String,nino:Option[String])(implicit request:Request[_]) = {
-    Logger.warn(messagesApi(s"employmenthistory.${message}.message"))
+    Logger.warn(s"${message} page shown")
     val sidebarLink = Link.toInternalPage(
       url = sideBarUrl,
       value = Some(messagesApi(s"employmenthistory.${message}.linktext"))).toHtml
