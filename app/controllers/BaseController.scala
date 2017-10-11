@@ -18,8 +18,12 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.auth.AgentAuth
+import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, Result}
+import play.api.mvc.{Action, Request, Result}
+import uk.gov.hmrc.auth.core.MissingBearerToken
+import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
 import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.Future
@@ -33,5 +37,47 @@ trait BaseController extends I18nSupport with AgentAuth {
     implicit request => {
       Future.successful(ggSignInRedirect.withNewSession)
     }
+  }
+
+  protected[controllers] def authorisedForAgent(eventualResult: Future[Result])(implicit hc:HeaderCarrier, request:Request[_]) =  {
+    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+      case Some(affinityG) ~ allEnrols =>
+        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
+          case (`isAnAgent`, Some(_)) => {
+            eventualResult
+          }
+          case (`isAnAgent`, None) => redirectToSubPage
+          case _ => redirectToExitPage
+        }
+      case _ =>
+        redirectToExitPage
+    }.recoverWith {
+      case b: BadGatewayException => {
+        Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to BadGatewayException:${b.getMessage}")
+        Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
+      }
+      case m: MissingBearerToken => {
+        Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to MissingBearerToken:${m.getMessage}")
+        Future.successful(ggSignInRedirect)
+      }
+      case e =>
+        Logger.warn("Exception thrown :" + e.getMessage)
+        Future.successful(ggSignInRedirect)
+    }
+  }
+
+
+  protected[controllers] def handleHttpResponse(message: String, sideBarUrl: String, nino: Option[String])(implicit request: Request[_]) = {
+    Logger.warn(messagesApi(s"employmenthistory.$message.message"))
+    val sidebarLink = Link.toInternalPage(
+      url = sideBarUrl,
+      value = Some(messagesApi(s"employmenthistory.$message.linktext"))).toHtml
+
+    Ok(views.html.error_template(
+      messagesApi(s"employmenthistory.$message.title"),
+      messagesApi(s"employmenthistory.$message.header", nino.getOrElse()),
+      "",
+      Some(sidebarLink),
+      gaEventId = Some(message))).removingFromSession("USER_NINO")
   }
 }

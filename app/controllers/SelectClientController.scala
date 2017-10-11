@@ -37,25 +37,13 @@ class SelectClientController @Inject()(
                                       ) extends BaseController {
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-      case Some(affinityG) ~ allEnrols =>
-        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => {
-            val sidebarLink = Link.toInternalPage(
-              url=FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Future.successful(Ok(select_client(selectClientForm,
-              Some(sidebarLink)
-              )))
-          }
-          case (`isAnAgent`, None) => redirectToSubPage
-          case _ => redirectToExitPage
-        }
-      case _ =>
-        redirectToExitPage
-    } recover {
-      case e =>
-        handleFailure(e)
+    authorisedForAgent{
+      val sidebarLink = Link.toInternalPage(
+        url=FrontendAppConfig.AfiHomePage,
+        value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+      Future.successful(Ok(select_client(selectClientForm,
+        Some(sidebarLink)
+      )))
     }
   }
 

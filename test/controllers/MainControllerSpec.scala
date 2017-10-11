@@ -113,28 +113,6 @@ class MainControllerSpec extends BaseControllerSpec  {
     }
   }
 
-  trait NotAgentSetup {
-
-    lazy val controller = {
-      val c = injected[MainController]
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
-      c
-    }
-  }
-
-  trait NoEnrolmentsSetup {
-
-    lazy val controller = {
-      val c = injected[MainController]
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(Set()))))
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
-      c
-    }
-  }
-
   "GET /tax-history" should {
     "return 200" in new LocalSetup {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
@@ -209,18 +187,6 @@ class MainControllerSpec extends BaseControllerSpec  {
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }
 
-
-    "redirect to when agent has no enrolments" in new NoEnrolmentsSetup {
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
-      await(result.header.headers.get("Location")) shouldBe Some(FrontendAppConfig.AfiNoAgentServicesAccountPage)
-    }
-
-    "redirect when user is not an agent" in new NotAgentSetup {
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
-      await(result.header.headers.get("Location")) shouldBe Some(FrontendAppConfig.AfiNoAgentServicesAccountPage)
-    }
   }
 
   "GET /tax-history/logout" should {

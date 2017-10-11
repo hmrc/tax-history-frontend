@@ -26,10 +26,8 @@ import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
-import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 
@@ -48,40 +46,15 @@ class MainController @Inject()(
   def getTaxHistory() = Action.async {
     implicit request => {
       val nino = request.session.get("USER_NINO").map(Nino(_))
-
-      authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-        case Some(affinityG) ~ allEnrols =>
-          (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-            case (`isAnAgent`, Some(_)) => {
-             for{maybePerson<- retrieveCitizenDetails(nino)
-                  taxHistoryResponse <- renderTaxHistoryPage(nino,maybePerson)}
-              yield{
-                taxHistoryResponse
-              }
-
-            }
-            case (`isAnAgent`, None) => redirectToSubPage
-            case _ => redirectToExitPage
+      authorisedForAgent {
+        for{maybePerson<- retrieveCitizenDetails(nino)
+            taxHistoryResponse <- renderTaxHistoryPage(nino,maybePerson)}
+          yield{
+            taxHistoryResponse
           }
-        case _ =>
-          redirectToExitPage
-      }.recoverWith {
-          case b: BadGatewayException => {
-            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to BadGatewayException:${b.getMessage}")
-            Future.successful( handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
-          }
-          case m: MissingBearerToken => {
-            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to MissingBearerToken:${m.getMessage}")
-            Future.successful(ggSignInRedirect)
-          }
-          case e =>
-            Logger.warn("Exception thrown :" + e.getMessage)
-            Future.successful(ggSignInRedirect)
-        }
+      }
     }
   }
-
-
 
   def retrieveCitizenDetails(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Either[Int, Person]] = ninoField match {
     case Some(nino) => {
@@ -145,19 +118,4 @@ class MainController @Inject()(
           value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
         Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(sidebarLink))))
   }
-
-  private def handleHttpResponse(message:String,sideBarUrl:String,nino:Option[String])(implicit request:Request[_]) = {
-    Logger.warn(messagesApi(s"employmenthistory.${message}.message"))
-    val sidebarLink = Link.toInternalPage(
-      url = sideBarUrl,
-      value = Some(messagesApi(s"employmenthistory.${message}.linktext"))).toHtml
-    Ok(views.html.error_template(
-      messagesApi(s"employmenthistory.${message}.title"),
-      if(nino.isDefined) messagesApi(s"employmenthistory.${message}.header", nino.getOrElse("")) else messagesApi(s"employmenthistory.${message}.header"),
-      "",
-      Some(sidebarLink),
-      gaEventId = Some(message))).removingFromSession("USER_NINO")
-  }
-
-
 }
