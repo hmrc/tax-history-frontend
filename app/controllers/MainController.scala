@@ -66,16 +66,28 @@ class MainController @Inject()(
 
   def getTaxHistory() = Action.async {
     implicit request => {
-      val nino = request.session.get("USER_NINO").map(Nino(_))
+      val maybeNino = request.session.get("USER_NINO").map(Nino(_))
 
       authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
         case Some(affinityG) ~ allEnrols =>
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
             case (`isAnAgent`, Some(_)) => {
-             for{maybePerson<- retrieveCitizenDetails(nino)
-                  taxHistoryResponse <- renderTaxHistoryPage(nino,maybePerson)}
-              yield{
-                taxHistoryResponse
+              maybeNino match {
+                case Some(nino) => {
+                  for {maybePerson <- retrieveCitizenDetails(nino)
+                       taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson)}
+                    yield {
+                      taxHistoryResponse
+                    }
+                }
+                case None => {
+                  Logger.warn("No nino supplied.")
+                  val navLink = Link.toInternalPage(
+                    url = FrontendAppConfig.AfiHomePage,
+                    value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+                  Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(navLink),
+                    headerNavLink = Some(logoutLink))))
+                }
               }
 
             }
@@ -86,15 +98,15 @@ class MainController @Inject()(
           redirectToExitPage
       }.recoverWith {
           case b: BadGatewayException => {
-            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to BadGatewayException:${b.getMessage}")
+            Logger.error(messagesApi("employmenthistory.technicalerror.title") + s" : Due to BadGatewayException:${b.getMessage}")
             Future.successful( handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
           }
           case m: MissingBearerToken => {
-            Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to MissingBearerToken:${m.getMessage}")
+            Logger.warn(messagesApi("employmenthistory.technicalerror.title") + s" : Due to MissingBearerToken:${m.getMessage}")
             Future.successful(ggSignInRedirect)
           }
           case e =>
-            Logger.warn("Exception thrown :" + e.getMessage)
+            Logger.error("Exception thrown :" + e.getMessage)
             Future.successful(ggSignInRedirect)
         }
     }
@@ -102,13 +114,12 @@ class MainController @Inject()(
 
 
 
-  def retrieveCitizenDetails(ninoField:Option[Nino])(implicit hc:HeaderCarrier, request:Request[_]): Future[Either[Int, Person]] = ninoField match {
-    case Some(nino) => {
-      citizenDetailsConnector.getPersonDetails(nino) map {
+  def retrieveCitizenDetails(ninoField:Nino)(implicit hc:HeaderCarrier, request:Request[_]): Future[Either[Int, Person]] = {
+   val details =
+     { citizenDetailsConnector.getPersonDetails(ninoField) map {
         personResponse =>
           personResponse.status match {
             case OK => {
-              //Right(personResponse.json.as[Person])
               val person =personResponse.json.as[Person]
               if(person.deceased) Left(LOCKED) else Right(person)
             }
@@ -118,56 +129,48 @@ class MainController @Inject()(
     }.recoverWith {
       case _ => Future.successful(Left(BAD_REQUEST))
     }
-    case _ => Future.successful(Left(BAD_REQUEST))
+    details
   }
 
 
 
-  def renderTaxHistoryPage(ninoField:Option[Nino],  maybePerson:Either[Int,Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] ={
+  def renderTaxHistoryPage(ninoField:Nino, maybePerson:Either[Int,Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] ={
     maybePerson match {
       case Left(status) => status match {
-        case LOCKED => Future.successful(handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.fold("")(nino => nino.toString()))))
-        case _ => retrieveTaxHistoryData(ninoField,None)
+        case LOCKED => Future.successful(handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.nino)))
+        case _ => Future.successful(handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None))
       }
       case Right(person) => retrieveTaxHistoryData(ninoField,Some(person))
     }
   }
 
-  def retrieveTaxHistoryData(ninoField:Option[Nino], person:Option[Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = ninoField match{
-      case Some(nino) =>
+  def retrieveTaxHistoryData(ninoField:Nino, person:Option[Person])(implicit hc:HeaderCarrier, request:Request[_]): Future[Result] = {
         val cy1 = TaxYearResolver.currentTaxYear - 1
-        taxHistoryConnector.getTaxHistory(nino, cy1) map {
+        taxHistoryConnector.getTaxHistory(ninoField, cy1) map {
           historyResponse => historyResponse.status match {
             case OK => {
               val employments = historyResponse.json.as[List[Employment]]
               val sidebarLink = Link.toInternalPage(
                 url=FrontendAppConfig.AfiHomePage,
                 value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-              Ok(views.html.taxhistory.employment_summary(nino.nino, cy1, employments, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
+              Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1, employments, person, Some(sidebarLink),headerNavLink=Some(logoutLink))).removingFromSession("USER_NINO")
             }
             case NOT_FOUND => {
-              handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(nino.toString()))
+              handleHttpResponse("notfound",FrontendAppConfig.AfiHomePage,Some(ninoField.nino))
             }
             case UNAUTHORIZED => {
-              handleHttpResponse("unauthorised",controllers.routes.MainController.getSelectClientPage().url,Some(nino.toString()))
+              handleHttpResponse("unauthorised",controllers.routes.MainController.getSelectClientPage().url,Some(ninoField.nino))
             }
             case s => {
-              Logger.warn("Error response returned with status:"+s)
+              Logger.error("Error response returned with status:"+s)
               handleHttpResponse("technicalerror",FrontendAppConfig.AfiHomePage,None)
             }
           }
         }
-      case _ =>
-        Logger.warn("No nino supplied.")
-        val sidebarLink = Link.toInternalPage(
-          url=FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-        Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(sidebarLink),
-          headerNavLink=Some(logoutLink))))
   }
 
   private def handleHttpResponse(message:String,sideBarUrl:String,nino:Option[String])(implicit request:Request[_]) = {
-    Logger.warn(messagesApi(s"employmenthistory.${message}.message"))
+    Logger.warn(s"${message} page shown")
     val sidebarLink = Link.toInternalPage(
       url = sideBarUrl,
       value = Some(messagesApi(s"employmenthistory.${message}.linktext"))).toHtml

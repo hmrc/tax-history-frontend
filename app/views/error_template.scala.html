@@ -24,7 +24,9 @@
 
 @mainContent = {
   <h1 class="heading-xlarge" id="error-heading">@heading</h1>
-  <p id="error-message">@message</p>
+  @if(message){
+    <p id="error-message">@message</p>
+  }
 }
 
 @analyticsAdditionalJs = {
