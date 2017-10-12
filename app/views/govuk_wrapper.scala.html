@@ -44,12 +44,12 @@
 }
 
 @headerNavLinks = {
-  <li>@headerNavLink.map{link=>@link}</li>
+<li><a id="logOut" href="@routes.EmploymentSummaryController.logout">@Messages("global.link.signout")</a></li>
 }
 
 @insideHeader = {
     @uiLayouts.header_nav(
-      navTitle = Some("Agents for Individuals"),
+      navTitle = Some(Messages("lbl.agents.for.individual")),
       navTitleLink = None,
       showBetaLink = false,
       navLinks = Some(headerNavLinks))

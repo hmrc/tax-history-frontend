@@ -18,15 +18,14 @@ package support
 
 import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatest.concurrent.PatienceConfiguration
-import org.scalatest.mock.MockitoSugar
+import org.scalatest.mockito.MockitoSugar
 import org.scalatestplus.play.OneAppPerSuite
-import play.twirl.api.Html
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.reflect.ClassTag
 import uk.gov.hmrc.http.HeaderCarrier
 
-trait BaseSpec extends UnitSpec with OneAppPerSuite with PatienceConfiguration with BeforeAndAfterEach { this: Suite =>
+trait BaseSpec extends UnitSpec with OneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach { this: Suite =>
 
   implicit val hc = HeaderCarrier()
 

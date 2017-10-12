@@ -33,4 +33,9 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   val AfiErrorPage: String = getString("external-url.afi-error.url")
   override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
   override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+
+  override lazy val loginUrl = getString("login.url")
+  override lazy val logoutUrl = getString("logout.url")
+  override lazy val loginContinue = getString("login.continue")
+
 }

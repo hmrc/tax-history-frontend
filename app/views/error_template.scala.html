@@ -18,7 +18,6 @@
  heading: String,
  message: String,
  sidebarLink: Option[Html]=None,
- headerNavLink: Option[Html] = None,
  gaEventId:Option[String]=None)(implicit request: Request[_], messages: Messages)
 
 
@@ -39,7 +38,6 @@
                           bodyClasses = None,
                           sidebarLinks =None,
                           contentHeader = None,
-                          headerNavLink = headerNavLink,
                           analyticsAdditionalJs = Some(analyticsAdditionalJs)){
     @mainContent
     @sidebarLink.map{link=>@link}

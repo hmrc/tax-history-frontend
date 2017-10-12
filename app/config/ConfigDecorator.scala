@@ -28,10 +28,4 @@ class ConfigDecorator @Inject()(configuration: Configuration, langs: Langs) exte
   lazy val companyAuthHost = configuration.getString(s"external-url.company-auth.host").getOrElse("")
   lazy val taxHistoryFrontendHost = configuration.getString(s"external-url.tax-history-frontend.host").getOrElse("")
   lazy val gg_web_context = configuration.getString(s"external-url.gg.web-context").getOrElse("gg")
-  lazy val loginUrl = configuration.getString("login.url").getOrElse("")
-  lazy val logoutUrl = configuration.getString("logout.url").getOrElse("")
-  lazy val loginContinue = configuration.getString("login.continue").getOrElse("")
-
-
-
 }
