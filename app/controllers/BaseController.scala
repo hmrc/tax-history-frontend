@@ -61,7 +61,7 @@ trait BaseController extends I18nSupport with AgentAuth {
         Future.successful(ggSignInRedirect)
       }
       case e =>
-        Logger.warn("Exception thrown :" + e.getMessage)
+        Logger.error("Exception thrown :" + e.getMessage)
         Future.successful(ggSignInRedirect)
     }
   }
