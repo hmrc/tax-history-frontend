@@ -16,10 +16,12 @@
 
 package connectors
 
+import java.util.UUID
+
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
-import models.taxhistory.Employment
+import model.api.Allowance
 import org.joda.time.LocalDate
-import org.mockito.Matchers.{eq => meq, _}
+import org.mockito.Matchers._
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
 import play.api.Application
@@ -30,6 +32,7 @@ import play.api.libs.json.Json
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpResponse
+import models.taxhistory.Employment
 import utils.TestUtil
 
 import scala.concurrent.Future
@@ -56,12 +59,29 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures w
 
     "fetch tax history" in new LocalSetup {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))))))
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("12341234", "Test Employer Name",
+          startDate, None, Some(25000.0), Some(2000.0))))))))
 
       val result = await(connector.getTaxHistory(Nino(nino), 2017))
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Seq(Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))
+
+    }
+
+    "fetch allowance for tax history" in new LocalSetup {
+
+      val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+        iabdType = "allowanceType",
+        amount = BigDecimal(12.00))
+
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(allowance))))))
+
+      val result = await(connector.getAllowances(Nino(nino), 2017))
+
+      result.status shouldBe Status.OK
+      result.json shouldBe Json.toJson(Seq(allowance))
 
     }
   }

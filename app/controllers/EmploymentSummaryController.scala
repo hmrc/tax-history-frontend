@@ -21,7 +21,7 @@ import javax.inject.Inject
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
-import model.api.Employment
+import model.api.{Allowance, Employment}
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
@@ -100,16 +100,17 @@ class EmploymentSummaryController @Inject()(
   def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getTaxHistory(ninoField, cy1) map {
-      historyResponse =>
-        historyResponse.status match {
+    taxHistoryConnector.getTaxHistory(ninoField, cy1) flatMap { empResponse =>
+      taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
+        empResponse.status match {
           case OK => {
-            val employments = historyResponse.json.as[List[Employment]]
+            val employments = empResponse.json.as[List[Employment]]
+            val allowances = allowanceResponse.json.as[List[Allowance]]
             val sidebarLink = Link.toInternalPage(
               url = FrontendAppConfig.AfiHomePage,
               value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
             Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
-              employments, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+              employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
           }
           case NOT_FOUND => {
             handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino))
@@ -122,6 +123,7 @@ class EmploymentSummaryController @Inject()(
             handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
           }
         }
+      }
     }
   }
 }
