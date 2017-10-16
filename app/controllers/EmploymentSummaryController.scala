@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 
@@ -97,6 +97,7 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
+
   def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
@@ -104,26 +105,37 @@ class EmploymentSummaryController @Inject()(
       empResponse.status match {
         case OK => {
           taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
-            val employments = empResponse.json.as[List[Employment]]
-            val allowances = allowanceResponse.json.as[List[Allowance]]
-            val sidebarLink = Link.toInternalPage(
-              url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
-              employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+            allowanceResponse.status match {
+              case OK =>
+                val employments = empResponse.json.as[List[Employment]]
+                val allowances = allowanceResponse.json.as[List[Allowance]]
+                val sidebarLink = Link.toInternalPage(
+                  url = FrontendAppConfig.AfiHomePage,
+                  value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+                Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
+                  employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+              case status => handleHttpFailureResponse(status, ninoField)
+            }
           }
         }
-        case NOT_FOUND => {
-          Future.successful(handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino)))
-        }
-        case UNAUTHORIZED => {
-          Future.successful(handleHttpResponse("unauthorised",
-            controllers.routes.SelectClientController.getSelectClientPage().url, Some(ninoField.nino)))
-        }
-        case s => {
-          Logger.error("Error response returned with status:" + s)
-          Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
-        }
+        case status => Future.successful(handleHttpFailureResponse(status, ninoField))
+      }
+    }
+  }
+
+  private def handleHttpFailureResponse(status:Int, nino: Nino)
+                                       (implicit request: Request[_]) = {
+    status match {
+      case NOT_FOUND => {
+        handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
+      }
+      case UNAUTHORIZED => {
+        handleHttpResponse("unauthorised",
+          controllers.routes.SelectClientController.getSelectClientPage().url, Some(nino.nino))
+      }
+      case s => {
+        Logger.error("Error response returned with status:" + s)
+        handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
       }
     }
   }
