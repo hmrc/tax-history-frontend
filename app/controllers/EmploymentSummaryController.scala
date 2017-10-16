@@ -101,9 +101,9 @@ class EmploymentSummaryController @Inject()(
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
     taxHistoryConnector.getTaxHistory(ninoField, cy1) flatMap { empResponse =>
-      taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
-        (allowanceResponse.status, empResponse.status) match {
-          case (OK, OK) => {
+      empResponse.status match {
+        case OK => {
+          taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
             val employments = empResponse.json.as[List[Employment]]
             val allowances = allowanceResponse.json.as[List[Allowance]]
             val sidebarLink = Link.toInternalPage(
@@ -112,19 +112,19 @@ class EmploymentSummaryController @Inject()(
             Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
               employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
           }
-          case (NOT_FOUND, _) |(_, NOT_FOUND) => {
-            handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino))
-          }
-          case (UNAUTHORIZED, _) | (_, UNAUTHORIZED) => {
-            handleHttpResponse("unauthorised", controllers.routes.SelectClientController.getSelectClientPage().url, Some(ninoField.nino))
-          }
-          case s => {
-            Logger.error("Error response returned with status:" + s)
-            handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
-          }
+        }
+        case NOT_FOUND => {
+          Future.successful(handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino)))
+        }
+        case UNAUTHORIZED => {
+          Future.successful(handleHttpResponse("unauthorised",
+            controllers.routes.SelectClientController.getSelectClientPage().url, Some(ninoField.nino)))
+        }
+        case s => {
+          Logger.error("Error response returned with status:" + s)
+          Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
         }
       }
     }
   }
-
 }

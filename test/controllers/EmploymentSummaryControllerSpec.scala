@@ -151,21 +151,24 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     }
 
     "show not found error page when 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson("[]")))))
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
+        Some(Json.toJson("[]")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
     }
 
     "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,Some(Json.toJson("{Message:Unauthorised}")))))
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,
+        Some(Json.toJson("{Message:Unauthorised}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", nino))
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
+        Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
