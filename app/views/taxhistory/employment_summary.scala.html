@@ -47,9 +47,11 @@
         (taxYear+1).toString)</p>
 </header>
 <hr>
-    @employments.map { employment =>
-        <table class="employment-table">
-            <tbody>
+
+    <table class="employment-table">
+        <tbody>
+        @employments.map { employment =>
+            <tr>
                 <td scope="row">@employment.employerName
                     <br/>
                     @DateHelper.formatDate(employment.startDate)
@@ -60,9 +62,10 @@
                     <a href="#" class="float-right">@Messages("employmenthistory.view.record")</a>
                 </td>
             </tr>
-            </tbody>
-        </table>
-    }
+        }
+        </tbody>
+    </table>
+
 
     @if(allowances.nonEmpty) {
         <div class="margin-top-large">
