@@ -180,19 +180,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
     }
 
-    "return error page when connector not available" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
-    }
-
-    "redirect to gg when not logged in" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new MissingBearerToken))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
-      await(result.header.headers.get("Location")).get should include("/gg/sign-in")
-    }
   }
 
   "GET /tax-history/logout" should {

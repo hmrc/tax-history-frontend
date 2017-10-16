@@ -108,6 +108,16 @@ class BaseControllerSpec extends BaseSpec with Fixtures with TestUtil {
     }
   }
 
+  trait failureOnMissingBearerToken {
+
+    lazy val controller = {
+      val c = injected[Controller]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.failed(new MissingBearerToken))
+      c
+    }
+  }
+
   "BaseController" must {
 
     "redirect to afi-not-an-agent-page when there is no enrolment" in new NoEnrolmentsSetup {
@@ -132,6 +142,13 @@ class BaseControllerSpec extends BaseSpec with Fixtures with TestUtil {
       val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.technicalerror.title"))
+    }
+
+
+    "redirect to gg when not logged in" in new failureOnMissingBearerToken {
+      val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+      await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }
   }
 }
