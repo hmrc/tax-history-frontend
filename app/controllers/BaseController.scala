@@ -31,7 +31,8 @@ import scala.concurrent.Future
 trait BaseController extends I18nSupport with AgentAuth {
   lazy val ggSignInRedirect: Result = toGGLogin(s"${FrontendAppConfig.loginContinue}")
 
-  lazy val logoutLink = Link.toInternalPage(url = controllers.routes.EmploymentSummaryController.logout.url, value = Some("Sign out")).toHtml
+  lazy val logoutLink = Link.toInternalPage(url = controllers.routes.EmploymentSummaryController.logout().url,
+    value = Some("Sign out")).toHtml
 
   def logout() = Action.async {
     implicit request => {
@@ -39,7 +40,8 @@ trait BaseController extends I18nSupport with AgentAuth {
     }
   }
 
-  protected[controllers] def authorisedForAgent(eventualResult: Future[Result])(implicit hc:HeaderCarrier, request:Request[_]) =  {
+  protected[controllers] def authorisedForAgent(eventualResult: Future[Result])
+                                               (implicit hc:HeaderCarrier, request:Request[_]) =  {
     authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols =>
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
@@ -67,7 +69,8 @@ trait BaseController extends I18nSupport with AgentAuth {
   }
 
 
-  protected[controllers] def handleHttpResponse(message: String, sideBarUrl: String, nino: Option[String])(implicit request: Request[_]) = {
+  protected[controllers] def handleHttpResponse(message: String, sideBarUrl: String, nino: Option[String])
+                                               (implicit request: Request[_]) = {
     Logger.warn(messagesApi(s"employmenthistory.$message.message"))
     val sidebarLink = Link.toInternalPage(
       url = sideBarUrl,
