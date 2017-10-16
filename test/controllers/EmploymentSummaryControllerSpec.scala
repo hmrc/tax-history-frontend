@@ -160,20 +160,20 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,Some(Json.toJson("{Message:Unauthorised}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", nino))
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
 
     "show select client page when no nino has been set in session" in new HappyPathSetup {
       val result = controller.getTaxHistory()(fakeRequest)
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
     }
 
