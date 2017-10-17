@@ -1,0 +1,14 @@
+{
+  "payAndTaxId":"bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a",
+  "taxablePayTotal":1234567.89,
+  "taxTotal":2222.22,
+  "earlierYearUpdates":
+  [
+    {
+      "earlierYearUpdateId":"e6926848-818b-4d01-baa1-02111eb0f514",
+      "taxablePayEYU":123.45,
+      "taxEYU":67.89,
+      "receivedDate":"2015-05-29"
+    }
+  ]
+}

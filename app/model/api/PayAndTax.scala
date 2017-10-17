@@ -20,10 +20,12 @@ import java.util.UUID
 
 import play.api.libs.json.Json
 
-case class CompanyBenefit(companyBenefitId:UUID = UUID.randomUUID(),
-                          iabdType: String,
-                          amount: BigDecimal)
+case class PayAndTax(payAndTaxId:UUID = UUID.randomUUID(),
+                     taxablePayTotal: Option[BigDecimal],
+                     taxTotal: Option[BigDecimal],
+                     earlierYearUpdates: List[EarlierYearUpdate])
 
-object CompanyBenefit {
-  implicit val formats = Json.format[CompanyBenefit]
+object PayAndTax {
+  implicit val formats = Json.format[PayAndTax]
 }
+
