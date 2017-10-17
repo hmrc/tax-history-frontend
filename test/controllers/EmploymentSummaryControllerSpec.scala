@@ -20,8 +20,7 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import config.FrontendAppConfig
-import model.api.Employment
+import model.api.{Allowance, Employment}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
@@ -37,7 +36,7 @@ import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
 
 import scala.concurrent.Future
 
-class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
+class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
   val startDate = new LocalDate("2016-01-21")
 
@@ -49,7 +48,12 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
     endDate = Some(LocalDate.parse("2017-01-01"))
   )
 
+  val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    iabdType = "EarlierYearsAdjustment",
+    amount = BigDecimal(32.00))
+
   val employments = List(employment)
+  val allowances =  List(allowance)
 
   trait HappyPathSetup {
 
@@ -63,6 +67,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
@@ -78,6 +83,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,None)))
       c
     }
@@ -94,6 +100,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
       c
     }
@@ -112,6 +119,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
@@ -143,21 +151,24 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
     }
 
     "show not found error page when 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson("[]")))))
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
+        Some(Json.toJson("[]")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
     }
 
     "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,Some(Json.toJson("{Message:Unauthorised}")))))
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,
+        Some(Json.toJson("{Message:Unauthorised}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", nino))
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.toJson("{Message:InternalServerError}")))))
+      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
+        Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
@@ -169,19 +180,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec  {
       bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
     }
 
-    "return error page when connector not available" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new BadGatewayException("")))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
-    }
-
-    "redirect to gg when not logged in" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.failed(new MissingBearerToken))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
-      await(result.header.headers.get("Location")).get should include("/gg/sign-in")
-    }
   }
 
   "GET /tax-history/logout" should {

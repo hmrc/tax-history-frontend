@@ -1,12 +1,7 @@
 
-GET         /tax-history                            @controllers.EmploymentSummaryController.getTaxHistory()
-GET         /tax-history/logout                     @controllers.EmploymentSummaryController.logout()
-GET         /tax-history/agent/select-client        @controllers.SelectClientController.getSelectClientPage()
-POST        /tax-history/agent/select-client        @controllers.SelectClientController.submitSelectClientPage()
+->          /tax-history                            app.Routes
 ->          /                                       health.Routes
 ->          /template                               template.Routes
 
 GET         /admin/metrics                          @com.kenshoo.play.metrics.MetricsController.metrics
 
-# Map static resources from the /public folder to the /assets URL path
-GET         /tax-history/assets/*file                           @controllers.Assets.at(path="/public", file)

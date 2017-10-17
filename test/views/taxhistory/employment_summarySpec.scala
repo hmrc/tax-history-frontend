@@ -18,7 +18,7 @@ package views.taxhistory
 
 import java.util.UUID
 
-import model.api.Employment
+import model.api.{Allowance, Employment}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
@@ -39,7 +39,7 @@ class employment_summarySpec extends GenericTestHelper with MustMatchers with Co
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments,allowances, None)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -53,13 +53,17 @@ class employment_summarySpec extends GenericTestHelper with MustMatchers with Co
 
   "have correct employment content" in new ViewFixture {
 
-    val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, None)
+    val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
 
     employments.foreach(emp => {
       doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
       doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
       doc.getElementsContainingOwnText(emp.endDate.fold("present")(d => DateHelper.formatDate(d))).hasText mustBe true
 
+    })
+
+    allowances.foreach(al => {
+      doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
     })
   }
 }
@@ -84,4 +88,16 @@ trait Constants {
     endDate = Some(LocalDate.parse("2017-01-01")))
 
   val employments = List(emp1,emp2)
+
+  val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    iabdType = "FlatRateJobExpenses",
+    amount = BigDecimal(12.00))
+  val allowance2 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    iabdType = "ProfessionalSubscriptions",
+    amount = BigDecimal(22.00))
+  val allowance3 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    iabdType = "EarlierYearsAdjustment",
+    amount = BigDecimal(32.00))
+
+  val allowances = List(allowance1, allowance2, allowance3)
 }

@@ -1,0 +1,9 @@
+# microservice specific routes
+
+# Map static resources from the /public folder to the /assets URL path
+GET         /tax-history/assets/*file           @controllers.Assets.at(path="/public", file)
+
+GET         /agent-account/client-employment-history    @controllers.EmploymentSummaryController.getTaxHistory()
+GET         /logout                                     @controllers.EmploymentSummaryController.logout()
+GET         /agent/select-client                        @controllers.SelectClientController.getSelectClientPage()
+POST        /agent/select-client                        @controllers.SelectClientController.submitSelectClientPage()

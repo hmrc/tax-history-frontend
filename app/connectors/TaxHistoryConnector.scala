@@ -33,12 +33,17 @@ class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig
     override def read(method: String, url: String, response: HttpResponse) = response
   }
 
-
   def getTaxHistory(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
     val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
 
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments")
+  }
+
+  def getAllowances(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+    val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
+
+      httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/allowances")
   }
 
 }

@@ -21,13 +21,13 @@ import javax.inject.Inject
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
-import model.api.Employment
+import model.api.{Allowance, Employment}
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 
@@ -97,31 +97,46 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
+
   def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getTaxHistory(ninoField, cy1) map {
-      historyResponse =>
-        historyResponse.status match {
-          case OK => {
-            val employments = historyResponse.json.as[List[Employment]]
-            val sidebarLink = Link.toInternalPage(
-              url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
-              employments, person, Some(sidebarLink))).removingFromSession("USER_NINO")
-          }
-          case NOT_FOUND => {
-            handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino))
-          }
-          case UNAUTHORIZED => {
-            handleHttpResponse("unauthorised", controllers.routes.SelectClientController.getSelectClientPage().url, Some(ninoField.nino))
-          }
-          case s => {
-            Logger.error("Error response returned with status:" + s)
-            handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
+    taxHistoryConnector.getTaxHistory(ninoField, cy1) flatMap { empResponse =>
+      empResponse.status match {
+        case OK => {
+          taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
+            allowanceResponse.status match {
+              case OK =>
+                val employments = empResponse.json.as[List[Employment]]
+                val allowances = allowanceResponse.json.as[List[Allowance]]
+                val sidebarLink = Link.toInternalPage(
+                  url = FrontendAppConfig.AfiHomePage,
+                  value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+                Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
+                  employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+              case status => handleHttpFailureResponse(status, ninoField)
+            }
           }
         }
+        case status => Future.successful(handleHttpFailureResponse(status, ninoField))
+      }
+    }
+  }
+
+  private def handleHttpFailureResponse(status:Int, nino: Nino)
+                                       (implicit request: Request[_]) = {
+    status match {
+      case NOT_FOUND => {
+        handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
+      }
+      case UNAUTHORIZED => {
+        handleHttpResponse("unauthorised",
+          controllers.routes.SelectClientController.getSelectClientPage().url, Some(nino.nino))
+      }
+      case s => {
+        Logger.error("Error response returned with status:" + s)
+        handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
+      }
     }
   }
 }

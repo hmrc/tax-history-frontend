@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-//TODO package should be changed to this
-//package uk.gov.hmrc.taxhistory.model.api
-
 package model.api
 
 import java.util.UUID
