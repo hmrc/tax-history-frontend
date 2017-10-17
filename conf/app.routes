@@ -7,3 +7,5 @@ GET         /agent-account/client-employment-history    @controllers.EmploymentS
 GET         /logout                                     @controllers.EmploymentSummaryController.logout()
 GET         /agent/select-client                        @controllers.SelectClientController.getSelectClientPage()
 POST        /agent/select-client                        @controllers.SelectClientController.submitSelectClientPage()
+
+GET         /temp/:employmentId                         @controllers.EmploymentSummaryController.getCompanyBenefits(employmentId: String)
