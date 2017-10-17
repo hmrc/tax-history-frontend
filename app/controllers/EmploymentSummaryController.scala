@@ -16,12 +16,13 @@
 
 package controllers
 
+import java.util.UUID
 import javax.inject.Inject
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
-import model.api.{Allowance, Employment}
+import model.api.{Allowance, CompanyBenefit, Employment, PayAndTax}
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
@@ -113,7 +114,7 @@ class EmploymentSummaryController @Inject()(
                   url = FrontendAppConfig.AfiHomePage,
                   value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
                 Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
-                  employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+                  employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)
             }
           }
@@ -123,20 +124,21 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def handleHttpFailureResponse(status:Int, nino: Nino)
-                                       (implicit request: Request[_]) = {
-    status match {
-      case NOT_FOUND => {
-        handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
-      }
-      case UNAUTHORIZED => {
-        handleHttpResponse("unauthorised",
-          controllers.routes.SelectClientController.getSelectClientPage().url, Some(nino.nino))
-      }
-      case s => {
-        Logger.error("Error response returned with status:" + s)
-        handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
+  def getCompanyBenefits(employmentId: String) = Action.async {
+      implicit request => {
+        val cy1 = TaxYearResolver.currentTaxYear - 1
+        val maybeNino = request.session.get("USER_NINO").map(Nino(_))
+        authorisedForAgent {
+          taxHistoryConnector.getEmploymentDetails(maybeNino.get, cy1, employmentId) flatMap { empDtlsResponse =>
+            empDtlsResponse.status match {
+              case OK =>
+                taxHistoryConnector.getCompanyBenefits(maybeNino.get, cy1, employmentId) map {cbResponse =>
+                  Ok(""+empDtlsResponse.json.as[PayAndTax] + cbResponse.json.as[List[CompanyBenefit]])
+                }
+              case status => Future.successful(handleHttpFailureResponse(status, maybeNino.get))
+            }
+          }
+        }
       }
     }
-  }
 }

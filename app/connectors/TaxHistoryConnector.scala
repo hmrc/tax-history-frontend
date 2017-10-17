@@ -32,18 +32,26 @@ class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     override def read(method: String, url: String, response: HttpResponse) = response
   }
+  private val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
 
   def getTaxHistory(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-
-    val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
 
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments")
   }
 
   def getAllowances(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-    val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
 
-      httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/allowances")
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/allowances")
+  }
+
+  def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId:String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/company-benefits")
+  }
+
+  def getEmploymentDetails(nino: Nino, taxYear: Int, employmentId:String)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/pay-and-tax")
   }
 
 }
