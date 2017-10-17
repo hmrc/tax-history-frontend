@@ -1,0 +1,14 @@
+[
+  {
+    "earlierYearUpdateId":"cf1886e7-ae56-4ec2-84a6-926d64ace287",
+    "taxablePayEYU":6543.21,
+    "taxEYU":123.45,
+    "receivedDate":"2016-06-26"
+  },
+  {
+    "earlierYearUpdateId":"effa7845-aa97-454f-88da-ffa099eba7f2",
+    "taxablePayEYU":123.45,
+    "taxEYU":67.89,
+    "receivedDate":"2015-05-29"
+  }
+]

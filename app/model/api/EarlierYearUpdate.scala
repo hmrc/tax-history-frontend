@@ -18,12 +18,14 @@ package model.api
 
 import java.util.UUID
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
-case class CompanyBenefit(companyBenefitId:UUID = UUID.randomUUID(),
-                          iabdType: String,
-                          amount: BigDecimal)
+case class EarlierYearUpdate(earlierYearUpdateId:UUID = UUID.randomUUID(),
+                             taxablePayEYU: BigDecimal,
+                             taxEYU: BigDecimal,
+                             receivedDate:LocalDate)
 
-object CompanyBenefit {
-  implicit val formats = Json.format[CompanyBenefit]
+object EarlierYearUpdate {
+  implicit val formats = Json.format[EarlierYearUpdate]
 }

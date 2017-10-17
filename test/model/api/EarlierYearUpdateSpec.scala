@@ -34,40 +34,53 @@ package model.api
 
 import java.util.UUID
 
-import model.api.Allowance
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestUtil
 
-class AllowanceSpec extends TestUtil with UnitSpec {
+class EarlierYearUpdateSpec extends TestUtil with UnitSpec {
 
-  lazy val allowanceJson = loadFile("/json/model/api/allowance.json")
-  lazy val allowanceListJson = loadFile("/json/model/api/allowances.json")
+  lazy val earlierYearUpdateJson = loadFile("/json/model/api/earlierYearUpdate.json")
+  lazy val earlierYearUpdateListJson = loadFile("/json/model/api/earlierYearUpdates.json")
 
-  lazy val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "allowanceType",
-    amount = BigDecimal(12.00))
+  lazy val earlierYearUpdate1 =  EarlierYearUpdate(
+    earlierYearUpdateId = UUID.fromString("cf1886e7-ae56-4ec2-84a6-926d64ace287"),
+    taxablePayEYU = BigDecimal(6543.21),
+    taxEYU = BigDecimal(123.45),
+    receivedDate = new LocalDate("2016-06-26"))
 
-  lazy val allowanceList = List(allowance1)
+  lazy val earlierYearUpdate2 =  EarlierYearUpdate(
+    earlierYearUpdateId = UUID.fromString("effa7845-aa97-454f-88da-ffa099eba7f2"),
+    taxablePayEYU = BigDecimal(123.45),
+    taxEYU = BigDecimal(67.89),
+    receivedDate = new LocalDate("2015-05-29"))
+  lazy val earlierYearUpdateList = List(earlierYearUpdate1,earlierYearUpdate2)
 
-  "Allowance" should {
+  "Employment" should {
+
     "transform into Json from object correctly " in {
-      Json.toJson(allowance1) shouldBe allowanceJson
+      Json.toJson(earlierYearUpdate1) shouldBe earlierYearUpdateJson
     }
     "transform into object from json correctly " in {
-      allowanceJson.as[Allowance] shouldBe allowance1
+      earlierYearUpdateJson.as[EarlierYearUpdate] shouldBe earlierYearUpdate1
     }
-    "generate allowanceId when none is supplied" in {
-      val allowance = Allowance(iabdType = "otherAllowanceType", amount = BigDecimal(10.00))
-      allowance.allowanceId.toString.nonEmpty shouldBe true
-      allowance.allowanceId shouldNot be(allowance1.allowanceId)
+    "generate employmentId when none is supplied" in {
+      val eyu = EarlierYearUpdate(
+        taxablePayEYU = BigDecimal(1.11),
+        taxEYU = BigDecimal(22.22),
+        receivedDate = new LocalDate("2015-05-29"))
+
+      eyu.earlierYearUpdateId.toString.nonEmpty shouldBe true
+      eyu.earlierYearUpdateId shouldNot be(earlierYearUpdate1.earlierYearUpdateId)
     }
     "transform into Json from object list correctly " in {
-      Json.toJson(allowanceList) shouldBe allowanceListJson
+      Json.toJson(earlierYearUpdateList) shouldBe earlierYearUpdateListJson
     }
     "transform into object list from json correctly " in {
-      allowanceListJson.as[List[Allowance]] shouldBe allowanceList
+      earlierYearUpdateListJson.as[List[EarlierYearUpdate]] shouldBe earlierYearUpdateList
     }
   }
 }
+
+
