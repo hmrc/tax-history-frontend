@@ -16,7 +16,6 @@
 
 package controllers
 
-import java.util.UUID
 import javax.inject.Inject
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
@@ -28,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 
@@ -102,7 +101,7 @@ class EmploymentSummaryController @Inject()(
   def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getTaxHistory(ninoField, cy1) flatMap { empResponse =>
+    taxHistoryConnector.getEmployments(ninoField, cy1) flatMap { empResponse =>
       empResponse.status match {
         case OK => {
           taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
