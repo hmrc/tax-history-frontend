@@ -45,7 +45,7 @@ class EmploymentDetailController @Inject()(
                                              implicit val messagesApi: MessagesApi
                                            ) extends BaseController {
 
-  def renderEmploymentDetailsPage() = Action.async {
+  def getEmploymentDetails() = Action.async {
     implicit request => {
       val cy1 = TaxYearResolver.currentTaxYear - 1
 
@@ -77,11 +77,13 @@ class EmploymentDetailController @Inject()(
         earlierYearUpdates = eyuList
       )
 
+      val sidebarLink = Link.toInternalPage(
+        url = "client-employment-history",
+        value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
 
-      Future.successful(Ok(views.html.taxhistory.employment_detail(cy1, emp1, payAndTax)))
+      Future.successful(Ok(views.html.taxhistory.employment_detail(cy1, emp1, payAndTax, Some(sidebarLink))))
     }
   }
-
 
 
 }

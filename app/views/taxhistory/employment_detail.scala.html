@@ -17,7 +17,10 @@
 @import model.api.{Employment, Allowance, PayAndTax}
 @import utils.{Currency, DateHelper}
 
-@(taxYear: Int, employment: Employment, payAndTax: PayAndTax)(implicit request: Request[_], messages: Messages)
+@(taxYear: Int,
+  employment: Employment,
+  payAndTax: PayAndTax,
+  sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 
 @views.html.main_template(title = Messages("employmenthistory.title"),
@@ -95,6 +98,10 @@
   </tbody>
 </table>
 }
+
+<div class="margin-top-large">
+  @sideBarLink.map{link=>@link}
+</div>
 
 }
 

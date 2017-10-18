@@ -89,4 +89,6 @@ employmenthistory.select.client.error.invalid-format.link=Please enter a valid N
 employmenthistory.select.client.error.empty.title=National Insurance number must be 9 characters.
 employmenthistory.select.client.error.empty.link=Please enter a National Insurance number
 
+################################ Employment Details ####################################################
 
+employmenthistory.payerecord.linktext = Return to PAYE record
