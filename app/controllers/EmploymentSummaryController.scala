@@ -122,22 +122,4 @@ class EmploymentSummaryController @Inject()(
       }
     }
   }
-
-  def getCompanyBenefits(employmentId: String) = Action.async {
-      implicit request => {
-        val cy1 = TaxYearResolver.currentTaxYear - 1
-        val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-        authorisedForAgent {
-          taxHistoryConnector.getEmploymentDetails(maybeNino.get, cy1, employmentId) flatMap { empDtlsResponse =>
-            empDtlsResponse.status match {
-              case OK =>
-                taxHistoryConnector.getCompanyBenefits(maybeNino.get, cy1, employmentId) map {cbResponse =>
-                  Ok(""+empDtlsResponse.json.as[PayAndTax] + cbResponse.json.as[List[CompanyBenefit]])
-                }
-              case status => Future.successful(handleHttpFailureResponse(status, maybeNino.get))
-            }
-          }
-        }
-      }
-    }
 }

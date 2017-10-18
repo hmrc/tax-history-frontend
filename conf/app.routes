@@ -8,4 +8,3 @@ GET         /logout                                     @controllers.EmploymentS
 GET         /agent/select-client                        @controllers.SelectClientController.getSelectClientPage()
 POST        /agent/select-client                        @controllers.SelectClientController.submitSelectClientPage()
 
-GET         /temp/:employmentId                         @controllers.EmploymentSummaryController.getCompanyBenefits(employmentId: String)
