@@ -22,7 +22,7 @@ import javax.inject.Inject
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
-import model.api.{Allowance, Employment}
+import model.api.{Allowance, Employment, PayAndTax, EarlierYearUpdate}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import play.api.i18n.MessagesApi
@@ -54,9 +54,31 @@ class EmploymentDetailController @Inject()(
         payeReference = "578/U662",
         employerName = "Aviva Pensions",
         startDate = LocalDate.parse("2016-01-21"),
-        endDate = Some(LocalDate.parse("2017-01-01")))
+        endDate = Some(LocalDate.parse("2017-01-01"))
+      )
 
-      Future.successful(Ok(views.html.taxhistory.employment_detail(cy1, emp1)))
+      val eyu1 = EarlierYearUpdate(
+        taxablePayEYU = 0,
+        taxEYU = 8.99,
+        receivedDate = LocalDate.parse("2016-01-21")
+      )
+
+      val eyu2 = EarlierYearUpdate(
+        taxablePayEYU = 10,
+        taxEYU = 18.99,
+        receivedDate = LocalDate.parse("2016-05-21")
+      )
+
+      val eyuList = List(eyu1, eyu2)
+
+      val payAndTax = PayAndTax(
+        taxablePayTotal = Some(4896.80),
+        taxTotal = Some(979.36),
+        earlierYearUpdates = eyuList
+      )
+
+
+      Future.successful(Ok(views.html.taxhistory.employment_detail(cy1, emp1, payAndTax)))
     }
   }
 

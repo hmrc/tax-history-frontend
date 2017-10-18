@@ -18,13 +18,11 @@ package views.taxhistory
 
 import java.util.UUID
 
-import model.api.Employment
-import model.api.{Allowance, Employment}
+import model.api.{PayAndTax, EarlierYearUpdate, Employment}
 import models.taxhistory._
 import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
-import uk.gov.hmrc.time.TaxYearResolver
 import utils.{DateHelper, TestUtil}
 import views.{Fixture, GenericTestHelper}
 
@@ -42,7 +40,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct title and heading should only show one h1" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, emp1)
+      val view = views.html.taxhistory.employment_detail(taxYear, emp1, payAndTax)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -52,16 +50,35 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct employment details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, emp1)
-      val payeRef = doc.select(".employment-table tbody tr").get(0)
-      val startDate = doc.select(".employment-table tbody tr").get(1)
-      val endDate = doc.select(".employment-table tbody tr").get(2)
+      val view = views.html.taxhistory.employment_detail(taxYear, emp1, payAndTax)
+      val payeRef = doc.select("#employment-table tbody tr").get(0)
+      val startDate = doc.select("#employment-table tbody tr").get(1)
+      val endDate = doc.select("#employment-table tbody tr").get(2)
+      val taxablePay = doc.select("#employment-table tbody tr").get(3)
+      val incomeTax = doc.select("#employment-table tbody tr").get(4)
 
       payeRef.text must include("paye-1")
       startDate.text must include("21 January 2016")
       endDate.text must include("1 January 2017")
+      taxablePay.text must include("£4,896.80")
+      incomeTax.text must include("£979.36")
 
-      println(doc.select(".employment-table tbody tr").get(1))
+    }
+
+    "have correct Earlier Year Update details" in new ViewFixture {
+
+      val view = views.html.taxhistory.employment_detail(taxYear, emp1, payAndTax)
+      
+      val eyuRow0 = doc.select("#eyu-table tbody tr").get(0)
+      val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
+
+      eyuRow0.text must include("21 January 2016")
+      eyuRow0.text must include("£0.00")
+      eyuRow0.text must include("£8.99")
+
+      eyuRow1.text must include("21 May 2016")
+      eyuRow1.text must include("£10.00")
+      eyuRow1.text must include("£18.99")
 
     }
   }
@@ -89,16 +106,24 @@ trait DetailConstants {
 
   val employments = List(emp1,emp2)
 
-  val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "FlatRateJobExpenses",
-    amount = BigDecimal(12.00))
-  val allowance2 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "ProfessionalSubscriptions",
-    amount = BigDecimal(22.00))
-  val allowance3 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "EarlierYearsAdjustment",
-    amount = BigDecimal(32.00))
+  val eyu1 = EarlierYearUpdate(
+    taxablePayEYU = 0,
+    taxEYU = 8.99,
+    receivedDate = LocalDate.parse("2016-01-21")
+  )
 
-  val allowances = List(allowance1, allowance2, allowance3)
+  val eyu2 = EarlierYearUpdate(
+    taxablePayEYU = 10,
+    taxEYU = 18.99,
+    receivedDate = LocalDate.parse("2016-05-21")
+  )
+
+  val eyuList = List(eyu1, eyu2)
+
+  val payAndTax = PayAndTax(
+    taxablePayTotal = Some(4896.80),
+    taxTotal = Some(979.36),
+    earlierYearUpdates = eyuList
+  )
 
 }
