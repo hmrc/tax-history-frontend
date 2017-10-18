@@ -67,7 +67,7 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  def retrieveCitizenDetails(ninoField: Nino)
+  private def retrieveCitizenDetails(ninoField: Nino)
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
     val details = {
       citizenDetailsConnector.getPersonDetails(ninoField) map {
@@ -86,7 +86,7 @@ class EmploymentSummaryController @Inject()(
     details
   }
 
-  def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person])
+  private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person])
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
       case Left(status) => status match {
@@ -98,7 +98,7 @@ class EmploymentSummaryController @Inject()(
   }
 
 
-  def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
+  private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
     taxHistoryConnector.getEmployments(ninoField, cy1) flatMap { empResponse =>

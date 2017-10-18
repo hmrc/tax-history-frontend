@@ -39,7 +39,6 @@ class error_templateSpec extends GenericTestHelper with MustMatchers {
       val foundMessage = doc.body().select("#error-message")
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
-      println(doc.select("script").toString)
       doc.select("script").toString contains
       "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'unauthorised'})" mustBe true
 
