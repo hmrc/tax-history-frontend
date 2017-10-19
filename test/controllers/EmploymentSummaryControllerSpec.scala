@@ -93,6 +93,23 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     }
   }
 
+  trait AllowancesTechnicalError {
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+
+      val person = Some(Person(Some("first name"),Some("second name"), false))
+      val c = injected[EmploymentSummaryController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.arr()))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
   trait NoCitizenDetails {
 
     implicit val actorSystem = ActorSystem("test")
@@ -155,6 +172,12 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
+    }
+
+    "return 200 and show technical error page when get allowances returns 500" in new AllowancesTechnicalError {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
 
     "return 200 and show technical error page when no citizen details available" in new NoCitizenDetails {
