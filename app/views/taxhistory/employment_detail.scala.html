@@ -1,0 +1,110 @@
+@*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import model.api.{PayAndTax, CompanyBenefit}
+@import utils.{Currency, DateHelper}
+
+@(taxYear: Int,
+  payAndTax: PayAndTax,
+  companyBenefits: List[CompanyBenefit],
+  sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+
+
+@views.html.main_template(title = Messages("employmenthistory.title"),
+                        bodyClasses = None,
+                        sidebarLinks = None
+                        ){
+
+<header class="page-header">
+    <h1 class="heading-xlarge">Employer Name</h1>
+  <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
+    (taxYear+1).toString)</p>
+</header>
+
+<table id="employment-table">
+  <tbody>
+
+  <tr>
+    <th scope="row" width="50%">@Messages("lbl.taxable.pay")</th>
+    <td>
+      @if(payAndTax.taxablePayTotal.isDefined){
+      @Currency(payAndTax.taxablePayTotal.getOrElse(0))
+      } else {
+      @Messages("employmenthistory.nopaydata")
+      }
+    </td>
+  </tr>
+  <tr>
+    <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
+    <td>
+      @if(payAndTax.taxTotal.isDefined){
+      @Currency(payAndTax.taxTotal.getOrElse(0))
+      } else {
+      @Messages("employmenthistory.nopaydata")
+      }
+    </td>
+  </tr>
+
+  </tbody>
+</table>
+
+@if(payAndTax.earlierYearUpdates.nonEmpty) {
+<table id="eyu-table">
+  <caption class="heading-small pull-left">Earlier Year Update (EYU)</caption>
+  <thead>
+  <tr>
+    <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>
+    <th scope="col" width="25%">@Messages("employmenthistory.eyu.pay")</th>
+    <th scope="col" width="25%">@Messages("employmenthistory.eyu.tax")</th>
+  </tr>
+  </thead>
+  <tbody>
+  @payAndTax.earlierYearUpdates.map {cb =>
+  <tr>
+    <td>@DateHelper.formatDate(cb.receivedDate)</td>
+    <td>@Currency(cb.taxablePayEYU)</td>
+    <td>@Currency(cb.taxEYU)</td>
+  </tr>
+  }
+  </tbody>
+</table>
+}
+
+@if(companyBenefits.nonEmpty) {
+    <table>
+        <thead>
+        <tr>
+            <th scope="col" width="50%">@Messages("lbl.company.benefits")</th>
+            <th scope="col">@Messages("lbl.amount")</th>
+        </tr>
+        </thead>
+        <tbody>
+        @companyBenefits.map {cb =>
+        <tr>
+            <td>@Messages(s"employmenthistory.cb.${cb.iabdType}")</td>
+            <td>@Currency(cb.amount)</td>
+        </tr>
+        }
+        </tbody>
+    </table>
+}
+
+<div class="margin-top-large">
+  @sideBarLink.map{link=>@link}
+</div>
+
+}
+
