@@ -118,6 +118,19 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures w
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(payAndTaxWithEyu)
     }
+
+    "fetch Employment from backend" in new LocalSetup {
+
+      val employment = Employment("12341234", "Test Employer Name",
+        startDate, None, Some(25000.0), Some(2000.0))
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
+
+      val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "TaxableExpenseBenefit"))
+
+      result.status shouldBe Status.OK
+      result.json shouldBe Json.toJson(employment)
+    }
   }
 
 }

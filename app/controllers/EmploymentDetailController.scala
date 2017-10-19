@@ -16,15 +16,12 @@
 
 package controllers
 
-import java.util.UUID
 import javax.inject.Inject
 
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
-import model.api.{Allowance, Employment, PayAndTax, EarlierYearUpdate}
-import models.taxhistory.Person
-import org.joda.time.LocalDate
+import model.api.PayAndTax
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
@@ -46,26 +43,40 @@ class EmploymentDetailController @Inject()(
                                            ) extends BaseController {
 
 
+
   def getEmploymentDetails(employmentId: String) = Action.async {
     implicit request => {
-      val cy1 = TaxYearResolver.currentTaxYear - 1
       val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-
+      val cy1 = TaxYearResolver.currentTaxYear - 1
       authorisedForAgent {
-
-        taxHistoryConnector.getEmploymentDetails(maybeNino.get, cy1, employmentId) map { empDetailsResponse =>
-          empDetailsResponse.status match {
-            case OK =>
-              val payAndTax = empDetailsResponse.json.as[PayAndTax]
-              val sidebarLink = Link.toInternalPage(
-                url = "/tax-history/agent-account/client-employment-history",
-                value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
-              Ok(views.html.taxhistory.employment_detail(cy1, payAndTax, List.empty, Some(sidebarLink)))
-            case status => handleHttpFailureResponse(status, maybeNino.get)
+        maybeNino match {
+          case Some(nino) => {
+            taxHistoryConnector.getEmploymentDetails(nino, cy1, employmentId) map { empDetailsResponse =>
+              empDetailsResponse.status match {
+                case OK =>
+                  loadEmploymentDetailsPage(empDetailsResponse, cy1)
+                case status => handleHttpFailureResponse(status, nino)
+              }
+            }
           }
-
+         case None => {
+            Logger.warn("No nino supplied.")
+            val navLink = Link.toInternalPage(
+              url = FrontendAppConfig.AfiHomePage,
+              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+            Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(navLink))))
+          }
         }
       }
     }
+  }
+
+  private def loadEmploymentDetailsPage(empDetailsResponse: HttpResponse, cy1: Int)
+                                       (implicit hc: HeaderCarrier, request: Request[_])= {
+    val payAndTax = empDetailsResponse.json.as[PayAndTax]
+    val sidebarLink = Link.toInternalPage(
+      url = "/tax-history/agent-account/client-employment-history",
+      value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
+    Ok(views.html.taxhistory.employment_detail(cy1, payAndTax, List.empty, Some(sidebarLink)))
   }
 }
