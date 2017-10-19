@@ -106,7 +106,7 @@ class EmploymentSummaryController @Inject()(
         case OK => {
           taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
             allowanceResponse.status match {
-              case OK =>
+              case OK | NOT_FOUND =>
                 val employments = empResponse.json.as[List[Employment]]
                 val allowances = allowanceResponse.json.as[List[Allowance]]
                 val sidebarLink = Link.toInternalPage(
