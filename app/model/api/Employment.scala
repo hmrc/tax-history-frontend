@@ -25,7 +25,10 @@ case class Employment(employmentId:UUID = UUID.randomUUID(),
                       startDate:LocalDate,
                       endDate:Option[LocalDate] = None,
                       payeReference:String,
-                      employerName:String)
+                      employerName:String,
+                      companyBenefitsURI:Option[String] = None,
+                      payAndTaxURI:Option[String] = None,
+                      employmentURI:Option[String] = None)
 
 object Employment {
   implicit val formats = Json.format[Employment]

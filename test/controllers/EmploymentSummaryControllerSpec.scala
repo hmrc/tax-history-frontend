@@ -45,7 +45,9 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     payeReference = "paye-1",
     employerName = "employer-1",
     startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01"))
+    endDate = Some(LocalDate.parse("2017-01-01")),
+    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax")
   )
 
   val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
@@ -68,6 +70,41 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
       when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
+  trait NoAllowances {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+
+      val person = Some(Person(Some("first name"),Some("second name"), false))
+      val c = injected[EmploymentSummaryController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.arr()))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
+  trait AllowancesTechnicalError {
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+
+      val person = Some(Person(Some("first name"),Some("second name"), false))
+      val c = injected[EmploymentSummaryController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.arr()))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
@@ -118,8 +155,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(allowances)))))
+      when(c.taxHistoryConnector.getTaxHistory(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
@@ -130,6 +167,17 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
+    }
+    "return 200 when no allowances found" in new NoAllowances {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.title"))
+    }
+
+    "return 200 and show technical error page when get allowances returns 500" in new AllowancesTechnicalError {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
     }
 
     "return 200 and show technical error page when no citizen details available" in new NoCitizenDetails {
