@@ -18,7 +18,7 @@ package views.taxhistory
 
 import java.util.UUID
 
-import model.api.{CompanyBenefit, EarlierYearUpdate, PayAndTax}
+import model.api.{CompanyBenefit, EarlierYearUpdate, Employment, PayAndTax}
 import models.taxhistory._
 import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
@@ -40,7 +40,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct title and heading should only show one h1" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, List.empty)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -50,7 +50,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct employment details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, List.empty)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
 
       val taxablePay = doc.select("#employment-table tbody tr").get(0)
       val incomeTax = doc.select("#employment-table tbody tr").get(1)
@@ -62,7 +62,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct Earlier Year Update details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, List.empty)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
       
       val eyuRow0 = doc.select("#eyu-table tbody tr").get(0)
       val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
@@ -79,7 +79,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
      "have correct company benefits details" in  new ViewFixture  {
 
-       val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, completeCBList)
+       val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, completeCBList)
 
        completeCBList.foreach(cb => {
          doc.getElementsContainingOwnText(Messages(s"employmenthistory.cb.${cb.iabdType}")).hasText mustBe true
@@ -142,5 +142,14 @@ trait DetailConstants {
     CompanyBenefit(uuid, "VoucherAndCreditCards", 1000.00),
     CompanyBenefit(uuid, "NonCashBenefit", 1000.00)
   )
+
+  val employment =  Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-1",
+    employerName = "employer-1",
+    startDate = LocalDate.parse("2016-01-21"),
+    endDate = Some(LocalDate.parse("2017-01-01")),
+    companyBenefits = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTax = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
 
 }

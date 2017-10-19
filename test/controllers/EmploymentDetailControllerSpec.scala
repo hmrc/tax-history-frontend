@@ -20,11 +20,11 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import model.api.{CompanyBenefit, PayAndTax}
+import model.api.{CompanyBenefit, Employment, PayAndTax}
+import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import org.scalatestplus.play.PlaySpec
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -54,10 +54,21 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
         earlierYearUpdates = List.empty
       )
 
+      val employment =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye-1",
+        employerName = "employer-1",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = Some(LocalDate.parse("2017-01-01")),
+        companyBenefits = None,
+        payAndTax = None)
+
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getEmploymentDetails(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTax)))))
+      when(c.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
       when(c.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(companyBenefits)))))
       c
@@ -86,13 +97,5 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
       contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
     }
 
-    "show not found page when status not found" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getEmploymentDetails(any(), any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
-          Some(Json.toJson("{Message:InternalServerError}")))))
-      val result = controller.getEmploymentDetails(UUID.randomUUID().toString)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
-    }
   }
 }

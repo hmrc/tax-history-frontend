@@ -14,11 +14,12 @@
  * limitations under the License.
  *@
 
-@import model.api.{PayAndTax, CompanyBenefit}
+@import model.api.{PayAndTax, CompanyBenefit, Employment}
 @import utils.{Currency, DateHelper}
 
 @(taxYear: Int,
   payAndTax: PayAndTax,
+  employment: Employment,
   companyBenefits: List[CompanyBenefit],
   sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
