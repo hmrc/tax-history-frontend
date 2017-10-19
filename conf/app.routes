@@ -10,5 +10,5 @@ POST        /agent/select-client                        @controllers.SelectClien
 
 GET         /temp/:employmentId                         @controllers.EmploymentSummaryController.getCompanyBenefits(employmentId: String)
 
-GET         /agent-account/detailed-view                @controllers.EmploymentDetailController.renderEmploymentDetailsPage()
+GET         /agent-account/detailed-view/:employmentId  @controllers.EmploymentDetailController.getEmploymentDetails(employmentId: String)
 

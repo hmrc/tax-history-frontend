@@ -18,7 +18,6 @@
 @import utils.{Currency, DateHelper}
 
 @(taxYear: Int,
-  employment: Employment,
   payAndTax: PayAndTax,
   sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
@@ -29,38 +28,21 @@
                         ){
 
 <header class="page-header">
-    <h1 class="heading-xlarge">@employment.employerName</h1>
+    <h1 class="heading-xlarge">Employer Name</h1>
   <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
     (taxYear+1).toString)</p>
 </header>
 
 <table id="employment-table">
   <tbody>
-  <tr>
-    <th scope="row" width="50%">@Messages("lbl.paye.reference")</th>
-    <td>@employment.payeReference</td>
-  </tr>
-  <tr class="border-none">
-    <th scope="row">@Messages("lbl.date.start")</th>
-    <td>@employment.startDate.toString("d MMMM yyyy")</td>
-  </tr>
-  <tr>
-    <th scope="row" width="50%">@Messages("lbl.date.end")</th>
-    <td>
-      @if(employment.endDate.isDefined){
-      @employment.endDate.get.toString("d MMMM yyyy")
-      } else {
-      @Messages("employmenthistory.nopaydata")
-      }
-    </td>
-  </tr>
+
   <tr>
     <th scope="row" width="50%">@Messages("lbl.taxable.pay")</th>
     <td>
       @if(payAndTax.taxablePayTotal.isDefined){
-        @Currency(payAndTax.taxablePayTotal.getOrElse(0))
+      @Currency(payAndTax.taxablePayTotal.getOrElse(0))
       } else {
-        @Messages("employmenthistory.nopaydata")
+      @Messages("employmenthistory.nopaydata")
       }
     </td>
   </tr>
@@ -68,12 +50,13 @@
     <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
     <td>
       @if(payAndTax.taxTotal.isDefined){
-        @Currency(payAndTax.taxTotal.getOrElse(0))
+      @Currency(payAndTax.taxTotal.getOrElse(0))
       } else {
-        @Messages("employmenthistory.nopaydata")
+      @Messages("employmenthistory.nopaydata")
       }
     </td>
   </tr>
+
   </tbody>
 </table>
 

@@ -45,43 +45,28 @@ class EmploymentDetailController @Inject()(
                                              implicit val messagesApi: MessagesApi
                                            ) extends BaseController {
 
-  def getEmploymentDetails() = Action.async {
+
+  def getEmploymentDetails(employmentId: String) = Action.async {
     implicit request => {
       val cy1 = TaxYearResolver.currentTaxYear - 1
+      val maybeNino = request.session.get("USER_NINO").map(Nino(_))
 
-      val emp1 =  Employment(
-        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        payeReference = "578/U662",
-        employerName = "Aviva Pensions",
-        startDate = LocalDate.parse("2016-01-21"),
-        endDate = Some(LocalDate.parse("2017-01-01"))
-      )
+      authorisedForAgent {
 
-      val eyu1 = EarlierYearUpdate(
-        taxablePayEYU = 0,
-        taxEYU = 8.99,
-        receivedDate = LocalDate.parse("2016-01-21")
-      )
+        taxHistoryConnector.getEmploymentDetails(maybeNino.get, cy1, employmentId) map { empDetailsResponse =>
+          empDetailsResponse.status match {
+            case OK =>
+              val payAndTax = empDetailsResponse.json.as[PayAndTax]
+              val sidebarLink = Link.toInternalPage(
+                url = "/tax-history/agent-account/client-employment-history",
+                value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
+              Ok(views.html.taxhistory.employment_detail(cy1, payAndTax, Some(sidebarLink)))
+            case status => handleHttpFailureResponse(status, maybeNino.get)
+          }
 
-      val eyu2 = EarlierYearUpdate(
-        taxablePayEYU = 10,
-        taxEYU = 18.99,
-        receivedDate = LocalDate.parse("2016-05-21")
-      )
+        }
 
-      val eyuList = List(eyu1, eyu2)
-
-      val payAndTax = PayAndTax(
-        taxablePayTotal = Some(4896.80),
-        taxTotal = Some(979.36),
-        earlierYearUpdates = eyuList
-      )
-
-      val sidebarLink = Link.toInternalPage(
-        url = "client-employment-history",
-        value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
-
-      Future.successful(Ok(views.html.taxhistory.employment_detail(cy1, emp1, payAndTax, Some(sidebarLink))))
+      }
     }
   }
 

@@ -23,6 +23,7 @@ import models.taxhistory._
 import org.joda.time.LocalDate
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
+import uk.gov.hmrc.urls.Link
 import utils.{DateHelper, TestUtil}
 import views.{Fixture, GenericTestHelper}
 
@@ -40,26 +41,20 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct title and heading should only show one h1" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, emp1, payAndTax)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
-      doc.getElementsByTag("h1").html must be("employer-1")
 
     }
 
     "have correct employment details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, emp1, payAndTax)
-      val payeRef = doc.select("#employment-table tbody tr").get(0)
-      val startDate = doc.select("#employment-table tbody tr").get(1)
-      val endDate = doc.select("#employment-table tbody tr").get(2)
-      val taxablePay = doc.select("#employment-table tbody tr").get(3)
-      val incomeTax = doc.select("#employment-table tbody tr").get(4)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax)
 
-      payeRef.text must include("paye-1")
-      startDate.text must include("21 January 2016")
-      endDate.text must include("1 January 2017")
+      val taxablePay = doc.select("#employment-table tbody tr").get(0)
+      val incomeTax = doc.select("#employment-table tbody tr").get(1)
+
       taxablePay.text must include("£4,896.80")
       incomeTax.text must include("£979.36")
 
@@ -67,7 +62,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct Earlier Year Update details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, emp1, payAndTax)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax)
       
       val eyuRow0 = doc.select("#eyu-table tbody tr").get(0)
       val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
@@ -86,25 +81,6 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 }
 
 trait DetailConstants {
-
-  val startDate = new LocalDate("2016-01-21")
-  val endDate = new LocalDate("2016-11-01")
-
-  val emp1 =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01")))
-
-  val emp2 =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-2",
-    employerName = "employer-2",
-    startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01")))
-
-  val employments = List(emp1,emp2)
 
   val eyu1 = EarlierYearUpdate(
     taxablePayEYU = 0,
