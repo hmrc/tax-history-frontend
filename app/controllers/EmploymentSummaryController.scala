@@ -21,7 +21,7 @@ import javax.inject.Inject
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
-import model.api.{Allowance, CompanyBenefit, Employment, PayAndTax}
+import model.api.{Allowance, Employment}
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
