@@ -49,7 +49,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct employment details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, completeCBList)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, List.empty)
 
       val taxablePay = doc.select("#employment-table tbody tr").get(0)
       val incomeTax = doc.select("#employment-table tbody tr").get(1)
@@ -61,7 +61,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct Earlier Year Update details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, completeCBList)
+      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, List.empty)
       
       val eyuRow0 = doc.select("#eyu-table tbody tr").get(0)
       val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
