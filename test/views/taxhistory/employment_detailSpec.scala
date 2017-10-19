@@ -52,9 +52,13 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
       val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
 
-      val taxablePay = doc.select("#employment-table tbody tr").get(0)
-      val incomeTax = doc.select("#employment-table tbody tr").get(1)
+      val startDate = doc.select("#employment-table tbody tr").get(0)
+      val endDate = doc.select("#employment-table tbody tr").get(1)
+      val taxablePay = doc.select("#employment-table tbody tr").get(2)
+      val incomeTax = doc.select("#employment-table tbody tr").get(3)
 
+      startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
+      endDate.text must include(employment.endDate.get.toString("d MMMM yyyy"))
       taxablePay.text must include("£4,896.80")
       incomeTax.text must include("£979.36")
 

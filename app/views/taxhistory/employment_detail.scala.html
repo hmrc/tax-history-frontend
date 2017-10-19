@@ -37,7 +37,20 @@
 
 <table id="employment-table">
   <tbody>
-
+  <tr class="border-none">
+      <th scope="row">@Messages("lbl.date.start")</th>
+      <td>@employment.startDate.toString("d MMMM yyyy")</td>
+  </tr>
+  <tr>
+      <th scope="row" width="50%">@Messages("lbl.date.end")</th>
+      <td>
+          @if(employment.endDate.isDefined){
+          @employment.endDate.get.toString("d MMMM yyyy")
+          } else {
+          @Messages("employmenthistory.nopaydata")
+          }
+      </td>
+  </tr>
   <tr>
     <th scope="row" width="50%">@Messages("lbl.taxable.pay")</th>
     <td>
