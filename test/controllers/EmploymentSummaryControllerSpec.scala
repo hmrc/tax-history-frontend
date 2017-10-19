@@ -45,7 +45,9 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     payeReference = "paye-1",
     employerName = "employer-1",
     startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01"))
+    endDate = Some(LocalDate.parse("2017-01-01")),
+    companyBenefits = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTax = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax")
   )
 
   val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
