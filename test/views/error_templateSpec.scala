@@ -16,12 +16,10 @@
 
 package views
 
-import models.taxhistory.Employment
-import org.scalatest.MustMatchers
-import play.api.i18n.Messages
+import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 
-class error_templateSpec extends GenericTestHelper with MustMatchers {
+class error_templateSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
