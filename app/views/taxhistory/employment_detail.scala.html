@@ -30,7 +30,7 @@
                         ){
 
 <header class="page-header">
-    <h1 class="heading-xlarge">Employer Name</h1>
+    <h1 class="heading-xlarge">@employment.employerName</h1>
   <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
     (taxYear+1).toString)</p>
 </header>
@@ -120,7 +120,7 @@
     </table>
 }
 
-<div class="margin-top-large">
+<div class="margin-top-large" id="back-link">
   @sideBarLink.map{link=>@link}
 </div>
 

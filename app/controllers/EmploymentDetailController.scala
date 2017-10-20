@@ -80,7 +80,7 @@ class EmploymentDetailController @Inject()(
                 val companyBenefits = cbResponse.json.as[List[CompanyBenefit]]
                 val employment = empResponse.json.as[Employment]
                 val sidebarLink = Link.toInternalPage(
-                  url = "/tax-history/agent-account/client-employment-history",
+                  url = FrontendAppConfig.employmentSummary,
                   value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
                 Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, companyBenefits, Some(sidebarLink)))
               case status => handleHttpFailureResponse(status, nino)

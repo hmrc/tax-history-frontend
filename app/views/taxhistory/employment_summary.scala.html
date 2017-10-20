@@ -50,7 +50,7 @@
 
     <table class="employment-table">
         <tbody>
-        @employments.map { employment =>
+        @employments.zipWithIndex.map { case (employment, index) =>
             <tr>
                 <td scope="row">@employment.employerName
                     <br/>
@@ -60,7 +60,7 @@
                 </td>
                 <td>
                     <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
-                       class="float-right">@Messages("employmenthistory.view.record")</a>
+                       class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")</a>
                 </td>
             </tr>
         }
@@ -90,7 +90,7 @@
             </table>
         </div>
     }
-    <div class="margin-top-large">
+    <div class="margin-top-large" id="back-link">
         @sideBarLink.map{link=>@link}
     </div>
 }

@@ -38,4 +38,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val logoutUrl = getString("logout.url")
   override lazy val loginContinue = getString("login.continue")
 
+  lazy val employmentSummary = "/tax-history/agent-account/client-employment-history"
+
 }
