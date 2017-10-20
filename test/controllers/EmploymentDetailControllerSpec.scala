@@ -90,29 +90,29 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
 
     "show technical error page when status is other than 200, 401, 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
-          Some(Json.toJson("{Message:InternalServerError}")))))
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
+          None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
+      contentAsString(result) should include (Messages("employmenthistory.notfound.header", nino))
     }
 
     "show technical error page when getEmploymentDetails returns status other than 200, 401, 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmploymentDetails(any(), any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
-          Some(Json.toJson("{Message:InternalServerError}")))))
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
+          None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
+      contentAsString(result) should include (Messages("employmenthistory.notfound.header", nino))
     }
 
     "show technical error page when getCompanyBenefits returns status other than 200, 401, 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
-          Some(Json.toJson("{Message:InternalServerError}")))))
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
+          None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
+      contentAsString(result) should include (Messages("employmenthistory.notfound.header", nino))
     }
 
   }

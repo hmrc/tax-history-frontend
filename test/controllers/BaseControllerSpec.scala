@@ -29,13 +29,15 @@ import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
+import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.http.{BadGatewayException, SessionKeys}
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.{BadGatewayException, HttpResponse, SessionKeys}
 import utils.TestUtil
 
 import scala.concurrent.Future
@@ -67,6 +69,17 @@ class BaseControllerSpec extends BaseSpec with Fixtures with TestUtil {
   )
 
   lazy val authority = buildFakeAuthority(true)
+
+  trait HappyPathSetup {
+
+    lazy val controller = {
+      val c = injected[Controller]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      c
+    }
+  }
+
 
   trait NoEnrolmentsSetup {
 
@@ -150,6 +163,25 @@ class BaseControllerSpec extends BaseSpec with Fixtures with TestUtil {
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }
+  }
+
+  "show not found error page when 404 returned from connector" in new HappyPathSetup {
+
+    val result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    status(result) shouldBe Status.OK
+    contentAsString(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
+  }
+
+  "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
+    val result = controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    status(result) shouldBe Status.OK
+    contentAsString(result) should include(Messages("employmenthistory.unauthorised.header", nino))
+  }
+
+  "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
+    val result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    status(result) shouldBe Status.OK
+    contentAsString(result) should include(Messages("employmenthistory.technicalerror.header"))
   }
 }
 
