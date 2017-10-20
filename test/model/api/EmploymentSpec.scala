@@ -51,17 +51,19 @@ class EmploymentSpec extends TestUtil with UnitSpec {
     employerName = "employer-1",
     startDate = LocalDate.parse("2016-01-21"),
     endDate = Some(LocalDate.parse("2017-01-01")),
-    companyBenefits = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTax = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax")
+    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
   )
+
   lazy val employment2 = Employment(
     employmentId = UUID.fromString("019f5fee-d5e4-4f3e-9569-139b8ad81a87"),
     payeReference = "paye-2",
     employerName = "employer-2",
     startDate = LocalDate.parse("2016-02-22"),
-    companyBenefits = None,
-    payAndTax = None
-
+    companyBenefitsURI = None,
+    payAndTaxURI = None,
+    employmentURI = None
   )
 
   lazy val employmentList = List(employment1,employment2)
@@ -79,8 +81,8 @@ class EmploymentSpec extends TestUtil with UnitSpec {
         employerName = "employer-1",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2017-01-01")),
-        companyBenefits = None,
-        payAndTax = None
+        companyBenefitsURI = None,
+        payAndTaxURI = None
       )
       emp.employmentId.toString.nonEmpty shouldBe true
       emp.employmentId shouldNot be(employment1.employmentId)
@@ -91,7 +93,7 @@ class EmploymentSpec extends TestUtil with UnitSpec {
     "transform into object list from json correctly " in {
       employmentListJson.as[List[Employment]] shouldBe employmentList
     }
-    "allow omission of endDate, companyBenefits and payAndTax in json" in {
+    "allow omission of endDate, companyBenefitsURI, payAndTaxURI and employmentsURI in json" in {
       employmentNoEndDateJson.as[Employment] shouldBe employment2
     }
 

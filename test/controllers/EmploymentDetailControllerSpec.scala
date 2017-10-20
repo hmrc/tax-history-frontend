@@ -60,8 +60,8 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
         employerName = "employer-1",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2017-01-01")),
-        companyBenefits = None,
-        payAndTax = None)
+        companyBenefitsURI = None,
+        payAndTaxURI = None)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
@@ -77,22 +77,40 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
 
   "EmploymentDetailController" must {
     "successfully load Employment details page" in new HappyPathSetup {
-     val result = controller.getEmploymentDetails(UUID.randomUUID().toString)(fakeRequest.withSession("USER_NINO" -> nino))
+     val result = controller.getEmploymentDetails(UUID.randomUUID().toString,2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include (Messages("employmenthistory.title"))
     }
 
     "load select client page when there is no nino in session" in new HappyPathSetup {
-      val result = controller.getEmploymentDetails(UUID.randomUUID().toString)(fakeRequest)
+      val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsString(result) should include (Messages("employmenthistory.afihomepage.linktext"))
     }
 
     "show technical error page when status is other than 200, 401, 404" in new HappyPathSetup {
+      when(controller.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
+          Some(Json.toJson("{Message:InternalServerError}")))))
+      val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
+    }
+
+    "show technical error page when getEmploymentDetails returns status other than 200, 401, 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmploymentDetails(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
           Some(Json.toJson("{Message:InternalServerError}")))))
-      val result = controller.getEmploymentDetails(UUID.randomUUID().toString)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
+    }
+
+    "show technical error page when getCompanyBenefits returns status other than 200, 401, 404" in new HappyPathSetup {
+      when(controller.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
+          Some(Json.toJson("{Message:InternalServerError}")))))
+      val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include (Messages("employmenthistory.technicalerror.header"))
     }

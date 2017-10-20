@@ -27,7 +27,6 @@ import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -43,14 +42,13 @@ class EmploymentDetailController @Inject()(
                                           ) extends BaseController {
 
 
-  def getEmploymentDetails(employmentId: String) = Action.async {
+  def getEmploymentDetails(employmentId: String, taxYear:Int) = Action.async {
     implicit request => {
       val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-      val taxYear = TaxYearResolver.currentTaxYear - 1
       authorisedForAgent {
         maybeNino match {
           case Some(nino) => {
-            taxHistoryConnector.getEmploymentDetails(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
+            taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
               empDetailsResponse.status match {
                 case OK =>
                   loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId)
@@ -70,10 +68,10 @@ class EmploymentDetailController @Inject()(
     }
   }
 
-  private def loadEmploymentDetailsPage(empDetailsResponse: HttpResponse, nino: Nino, taxYear: Int, employmentId: String)
+  private def loadEmploymentDetailsPage(empResponse: HttpResponse, nino: Nino, taxYear: Int, employmentId: String)
                                        (implicit hc: HeaderCarrier, request: Request[_]) = {
-    taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empResponse =>
-      empResponse.status match {
+    taxHistoryConnector.getEmploymentDetails(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
+      empDetailsResponse.status match {
         case OK => {
           taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId) map { cbResponse =>
             cbResponse.status match {

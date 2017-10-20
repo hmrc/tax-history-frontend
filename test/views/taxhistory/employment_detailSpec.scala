@@ -45,18 +45,18 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
       //TODO heading check
-
     }
 
     "have correct employment details" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
+      val payeReference = doc.select("#employment-table tbody tr").get(0)
+      val startDate = doc.select("#employment-table tbody tr").get(1)
+      val endDate = doc.select("#employment-table tbody tr").get(2)
+      val taxablePay = doc.select("#employment-table tbody tr").get(3)
+      val incomeTax = doc.select("#employment-table tbody tr").get(4)
 
-      val startDate = doc.select("#employment-table tbody tr").get(0)
-      val endDate = doc.select("#employment-table tbody tr").get(1)
-      val taxablePay = doc.select("#employment-table tbody tr").get(2)
-      val incomeTax = doc.select("#employment-table tbody tr").get(3)
-
+      payeReference.text must include(employment.payeReference)
       startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
       endDate.text must include(employment.endDate.get.toString("d MMMM yyyy"))
       taxablePay.text must include("£4,896.80")
@@ -153,7 +153,7 @@ trait DetailConstants {
     employerName = "employer-1",
     startDate = LocalDate.parse("2016-01-21"),
     endDate = Some(LocalDate.parse("2017-01-01")),
-    companyBenefits = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTax = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
+    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
 
 }

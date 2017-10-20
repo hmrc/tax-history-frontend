@@ -19,7 +19,6 @@ package filters
 import javax.inject.{Inject, Provider, Singleton}
 
 import config.FrontendAuditConnector
-import play.api.Logger
 import uk.gov.hmrc.play.config.AppName
 import uk.gov.hmrc.play.frontend.filters.DeviceIdCookieFilter
 
