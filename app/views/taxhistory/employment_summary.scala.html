@@ -59,7 +59,7 @@
                     @employment.endDate.fold(Messages("lbl.present"))(d =>DateHelper.formatDate(d))
                 </td>
                 <td>
-                    <a href="@controllers.routes.EmploymentDetailController.getEmploymentDetails(employment.employmentId.toString)"
+                    <a href="/agent-account/detailed-view/@employment.employmentURI"
                        class="float-right">@Messages("employmenthistory.view.record")</a>
                 </td>
             </tr>
