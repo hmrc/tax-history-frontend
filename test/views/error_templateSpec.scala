@@ -16,10 +16,10 @@
 
 package views
 
-import org.scalatest.MustMatchers
+import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 
-class error_templateSpec extends GenericTestHelper with MustMatchers {
+class error_templateSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

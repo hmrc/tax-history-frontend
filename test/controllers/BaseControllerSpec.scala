@@ -33,7 +33,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.{BaseSpec, Fixtures}
+import support.{BaseSpec, Fixtures, GuiceAppSpec}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.domain.Nino
@@ -42,19 +42,9 @@ import utils.TestUtil
 
 import scala.concurrent.Future
 
-class BaseControllerSpec extends BaseSpec with Fixtures with TestUtil {
+class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
 
   lazy val nino = randomNino.toString()
-
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
-    .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
-    .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
-    .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
-    .build()
-
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages = messagesApi.preferred(FakeRequest())
 
   lazy val fakeRequest = FakeRequest("GET", "/").withSession(
     SessionKeys.sessionId -> "SessionId",
