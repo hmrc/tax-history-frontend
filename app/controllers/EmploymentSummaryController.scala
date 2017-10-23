@@ -27,7 +27,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYearResolver
 import uk.gov.hmrc.urls.Link
 
@@ -67,7 +67,7 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  def retrieveCitizenDetails(ninoField: Nino)
+  private def retrieveCitizenDetails(ninoField: Nino)
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
     val details = {
       citizenDetailsConnector.getPersonDetails(ninoField) map {
@@ -86,7 +86,7 @@ class EmploymentSummaryController @Inject()(
     details
   }
 
-  def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person])
+  private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person])
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
       case Left(status) => status match {
@@ -98,10 +98,10 @@ class EmploymentSummaryController @Inject()(
   }
 
 
-  def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
+  private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getTaxHistory(ninoField, cy1) flatMap { empResponse =>
+    taxHistoryConnector.getEmployments(ninoField, cy1) flatMap { empResponse =>
       empResponse.status match {
         case OK => {
           taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
@@ -111,31 +111,16 @@ class EmploymentSummaryController @Inject()(
                 val allowances = allowanceResponse.json.as[List[Allowance]]
                 val sidebarLink = Link.toInternalPage(
                   url = FrontendAppConfig.AfiHomePage,
-                  value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+                  value = Some(messagesApi("employmenthistory.afihomepage.linktext")),
+                  id= Some("back-link")
+                ).toHtml
                 Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
-                  employments, allowances, person, Some(sidebarLink))).removingFromSession("USER_NINO")
+                  employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)
             }
           }
         }
         case status => Future.successful(handleHttpFailureResponse(status, ninoField))
-      }
-    }
-  }
-
-  private def handleHttpFailureResponse(status:Int, nino: Nino)
-                                       (implicit request: Request[_]) = {
-    status match {
-      case NOT_FOUND => {
-        handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
-      }
-      case UNAUTHORIZED => {
-        handleHttpResponse("unauthorised",
-          controllers.routes.SelectClientController.getSelectClientPage().url, Some(nino.nino))
-      }
-      case s => {
-        Logger.error("Error response returned with status:" + s)
-        handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
       }
     }
   }

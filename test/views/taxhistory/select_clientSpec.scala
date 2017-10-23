@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-import org.scalatest.MustMatchers
-import utils.{DateHelper, TestUtil}
-import views.{Fixture, GenericTestHelper}
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import support.GuiceAppSpec
+import utils.TestUtil
+import views.Fixture
 
-class select_clientSpec extends GenericTestHelper with MustMatchers with TestUtil {
+class select_clientSpec extends GuiceAppSpec with TestUtil {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

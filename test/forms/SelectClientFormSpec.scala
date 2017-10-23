@@ -16,10 +16,9 @@
 
 package forms
 
-import org.scalatestplus.play.PlaySpec
+import form.SelectClientForm.selectClientForm
 import play.api.data.FormError
 import play.api.libs.json.Json
-import form.SelectClientForm.selectClientForm
 import support.BaseSpec
 import utils.TestUtil
 class SelectClientFormSpec extends BaseSpec with TestUtil{

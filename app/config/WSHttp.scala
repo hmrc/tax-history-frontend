@@ -16,7 +16,7 @@
 
 package config
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Singleton
 
 import com.google.inject.ImplementedBy
 import uk.gov.hmrc.http._

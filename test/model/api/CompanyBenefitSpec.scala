@@ -36,7 +36,6 @@ import java.util.UUID
 
 import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
-import model.api.CompanyBenefit
 import utils.TestUtil
 
 class CompanyBenefitSpec extends TestUtil with UnitSpec {

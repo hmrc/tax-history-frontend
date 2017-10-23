@@ -23,6 +23,7 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, Request, Result}
 import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
 import uk.gov.hmrc.urls.Link
 
@@ -82,5 +83,22 @@ trait BaseController extends I18nSupport with AgentAuth {
       "",
       Some(sidebarLink),
       gaEventId = Some(message))).removingFromSession("USER_NINO")
+  }
+
+  protected[controllers] def handleHttpFailureResponse(status:Int, nino: Nino)
+                                       (implicit request: Request[_]) = {
+    status match {
+      case NOT_FOUND => {
+        handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
+      }
+      case UNAUTHORIZED => {
+        handleHttpResponse("unauthorised",
+          controllers.routes.SelectClientController.getSelectClientPage().url, Some(nino.nino))
+      }
+      case s => {
+        Logger.error("Error response returned with status:" + s)
+        handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
+      }
+    }
   }
 }

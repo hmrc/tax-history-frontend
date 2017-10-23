@@ -19,14 +19,12 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import config.WSHttpT
-import play.Logger
-import play.api.http.Status.OK
 import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.config.ServicesConfig
-import scala.concurrent.ExecutionContext.Implicits.global
 
+import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
-import uk.gov.hmrc.http.{ HeaderCarrier, HttpReads, HttpResponse }
 
 @Singleton
 class CitizenDetailsConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig {

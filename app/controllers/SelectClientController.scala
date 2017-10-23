@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{ConfigDecorator, FrontendAppConfig, FrontendAuthConnector}
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}

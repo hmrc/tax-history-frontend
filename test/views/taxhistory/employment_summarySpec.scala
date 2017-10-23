@@ -21,12 +21,12 @@ import java.util.UUID
 import model.api.{Allowance, Employment}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
-import org.scalatest.MustMatchers
 import play.api.i18n.Messages
+import support.GuiceAppSpec
 import utils.{DateHelper, TestUtil}
-import views.{Fixture, GenericTestHelper}
+import views.Fixture
 
-class employment_summarySpec extends GenericTestHelper with MustMatchers with Constants {
+class employment_summarySpec extends GuiceAppSpec with Constants {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

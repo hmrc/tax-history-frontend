@@ -18,13 +18,13 @@ package views.taxhistory
 
 import models.taxhistory._
 import org.joda.time.LocalDate
-import org.scalatest.MustMatchers
 import play.api.i18n.Messages
+import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 import utils.{Currency, DateHelper, TestUtil}
-import views.{Fixture, GenericTestHelper}
+import views.Fixture
 
-class employments_mainSpec extends GenericTestHelper with MustMatchers with EmpConstants {
+class employments_mainSpec extends GuiceAppSpec with EmpConstants {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

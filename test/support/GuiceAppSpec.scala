@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-package views
+package support
 
-import org.scalatest.mock.MockitoSugar
-import org.scalatestplus.play.{OneAppPerSuite, PlaySpec}
+import config.{ConfigDecorator, FrontendAuthConnector}
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import play.api.i18n.MessagesApi
+import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
 import play.api.{Application, Mode}
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfigProvider, CSRFFilter}
 
-trait GenericTestHelper extends PlaySpec with OneAppPerSuite with MockitoSugar {
+class GuiceAppSpec extends BaseSpec {
 
   protected val bindModules: Seq[GuiceableModule] = Seq()
   private val additionalConfig = Map(
     "google-analytics.host" -> "host",
     "google-analytics.token" -> "aToken")
 
-  import play.api.inject.guice.GuiceApplicationBuilder
-
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder().configure(additionalConfig)
     .bindings(bindModules:_*).in(Mode.Test)
+    .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
+    .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
+    .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
+    .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
     .build()
 
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]

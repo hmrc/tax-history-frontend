@@ -16,12 +16,10 @@
 
 package views
 
-import models.taxhistory.Employment
-import org.scalatest.MustMatchers
-import play.api.i18n.Messages
+import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 
-class error_templateSpec extends GenericTestHelper with MustMatchers {
+class error_templateSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
@@ -42,7 +40,7 @@ class error_templateSpec extends GenericTestHelper with MustMatchers {
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
       doc.select("script").toString contains
-      ("ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'unauthorised'})") mustBe true
+      "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'unauthorised'})" mustBe true
 
     }
 

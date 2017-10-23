@@ -21,9 +21,9 @@ import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.play.frontend.config.AuthRedirects
+import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 

@@ -20,9 +20,8 @@ import play.api.{Application, Configuration, GlobalSettings}
 import uk.gov.hmrc.crypto.ApplicationCrypto
 import uk.gov.hmrc.play.config.RunMode
 import uk.gov.hmrc.play.frontend.bootstrap.Routing.RemovingOfTrailingSlashes
-import uk.gov.hmrc.play.graphite.GraphiteConfig
-import play.api.i18n.Messages.Implicits._
 import uk.gov.hmrc.play.frontend.config.ErrorAuditingSettings
+import uk.gov.hmrc.play.graphite.GraphiteConfig
 //TODO - remove this global object
 object FrontendGlobal extends GlobalSettings with GraphiteConfig
   with RemovingOfTrailingSlashes with ErrorAuditingSettings with RunMode {
