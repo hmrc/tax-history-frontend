@@ -67,26 +67,23 @@
   </dl>
 
     @if(allowances.nonEmpty) {
-        <div class="margin-top-large">
-            <h2 id="allowances" class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
-            <table>
-                <thead>
-                <tr>
-                    <th scope="col" width="50%">@Messages("lbl.allowance")</th>
-                    <th scope="col">@Messages("lbl.amount")</th>
-                </tr>
-                </thead>
-                <tbody>
-                @allowances.map {allowance =>
-                <tr>
-                    <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-                    <td>@Currency(allowance.amount)</td>
-                </tr>
-                }
-                </tbody>
-
-            </table>
-        </div>
+        <table class="margin-top-large">
+          <caption class="heading-medium pull-left">@Messages("employmenthistory.allowance.heading")</caption>
+          <thead>
+            <tr>
+              <th scope="col" width="50%">@Messages("lbl.allowance")</th>
+              <th scope="col">@Messages("lbl.amount")</th>
+            </tr>
+          </thead>
+          <tbody>
+          @allowances.map {allowance =>
+            <tr>
+              <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
+              <td>@Currency(allowance.amount)</td>
+            </tr>
+          }
+          </tbody>
+        </table>
     }
     <div class="margin-top-large">
         @sideBarLink.map{link=>@link}

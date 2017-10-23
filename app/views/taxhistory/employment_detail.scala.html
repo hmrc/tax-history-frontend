@@ -82,7 +82,7 @@
 @payAndTax.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
     <table id="eyu-table">
-      <caption class="heading-small pull-left">Earlier Year Update (EYU)</caption>
+      <caption class="heading-medium pull-left">Earlier Year Update (EYU)</caption>
       <thead>
       <tr>
         <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>
@@ -105,9 +105,10 @@
 
 @if(companyBenefits.nonEmpty) {
     <table id="cb-table">
+        <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.companybenefits")</caption>
         <thead>
         <tr>
-            <th scope="col" width="50%">@Messages("lbl.company.benefits")</th>
+            <th scope="col" width="50%">@Messages("employmenthistory.employment.details.benefit")</th>
             <th scope="col">@Messages("lbl.amount")</th>
         </tr>
         </thead>

@@ -91,4 +91,7 @@ employmenthistory.select.client.error.empty.link=Please enter a National Insuran
 
 ################################ Employment Details ####################################################
 
+employmenthistory.employment.details.eyu = Earlier Year Update (EYU)
+employmenthistory.employment.details.companybenefits = Company Benefits
+employmenthistory.employment.details.benefit = Benefit
 employmenthistory.payerecord.linktext = Return to PAYE record
