@@ -20,6 +20,7 @@ import java.util.UUID
 
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
 import model.api.{Allowance, CompanyBenefit, EarlierYearUpdate, PayAndTax}
+import models.taxhistory.Employment
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -32,7 +33,6 @@ import play.api.libs.json.Json
 import support.{BaseSpec, Fixtures}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpResponse
-import models.taxhistory.Employment
 import utils.TestUtil
 
 import scala.concurrent.Future

@@ -18,11 +18,11 @@ package support
 
 import config.{ConfigDecorator, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import play.api.{Application, Mode}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
+import play.api.{Application, Mode}
 import play.filters.csrf.CSRF.Token
 import play.filters.csrf.{CSRFConfigProvider, CSRFFilter}
 

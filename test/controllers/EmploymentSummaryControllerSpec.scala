@@ -32,7 +32,7 @@ import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 

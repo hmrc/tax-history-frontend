@@ -19,25 +19,21 @@ package controllers
 import javax.inject.Inject
 
 import config.FrontendAppConfig.getString
-import config.{ConfigDecorator, FrontendAuthConnector}
-import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import config.FrontendAuthConnector
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import play.api.{Application, Configuration, Environment}
 import play.api.http.Status
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.{BaseSpec, Fixtures, GuiceAppSpec}
-import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import play.api.{Configuration, Environment}
+import support.{Fixtures, GuiceAppSpec}
 import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadGatewayException, HttpResponse, SessionKeys}
+import uk.gov.hmrc.http.{BadGatewayException, SessionKeys}
 import utils.TestUtil
 
 import scala.concurrent.Future
