@@ -111,7 +111,9 @@ class EmploymentSummaryController @Inject()(
                 val allowances = allowanceResponse.json.as[List[Allowance]]
                 val sidebarLink = Link.toInternalPage(
                   url = FrontendAppConfig.AfiHomePage,
-                  value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+                  value = Some(messagesApi("employmenthistory.afihomepage.linktext")),
+                  id= Some("back-link")
+                ).toHtml
                 Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
                   employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)

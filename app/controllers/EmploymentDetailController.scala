@@ -94,8 +94,10 @@ class EmploymentDetailController @Inject()(
                                        (implicit hc: HeaderCarrier, request: Request[_]) = {
     val employment = empResponse.json.as[Employment]
     val sidebarLink = Link.toInternalPage(
-      url = FrontendAppConfig.employmentSummary,
-        value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
+        url = FrontendAppConfig.employmentSummary,
+        value = Some(messagesApi("employmenthistory.payerecord.linktext")),
+        id = Some("back-link")
+    ).toHtml
    for {
      payAndTax <- getPayAndTax(nino, taxYear, employmentId)
      companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
