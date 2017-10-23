@@ -41,32 +41,30 @@
                         sidebarLinks = None,
                         analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
 
-<header class="page-header">
-    <h1 class="heading-xlarge">@Messages("employmenthistory.header",getName)</h1>
-        <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
-        (taxYear+1).toString)</p>
-</header>
-<hr>
+  <header class="page-header">
+      <h1 class="heading-xlarge">@Messages("employmenthistory.header",getName)</h1>
+          <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
+          (taxYear+1).toString)</p>
+  </header>
 
-    <table class="employment-table">
-        <tbody>
-        @employments.zipWithIndex.map { case (employment, index) =>
-            <tr>
-                <td scope="row">@employment.employerName
-                    <br/>
-                    @DateHelper.formatDate(employment.startDate)
-                    @Messages("lbl.to")
-                    @employment.endDate.fold(Messages("lbl.present"))(d =>DateHelper.formatDate(d))
-                </td>
-                <td>
-                    <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
-                       class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")</a>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-
+  <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
+    @employments.zipWithIndex.map { case (employment, index) =>
+      <div>
+        <dt class="cya-question">
+          @employment.employerName
+        </dt>
+        <dd class="cya-answer">
+          @DateHelper.formatDate(employment.startDate)
+          @Messages("lbl.to")
+          @employment.endDate.fold(Messages("lbl.present"))(d =>DateHelper.formatDate(d))
+        </dd>
+         <dd class="cya-change">
+           <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
+              class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
+        </dd>
+      </div>
+    }
+  </dl>
 
     @if(allowances.nonEmpty) {
         <div class="margin-top-large">
