@@ -68,27 +68,38 @@ class EmploymentDetailController @Inject()(
     }
   }
 
+  private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
+                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[PayAndTax]] = {
+    {
+      taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId) map { payAndTaxResponse =>
+        Some(payAndTaxResponse.json.as[PayAndTax])
+      }
+    }.recoverWith {
+      case _ => Future.successful(None)
+    }
+  }
+
+  private def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)
+                                (implicit hc: HeaderCarrier, request: Request[_]): Future[List[CompanyBenefit]] = {
+    {
+      taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId) map { cbResponse =>
+        cbResponse.json.as[List[CompanyBenefit]]
+      }
+    }.recoverWith {
+      case _ => Future.successful(List.empty)
+    }
+  }
+
   private def loadEmploymentDetailsPage(empResponse: HttpResponse, nino: Nino, taxYear: Int, employmentId: String)
                                        (implicit hc: HeaderCarrier, request: Request[_]) = {
     val employment = empResponse.json.as[Employment]
     val sidebarLink = Link.toInternalPage(
       url = FrontendAppConfig.employmentSummary,
-      value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
+        value = Some(messagesApi("employmenthistory.payerecord.linktext"))).toHtml
+   for {
+     payAndTax <- getPayAndTax(nino, taxYear, employmentId)
+     companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
+   } yield Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, companyBenefits, Some(sidebarLink)))
 
-    taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId) flatMap { payAndTaxResponse =>
-      taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId) map { cbResponse =>
-        (payAndTaxResponse.status , cbResponse.status) match {
-          case (OK, OK) =>
-            val payAndTax = payAndTaxResponse.json.as[PayAndTax]
-            val companyBenefits = cbResponse.json.as[List[CompanyBenefit]]
-            Ok(views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, companyBenefits, Some(sidebarLink)))
-          case (OK, NOT_FOUND) =>
-            Ok(views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxResponse.json.as[PayAndTax]),
-              employment, List.empty, Some(sidebarLink)))
-          case _ =>
-            Ok(views.html.taxhistory.employment_detail(taxYear, None, employment, List.empty, Some(sidebarLink)))
-        }
-      }
-    }
   }
 }
