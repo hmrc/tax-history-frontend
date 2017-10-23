@@ -18,7 +18,7 @@
 @import utils.{Currency, DateHelper}
 
 @(taxYear: Int,
-  payAndTax: PayAndTax,
+  payAndTax: Option[PayAndTax],
   employment: Employment,
   companyBenefits: List[CompanyBenefit],
   sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
@@ -58,8 +58,8 @@
   <tr>
     <th scope="row" width="50%">@Messages("lbl.taxable.pay")</th>
     <td>
-      @if(payAndTax.taxablePayTotal.isDefined){
-      @Currency(payAndTax.taxablePayTotal.getOrElse(0))
+      @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined){
+      @Currency(payAndTax.get.taxablePayTotal.getOrElse(0))
       } else {
       @Messages("employmenthistory.nopaydata")
       }
@@ -68,8 +68,8 @@
   <tr>
     <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
     <td>
-      @if(payAndTax.taxTotal.isDefined){
-      @Currency(payAndTax.taxTotal.getOrElse(0))
+      @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined){
+      @Currency(payAndTax.get.taxTotal.getOrElse(0))
       } else {
       @Messages("employmenthistory.nopaydata")
       }
@@ -79,30 +79,32 @@
   </tbody>
 </table>
 
-@if(payAndTax.earlierYearUpdates.nonEmpty) {
-<table id="eyu-table">
-  <caption class="heading-small pull-left">Earlier Year Update (EYU)</caption>
-  <thead>
-  <tr>
-    <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>
-    <th scope="col" width="25%">@Messages("employmenthistory.eyu.pay")</th>
-    <th scope="col" width="25%">@Messages("employmenthistory.eyu.tax")</th>
-  </tr>
-  </thead>
-  <tbody>
-  @payAndTax.earlierYearUpdates.map {cb =>
-  <tr>
-    <td>@DateHelper.formatDate(cb.receivedDate)</td>
-    <td>@Currency(cb.taxablePayEYU)</td>
-    <td>@Currency(cb.taxEYU)</td>
-  </tr>
-  }
-  </tbody>
-</table>
+@payAndTax.map { payAndTax =>
+    @if(payAndTax.earlierYearUpdates.nonEmpty) {
+    <table id="eyu-table">
+      <caption class="heading-small pull-left">Earlier Year Update (EYU)</caption>
+      <thead>
+      <tr>
+        <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>
+        <th scope="col" width="25%">@Messages("employmenthistory.eyu.pay")</th>
+        <th scope="col" width="25%">@Messages("employmenthistory.eyu.tax")</th>
+      </tr>
+      </thead>
+      <tbody>
+      @payAndTax.earlierYearUpdates.map {cb =>
+      <tr>
+        <td>@DateHelper.formatDate(cb.receivedDate)</td>
+        <td>@Currency(cb.taxablePayEYU)</td>
+        <td>@Currency(cb.taxEYU)</td>
+      </tr>
+      }
+      </tbody>
+    </table>
+    }
 }
 
 @if(companyBenefits.nonEmpty) {
-    <table>
+    <table id="cb-table">
         <thead>
         <tr>
             <th scope="col" width="50%">@Messages("lbl.company.benefits")</th>

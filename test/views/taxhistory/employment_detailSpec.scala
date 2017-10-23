@@ -40,7 +40,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct title and heading should only show one h1" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List.empty)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -49,7 +49,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct employment details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List.empty)
       val payeReference = doc.select("#employment-table tbody tr").get(0)
       val startDate = doc.select("#employment-table tbody tr").get(1)
       val endDate = doc.select("#employment-table tbody tr").get(2)
@@ -66,7 +66,7 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
     "have correct Earlier Year Update details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, List.empty)
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List.empty)
       
       val eyuRow0 = doc.select("#eyu-table tbody tr").get(0)
       val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
@@ -83,12 +83,26 @@ class employment_detailSpec extends GenericTestHelper with MustMatchers with Det
 
      "have correct company benefits details" in  new ViewFixture  {
 
-       val view = views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, completeCBList)
+       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, completeCBList)
 
        completeCBList.foreach(cb => {
          doc.getElementsContainingOwnText(Messages(s"employmenthistory.cb.${cb.iabdType}")).hasText mustBe true
        })
      }
+
+    "show data not available" when {
+      "input data missing for payAndTax and Company benefit" in new ViewFixture {
+        val view = views.html.taxhistory.employment_detail(taxYear, None, employment, List.empty)
+        val eyutable = doc.getElementById("eyu-table")
+        val cbTable = doc.getElementById("cb-table")
+        val taxablePay = doc.select("#employment-table tbody tr").get(3)
+        eyutable must be(null)
+        cbTable must be(null)
+        taxablePay.text must include(Messages("employmenthistory.nopaydata"))
+        doc.getElementsContainingOwnText(Messages("lbl.company.benefits")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("employmenthistory.eyu.date.received")).hasText mustBe false
+      }
+    }
   }
 
 }

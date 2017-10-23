@@ -65,7 +65,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentDetails(any(), any(), any())(any())).
+      when(c.taxHistoryConnector.getPayAndTaxDetails(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTax)))))
       when(c.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
@@ -98,12 +98,12 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
     }
 
     "show technical error page when getEmploymentDetails returns status other than 200, 401, 404" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getEmploymentDetails(any(), any(), any())(any())).
+      when(controller.taxHistoryConnector.getPayAndTaxDetails(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
           None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.notfound.header", nino))
+      contentAsString(result) should include (Messages("employmenthistory.title"))
     }
 
     "show technical error page when getCompanyBenefits returns status other than 200, 401, 404" in new HappyPathSetup {
@@ -112,7 +112,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
           None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.notfound.header", nino))
+      contentAsString(result) should include (Messages("employmenthistory.title"))
     }
 
   }
