@@ -36,6 +36,7 @@
 </header>
 
 <table id="employment-table">
+    <caption class="heading-medium pull-left"><span class="visuallyhidden">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
   <tr>
       <th scope="row" width="50%">@Messages("lbl.paye.reference")</th>
@@ -82,7 +83,7 @@
 @payAndTax.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
     <table id="eyu-table">
-      <caption class="heading-medium pull-left">Earlier Year Update (EYU)</caption>
+      <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.eyu")</caption>
       <thead>
       <tr>
         <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>

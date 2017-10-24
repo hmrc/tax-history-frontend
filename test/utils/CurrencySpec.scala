@@ -26,7 +26,7 @@ class CurrencySpec extends PlaySpec {
     }
 
     "format -ve value successfully" in {
-      Currency(BigDecimal(-100.55)).toString must be("-£100.55")
+      Currency(BigDecimal(-100.55)).toString must be("- £100.55")
     }
   }
 }
