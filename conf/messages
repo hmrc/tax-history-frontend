@@ -10,7 +10,8 @@ lbl.amount = Amount
 lbl.date.start = Start date
 lbl.date.end = End date
 lbl.to = to
-lbl.present = present
+lbl.text.current = current
+lbl.current = Current
 lbl.agents.for.individual = Agents for Individuals
 global.link.signout=Sign out
 

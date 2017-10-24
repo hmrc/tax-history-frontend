@@ -60,7 +60,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
     employments.foreach(emp => {
       doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
       doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
-      doc.getElementsContainingOwnText(emp.endDate.fold("present")(d => DateHelper.formatDate(d))).hasText mustBe true
+      doc.getElementsContainingOwnText(emp.endDate.fold(Messages("lbl.text.current"))(d => DateHelper.formatDate(d))).hasText mustBe true
 
     })
 
@@ -89,7 +89,7 @@ trait Constants {
     payeReference = "paye-2",
     employerName = "employer-2",
     startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01")),
+    endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
 

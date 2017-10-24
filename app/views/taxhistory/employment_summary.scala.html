@@ -56,7 +56,7 @@
         <dd class="cya-answer">
           @DateHelper.formatDate(employment.startDate)
           @Messages("lbl.to")
-          @employment.endDate.fold(Messages("lbl.present"))(d =>DateHelper.formatDate(d))
+          @employment.endDate.fold(Messages("lbl.text.current"))(d =>DateHelper.formatDate(d))
         </dd>
          <dd class="cya-change">
            <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
