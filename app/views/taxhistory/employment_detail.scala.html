@@ -36,6 +36,7 @@
 </header>
 
 <table id="employment-table">
+    <caption class="heading-medium pull-left"><span class="visuallyhidden">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
   <tr>
       <th scope="row" width="50%">@Messages("lbl.paye.reference")</th>
@@ -51,7 +52,7 @@
           @if(employment.endDate.isDefined){
           @employment.endDate.get.toString("d MMMM yyyy")
           } else {
-          @Messages("employmenthistory.nopaydata")
+          @Messages("lbl.current")
           }
       </td>
   </tr>
@@ -82,7 +83,7 @@
 @payAndTax.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
     <table id="eyu-table">
-      <caption class="heading-small pull-left">Earlier Year Update (EYU)</caption>
+      <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.eyu")</caption>
       <thead>
       <tr>
         <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>
@@ -105,9 +106,10 @@
 
 @if(companyBenefits.nonEmpty) {
     <table id="cb-table">
+        <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.companybenefits")</caption>
         <thead>
         <tr>
-            <th scope="col" width="50%">@Messages("lbl.company.benefits")</th>
+            <th scope="col" width="50%">@Messages("employmenthistory.employment.details.benefit")</th>
             <th scope="col">@Messages("lbl.amount")</th>
         </tr>
         </thead>

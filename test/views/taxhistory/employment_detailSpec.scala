@@ -59,7 +59,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
       payeReference.text must include(employment.payeReference)
       startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
       endDate.text must include(employment.endDate.get.toString("d MMMM yyyy"))
-      taxablePay.text must include("£4,896.80")
+      taxablePay.text must include("£4,896.8")
       incomeTax.text must include("£979.36")
 
     }
@@ -72,11 +72,11 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
       val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
 
       eyuRow0.text must include("21 January 2016")
-      eyuRow0.text must include("£0.00")
+      eyuRow0.text must include("£0")
       eyuRow0.text must include("£8.99")
 
       eyuRow1.text must include("21 May 2016")
-      eyuRow1.text must include("£10.00")
+      eyuRow1.text must include("£10")
       eyuRow1.text must include("£18.99")
 
     }
@@ -89,6 +89,13 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
          doc.getElementsContainingOwnText(Messages(s"employmenthistory.cb.${cb.iabdType}")).hasText mustBe true
        })
      }
+
+      "show current" when {
+        "employment is ongoing" in new ViewFixture {
+          override def view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employmentNoEndDate, completeCBList)
+          doc.getElementsMatchingOwnText(Messages("lbl.current")).hasText mustBe true
+        }
+      }
 
     "show data not available" when {
       "input data missing for payAndTax and Company benefit" in new ViewFixture {
@@ -169,5 +176,11 @@ trait DetailConstants {
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
+
+  val employmentNoEndDate =  Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-1",
+    employerName = "employer-1",
+    startDate = LocalDate.parse("2016-01-21"))
 
 }
