@@ -20,14 +20,21 @@ import java.util.Locale
 
 case class Currency(value: BigDecimal) {
 
+
   override def toString: String = {
     val formatter = java.text.NumberFormat.getCurrencyInstance(Locale.UK)
-    formatter.format(value)
+    formatter.setMinimumFractionDigits(0)
+    if (value.signum >0) {
+      formatter.format(value)
+    }else{
+      "- " + formatter.format(value.abs)
+    }
   }
 
 }
 
 object Currency {
+
 
   implicit def fromBD(value: BigDecimal): Currency = Currency(value)
 
@@ -38,3 +45,4 @@ object Currency {
   implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
 
 }
+

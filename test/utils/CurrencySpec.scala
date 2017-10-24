@@ -28,5 +28,16 @@ class CurrencySpec extends PlaySpec {
     "format -ve value successfully" in {
       Currency(BigDecimal(-100.55)).toString must be("- £100.55")
     }
+
+    "format number to skip .00 from decimals" in {
+      Currency(BigDecimal(100.00)).toString must be("£100")
+    }
+    "format number .12 from decimals" in {
+      Currency(BigDecimal(100.12)).toString must be("£100.12")
+    }
+
+    "format -ve number to skip .00 from decimals" in {
+      Currency(BigDecimal(-100.00)).toString must be("- £100")
+    }
   }
 }
