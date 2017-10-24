@@ -90,6 +90,13 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
        })
      }
 
+      "show current" when {
+        "employment is ongoing" in new ViewFixture {
+          override def view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employmentNoEndDate, completeCBList)
+          doc.getElementsMatchingOwnText(Messages("lbl.current")).hasText mustBe true
+        }
+      }
+
     "show data not available" when {
       "input data missing for payAndTax and Company benefit" in new ViewFixture {
         val view = views.html.taxhistory.employment_detail(taxYear, None, employment, List.empty)
@@ -169,5 +176,11 @@ trait DetailConstants {
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
+
+  val employmentNoEndDate =  Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-1",
+    employerName = "employer-1",
+    startDate = LocalDate.parse("2016-01-21"))
 
 }
