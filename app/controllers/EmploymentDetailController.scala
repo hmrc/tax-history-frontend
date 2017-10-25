@@ -52,6 +52,7 @@ class EmploymentDetailController @Inject()(
               empDetailsResponse.status match {
                 case OK =>
                   loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId)
+                case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory()))
                 case status => Future.successful(handleHttpFailureResponse(status, nino))
               }
             }
