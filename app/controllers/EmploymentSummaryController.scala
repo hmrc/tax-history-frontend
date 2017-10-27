@@ -114,6 +114,7 @@ class EmploymentSummaryController @Inject()(
                   value = Some(messagesApi("employmenthistory.afihomepage.linktext")),
                   id= Some("back-link")
                 ).toHtml
+
                 Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
                   employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)

@@ -46,7 +46,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       doc.getElementsByTag("h1").html must be(Messages("employmenthistory.header", nino))
       doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
         (taxYear+1).toString))
-      doc.getElementById("view-employment-0").html must include("View record<span class=\"visuallyhidden\">for employer-1</span>")
+      doc.getElementById("view-employment-0").html must include("View record<span class=\"visuallyhidden\">for employer-2</span>")
 
       doc.select("script").toString contains
         "ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
@@ -57,6 +57,8 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
 
     val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
 
+    doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
+    doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
     employments.foreach(emp => {
       doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
       doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
@@ -82,7 +84,9 @@ trait Constants {
     startDate = LocalDate.parse("2016-01-21"),
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    receivingOccupationalPension = true
+  )
 
   val emp2 =  Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
