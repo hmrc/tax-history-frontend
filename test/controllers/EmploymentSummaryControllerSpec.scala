@@ -30,6 +30,7 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HttpResponse
@@ -224,8 +225,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,
         Some(Json.toJson("{Message:Unauthorised}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {

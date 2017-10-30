@@ -92,8 +92,7 @@ trait BaseController extends I18nSupport with AgentAuth {
         handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
       }
       case UNAUTHORIZED => {
-        handleHttpResponse("unauthorised",
-          controllers.routes.SelectClientController.getSelectClientPage().url, Some(nino.nino))
+        Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
       }
       case s => {
         Logger.error("Error response returned with status:" + s)
