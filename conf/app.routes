@@ -8,3 +8,4 @@ GET   /agent-account/select-client                                      @control
 POST  /agent-account/select-client                                      @controllers.SelectClientController.submitSelectClientPage()
 GET   /agent-account/detailed-view/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
 GET   /agent-account/not-authorised                                     @controllers.ClientErrorController.getNotAuthorised()
+GET   /agent-account/restricted                                         @controllers.ClientErrorController.getMciRestricted()

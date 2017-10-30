@@ -35,4 +35,11 @@ class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) ext
       }
     }
   }
+
+  def getMciRestricted() = Action.async {
+    implicit request => {
+        Future.successful(Ok(views.html.errors.mci_restricted()))
+      }
+    }
+
 }

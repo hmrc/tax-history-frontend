@@ -201,8 +201,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
     "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
 
     "return not found error page when citizen details returns deceased indicator" in new DeceasedCitizenDetails {
