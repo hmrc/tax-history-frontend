@@ -101,7 +101,7 @@ class EmploymentSummaryController @Inject()(
   private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getEmployments(ninoField, cy1) flatMap { empResponse =>
+    taxHistoryConnector.getEmploymentsAndPensions(ninoField, cy1) flatMap { empResponse =>
       empResponse.status match {
         case OK => {
           taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
