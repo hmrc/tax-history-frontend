@@ -23,16 +23,6 @@ employmenthistory.title = View client’s PAYE record
 employmenthistory.header = PAYE record for {0}
 employmenthistory.missing.client.name = client
 
-employmenthistory.unauthorised.title = You are not authorised to view this PAYE record
-employmenthistory.unauthorised.header = You are not authorised to view {0}’s PAYE record
-employmenthistory.unauthorised.linktext = Select a new client
-employmenthistory.notfound.title = No data available for this PAYE record
-employmenthistory.notfound.header = No data available for {0}’s PAYE record
-employmenthistory.notfound.linktext = Return to agent account
-employmenthistory.technicalerror.title = Sorry, there is a technical problem
-employmenthistory.technicalerror.header = Sorry, there is a technical problem
-employmenthistory.technicalerror.button = Select a new client
-employmenthistory.technicalerror.linktext = Return to agent account
 employmenthistory.afihomepage.linktext = Return to agent account
 employmenthistory.nopaydata = No data available
 employmenthistory.allowance.heading = Allowances
