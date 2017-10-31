@@ -206,14 +206,14 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
     "return 200 and show technical error page when get allowances returns 500" in new AllowancesTechnicalError {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "return 200 and show technical error page when no citizen details available" in new NoCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
@@ -242,8 +242,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
         Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "show select client page when no nino has been set in session" in new HappyPathSetup {

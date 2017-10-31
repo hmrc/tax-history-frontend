@@ -11,3 +11,4 @@ GET   /agent-account/not-authorised                                     @control
 GET   /agent-account/restricted                                         @controllers.ClientErrorController.getMciRestricted()
 GET   /agent-account/data-unavailable                                   @controllers.ClientErrorController.getDeceased()
 GET   /agent-account/no-data                                            @controllers.ClientErrorController.getNoData()
+GET   /agent-account/service-unavailable                                @controllers.ClientErrorController.getTechnicalError()

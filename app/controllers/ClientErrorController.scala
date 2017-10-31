@@ -57,4 +57,10 @@ class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) ext
     }
   }
 
+  def getTechnicalError() = Action.async {
+    implicit request => {
+      Future.successful(Ok(views.html.errors.technical_error()))
+    }
+  }
+
 }

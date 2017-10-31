@@ -139,8 +139,8 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
 
     "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {
       val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
-      status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.technicalerror.title"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
 
@@ -166,8 +166,8 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
 
   "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
     val result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
-    status(result) shouldBe Status.OK
-    contentAsString(result) should include(Messages("employmenthistory.technicalerror.header"))
+    status(result) shouldBe Status.SEE_OTHER
+    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }
 }
 

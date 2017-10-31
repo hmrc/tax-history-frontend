@@ -68,5 +68,11 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
+
+    "get Technical Error page" in new HappyPathSetup {
+      val result = controller.getTechnicalError().apply(FakeRequest())
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.technical.error.title"))
+    }
   }
 }

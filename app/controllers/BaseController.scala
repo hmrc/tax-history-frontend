@@ -56,33 +56,17 @@ trait BaseController extends I18nSupport with AgentAuth {
         redirectToExitPage
     }.recoverWith {
       case b: BadGatewayException => {
-        Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to BadGatewayException:${b.getMessage}")
-        Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
+        Logger.warn(s"BadGatewayException:${b.getMessage}")
+        Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
       }
       case m: MissingBearerToken => {
-        Logger.warn(messagesApi("employmenthistory.technicalerror.message") + s" : Due to MissingBearerToken:${m.getMessage}")
+        Logger.warn(s"MissingBearerToken:${m.getMessage}")
         Future.successful(ggSignInRedirect)
       }
       case e =>
         Logger.error("Exception thrown :" + e.getMessage)
         Future.successful(ggSignInRedirect)
     }
-  }
-
-
-  protected[controllers] def handleHttpResponse(message: String, sideBarUrl: String, nino: Option[String])
-                                               (implicit request: Request[_]) = {
-    Logger.warn(messagesApi(s"employmenthistory.$message.message"))
-    val sidebarLink = Link.toInternalPage(
-      url = sideBarUrl,
-      value = Some(messagesApi(s"employmenthistory.$message.linktext"))).toHtml
-
-    Ok(views.html.error_template(
-      messagesApi(s"employmenthistory.$message.title"),
-      messagesApi(s"employmenthistory.$message.header", nino.getOrElse("")),
-      "",
-      Some(sidebarLink),
-      gaEventId = Some(message))).removingFromSession("USER_NINO")
   }
 
   protected[controllers] def handleHttpFailureResponse(status:Int, nino: Nino)
@@ -94,7 +78,7 @@ trait BaseController extends I18nSupport with AgentAuth {
         Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
       case s => {
         Logger.error("Error response returned with status:" + s)
-        handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)
+        Redirect(controllers.routes.ClientErrorController.getTechnicalError())
       }
     }
   }

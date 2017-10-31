@@ -110,3 +110,7 @@ employmenthistory.deceased.header = You cannot access this data
 employmenthistory.deceased.title = Service unavailable - GOV.UK
 employmenthistory.no.data.title = Service unavailable - GOV.UK
 employmenthistory.no.data.header = No data available for {0}’s PAYE record
+employmenthistory.technical.error.title = Service unavailable - GOV.UK
+employmenthistory.technical.error.header = We are experiencing technical problems
+employmenthistory.technical.error.message = Something has gone wrong with this service.
+employmenthistory.technical.error.link = Please try again, or {0}.
