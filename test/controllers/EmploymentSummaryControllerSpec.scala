@@ -79,6 +79,27 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     }
   }
 
+  trait NoEmployments {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+
+      val person = Some(Person(Some("first name"),Some("second name"), false))
+      val c = injected[EmploymentSummaryController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getEmployments(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
   trait NoAllowances {
 
     implicit val actorSystem = ActorSystem("test")
@@ -207,15 +228,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getDeceased().url)
     }
 
-    "show not found error page when 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getEmployments(any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
-        Some(Json.toJson("[]")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
-    }
-
     "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmployments(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,
@@ -238,6 +250,12 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       val result = controller.getTaxHistory()(fakeRequest)
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
+    }
+
+    "redirect to no data available page when no employments found" in new NoEmployments {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
     }
 
   }

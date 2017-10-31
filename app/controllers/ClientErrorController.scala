@@ -48,4 +48,13 @@ class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) ext
     }
   }
 
+  def getNoData() = Action.async {
+    implicit request => {
+      request.session.get("USER_NINO").map(Nino(_)) match {
+        case Some(nino) => Future.successful(Ok(views.html.errors.no_data(nino.toString())))
+        case None => Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
+      }
+    }
+  }
+
 }

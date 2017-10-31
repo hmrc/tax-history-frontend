@@ -108,3 +108,5 @@ employmenthistory.mci.restricted.header = You cannot access this data right now
 employmenthistory.mci.restricted.title = Service unavailable - GOV.UK
 employmenthistory.deceased.header = You cannot access this data
 employmenthistory.deceased.title = Service unavailable - GOV.UK
+employmenthistory.no.data.title = Service unavailable - GOV.UK
+employmenthistory.no.data.header = No data available for {0}’s PAYE record

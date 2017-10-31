@@ -56,5 +56,17 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.deceased.title"))
     }
+
+    "get No Data Available page" in new HappyPathSetup {
+      val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.no.data.title"))
+    }
+
+    "get No Data Available page without NINO" in new HappyPathSetup {
+      val result = controller.getNoData().apply(FakeRequest())
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
+    }
   }
 }

@@ -154,8 +154,8 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
   "show not found error page when 404 returned from connector" in new HappyPathSetup {
 
     val result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
-    status(result) shouldBe Status.OK
-    contentAsString(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
+    status(result) shouldBe Status.SEE_OTHER
+    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
   }
 
   "show not authorised error page when 401 returned from connector" in new HappyPathSetup {

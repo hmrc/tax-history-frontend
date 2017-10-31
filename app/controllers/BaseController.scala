@@ -88,12 +88,10 @@ trait BaseController extends I18nSupport with AgentAuth {
   protected[controllers] def handleHttpFailureResponse(status:Int, nino: Nino)
                                        (implicit request: Request[_]) = {
     status match {
-      case NOT_FOUND => {
-        handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(nino.nino))
-      }
-      case UNAUTHORIZED => {
+      case NOT_FOUND =>
+        Redirect(controllers.routes.ClientErrorController.getNoData())
+      case UNAUTHORIZED =>
         Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
-      }
       case s => {
         Logger.error("Error response returned with status:" + s)
         handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None)

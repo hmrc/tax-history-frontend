@@ -10,3 +10,4 @@ GET   /agent-account/detailed-view/:taxYear/employments/:employmentId   @control
 GET   /agent-account/not-authorised                                     @controllers.ClientErrorController.getNotAuthorised()
 GET   /agent-account/restricted                                         @controllers.ClientErrorController.getMciRestricted()
 GET   /agent-account/data-unavailable                                   @controllers.ClientErrorController.getDeceased()
+GET   /agent-account/no-data                                            @controllers.ClientErrorController.getNoData()
