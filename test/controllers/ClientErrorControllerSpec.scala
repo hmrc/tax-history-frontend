@@ -50,5 +50,11 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
+
+    "get deceased page" in new HappyPathSetup {
+      val result = controller.getDeceased().apply(FakeRequest())
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.deceased.title"))
+    }
   }
 }

@@ -91,7 +91,7 @@ class EmploymentSummaryController @Inject()(
     maybePerson match {
       case Left(status) => status match {
         case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
-        case GONE => Future.successful(handleHttpResponse("notfound" , FrontendAppConfig.AfiHomePage, Some (ninoField.toString())))
+        case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
         case _ => Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
       }
       case Right(person) => retrieveTaxHistoryData(ninoField, Some(person))
