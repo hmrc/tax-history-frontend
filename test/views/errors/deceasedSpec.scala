@@ -29,7 +29,7 @@ class deceasedSpec extends GuiceAppSpec {
 
   "Deceased view" must {
 
-    "have correct title and heading should only show one h1" in new ViewFixture {
+    "have correct title, heading and GA page view" in new ViewFixture {
 
       val view = views.html.errors.deceased()
 
@@ -37,6 +37,8 @@ class deceasedSpec extends GuiceAppSpec {
       doc.title mustBe title
       doc.select("h1").text() mustBe Messages("employmenthistory.deceased.header")
       doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/agent-account/select-client"
+      doc.select("script").toString contains
+        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 

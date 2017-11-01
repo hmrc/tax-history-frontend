@@ -28,7 +28,7 @@ class technical_errorSpec extends GuiceAppSpec {
 
   "Technical Error view" must {
 
-    "have correct title and heading should only show one h1" in new ViewFixture {
+    "have correct title, heading and GA page view event" in new ViewFixture {
 
       val view = views.html.errors.technical_error()
 
@@ -38,7 +38,8 @@ class technical_errorSpec extends GuiceAppSpec {
       doc.getElementsMatchingOwnText(Messages("employmenthistory.technical.error.message")).size() mustBe 1
       doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/agent-account/select-client"
       doc.getElementsMatchingOwnText("Please try again, or *.$").size() mustBe 1
-
+      doc.select("script").toString contains
+        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 

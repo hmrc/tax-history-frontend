@@ -30,7 +30,7 @@ class not_authorisedSpec extends GuiceAppSpec {
 
   "not authorised view" must {
 
-    "have correct title and heading should only show one h1" in new ViewFixture {
+    "have correct title, heading and GA page view event" in new ViewFixture {
 
       val view = views.html.errors.not_authorised(nino)
 
@@ -38,6 +38,8 @@ class not_authorisedSpec extends GuiceAppSpec {
       doc.title mustBe title
       doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header",nino)
       doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/agent-account/select-client"
+      doc.select("script").toString contains
+        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 
