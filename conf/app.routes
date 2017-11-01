@@ -2,11 +2,11 @@
 
 # Map static resources from the /public folder to the /assets URL path
 GET   /assets/*file                                                     @controllers.Assets.at(path="/public", file)
-GET   /agent-account/client-employment-history                          @controllers.EmploymentSummaryController.getTaxHistory()
+GET   /agent-account/client-income-record                               @controllers.EmploymentSummaryController.getTaxHistory()
 GET   /logout                                                           @controllers.EmploymentSummaryController.logout()
 GET   /agent-account/select-client                                      @controllers.SelectClientController.getSelectClientPage()
 POST  /agent-account/select-client                                      @controllers.SelectClientController.submitSelectClientPage()
-GET   /agent-account/detailed-view/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
+GET   /agent-account/single-record/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
 GET   /agent-account/not-authorised                                     @controllers.ClientErrorController.getNotAuthorised()
 GET   /agent-account/restricted                                         @controllers.ClientErrorController.getMciRestricted()
 GET   /agent-account/data-unavailable                                   @controllers.ClientErrorController.getDeceased()

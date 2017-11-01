@@ -49,7 +49,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       doc.getElementById("view-employment-0").html must include("View record<span class=\"visuallyhidden\">for employer-1</span>")
 
       doc.select("script").toString contains
-        "ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'}" mustBe true
+        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 
