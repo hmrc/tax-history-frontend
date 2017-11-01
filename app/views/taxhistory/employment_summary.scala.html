@@ -47,6 +47,12 @@
           (taxYear+1).toString)</p>
   </header>
 
+    <div class="panel-indent panel-indent--gutter panel-border-wide">
+        <p>
+           @Messages("employmenthistory.caveat.text")
+        </p>
+    </div>
+
   <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
     @employments.zipWithIndex.map { case (employment, index) =>
       <div>
