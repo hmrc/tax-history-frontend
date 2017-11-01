@@ -46,7 +46,9 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       doc.getElementsByTag("h1").html must be(Messages("employmenthistory.header", nino))
       doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
         (taxYear+1).toString))
-      doc.getElementById("view-employment-0").html must include("View record<span class=\"visuallyhidden\">for employer-1</span>")
+      val viewDetailsElements = doc.getElementById("view-employment-0")
+      viewDetailsElements.html must include("View record<span class=\"visuallyhidden\">for employer-1</span>")
+      viewDetailsElements.attr("href") mustBe "/tax-history/agent-account/single-record"
 
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
