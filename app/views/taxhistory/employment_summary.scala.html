@@ -40,9 +40,9 @@
           <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
           (taxYear+1).toString)</p>
   </header>
-
   <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
-    @employments.zipWithIndex.map { case (employment, index) =>
+    <h2 class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
+    @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
       <div>
         <dt class="cya-question">
           @employment.employerName
@@ -58,6 +58,26 @@
         </dd>
       </div>
     }
+  </dl>
+
+  <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary-pensions">
+    <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
+    @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+        <div>
+            <dt class="cya-question">
+                @employment.employerName
+            </dt>
+            <dd class="cya-answer">
+                @DateHelper.formatDate(employment.startDate)
+                @Messages("lbl.to")
+                @employment.endDate.fold(Messages("lbl.text.current"))(d =>DateHelper.formatDate(d))
+            </dd>
+            <dd class="cya-change">
+                <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
+                   class="float-right" id=@{s"view-pensions-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
+            </dd>
+        </div>
+  }
   </dl>
 
     @if(allowances.nonEmpty) {

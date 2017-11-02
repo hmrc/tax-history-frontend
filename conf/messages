@@ -30,6 +30,8 @@ employmenthistory.eyu.pay = Pay
 employmenthistory.eyu.tax = Tax
 employmenthistory.eyu.date.received = Date received
 employmenthistory.view.record = View record
+employmenthistory.table.header.employments = Employments
+employmenthistory.table.header.pensions = Pensions
 
 ################################## Company Benefits & Allowances ##################################
 
