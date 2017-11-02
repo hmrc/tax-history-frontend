@@ -19,7 +19,7 @@
 
 @mainContent = {
   <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.mci.restricted.header")</h1>
-  <a href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client")</a>
+  <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client")</a>
 }
 
 @views.html.main_template(title = Messages("employmenthistory.mci.restricted.title")){ @mainContent }

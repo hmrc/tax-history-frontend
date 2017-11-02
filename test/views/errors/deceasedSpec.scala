@@ -36,7 +36,7 @@ class deceasedSpec extends GuiceAppSpec {
       val title = Messages("employmenthistory.deceased.title")
       doc.title mustBe title
       doc.select("h1").text() mustBe Messages("employmenthistory.deceased.header")
-      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/agent-account/select-client"
+      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }

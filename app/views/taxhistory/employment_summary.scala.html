@@ -53,7 +53,7 @@
           @employment.endDate.fold(Messages("lbl.text.current"))(d =>DateHelper.formatDate(d))
         </dd>
          <dd class="cya-change">
-           <a href="/tax-history/agent-account/single-record@employment.employmentURI"
+           <a href="/tax-history/single-record@employment.employmentURI"
               class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
         </dd>
       </div>
