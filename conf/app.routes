@@ -9,7 +9,7 @@ GET   /select-client                                      @controllers.SelectCli
 POST  /select-client                                      @controllers.SelectClientController.submitSelectClientPage()
 GET   /single-record/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
 GET   /not-authorised                                     @controllers.ClientErrorController.getNotAuthorised()
-GET   /restricted                                         @controllers.ClientErrorController.getMciRestricted()
+GET   /no-data-available                                  @controllers.ClientErrorController.getMciRestricted()
 GET   /data-unavailable                                   @controllers.ClientErrorController.getDeceased()
 GET   /no-data                                            @controllers.ClientErrorController.getNoData()
 GET   /service-unavailable                                @controllers.ClientErrorController.getTechnicalError()
