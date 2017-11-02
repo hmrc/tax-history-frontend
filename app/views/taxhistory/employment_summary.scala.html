@@ -60,7 +60,7 @@
     }
   </dl>
 
-  <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
+  <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary-pensions">
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
     @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
         <div>
