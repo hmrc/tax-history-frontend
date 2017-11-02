@@ -75,7 +75,8 @@ class EmploymentSummaryController @Inject()(
           personResponse.status match {
             case OK => {
               val person = personResponse.json.as[Person]
-              if (person.deceased) Left(LOCKED) else Right(person)
+              println()
+              if (person.deceased) Left(GONE) else Right(person)
             }
             case status => Left(status)
           }
@@ -90,8 +91,9 @@ class EmploymentSummaryController @Inject()(
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
       case Left(status) => status match {
-        case LOCKED => Future.successful(handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino)))
-        case _ => Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
+        case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
+        case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
+        case _ => Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
       }
       case Right(person) => retrieveTaxHistoryData(ninoField, Some(person))
     }
