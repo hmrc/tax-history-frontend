@@ -35,9 +35,12 @@ class select_clientSpec extends GuiceAppSpec with TestUtil {
 
   "select_client view" must {
 
-    "have the correct title" in new ViewFixture {
+    "have the correct title and GA page view event" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
       doc.title mustBe Messages("employmenthistory.select.client.title")
+
+      doc.select("script").toString contains
+        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
 
     "have the correct heading" in new ViewFixture {

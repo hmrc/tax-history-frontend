@@ -26,9 +26,6 @@
     sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 
-@analyticsAdditionalJs = {
-    ga('send', {hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'EmploymentDetails'});
-}
 
 @getName=@{
     person.fold(nino) {
@@ -36,10 +33,7 @@
     }
 }
 
-@views.html.main_template(title = Messages("employmenthistory.title"),
-                        bodyClasses = None,
-                        sidebarLinks = None,
-                        analyticsAdditionalJs = Some(analyticsAdditionalJs)) {
+@views.html.main_template(title = Messages("employmenthistory.title")) {
 
   <header class="page-header">
       <h1 class="heading-xlarge">@Messages("employmenthistory.header",getName)</h1>
@@ -59,7 +53,7 @@
           @employment.endDate.fold(Messages("lbl.text.current"))(d =>DateHelper.formatDate(d))
         </dd>
          <dd class="cya-change">
-           <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
+           <a href="/tax-history/single-record@employment.employmentURI"
               class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
         </dd>
       </div>

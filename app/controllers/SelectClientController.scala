@@ -36,6 +36,13 @@ class SelectClientController @Inject()(
                                         implicit val messagesApi: MessagesApi
                                       ) extends BaseController {
 
+  //TODO Remove this as it is only included to support legacy url
+  @Deprecated
+  def getLegacySelectClientPage() = Action.async { implicit request => {
+      Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
+    }
+  }
+
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent{
       val sidebarLink = Link.toInternalPage(

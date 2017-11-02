@@ -38,13 +38,15 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
 
   "employment_detail view" must {
 
-    "have correct title and heading should only show one h1" in new ViewFixture {
+    "have correct title, heading and GA pageview event" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List.empty)
 
-      val title = Messages("employmenthistory.title")
+      val title = Messages("employmenthistory.employment.details.title")
       doc.title mustBe title
       doc.select("h1").text() mustBe "employer-1"
+      doc.select("script").toString contains
+        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
 
     "have correct employment details" in new ViewFixture {

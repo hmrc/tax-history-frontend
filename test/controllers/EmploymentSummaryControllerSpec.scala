@@ -30,6 +30,7 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.HttpResponse
@@ -70,6 +71,27 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
       when(c.taxHistoryConnector.getEmployments(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
+  trait NoEmployments {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+
+      val person = Some(Person(Some("first name"),Some("second name"), false))
+      val c = injected[EmploymentSummaryController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getEmployments(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.toJson(employments)))))
       when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
@@ -164,10 +186,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmployments(any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.LOCKED,Some(Json.toJson(allowances)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
@@ -188,35 +206,26 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
     "return 200 and show technical error page when get allowances returns 500" in new AllowancesTechnicalError {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "return 200 and show technical error page when no citizen details available" in new NoCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
 
     "return not found error page when citizen details returns deceased indicator" in new DeceasedCitizenDetails {
       val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
-    }
-
-    "show not found error page when 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getEmployments(any(), any())(any())).
-        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
-        Some(Json.toJson("[]")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.notfound.header", nino).toString)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getDeceased().url)
     }
 
     "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
@@ -224,8 +233,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,
         Some(Json.toJson("{Message:Unauthorised}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.unauthorised.header", nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
@@ -233,14 +242,20 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
         Some(Json.toJson("{Message:InternalServerError}")))))
       val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.technicalerror.header"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "show select client page when no nino has been set in session" in new HappyPathSetup {
       val result = controller.getTaxHistory()(fakeRequest)
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
+    }
+
+    "redirect to no data available page when no employments found" in new NoEmployments {
+      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
     }
 
   }
