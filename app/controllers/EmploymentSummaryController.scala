@@ -75,7 +75,8 @@ class EmploymentSummaryController @Inject()(
           personResponse.status match {
             case OK => {
               val person = personResponse.json.as[Person]
-              if (person.deceased) Left(LOCKED) else Right(person)
+              println()
+              if (person.deceased) Left(GONE) else Right(person)
             }
             case status => Left(status)
           }
@@ -90,8 +91,9 @@ class EmploymentSummaryController @Inject()(
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
       case Left(status) => status match {
-        case LOCKED => Future.successful(handleHttpResponse("notfound", FrontendAppConfig.AfiHomePage, Some(ninoField.nino)))
-        case _ => Future.successful(handleHttpResponse("technicalerror", FrontendAppConfig.AfiHomePage, None))
+        case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
+        case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
+        case _ => Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
       }
       case Right(person) => retrieveTaxHistoryData(ninoField, Some(person))
     }
@@ -101,7 +103,7 @@ class EmploymentSummaryController @Inject()(
   private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getEmployments(ninoField, cy1) flatMap { empResponse =>
+    taxHistoryConnector.getEmploymentsAndPensions(ninoField, cy1) flatMap { empResponse =>
       empResponse.status match {
         case OK => {
           taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
@@ -114,6 +116,7 @@ class EmploymentSummaryController @Inject()(
                   value = Some(messagesApi("employmenthistory.afihomepage.linktext")),
                   id= Some("back-link")
                 ).toHtml
+
                 Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
                   employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)

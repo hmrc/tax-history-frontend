@@ -79,7 +79,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
     "successfully load Employment details page" in new HappyPathSetup {
      val result = controller.getEmploymentDetails(UUID.randomUUID().toString,2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.title"))
+      contentAsString(result) should include (Messages("employmenthistory.employment.details.title"))
     }
 
     "load select client page when there is no nino in session" in new HappyPathSetup {
@@ -103,7 +103,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
           None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.title"))
+      contentAsString(result) should include (Messages("employmenthistory.employment.details.title"))
     }
 
     "show technical error page when getCompanyBenefits returns status other than 200, 401, 404" in new HappyPathSetup {
@@ -112,7 +112,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
           None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.title"))
+      contentAsString(result) should include (Messages("employmenthistory.employment.details.title"))
     }
 
   }

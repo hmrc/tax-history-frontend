@@ -1,12 +1,15 @@
 # microservice specific routes
 
 # Map static resources from the /public folder to the /assets URL path
-GET   /assets/*file           @controllers.Assets.at(path="/public", file)
-
-GET   /agent-account/client-employment-history    @controllers.EmploymentSummaryController.getTaxHistory()
-GET   /logout                                     @controllers.EmploymentSummaryController.logout()
-GET   /agent/select-client                        @controllers.SelectClientController.getSelectClientPage()
-POST  /agent/select-client                        @controllers.SelectClientController.submitSelectClientPage()
-
-GET   /agent-account/detailed-view/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
-
+GET   /assets/*file                                       @controllers.Assets.at(path="/public", file)
+GET   /client-income-record                               @controllers.EmploymentSummaryController.getTaxHistory()
+GET   /logout                                             @controllers.EmploymentSummaryController.logout()
+GET   /agent/select-client                                @controllers.SelectClientController.getLegacySelectClientPage()
+GET   /select-client                                      @controllers.SelectClientController.getSelectClientPage()
+POST  /select-client                                      @controllers.SelectClientController.submitSelectClientPage()
+GET   /single-record/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
+GET   /not-authorised                                     @controllers.ClientErrorController.getNotAuthorised()
+GET   /no-data-available                                  @controllers.ClientErrorController.getMciRestricted()
+GET   /data-unavailable                                   @controllers.ClientErrorController.getDeceased()
+GET   /no-data                                            @controllers.ClientErrorController.getNoData()
+GET   /service-unavailable                                @controllers.ClientErrorController.getTechnicalError()
