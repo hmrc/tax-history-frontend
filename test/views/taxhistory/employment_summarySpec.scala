@@ -72,6 +72,9 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
     allowances.foreach(al => {
       doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
     })
+    println(doc.select("div[class=panel-border-wide] + p"))
+
+    doc.select(".panel-border-wide").text mustBe Messages("employmenthistory.caveat.text")
   }
 }
 

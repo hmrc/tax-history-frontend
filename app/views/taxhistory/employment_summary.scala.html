@@ -40,6 +40,13 @@
           <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
           (taxYear+1).toString)</p>
   </header>
+
+    <div class="panel-indent panel-border-wide">
+        <p>
+           @Messages("employmenthistory.caveat.text")
+        </p>
+    </div>
+
   <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
     @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
