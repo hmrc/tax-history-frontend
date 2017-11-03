@@ -18,8 +18,8 @@ package views.taxhistory
 
 import java.util.UUID
 
-import model.api.{CompanyBenefit, EarlierYearUpdate, Employment, PayAndTax}
-import models.taxhistory._
+import model.api._
+import models.taxhistory.Person
 import org.joda.time.LocalDate
 import play.api.i18n.Messages
 import support.GuiceAppSpec
@@ -177,12 +177,14 @@ trait DetailConstants {
     startDate = LocalDate.parse("2016-01-21"),
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentStatus = EmploymentStatus.Live)
 
   val employmentNoEndDate =  Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
-    startDate = LocalDate.parse("2016-01-21"))
+    startDate = LocalDate.parse("2016-01-21"),
+    employmentStatus = EmploymentStatus.Live)
 
 }

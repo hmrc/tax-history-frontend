@@ -15,6 +15,7 @@ lbl.current = Current
 lbl.agents.for.individual = Agents for Individuals
 lbl.select.new.client = Select a new client
 global.link.signout=Sign out
+lbl.no.data.available = No data available
 
 
 ################################## employmenthistory ##############################################

@@ -16,8 +16,20 @@
 
 package utils
 
+import model.api.EmploymentStatus
+import play.api.i18n.Messages
+import play.api.Play.current
+import play.api.i18n.Messages.Implicits._
+
 object StringUtils {
   def uppcaseToTitleCase(s:String): String ={
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
+  }
+
+  def getDefaultEndDateText(employmentStatus: EmploymentStatus) : String  = {
+    employmentStatus match {
+      case EmploymentStatus.Live => Messages("lbl.text.current")
+      case _ => Messages("lbl.no.data.available")
+    }
   }
 }

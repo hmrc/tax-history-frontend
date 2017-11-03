@@ -53,7 +53,8 @@ class EmploymentSpec extends TestUtil with UnitSpec {
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
+    employmentURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    employmentStatus = EmploymentStatus.Live
   )
 
   lazy val employment2 = Employment(
@@ -63,7 +64,8 @@ class EmploymentSpec extends TestUtil with UnitSpec {
     startDate = LocalDate.parse("2016-02-22"),
     companyBenefitsURI = None,
     payAndTaxURI = None,
-    employmentURI = None
+    employmentURI = None,
+    employmentStatus = EmploymentStatus.Live
   )
 
   lazy val employmentList = List(employment1,employment2)
@@ -82,7 +84,8 @@ class EmploymentSpec extends TestUtil with UnitSpec {
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2017-01-01")),
         companyBenefitsURI = None,
-        payAndTaxURI = None
+        payAndTaxURI = None,
+        employmentStatus = EmploymentStatus.Live
       )
       emp.employmentId.toString.nonEmpty shouldBe true
       emp.employmentId shouldNot be(employment1.employmentId)

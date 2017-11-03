@@ -20,7 +20,7 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import model.api.{CompanyBenefit, Employment, PayAndTax}
+import model.api.{CompanyBenefit, Employment, EmploymentStatus, PayAndTax}
 import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -61,7 +61,9 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2017-01-01")),
         companyBenefitsURI = None,
-        payAndTaxURI = None)
+        payAndTaxURI = None,
+        employmentStatus = EmploymentStatus.Live
+      )
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
