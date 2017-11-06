@@ -57,7 +57,7 @@
         <dd class="cya-answer">
           @DateHelper.formatDate(employment.startDate)
           @Messages("lbl.to")
-          @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available"))
+          @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available.text"))
         </dd>
          <dd class="cya-change">
            <a href="/tax-history/single-record@employment.employmentURI"
@@ -77,7 +77,7 @@
             <dd class="cya-answer">
                 @DateHelper.formatDate(employment.startDate)
                 @Messages("lbl.to")
-                @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available"))
+                @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available.text"))
             </dd>
             <dd class="cya-change">
                 <a href="/tax-history/single-record@employment.employmentURI"
