@@ -23,7 +23,7 @@ object StringUtils {
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
 
-  def getDefaultEndDateText(employmentStatus: EmploymentStatus, current: String, noDataAvailable: String) : String  = {
+  private def getDefaultEndDateText(employmentStatus: EmploymentStatus, current: String, noDataAvailable: String) : String  = {
     employmentStatus match {
       case EmploymentStatus.Live => current
       case _ => noDataAvailable

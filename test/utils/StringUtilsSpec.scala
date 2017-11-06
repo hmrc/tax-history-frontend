@@ -16,18 +16,50 @@
 
 package utils
 
-import model.api.EmploymentStatus
+import java.util.UUID
+
+import model.api.{Employment, EmploymentStatus}
+import org.joda.time.LocalDate
 import uk.gov.hmrc.play.test.UnitSpec
 
 class StringUtilsSpec extends UnitSpec {
 
   "StringUtils" must {
     "return default message when there is no end date and employment status is Live" in {
-      StringUtils.getDefaultEndDateText(EmploymentStatus.Live, "current", "no data") shouldBe "current"
+
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = None,
+        employmentStatus = EmploymentStatus.Live)
+      StringUtils.getEndDate(emp, "current", "no data") shouldBe "current"
     }
 
     "return default message when there is no end date and employment status is not Live" in {
-      StringUtils.getDefaultEndDateText(EmploymentStatus.Ceased, "current", "no data") shouldBe "no data"
+
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = None,
+        employmentStatus = EmploymentStatus.PotentiallyCeased)
+      StringUtils.getEndDate(emp, "current", "no data") shouldBe "no data"
+    }
+
+
+    "return formatted end date" in {
+
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentStatus = EmploymentStatus.PotentiallyCeased)
+      StringUtils.getEndDate(emp, "current", "no data") shouldBe "1 February 2016"
     }
   }
 
