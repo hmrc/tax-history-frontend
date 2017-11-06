@@ -43,7 +43,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
-      doc.getElementsByTag("h1").html must be(Messages("employmenthistory.header", nino))
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
       doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
         (taxYear+1).toString))
 
