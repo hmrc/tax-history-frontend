@@ -16,20 +16,24 @@
 
 package utils
 
-import model.api.EmploymentStatus
-import play.api.i18n.Messages
-import play.api.Play.current
-import play.api.i18n.Messages.Implicits._
+import model.api.{Employment, EmploymentStatus}
 
 object StringUtils {
   def uppcaseToTitleCase(s:String): String ={
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
 
-  def getDefaultEndDateText(employmentStatus: EmploymentStatus) : String  = {
+  def getDefaultEndDateText(employmentStatus: EmploymentStatus, current: String, noDataAvailable: String) : String  = {
     employmentStatus match {
-      case EmploymentStatus.Live => Messages("lbl.text.current")
-      case _ => Messages("lbl.no.data.available")
+      case EmploymentStatus.Live => current
+      case _ => noDataAvailable
     }
   }
+
+  def getEndDate(employment:Employment, current: String, noDataAvailable: String): String = {
+    val defaultText = getDefaultEndDateText(employment.employmentStatus, current, noDataAvailable)
+    employment.endDate.fold(defaultText)(date => DateHelper.formatDate(date))
+
+  }
+
 }
