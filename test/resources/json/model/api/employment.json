@@ -7,5 +7,6 @@
   "companyBenefitsURI": "/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits",
   "payAndTaxURI": "/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax",
   "employmentURI": "/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3",
-  "receivingOccupationalPension": false
+  "receivingOccupationalPension": false,
+  "employmentStatus":1
 }

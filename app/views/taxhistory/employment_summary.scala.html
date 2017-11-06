@@ -16,7 +16,7 @@
 
 @import model.api.{Employment, Allowance}
 @import models.taxhistory.Person
-@import utils.{Currency, DateHelper}
+@import utils.{Currency, DateHelper, StringUtils}
 
 @(nino: String,
     taxYear: Int,
@@ -57,7 +57,7 @@
         <dd class="cya-answer">
           @DateHelper.formatDate(employment.startDate)
           @Messages("lbl.to")
-          @employment.endDate.fold(Messages("lbl.text.current"))(d =>DateHelper.formatDate(d))
+          @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available.text"))
         </dd>
          <dd class="cya-change">
            <a href="/tax-history/single-record@employment.employmentURI"
@@ -77,11 +77,11 @@
             <dd class="cya-answer">
                 @DateHelper.formatDate(employment.startDate)
                 @Messages("lbl.to")
-                @employment.endDate.fold(Messages("lbl.text.current"))(d =>DateHelper.formatDate(d))
+                @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available.text"))
             </dd>
             <dd class="cya-change">
-                <a href="/tax-history/agent-account/detailed-view@employment.employmentURI"
-                   class="float-right" id=@{s"view-pensions-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
+                <a href="/tax-history/single-record@employment.employmentURI"
+                   class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
             </dd>
         </div>
   }

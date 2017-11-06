@@ -3,5 +3,6 @@
   "payeReference": "paye-2",
   "employerName": "employer-2",
   "startDate": "2016-02-22",
-  "receivingOccupationalPension": false
+  "receivingOccupationalPension": false,
+  "employmentStatus":1
 }

@@ -18,7 +18,7 @@ package views.taxhistory
 
 import java.util.UUID
 
-import model.api.{Allowance, Employment}
+import model.api.{Allowance, Employment, EmploymentStatus}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import play.api.i18n.Messages
@@ -46,10 +46,15 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       doc.getElementsByTag("h1").html must be(Messages("employmenthistory.header", nino))
       doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
         (taxYear+1).toString))
+
       val viewDetailsElements = doc.getElementById("view-employment-0")
       viewDetailsElements.html must include("View record<span class=\"visuallyhidden\">for employer-2</span>")
       viewDetailsElements.attr("href") mustBe "/tax-history/single-record"
-      doc.getElementById("view-employment-0").html must include("View record<span class=\"visuallyhidden\">for employer-2</span>")
+
+
+      val viewPensionElements = doc.getElementById("view-pension-0")
+      viewPensionElements.attr("href") mustBe "/tax-history/single-record"
+      viewPensionElements.html must include("View record<span class=\"visuallyhidden\">for employer-1</span>")
 
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
@@ -65,15 +70,16 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
     employments.foreach(emp => {
       doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
       doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
-      doc.getElementsContainingOwnText(emp.endDate.fold(Messages("lbl.text.current"))(d => DateHelper.formatDate(d))).hasText mustBe true
-
+      if(emp.employmentStatus == EmploymentStatus.Live) {
+        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.text.current"))(d => DateHelper.formatDate(d))).hasText mustBe true
+      } else {
+        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.no.data.available.text"))(d => DateHelper.formatDate(d))).hasText mustBe true
+      }
     })
 
     allowances.foreach(al => {
       doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
     })
-    println(doc.select("div[class=panel-border-wide] + p"))
-
     doc.select(".panel-border-wide").text mustBe Messages("employmenthistory.caveat.text")
   }
 }
@@ -91,7 +97,8 @@ trait Constants {
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    receivingOccupationalPension = true
+    receivingOccupationalPension = true,
+    employmentStatus = EmploymentStatus.Live
   )
 
   val emp2 =  Employment(
@@ -101,9 +108,21 @@ trait Constants {
     startDate = LocalDate.parse("2016-01-21"),
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"))
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentStatus = EmploymentStatus.Live)
 
-  val employments = List(emp1,emp2)
+
+  val emp3 =  Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-2",
+    employerName = "employer-2",
+    startDate = LocalDate.parse("2016-01-21"),
+    endDate = None,
+    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentStatus = EmploymentStatus.Ceased)
+
+  val employments = List(emp1,emp2, emp3)
 
   val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "FlatRateJobExpenses",

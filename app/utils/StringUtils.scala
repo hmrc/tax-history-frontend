@@ -16,8 +16,24 @@
 
 package utils
 
+import model.api.{Employment, EmploymentStatus}
+
 object StringUtils {
   def uppcaseToTitleCase(s:String): String ={
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
+
+  private def getDefaultEndDateText(employmentStatus: EmploymentStatus, current: String, noDataAvailable: String) : String  = {
+    employmentStatus match {
+      case EmploymentStatus.Live => current
+      case _ => noDataAvailable
+    }
+  }
+
+  def getEndDate(employment:Employment, current: String, noDataAvailable: String): String = {
+    val defaultText = getDefaultEndDateText(employment.employmentStatus, current, noDataAvailable)
+    employment.endDate.fold(defaultText)(date => DateHelper.formatDate(date))
+
+  }
+
 }

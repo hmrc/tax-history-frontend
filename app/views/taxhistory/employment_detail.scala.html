@@ -15,7 +15,7 @@
  *@
 
 @import model.api.{PayAndTax, CompanyBenefit, Employment}
-@import utils.{Currency, DateHelper}
+@import utils.{Currency, DateHelper, StringUtils}
 
 @(taxYear: Int,
   payAndTax: Option[PayAndTax],
@@ -49,11 +49,7 @@
   <tr>
       <th scope="row" width="50%">@Messages("lbl.date.end")</th>
       <td>
-          @if(employment.endDate.isDefined){
-          @employment.endDate.get.toString("d MMMM yyyy")
-          } else {
-          @Messages("lbl.current")
-          }
+          @StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))
       </td>
   </tr>
   <tr>
