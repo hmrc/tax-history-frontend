@@ -51,7 +51,7 @@
            @Messages("employmenthistory.caveat.text")
         </p>
     </div>
-
+@if(employments.filter(!_.receivingOccupationalPension).nonEmpty) {
   <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
     @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
@@ -71,7 +71,9 @@
       </div>
     }
   </dl>
+}
 
+@if(employments.filter(_.receivingOccupationalPension).nonEmpty) {
   <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary-pensions">
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
     @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
@@ -91,6 +93,7 @@
         </div>
   }
   </dl>
+}
 
     @if(allowances.nonEmpty) {
         <table class="margin-top-large">
