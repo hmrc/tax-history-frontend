@@ -68,7 +68,7 @@ class SelectClientController @Inject()(
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
           case Some(affinityG) ~ allEnrols ⇒
             (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.EmploymentSummaryController.getTaxHistory())
+              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
                 .addingToSession("USER_NINO" -> s"${validFormData.clientId.toUpperCase}")
               case (`isAnAgent`, None) => redirectToSubPage
               case _ => redirectToExitPage

@@ -101,6 +101,7 @@ employmenthistory.employment.details.caption = Employment Details
 
 employmenthistory.select.tax.year.title = Select tax year - GOV.UK
 employmenthistory.select.tax.year.header = {0}’s income record
+employmenthistory.select.tax.year.option = {0} to {1}
 
 ################################ Error Pages ###########################################################
 

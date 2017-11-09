@@ -14,12 +14,11 @@
  * limitations under the License.
  *@
 
-@import model.api.IndividualTaxYear
 @import models.taxhistory.SelectTaxYear
 @import uk.gov.hmrc.play.views.html.helpers
 
 @(form: Form[SelectTaxYear], clientNameOrNino: String,
-taxYears:List[IndividualTaxYear])(implicit request: Request[_], messages: Messages)
+taxYears:List[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 
@@ -46,11 +45,11 @@ taxYears:List[IndividualTaxYear])(implicit request: Request[_], messages: Messag
          </div>
       }
       @helpers.inputRadioGroup(form("selectTaxYear"),
-      Seq.empty,
+      taxYears,
       '_labelClass -> "block-label",
-      '_id -> "choice",
+      '_id -> "selectTaxYear",
       '_groupClass -> "subsection margin-bottom--small",
-      '_fieldsetAttributes -> "id=choice")
+      '_fieldsetAttributes -> "id=selectTaxYear")
 
       <button id="continue" type="submit" class="button">@Messages("lbl.continue")</button>
   }

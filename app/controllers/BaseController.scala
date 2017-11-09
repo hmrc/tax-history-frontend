@@ -17,7 +17,9 @@
 package controllers
 
 import config.FrontendAppConfig
+import connectors.CitizenDetailsConnector
 import controllers.auth.AgentAuth
+import models.taxhistory.Person
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, Request, Result}
@@ -80,6 +82,33 @@ trait BaseController extends I18nSupport with AgentAuth {
         Logger.error("Error response returned with status:" + s)
         Redirect(controllers.routes.ClientErrorController.getTechnicalError())
       }
+    }
+  }
+
+  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsConnector:CitizenDetailsConnector)
+                                    (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
+    val details = {
+      citizenDetailsConnector.getPersonDetails(ninoField) map {
+        personResponse =>
+          personResponse.status match {
+            case OK => {
+              val person = personResponse.json.as[Person]
+              if (person.deceased) Left(GONE) else Right(person)
+            }
+            case status => Left(status)
+          }
+      }
+    }.recoverWith {
+      case _ => Future.successful(Left(BAD_REQUEST))
+    }
+    details
+  }
+
+  def redirectToClientErrorPage(status: Int) = {
+    status match {
+      case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
+      case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
+      case _ => Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
     }
   }
 }

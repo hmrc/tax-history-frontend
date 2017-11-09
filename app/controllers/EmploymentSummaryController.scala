@@ -43,14 +43,14 @@ class EmploymentSummaryController @Inject()(
                                              implicit val messagesApi: MessagesApi
                                            ) extends BaseController {
 
-  def getTaxHistory() = Action.async {
+  def getTaxHistory(taxYear: Int) = Action.async {
     implicit request => {
       val maybeNino = request.session.get("USER_NINO").map(Nino(_))
       authorisedForAgent {
         maybeNino match {
           case Some(nino) => {
-            for {maybePerson <- retrieveCitizenDetails(nino)
-                 taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson)}
+            for {maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector)
+                 taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)}
               yield {
                 taxHistoryResponse
               }
@@ -67,46 +67,20 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def retrieveCitizenDetails(ninoField: Nino)
-                            (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
-    val details = {
-      citizenDetailsConnector.getPersonDetails(ninoField) map {
-        personResponse =>
-          personResponse.status match {
-            case OK => {
-              val person = personResponse.json.as[Person]
-              println()
-              if (person.deceased) Left(GONE) else Right(person)
-            }
-            case status => Left(status)
-          }
-      }
-    }.recoverWith {
-      case _ => Future.successful(Left(BAD_REQUEST))
-    }
-    details
-  }
-
-  private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person])
-                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person], taxYear: Int)
+                                  (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
-      case Left(status) => status match {
-        case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
-        case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
-        case _ => Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
-      }
-      case Right(person) => retrieveTaxHistoryData(ninoField, Some(person))
+      case Left(status) => redirectToClientErrorPage(status)
+      case Right(person) => retrieveTaxHistoryData(ninoField, Some(person), taxYear)
     }
   }
 
-
-  private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person])
+  private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person], taxYear: Int)
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    val cy1 = TaxYearResolver.currentTaxYear - 1
-    taxHistoryConnector.getEmploymentsAndPensions(ninoField, cy1) flatMap { empResponse =>
+    taxHistoryConnector.getEmploymentsAndPensions(ninoField, taxYear) flatMap { empResponse =>
       empResponse.status match {
         case OK => {
-          taxHistoryConnector.getAllowances(ninoField, cy1) map { allowanceResponse =>
+          taxHistoryConnector.getAllowances(ninoField, taxYear) map { allowanceResponse =>
             allowanceResponse.status match {
               case OK | NOT_FOUND =>
                 val employments = empResponse.json.as[List[Employment]]
@@ -117,7 +91,7 @@ class EmploymentSummaryController @Inject()(
                   id= Some("back-link")
                 ).toHtml
 
-                Ok(views.html.taxhistory.employment_summary(ninoField.nino, cy1,
+                Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear,
                   employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)
             }

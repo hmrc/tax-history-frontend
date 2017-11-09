@@ -16,15 +16,18 @@
 
 package controllers
 
+import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.i18n.Messages
+import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
@@ -35,23 +38,35 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
     lazy val controller = {
 
       val c = injected[SelectTaxYearController]
-
+      val person = Some(Person(Some("first name"),Some("second name"), false))
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
   }
 
   "SelectTaxYearController" must {
 
-    "load select client page" in new LocalSetup {
-      val result  = controller.getSelectTaxYearPage()(fakeRequest)
+    "load select tax year page" in new LocalSetup {
+      val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
     }
 
-  }
+    "redirect to summary page successfully on valid data" in new LocalSetup {
+      controller.submitSelectTaxYearPage()
+      val validSelectTaxYearForm = Seq(
+        "selectTaxYear" -> "2016"
+      )
 
+      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2016).url)
+    }
+
+  }
 }
 
 

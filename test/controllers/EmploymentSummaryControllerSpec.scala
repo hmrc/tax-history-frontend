@@ -194,37 +194,38 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
   }
 
   "GET /tax-history" should {
+    val taxYear = 2016
     "return 200" in new HappyPathSetup {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
     }
     "return 200 when no allowances found" in new NoAllowances {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
     }
 
     "return 200 and show technical error page when get allowances returns 500" in new AllowancesTechnicalError {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "return 200 and show technical error page when no citizen details available" in new NoCitizenDetails {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "return not found error page when citizen details returns locked status 423" in new LockedCitizenDetails {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
 
     "return not found error page when citizen details returns deceased indicator" in new DeceasedCitizenDetails {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getDeceased().url)
     }
@@ -233,7 +234,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       when(controller.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.UNAUTHORIZED,
         Some(Json.toJson("{Message:Unauthorised}")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
@@ -242,19 +243,19 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       when(controller.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
         Some(Json.toJson("{Message:InternalServerError}")))))
-      val result = controller.getTaxHistory()(fakeRequest.withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "show select client page when no nino has been set in session" in new HappyPathSetup {
-      val result = controller.getTaxHistory()(fakeRequest)
+      val result = controller.getTaxHistory(taxYear)(fakeRequest)
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
     }
 
     "redirect to no data available page when no employments found" in new NoEmployments {
-      val result = controller.getTaxHistory().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
     }

@@ -1,12 +1,12 @@
 [
   {
     "year" : 2016,
-    "allowanceURI" : "/2016/allowances",
-    "employmentURI" : "/2016/employments"
+    "allowancesURI" : "/2016/allowances",
+    "employmentsURI" : "/2016/employments"
   },
   {
     "year" : 2015,
-    "allowanceURI" : "/2015/allowances",
-    "employmentURI" : "/2015/employments"
+    "allowancesURI" : "/2015/allowances",
+    "employmentsURI" : "/2015/employments"
   }
 ]

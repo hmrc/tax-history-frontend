@@ -52,7 +52,7 @@ class EmploymentDetailController @Inject()(
               empDetailsResponse.status match {
                 case OK =>
                   loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId)
-                case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory()))
+                case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
                 case status => Future.successful(handleHttpFailureResponse(status, nino))
               }
             }
@@ -95,7 +95,7 @@ class EmploymentDetailController @Inject()(
                                        (implicit hc: HeaderCarrier, request: Request[_]) = {
     val employment = empResponse.json.as[Employment]
     val sidebarLink = Link.toInternalPage(
-        url = controllers.routes.EmploymentSummaryController.getTaxHistory().url,
+        url = controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url,
         value = Some(messagesApi("employmenthistory.payerecord.linktext")),
         id = Some("back-link")
     ).toHtml
