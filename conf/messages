@@ -95,6 +95,12 @@ employmenthistory.employment.details.benefit = Benefit
 employmenthistory.payerecord.linktext = Return to PAYE record
 employmenthistory.employment.details.caption = Employment Details
 
+
+################################## Select tax year ####################################################
+
+employmenthistory.select.tax.year.title = Select tax year - GOV.UK
+employmenthistory.select.tax.year.header = {0}’s income record
+
 ################################ Error Pages ###########################################################
 
 employmenthistory.not.authorised.title = Service unavailable - GOV.UK
