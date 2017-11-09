@@ -44,11 +44,13 @@ class select_tax_yearSpec extends GuiceAppSpec {
 
     "show correct content on the page" in new ViewFixture {
       val options = List("2016" -> "value", "2015" -> "value1")
+
       val view = views.html.taxhistory.select_tax_year(validForm, "Name", options)
       val radioGroup =  doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
       val inputRadio = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe "checked"
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
     }
   }
 

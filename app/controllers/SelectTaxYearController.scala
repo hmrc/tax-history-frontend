@@ -96,7 +96,14 @@ class SelectTaxYearController @Inject()(
 
   def submitSelectTaxYearPage(): Action[AnyContent] = Action.async {implicit request =>
     selectTaxYearForm.bindFromRequest().fold(
-      formWithErrors ⇒ Future.successful(BadRequest(select_tax_year(formWithErrors, "", getTaxYears(taxYearList)))),
+      formWithErrors ⇒ {
+        val nino = request.session.get("USER_NINO").map(Nino(_)).get
+        retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
+            case Left(status) => redirectToClientErrorPage(status)
+            case Right(person) => Future.successful(BadRequest(select_tax_year(formWithErrors,
+              person.getName.fold(nino.nino)(x => x), getTaxYears(taxYearList))))
+        }
+      },
       validFormData => {
         Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.toInt)))
       }
