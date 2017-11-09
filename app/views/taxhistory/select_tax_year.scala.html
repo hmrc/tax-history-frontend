@@ -14,7 +14,12 @@
  * limitations under the License.
  *@
 
-@(clientNameOrNino: String)(implicit request: Request[_], messages: Messages)
+@import model.api.IndividualTaxYear
+@import models.taxhistory.SelectTaxYear
+@import uk.gov.hmrc.play.views.html.helpers
+
+@(form: Form[SelectTaxYear], clientNameOrNino: String,
+taxYears:List[IndividualTaxYear])(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 
@@ -23,6 +28,31 @@
         @Messages("employmenthistory.select.tax.year.header",clientNameOrNino)
     </h1>
 </div>
+  @helpers.form(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
+      @if(form.hasErrors) {
+         <div class="flash error-summary error-summary--show"
+              id="error-summary-display"
+              role="alert"
+              aria-labelledby="error-summary-heading"
+              tabindex="-1">
+          <h2 id="error-summary-heading" class="h3-heading">@form.errors.head.messages.map(x => Messages(s"$x.title"))</h2>
+          <ul class="js-error-summary-messages">
+           <li role="tooltip">
+            <a href="#@form.errors.head.key" id="@{form.errors.head.key}-error-summary" data-focuses="@form.errors.head.key">
+             @form.errors.head.messages.map(x => Messages(s"$x.link"))
+            </a>
+           </li>
+          </ul>
+         </div>
+      }
+      @helpers.inputRadioGroup(form("selectTaxYear"),
+      Seq.empty,
+      '_labelClass -> "block-label",
+      '_id -> "choice",
+      '_groupClass -> "subsection margin-bottom--small",
+      '_fieldsetAttributes -> "id=choice")
 
+      <button id="continue" type="submit" class="button">@Messages("lbl.continue")</button>
+  }
 }
 

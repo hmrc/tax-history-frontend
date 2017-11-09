@@ -1,0 +1,57 @@
+/*
+ * Copyright 2017 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package controllers
+
+import javax.inject.Inject
+
+import config.{FrontendAppConfig, FrontendAuthConnector}
+import form.SelectTaxYearForm.selectTaxYearForm
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.urls.Link
+import views.html.taxhistory.select_tax_year
+
+import scala.concurrent.Future
+
+class SelectTaxYearController @Inject()(
+                                        override val authConnector: FrontendAuthConnector,
+                                        override val config: Configuration,
+                                        override val env: Environment,
+                                        implicit val messagesApi: MessagesApi
+                                      ) extends BaseController {
+
+  def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
+    authorisedForAgent{
+      Future.successful(Ok(select_tax_year(selectTaxYearForm, "", List.empty)))
+    }
+  }
+
+  def submitSelectTaxYearPage(): Action[AnyContent] = Action.async { implicit request =>
+    selectTaxYearForm.bindFromRequest().fold(
+      formWithErrors ⇒ {
+        val sidebarLink = Link.toInternalPage(
+          url=FrontendAppConfig.AfiHomePage,
+          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+        Future.successful(BadRequest(select_tax_year(formWithErrors, "", List.empty)))
+      },
+      validFormData => {
+        Future.successful(Ok(""))
+      }
+    )
+  }
+}

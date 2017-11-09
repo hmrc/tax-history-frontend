@@ -13,3 +13,7 @@ GET   /no-data-available                                  @controllers.ClientErr
 GET   /data-unavailable                                   @controllers.ClientErrorController.getDeceased()
 GET   /no-data                                            @controllers.ClientErrorController.getNoData()
 GET   /service-unavailable                                @controllers.ClientErrorController.getTechnicalError()
+
+GET   /select-tax-year                                    @controllers.SelectTaxYearController.getSelectTaxYearPage()
+POST  /select-tax-year                                    @controllers.SelectTaxYearController.submitSelectTaxYearPage()
+
