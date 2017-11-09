@@ -66,6 +66,14 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2016).url)
     }
 
+    "fail submission on invalid data" in new LocalSetup {
+      val validSelectTaxYearForm = Seq(
+        "selectTaxYear" -> ""
+      )
+
+      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+      status(result) shouldBe Status.BAD_REQUEST
+    }
   }
 }
 
