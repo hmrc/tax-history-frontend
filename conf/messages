@@ -98,7 +98,7 @@ employmenthistory.employment.details.caption = Employment Details
 ################################ Error Pages ###########################################################
 
 employmenthistory.not.authorised.title = Service unavailable - GOV.UK
-employmenthistory.not.authorised.header = You are not authorised to view {0}’s PAYE record
+employmenthistory.not.authorised.header = You are not authorised to view {0}’s income record
 employmenthistory.mci.restricted.header = You cannot access this data right now
 employmenthistory.mci.restricted.title = Service unavailable - GOV.UK
 employmenthistory.deceased.header = You cannot access this data
