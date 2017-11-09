@@ -53,6 +53,7 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
+      contentAsString(result) should include(Messages("employmenthistory.select.tax.year.header","first name second name"))
     }
 
     "redirect to summary page successfully on valid data" in new LocalSetup {
@@ -74,6 +75,7 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.BAD_REQUEST
       contentAsString(result) should include("This field is required")
+      contentAsString(result) should include(Messages("employmenthistory.select.tax.year.header","first name second name"))
     }
   }
 }
