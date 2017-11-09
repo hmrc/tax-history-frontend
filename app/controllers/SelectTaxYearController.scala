@@ -64,7 +64,7 @@ class SelectTaxYearController @Inject()(
       allowancesURI = "/2015/allowances",
       employmentsURI = "/2015/employments"))
 
-  def renderSelectClientPage(nino: Nino, response: Either[Int, Person])
+  private def renderSelectClientPage(nino: Nino, response: Either[Int, Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result]= {
     response match {
       case Left(status) => redirectToClientErrorPage(status)
