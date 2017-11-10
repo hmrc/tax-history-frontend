@@ -19,7 +19,7 @@ package connectors
 import java.util.UUID
 
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
-import model.api.{Allowance, CompanyBenefit, EarlierYearUpdate, PayAndTax}
+import model.api._
 import models.taxhistory.Employment
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
@@ -130,6 +130,19 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures w
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(employment)
+    }
+
+    "fetch Tax years from backend" in new LocalSetup {
+
+      val taxYears = List(IndividualTaxYear(2015, "uri1","uri2"), IndividualTaxYear(2015, "uri1","uri2"))
+
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(taxYears)))))
+
+      val result = await(connector.getTaxYears(Nino(nino)))
+
+      result.status shouldBe Status.OK
+      result.json shouldBe Json.toJson(taxYears)
     }
   }
 
