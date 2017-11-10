@@ -81,6 +81,8 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
     })
     doc.select(".panel-border-wide").text mustBe Messages("employmenthistory.caveat.text")
+
+    doc.getElementsMatchingOwnText(Messages("employmenthistory.select.different.taxyear.back.link")).attr("href") mustBe "/tax-history/select-tax-year"
   }
 }
 

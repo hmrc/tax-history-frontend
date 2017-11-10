@@ -115,7 +115,9 @@
         </table>
     }
     <div class="margin-top-large">
-        @sideBarLink.map{link=>@link}
+        <a id="back-link" href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">
+            @Messages("employmenthistory.select.different.taxyear.back.link")
+        </a>
     </div>
 }
 
