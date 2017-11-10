@@ -57,23 +57,20 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  val taxYearList = List(IndividualTaxYear(year = 2016,
-    allowancesURI = "/2016/allowances",
-    employmentsURI = "/2016/employments"),
-    IndividualTaxYear(year = 2015,
-      allowancesURI = "/2015/allowances",
-      employmentsURI = "/2015/employments"))
-
   private def renderSelectClientPage(nino: Nino, response: Either[Int, Person])
                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Result]= {
     response match {
       case Left(status) => redirectToClientErrorPage(status)
       case Right(person) => {
-        val taxTears = getTaxYears(taxYearList)
-        val preSelectedForm = selectTaxYearForm.bind(Json.obj(
-          "selectTaxYear" -> taxTears.head._1
-        ))
-        Future.successful(Ok(select_tax_year(preSelectedForm, person.getName.fold(nino.nino)(x => x), taxTears)))
+        taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
+          val taxYearList = taxYearResponse.json.as[List[IndividualTaxYear]]
+          val taxYears = getTaxYears(taxYearList)
+          val preSelectedForm = selectTaxYearForm.bind(Json.obj(
+            "selectTaxYear" -> taxYears.head._1
+          ))
+          Ok(select_tax_year(preSelectedForm, person.getName.fold(nino.nino)(x => x), taxYears))
+        }
+
       }
     }
   }
@@ -100,8 +97,10 @@ class SelectTaxYearController @Inject()(
         val nino = request.session.get("USER_NINO").map(Nino(_)).get
         retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
             case Left(status) => redirectToClientErrorPage(status)
-            case Right(person) => Future.successful(BadRequest(select_tax_year(formWithErrors,
-              person.getName.fold(nino.nino)(x => x), getTaxYears(taxYearList))))
+            case Right(person) => taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
+              BadRequest(select_tax_year(formWithErrors,
+                person.getName.fold(nino.nino)(x => x), getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])))
+            }
         }
       },
       validFormData => {

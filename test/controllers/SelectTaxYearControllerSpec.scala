@@ -16,6 +16,7 @@
 
 package controllers
 
+import model.api.IndividualTaxYear
 import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -43,6 +44,8 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      when(c.taxHistoryConnector.getTaxYears(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,
+        Some(Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2")))))))
       c
     }
   }
