@@ -51,6 +51,8 @@ class select_tax_yearSpec extends GuiceAppSpec {
       val inputRadio = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe "checked"
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
+
+      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
     }
   }
 
