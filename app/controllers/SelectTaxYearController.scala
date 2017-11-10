@@ -22,7 +22,9 @@ import config.FrontendAuthConnector
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
+import models.taxhistory.{Person, SelectTaxYear}
 import org.joda.time.LocalDate
+import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Request, Result}
@@ -56,57 +58,50 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  private def renderSelectClientPage(nino: Nino)
-                                    (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
-      case Left(status) => redirectToClientErrorPage(status)
-      case Right(person) => {
-        taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
-          taxYearResponse.status match {
-            case OK => {
-              val taxYearList = taxYearResponse.json.as[List[IndividualTaxYear]]
-              val taxYears = getTaxYears(taxYearList)
-              val preSelectedForm = selectTaxYearForm.bind(Json.obj(
-                "selectTaxYear" -> taxYears.head._1
-              ))
-              Ok(select_tax_year(preSelectedForm, person.getName.fold(nino.nino)(x => x), taxYears))
-            }
-            case default => {
-              Logger.error("Error response returned with status:" + default)
-              Redirect(controllers.routes.ClientErrorController.getTechnicalError())
-            }
+  private def fetchTaxYearsAndRenderPage(form: Form[SelectTaxYear], httpStatus: Status, person: Person, nino: Nino)
+                                        (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+    taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
+      taxYearResponse.status match {
+        case OK => {
+          val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
+          val formData = httpStatus match {
+            case Ok => selectTaxYearForm.bind(Json.obj(
+              "selectTaxYear" -> taxYears.head._1
+            ))
+            case _ => form
           }
+          httpStatus(select_tax_year(formData,
+            person.getName.fold(nino.nino)(x => x), getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])))
         }
+        case _ => Redirect(routes.ClientErrorController.getTechnicalError())
       }
     }
   }
 
-  def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
+  private def renderSelectTaxYearPage(form: Form[SelectTaxYear], httpStatus: Status)
+                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-    authorisedForAgent {
-      maybeNino match {
-        case Some(nino) => renderSelectClientPage(nino)
-        case None => {
-          Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+    maybeNino match {
+      case Some(nino) => {
+        retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
+          case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+          case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
         }
       }
+      case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+    }
+  }
+
+  def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
+    authorisedForAgent {
+      renderSelectTaxYearPage(selectTaxYearForm, Ok)
     }
   }
 
   def submitSelectTaxYearPage(): Action[AnyContent] = Action.async { implicit request =>
     selectTaxYearForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        val nino = request.session.get("USER_NINO").map(Nino(_)).get
-        retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
-          case Left(status) => redirectToClientErrorPage(status)
-          case Right(person) => taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
-            taxYearResponse.status match {
-              case OK => BadRequest(select_tax_year(formWithErrors,
-                person.getName.fold(nino.nino)(x => x), getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])))
-              case _ => Redirect(routes.ClientErrorController.getTechnicalError())
-            }
-          }
-        }
+        renderSelectTaxYearPage(formWithErrors, BadRequest)
       },
       validFormData => authorisedForAgent {
         Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.toInt)))
