@@ -27,7 +27,7 @@ import org.joda.time.LocalDate
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateHelper
@@ -63,14 +63,21 @@ class SelectTaxYearController @Inject()(
       case Left(status) => redirectToClientErrorPage(status)
       case Right(person) => {
         taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
-          val taxYearList = taxYearResponse.json.as[List[IndividualTaxYear]]
-          val taxYears = getTaxYears(taxYearList)
-          val preSelectedForm = selectTaxYearForm.bind(Json.obj(
-            "selectTaxYear" -> taxYears.head._1
-          ))
-          Ok(select_tax_year(preSelectedForm, person.getName.fold(nino.nino)(x => x), taxYears))
+          taxYearResponse.status match {
+            case OK => {
+              val taxYearList = taxYearResponse.json.as[List[IndividualTaxYear]]
+              val taxYears = getTaxYears(taxYearList)
+              val preSelectedForm = selectTaxYearForm.bind(Json.obj(
+                "selectTaxYear" -> taxYears.head._1
+              ))
+              Ok(select_tax_year(preSelectedForm, person.getName.fold(nino.nino)(x => x), taxYears))
+            }
+            case default =>{
+              Logger.error("Error response returned with status:" + default)
+              Redirect(controllers.routes.ClientErrorController.getTechnicalError())
+            }
+          }
         }
-
       }
     }
   }
