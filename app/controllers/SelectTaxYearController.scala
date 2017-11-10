@@ -113,7 +113,7 @@ class SelectTaxYearController @Inject()(
           }
         }
       },
-      validFormData => {
+      validFormData => authorisedForAgent {
         Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.toInt)))
       }
     )
