@@ -104,7 +104,7 @@ trait BaseController extends I18nSupport with AgentAuth {
     details
   }
 
-  def redirectToClientErrorPage(status: Int) = {
+  def redirectToClientErrorPage(status: Int):Future[Result] = {
     status match {
       case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
       case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))

@@ -63,8 +63,17 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       when(controller.taxHistoryConnector.getTaxYears(any())(any()))
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
       val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+
+    "return not found error page when citizen details returns locked status 423" in new LocalSetup {
+      when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
+      val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
 
     "redirect to summary page successfully on valid data" in new LocalSetup {

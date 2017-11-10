@@ -22,7 +22,6 @@ import config.FrontendAuthConnector
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
-import models.taxhistory.Person
 import org.joda.time.LocalDate
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
@@ -57,9 +56,9 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  private def renderSelectClientPage(nino: Nino, response: Either[Int, Person])
+  private def renderSelectClientPage(nino: Nino)
                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    response match {
+    retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
       case Left(status) => redirectToClientErrorPage(status)
       case Right(person) => {
         taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
@@ -86,11 +85,7 @@ class SelectTaxYearController @Inject()(
     val maybeNino = request.session.get("USER_NINO").map(Nino(_))
     authorisedForAgent {
       maybeNino match {
-        case Some(nino) => {
-          retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap { response =>
-            renderSelectClientPage(nino, response)
-          }
-        }
+        case Some(nino) => renderSelectClientPage(nino)
         case None => {
           Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
         }
