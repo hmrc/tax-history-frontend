@@ -71,9 +71,11 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
       doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
       if(emp.employmentStatus == EmploymentStatus.Live) {
-        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.text.current"))(d => DateHelper.formatDate(d))).hasText mustBe true
+        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.text.current"))
+        (d => DateHelper.formatDate(d))).hasText mustBe true
       } else {
-        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.no.data.available.text"))(d => DateHelper.formatDate(d))).hasText mustBe true
+        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.no.data.available.text"))
+        (d => DateHelper.formatDate(d))).hasText mustBe true
       }
     })
 
@@ -82,7 +84,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
     })
     doc.select(".panel-border-wide").text mustBe Messages("employmenthistory.caveat.text")
 
-    doc.getElementsMatchingOwnText(Messages("employmenthistory.select.different.taxyear.back.link")).attr("href") mustBe "/tax-history/select-tax-year"
+    doc.getElementsMatchingOwnText(Messages("employmenthistory.select.different.taxyear.link")).attr("href") mustBe "/tax-history/select-tax-year"
   }
 }
 
