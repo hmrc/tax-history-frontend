@@ -60,7 +60,8 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
     }
 
     "redirect to technical error page when getTaxYears reurn status internal server error" in new LocalSetup {
-      when(controller.taxHistoryConnector.getTaxYears(any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
+      when(controller.taxHistoryConnector.getTaxYears(any())(any()))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
       val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
@@ -87,6 +88,19 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       status(result) shouldBe Status.BAD_REQUEST
       contentAsString(result) should include("This field is required")
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.header","first name second name"))
+    }
+
+    "redirect to technical error page when getTaxYears return error on submission" in new LocalSetup {
+      val validSelectTaxYearForm = Seq(
+        "selectTaxYear" -> ""
+      )
+      when(controller.taxHistoryConnector.getTaxYears(any())(any()))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
+
+      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
+        .withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
   }
 }
