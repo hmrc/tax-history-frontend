@@ -31,6 +31,7 @@ import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper
 import views.html.taxhistory.select_tax_year
 
@@ -53,8 +54,8 @@ class SelectTaxYearController @Inject()(
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          DateHelper.formatDate(new LocalDate(taxYear.year, DateTimeConstants.APRIL, DATE_06)),
-          DateHelper.formatDate(new LocalDate(taxYear.year + 1, DateTimeConstants.APRIL, DATE_05)))
+          DateHelper.formatDate(TaxYear(taxYear.year).starts),
+          DateHelper.formatDate(TaxYear(taxYear.year).finishes))
     }
   }
 
