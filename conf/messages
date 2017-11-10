@@ -37,6 +37,8 @@ employmenthistory.table.header.employments = Employments
 employmenthistory.table.header.pensions = Pensions
 employmenthistory.caveat.text = This data may not be the latest available for your client. Most of it has been provided by a third party. You should always check with your client before using it. They can compare it to data held in their personal tax account, latest coding notice, P60 or P11D. We will not provide missing information by phone or provide certain data, such as bankruptcy.
 employmenthistory.select.different.taxyear.link = Select a different tax year
+
+
 ################################## Company Benefits & Allowances ##################################
 
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
