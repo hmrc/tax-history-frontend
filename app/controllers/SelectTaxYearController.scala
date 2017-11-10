@@ -23,12 +23,12 @@ import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
 import models.taxhistory.{Person, SelectTaxYear}
-import org.joda.time.LocalDate
+import org.joda.time.{DateTimeConstants, LocalDate}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Request, Result}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import utils.DateHelper
@@ -45,16 +45,16 @@ class SelectTaxYearController @Inject()(
                                          implicit val messagesApi: MessagesApi
                                        ) extends BaseController {
 
-  private val APRIL = 4
-  private val DATE_06 = 6
-  private val DATE_05 = 5
+
 
   private def getTaxYears(taxYearList: List[IndividualTaxYear]) = {
+    val DATE_06 = 6
+    val DATE_05 = 5
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          DateHelper.formatDate(new LocalDate(taxYear.year, APRIL, DATE_06)),
-          DateHelper.formatDate(new LocalDate(taxYear.year + 1, APRIL, DATE_05)))
+          DateHelper.formatDate(new LocalDate(taxYear.year, DateTimeConstants.APRIL, DATE_06)),
+          DateHelper.formatDate(new LocalDate(taxYear.year + 1, DateTimeConstants.APRIL, DATE_05)))
     }
   }
 
