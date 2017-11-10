@@ -38,7 +38,8 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
 
       <button id="continue" type="submit" class="button">@Messages("lbl.continue")</button>
   }
-
+<div class="margin-top-large">
 <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client")</a>
+</div>
 }
 
