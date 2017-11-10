@@ -22,10 +22,7 @@
     taxYear: Int,
     employments: List[Employment],
     allowances: List[Allowance],
-    person: Option[Person],
-    sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
-
-
+    person: Option[Person])(implicit request: Request[_], messages: Messages)
 
 @getName=@{
     person.fold(nino) {

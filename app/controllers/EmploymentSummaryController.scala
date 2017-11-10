@@ -85,14 +85,9 @@ class EmploymentSummaryController @Inject()(
               case OK | NOT_FOUND =>
                 val employments = empResponse.json.as[List[Employment]]
                 val allowances = allowanceResponse.json.as[List[Allowance]]
-                val sidebarLink = Link.toInternalPage(
-                  url = FrontendAppConfig.AfiHomePage,
-                  value = Some(messagesApi("employmenthistory.afihomepage.linktext")),
-                  id= Some("back-link")
-                ).toHtml
 
                 Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear,
-                  employments, allowances, person, Some(sidebarLink)))//.removingFromSession("USER_NINO")
+                  employments, allowances, person))//.removingFromSession("USER_NINO")
               case status => handleHttpFailureResponse(status, ninoField)
             }
           }
