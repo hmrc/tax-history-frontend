@@ -49,11 +49,10 @@ class EmploymentSummaryController @Inject()(
       authorisedForAgent {
         maybeNino match {
           case Some(nino) => {
-            for {maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector)
-                 taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)}
-              yield {
-                taxHistoryResponse
-              }
+            for {
+              maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector)
+              taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)
+            } yield taxHistoryResponse
           }
           case None => {
             Logger.warn("No nino supplied.")
