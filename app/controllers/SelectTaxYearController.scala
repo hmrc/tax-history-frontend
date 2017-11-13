@@ -23,7 +23,6 @@ import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
 import models.taxhistory.{Person, SelectTaxYear}
-import org.joda.time.{DateTimeConstants, LocalDate}
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
@@ -49,8 +48,6 @@ class SelectTaxYearController @Inject()(
 
 
   private def getTaxYears(taxYearList: List[IndividualTaxYear]) = {
-    val DATE_06 = 6
-    val DATE_05 = 5
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
