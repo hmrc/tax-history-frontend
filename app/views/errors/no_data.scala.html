@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *@
-import models.taxhistory.Person
-
 @(nameOrNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainContent = {
-  <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.no.data.header",nino)</h1>
+  <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.no.data.header",nameOrNino)</h1>
   <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client")</a>
 }
 

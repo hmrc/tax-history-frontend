@@ -18,7 +18,10 @@ package controllers
 
 import javax.inject.Inject
 
+import config.FrontendAuthConnector
+import connectors.CitizenDetailsConnector
 import models.taxhistory.Person
+import play.api.{Configuration, Environment}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Action
 import uk.gov.hmrc.domain.Nino
@@ -26,7 +29,11 @@ import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetailsConnector,
+                                      override val authConnector: FrontendAuthConnector,
+                                      override val config: Configuration,
+                                      override val env: Environment,
+                                      implicit val messagesApi: MessagesApi) extends BaseController {
 
   def getNotAuthorised() = Action.async {
     implicit request => {
