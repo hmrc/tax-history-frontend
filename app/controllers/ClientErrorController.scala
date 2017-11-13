@@ -22,10 +22,9 @@ import config.FrontendAuthConnector
 import connectors.CitizenDetailsConnector
 import models.taxhistory.Person
 import play.api.{Configuration, Environment}
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.Action
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
@@ -58,7 +57,14 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
 
   def getNoData(maybePerson:Option[Person]) = Action.async {
     implicit request => {
-      (maybePerson,request.session.get("USER_NINO").map(Nino(_))) match {
+      request.session.get("USER_NINO").map(Nino(_)).map(
+        nino =>
+          retrieveCitizenDetails(maybeNino,citizenDetailsConnector).map(
+            result => mat
+
+        )
+      )
+      (maybePerson,) match {
         case (Some(person),_)   if person.getName.isDefined => Future.successful(Ok(views.html.errors.no_data(person.getName.getOrElse(""))))
         case (_,Some(nino)) => Future.successful(Ok(views.html.errors.no_data(nino.toString())))
         case _ => Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
