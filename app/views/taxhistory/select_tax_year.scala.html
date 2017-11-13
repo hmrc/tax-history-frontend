@@ -36,7 +36,7 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
       '_groupClass -> "subsection margin-bottom--small",
       '_fieldsetAttributes -> "id=selectTaxYear")
 
-      <button id="continue" type="submit" class="button">@Messages("lbl.continue")</button>
+      <button id="continueButton" type="submit" class="button">@Messages("lbl.continue")</button>
   }
     <div class="margin-top-large">
     <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">
