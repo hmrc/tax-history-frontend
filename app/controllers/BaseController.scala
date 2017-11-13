@@ -17,7 +17,6 @@
 package controllers
 
 import config.FrontendAppConfig
-import connectors.CitizenDetailsConnector
 import controllers.auth.AgentAuth
 import models.taxhistory.Person
 import play.api.Logger
@@ -26,7 +25,7 @@ import play.api.mvc.{Action, Request, Result}
 import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.Future
@@ -85,10 +84,10 @@ trait BaseController extends I18nSupport with AgentAuth {
     }
   }
 
-  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsConnector:CitizenDetailsConnector)
+  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse:Future[HttpResponse])
                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
-    val details = {
-      citizenDetailsConnector.getPersonDetails(ninoField) map {
+    {
+      citizenDetailsResponse map {
         personResponse =>
           personResponse.status match {
             case OK => {
@@ -101,7 +100,6 @@ trait BaseController extends I18nSupport with AgentAuth {
     }.recoverWith {
       case _ => Future.successful(Left(BAD_REQUEST))
     }
-    details
   }
 
   def redirectToClientErrorPage(status: Int):Future[Result] = {
