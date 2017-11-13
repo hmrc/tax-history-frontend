@@ -50,7 +50,7 @@ class EmploymentSummaryController @Inject()(
         maybeNino match {
           case Some(nino) => {
             for {
-              maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector)
+              maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino))
               taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)
             } yield taxHistoryResponse
           }
