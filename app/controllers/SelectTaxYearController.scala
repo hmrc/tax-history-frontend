@@ -71,7 +71,7 @@ class SelectTaxYearController @Inject()(
           httpStatus(select_tax_year(formData,
             person.getName.fold(nino.nino)(x => x), taxYears))
         }
-        case _ => Redirect(routes.ClientErrorController.getTechnicalError())
+        case status => handleHttpFailureResponse(status, nino)
       }
     }
   }
