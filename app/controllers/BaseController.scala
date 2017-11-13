@@ -18,13 +18,14 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.auth.AgentAuth
+import models.taxhistory.Person
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, Request, Result}
 import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier}
+import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.Future
@@ -80,6 +81,32 @@ trait BaseController extends I18nSupport with AgentAuth {
         Logger.error("Error response returned with status:" + s)
         Redirect(controllers.routes.ClientErrorController.getTechnicalError())
       }
+    }
+  }
+
+  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse:Future[HttpResponse])
+                                    (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
+    {
+      citizenDetailsResponse map {
+        personResponse =>
+          personResponse.status match {
+            case OK => {
+              val person = personResponse.json.as[Person]
+              if (person.deceased) Left(GONE) else Right(person)
+            }
+            case status => Left(status)
+          }
+      }
+    }.recoverWith {
+      case _ => Future.successful(Left(BAD_REQUEST))
+    }
+  }
+
+  def redirectToClientErrorPage(status: Int):Future[Result] = {
+    status match {
+      case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
+      case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
+      case _ => Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
     }
   }
 }

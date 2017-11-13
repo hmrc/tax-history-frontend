@@ -96,7 +96,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
           None)))
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory().url)
+      redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2014).url)
     }
 
     "show technical error page when getEmploymentDetails returns status other than 200, 401, 404" in new HappyPathSetup {

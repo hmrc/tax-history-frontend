@@ -169,6 +169,28 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }
+
+
+  "redirect to MciRestricted" when {
+    "status from citizen detail service is Locked" in new HappyPathSetup {
+      val result = controller.redirectToClientErrorPage(LOCKED)
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getMciRestricted().url)
+    }
+  }
+
+  "redirect to Deceased" when {
+    "status from citizen detail service is GONE" in new HappyPathSetup {
+      val result = controller.redirectToClientErrorPage(GONE)
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getDeceased().url)
+    }
+  }
+
+  "redirect to Technical error page" when {
+    "status from citizen detail service is anything other then LOCKED and GONE" in new HappyPathSetup {
+      val result = controller.redirectToClientErrorPage(2)
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+  }
 }
 
 class Controller  @Inject()(

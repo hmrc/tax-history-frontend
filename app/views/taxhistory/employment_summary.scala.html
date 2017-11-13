@@ -22,10 +22,7 @@
     taxYear: Int,
     employments: List[Employment],
     allowances: List[Allowance],
-    person: Option[Person],
-    sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
-
-
+    person: Option[Person])(implicit request: Request[_], messages: Messages)
 
 @getName=@{
     person.fold(nino) {
@@ -115,7 +112,9 @@
         </table>
     }
     <div class="margin-top-large">
-        @sideBarLink.map{link=>@link}
+        <a id="back-link" href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">
+            @Messages("employmenthistory.select.different.taxyear.link")
+        </a>
     </div>
 }
 

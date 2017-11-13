@@ -59,4 +59,9 @@ class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId")
   }
 
+  def getTaxYears(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/tax-years ")
+  }
+
 }
