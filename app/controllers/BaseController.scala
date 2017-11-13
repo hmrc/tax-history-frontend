@@ -71,7 +71,7 @@ trait BaseController extends I18nSupport with AgentAuth {
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status:Int, nino: Nino)
+  protected[controllers] def handleHttpFailureResponse(status:Int, nino: Nino, maybePerson:Option[Person])
                                        (implicit request: Request[_]) = {
     status match {
       case NOT_FOUND =>

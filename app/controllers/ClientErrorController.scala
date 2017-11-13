@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
+import models.taxhistory.Person
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.Action
 import uk.gov.hmrc.domain.Nino
@@ -48,11 +49,12 @@ class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) ext
     }
   }
 
-  def getNoData() = Action.async {
+  def getNoData(maybePerson:Option[Person]) = Action.async {
     implicit request => {
-      request.session.get("USER_NINO").map(Nino(_)) match {
-        case Some(nino) => Future.successful(Ok(views.html.errors.no_data(nino.toString())))
-        case None => Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
+      (maybePerson,request.session.get("USER_NINO").map(Nino(_))) match {
+        case (Some(person),_)   if person.getName.isDefined => Future.successful(Ok(views.html.errors.no_data(person.getName.getOrElse(""))))
+        case (_,Some(nino)) => Future.successful(Ok(views.html.errors.no_data(nino.toString())))
+        case _ => Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
       }
     }
   }
