@@ -69,7 +69,7 @@ class SelectTaxYearController @Inject()(
             case _ => form
           }
           httpStatus(select_tax_year(formData,
-            person.getName.fold(nino.nino)(x => x), getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])))
+            person.getName.fold(nino.nino)(x => x), taxYears))
         }
         case _ => Redirect(routes.ClientErrorController.getTechnicalError())
       }
@@ -81,7 +81,7 @@ class SelectTaxYearController @Inject()(
     val maybeNino = request.session.get("USER_NINO").map(Nino(_))
     maybeNino match {
       case Some(nino) => {
-        retrieveCitizenDetails(nino, citizenDetailsConnector) flatMap {
+        retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
           case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
           case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
         }
