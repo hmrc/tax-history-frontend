@@ -47,7 +47,7 @@ class SelectClientController @Inject()(
     authorisedForAgent{
       val sidebarLink = Link.toInternalPage(
         url=FrontendAppConfig.AfiHomePage,
-        value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+        value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
       Future.successful(Ok(select_client(selectClientForm,
         Some(sidebarLink)
       )))
@@ -59,7 +59,7 @@ class SelectClientController @Inject()(
       formWithErrors ⇒ {
         val sidebarLink = Link.toInternalPage(
           url=FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
         Future.successful(BadRequest(select_client(formWithErrors,
           Some(sidebarLink)
           )))
