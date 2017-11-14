@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *@
+
 @(nameOrNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainContent = {
   <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.no.data.header",nameOrNino)</h1>
-  <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client")</a>
+  <p>@Messages("employmenthistory.no.data.text")</p>
+  <ul class="list list-bullet">
+   <li><a id="selectTaxYear" href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">@Messages("employmenthistory.select.different.taxyear.link.lower")</a></li>
+   <li><a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client.lower")</a></li>
+  </ul>
 }
 
 @views.html.main_template(title = Messages("employmenthistory.no.data.title")){ @mainContent }

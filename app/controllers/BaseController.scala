@@ -21,7 +21,7 @@ import controllers.auth.AgentAuth
 import models.taxhistory.Person
 import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.domain.Nino
@@ -102,6 +102,11 @@ trait BaseController extends I18nSupport with AgentAuth {
     }
   }
 
+  def getNinoFromSession(request:Request[_]):Option[Nino] = {
+    request.session.get("USER_NINO").map(Nino(_))
+  }
+
+  def redirectToSelectClientPage:Future[Result] = Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
   def redirectToClientErrorPage(status: Int):Future[Result] = {
     status match {
       case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
