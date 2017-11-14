@@ -18,10 +18,18 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import models.taxhistory.Person
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import org.mockito.Matchers
+import org.mockito.Matchers.any
+import org.mockito.Mockito.when
+import play.api.libs.json.Json
+import uk.gov.hmrc.http.HttpResponse
+
+import scala.concurrent.Future
 
 class ClientErrorControllerSpec extends BaseControllerSpec {
 
@@ -29,7 +37,23 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
 
     implicit val actorSystem = ActorSystem("test")
     implicit val materializer = ActorMaterializer()
+
+    val person = Some(Person(Some("firstname"),Some("secondname"), false))
     lazy val controller = injected[ClientErrorController]
+    when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
+      thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+  }
+
+  trait NoCitizenDetailsPathSetup {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+
+    val person = Some(Person(Some("firstname"),None, false))
+
+    lazy val controller = injected[ClientErrorController]
+    when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
+      thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
   }
 
   "ClientErrorController" should {
@@ -60,7 +84,17 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
     "get No Data Available page" in new HappyPathSetup {
       val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.no.data.title"))
+      val body = bodyOf(await(result))
+      body should include(Messages("employmenthistory.no.data.title"))
+      body should include(Messages("employmenthistory.no.data.header","firstname secondname"))
+    }
+
+    "get No Data Available page without citizen details surname" in new NoCitizenDetailsPathSetup {
+      val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      val body = bodyOf(await(result))
+      body should include(Messages("employmenthistory.no.data.title"))
+      body should include(Messages("employmenthistory.no.data.header",nino))
     }
 
     "get No Data Available page without NINO" in new HappyPathSetup {
