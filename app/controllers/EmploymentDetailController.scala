@@ -61,7 +61,7 @@ class EmploymentDetailController @Inject()(
             Logger.warn("No nino supplied.")
             val navLink = Link.toInternalPage(
               url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
             Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(navLink))))
           }
         }
