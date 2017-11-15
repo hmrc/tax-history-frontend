@@ -120,32 +120,37 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
   "BaseController" must {
 
     "redirect to afi-not-an-agent-page when there is no enrolment" in new NoEnrolmentsSetup {
-      val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
+      val result = controller.authorisedForAgent(_ =>Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
     }
 
     "redirect to afi-not-an-agent-page when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
-      val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
+      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
     }
 
     "redirect to afi-not-an-agent-page when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
-      val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
+      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
     }
 
     "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {
-      val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
+      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
 
     "redirect to gg when not logged in" in new failureOnMissingBearerToken {
-      val result = controller.authorisedForAgent(Future.successful(Results.Ok("test")))(hc, fakeRequest)
+      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }

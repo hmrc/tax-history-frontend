@@ -86,8 +86,8 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
 
     "load select client page when there is no nino in session" in new HappyPathSetup {
       val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest)
-      status(result) shouldBe Status.OK
-      contentAsString(result) should include (Messages("employmenthistory.afihomepage.linktext"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
     }
 
     "show technical error page when status is other than 200, 401, 404" in new HappyPathSetup {

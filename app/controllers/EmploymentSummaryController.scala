@@ -46,25 +46,15 @@ class EmploymentSummaryController @Inject()(
   def getTaxHistory(taxYear: Int) = Action.async {
     implicit request => {
       val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-      authorisedForAgent {
-        maybeNino match {
-          case Some(nino) => {
-            for {
-              maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino))
-              taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)
-            } yield taxHistoryResponse
-          }
-          case None => {
-            Logger.warn("No nino supplied.")
-            val navLink = Link.toInternalPage(
-              url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(navLink))))
-          }
-        }
+      authorisedForAgent { nino =>
+        for {
+          maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino))
+          taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)
+        } yield taxHistoryResponse
       }
     }
   }
+
 
   private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person], taxYear: Int)
                                   (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {

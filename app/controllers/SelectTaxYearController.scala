@@ -76,32 +76,30 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  private def renderSelectTaxYearPage(form: Form[SelectTaxYear], httpStatus: Status)
+  private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-    maybeNino match {
-      case Some(nino) => {
-        retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-          case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-          case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
-        }
-      }
-      case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+      case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+      case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
     }
   }
 
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
-    authorisedForAgent {
-      renderSelectTaxYearPage(selectTaxYearForm, Ok)
+    authorisedForAgent {nino =>
+      renderSelectTaxYearPage(nino, selectTaxYearForm, Ok)
     }
   }
 
   def submitSelectTaxYearPage(): Action[AnyContent] = Action.async { implicit request =>
     selectTaxYearForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        renderSelectTaxYearPage(formWithErrors, BadRequest)
+        val maybeNino = request.session.get("USER_NINO").map(Nino(_))
+        maybeNino match {
+          case Some(nino) => renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
+          case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+        }
       },
-      validFormData => authorisedForAgent {
+      validFormData => authorisedForAgent {_ =>
         Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.toInt)))
       }
     )

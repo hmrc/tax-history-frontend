@@ -42,31 +42,18 @@ class EmploymentDetailController @Inject()(
                                           ) extends BaseController {
 
 
-  def getEmploymentDetails(employmentId: String, taxYear:Int) = Action.async {
-    implicit request => {
-      val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-      authorisedForAgent {
-        maybeNino match {
-          case Some(nino) => {
-            taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
-              empDetailsResponse.status match {
-                case OK =>
-                  loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId)
-                case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
-                case status => Future.successful(handleHttpFailureResponse(status, nino))
-              }
-            }
-          }
-          case None => {
-            Logger.warn("No nino supplied.")
-            val navLink = Link.toInternalPage(
-              url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
-            Future.successful(Ok(views.html.taxhistory.select_client(selectClientForm, Some(navLink))))
+  def getEmploymentDetails(employmentId: String, taxYear: Int) = Action.async {
+    implicit request =>
+      authorisedForAgent { nino =>
+        taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
+          empDetailsResponse.status match {
+            case OK =>
+              loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId)
+            case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
+            case status => Future.successful(handleHttpFailureResponse(status, nino))
           }
         }
       }
-    }
   }
 
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)

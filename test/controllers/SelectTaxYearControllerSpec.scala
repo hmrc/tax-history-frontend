@@ -82,7 +82,8 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
         "selectTaxYear" -> "2016"
       )
 
-      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+      val result = controller.submitSelectTaxYearPage().apply(FakeRequest()
+        .withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2016).url)
     }

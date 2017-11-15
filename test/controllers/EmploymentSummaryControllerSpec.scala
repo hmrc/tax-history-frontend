@@ -250,8 +250,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
 
     "show select client page when no nino has been set in session" in new HappyPathSetup {
       val result = controller.getTaxHistory(taxYear)(fakeRequest)
-      status(result) shouldBe Status.OK
-      bodyOf(await(result)) should include(Messages("employmenthistory.select.client.title"))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
     "redirect to no data available page when no employments found" in new NoEmployments {
