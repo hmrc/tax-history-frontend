@@ -36,13 +36,13 @@ class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
       errors shouldBe empty
     }
 
-    "return an invalid length error when no nino is entered" in {
+    "return an invalid length error when no tax year is selected" in {
       val postData = Json.obj(
         "selectTaxYear" -> ""
       )
 
       val validatedForm = selectTaxYearForm.bind(postData)
-      validatedForm.errors shouldBe List(FormError("selectTaxYear", List("error.required")))
+      validatedForm.errors shouldBe List(FormError("selectTaxYear", List("employmenthistory.select.tax.year.error.linktext")))
     }
   }
 }

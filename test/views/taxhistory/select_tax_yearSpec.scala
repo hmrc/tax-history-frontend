@@ -54,6 +54,24 @@ class select_tax_yearSpec extends GuiceAppSpec {
 
       doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
     }
+
+    "show correct content on the page for form with error" in new ViewFixture {
+      val invalidForm = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""))
+      val options = List("2016" -> "value", "2015" -> "value1")
+
+      val view = views.html.taxhistory.select_tax_year(invalidForm, "Name", options)
+      val radioGroup =  doc.select("input[type='radio']")
+      radioGroup.size() must be(options.size)
+      val inputRadio = doc.getElementById("selectTaxYear-2016")
+      inputRadio.attr("checked") shouldBe ""
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
+
+      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
+
+      doc.getElementById("selectTaxYear-error-summary").text mustBe Messages("employmenthistory.select.tax.year.error.linktext")
+      doc.getElementById("error-summary-heading").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
+      doc.select(".error-notification").first().text mustBe Messages("employmenthistory.select.tax.year.error.message")
+    }
   }
 
 }

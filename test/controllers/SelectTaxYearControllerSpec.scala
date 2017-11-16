@@ -95,7 +95,7 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
         .withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.BAD_REQUEST
-      contentAsString(result) should include("This field is required")
+      contentAsString(result) should include(Messages("employmenthistory.select.tax.year.error.message"))
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.header","first name second name"))
     }
 
