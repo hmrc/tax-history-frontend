@@ -39,7 +39,7 @@ class SelectClientController @Inject()(
   //TODO Remove this as it is only included to support legacy url
   @Deprecated
   def getLegacySelectClientPage() = Action.async { implicit request => {
-      Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
+      redirectToSelectClientPage
     }
   }
 

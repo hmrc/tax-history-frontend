@@ -44,7 +44,7 @@ class EmploymentDetailController @Inject()(
 
   def getEmploymentDetails(employmentId: String, taxYear:Int) = Action.async {
     implicit request => {
-      val maybeNino = request.session.get("USER_NINO").map(Nino(_))
+      val maybeNino = getNinoFromSession(request)
       authorisedForAgent {
         maybeNino match {
           case Some(nino) => {

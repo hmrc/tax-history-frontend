@@ -78,7 +78,7 @@ class SelectTaxYearController @Inject()(
 
   private def renderSelectTaxYearPage(form: Form[SelectTaxYear], httpStatus: Status)
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    val maybeNino = request.session.get("USER_NINO").map(Nino(_))
+    val maybeNino = getNinoFromSession(request)
     maybeNino match {
       case Some(nino) => {
         retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
@@ -86,7 +86,7 @@ class SelectTaxYearController @Inject()(
           case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
         }
       }
-      case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+      case None => redirectToSelectClientPage
     }
   }
 
