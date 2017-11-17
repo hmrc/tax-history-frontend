@@ -44,7 +44,6 @@ trait BaseController extends I18nSupport with AgentAuth {
 
   def authorisedAgent(nino: Nino, eventualResult:(Nino)=> Future[Result])
                      (implicit hc:HeaderCarrier, request:Request[_]) = {
-    println("======================66============="+nino.toString())
     authorised(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)
       .retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols =>
@@ -77,8 +76,7 @@ trait BaseController extends I18nSupport with AgentAuth {
 
   protected[controllers] def authorisedForAgent(eventualResult:(Nino) =>Future[Result])
                                                (implicit hc:HeaderCarrier, request:Request[_]) =  {
-    val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-    println("+==========================="+maybeNino)
+    val maybeNino = getNinoFromSession(request)
     maybeNino match {
       case Some(nino) => authorisedAgent(nino, eventualResult)
       case None => {
@@ -119,6 +117,12 @@ trait BaseController extends I18nSupport with AgentAuth {
       case _ => Future.successful(Left(BAD_REQUEST))
     }
   }
+
+  def getNinoFromSession(request:Request[_]):Option[Nino] = {
+    request.session.get("USER_NINO").map(Nino(_))
+  }
+
+  def redirectToSelectClientPage:Future[Result] = Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
 
   def redirectToClientErrorPage(status: Int):Future[Result] = {
     status match {

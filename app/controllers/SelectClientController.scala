@@ -71,11 +71,11 @@ class SelectClientController @Inject()(
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ {
         val sidebarLink = Link.toInternalPage(
-          url = FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).toHtml
+          url=FrontendAppConfig.AfiHomePage,
+          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
         Future.successful(BadRequest(select_client(formWithErrors,
           Some(sidebarLink)
-        )))
+          )))
       },
       validFormData => {
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {

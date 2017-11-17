@@ -80,7 +80,6 @@ class SelectTaxYearController @Inject()(
 
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent {nino =>
-      println("========================================"+nino)
       renderSelectTaxYearPage(nino, selectTaxYearForm, Ok)
     }
   }
