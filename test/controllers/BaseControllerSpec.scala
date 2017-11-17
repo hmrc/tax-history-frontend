@@ -30,6 +30,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import support.{Fixtures, GuiceAppSpec}
+import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
@@ -51,6 +52,7 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
 
   lazy val newEnrolments = Set(
     Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
+      confidenceLevel = ConfidenceLevel.L200,
       state="",delegatedAuthRule = None)
   )
 
