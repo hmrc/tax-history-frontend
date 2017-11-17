@@ -18,13 +18,12 @@ package controllers
 
 import config.FrontendAppConfig
 import controllers.auth.AgentAuth
-import form.SelectClientForm.selectClientForm
 import models.taxhistory.Person
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, Request, Result}
-import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
@@ -45,8 +44,9 @@ trait BaseController extends I18nSupport with AgentAuth {
 
   def authorisedAgent(nino: Nino, eventualResult:(Nino)=> Future[Result])
                      (implicit hc:HeaderCarrier, request:Request[_]) = {
-    authorised(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString)
-      and AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+    println("======================66============="+nino.toString())
+    authorised(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)
+      .retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols =>
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
           case (`isAnAgent`, Some(_)) => {
@@ -78,6 +78,7 @@ trait BaseController extends I18nSupport with AgentAuth {
   protected[controllers] def authorisedForAgent(eventualResult:(Nino) =>Future[Result])
                                                (implicit hc:HeaderCarrier, request:Request[_]) =  {
     val maybeNino = request.session.get("USER_NINO").map(Nino(_))
+    println("+==========================="+maybeNino)
     maybeNino match {
       case Some(nino) => authorisedAgent(nino, eventualResult)
       case None => {

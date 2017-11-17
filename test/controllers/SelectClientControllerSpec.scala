@@ -46,8 +46,8 @@ class SelectClientControllerSpec extends BaseControllerSpec {
 
     "load select client page" in new LocalSetup {
       val result  = controller.getSelectClientPage()(fakeRequest)
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
+      status(result) shouldBe Status.OK
+      contentAsString(result) should include(Messages("employmenthistory.select.client.title"))
     }
 
     "return Status: 400 when invalid data is entered" in new LocalSetup {

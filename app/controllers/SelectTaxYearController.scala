@@ -62,13 +62,7 @@ class SelectTaxYearController @Inject()(
       taxYearResponse.status match {
         case OK => {
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-          val formData = httpStatus match {
-            case Ok => selectTaxYearForm.bind(Json.obj(
-              "selectTaxYear" -> taxYears.head._1
-            ))
-            case _ => form
-          }
-          httpStatus(select_tax_year(formData,
+          httpStatus(select_tax_year(form,
             person.getName.fold(nino.nino)(x => x), taxYears))
         }
         case status => handleHttpFailureResponse(status, nino)
@@ -86,6 +80,7 @@ class SelectTaxYearController @Inject()(
 
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent {nino =>
+      println("========================================"+nino)
       renderSelectTaxYearPage(nino, selectTaxYearForm, Ok)
     }
   }
