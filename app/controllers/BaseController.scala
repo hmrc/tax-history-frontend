@@ -59,7 +59,7 @@ trait BaseController extends I18nSupport with AgentAuth {
     }.recoverWith {
       case i: InsufficientEnrolments =>
         Logger.error("Error thrown :" + i.getMessage)
-        Future.successful(Unauthorized("Not Authorised"))
+        Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
       case b: BadGatewayException => {
         Logger.warn(s"BadGatewayException:${b.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))

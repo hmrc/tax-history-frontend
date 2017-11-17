@@ -119,6 +119,16 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
     }
   }
 
+  trait failureInsufficientEnrolments {
+
+    lazy val controller = {
+      val c = injected[Controller]
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.failed(new InsufficientEnrolments))
+      c
+    }
+  }
+
   "BaseController" must {
 
     "redirect to afi-not-an-agent-page when there is no enrolment" in new NoEnrolmentsSetup {
@@ -155,6 +165,13 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
+    }
+
+    "redirect to not authorised page when user is not authorised" in new failureInsufficientEnrolments {
+      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
   }
 
