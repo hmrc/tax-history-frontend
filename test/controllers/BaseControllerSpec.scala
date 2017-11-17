@@ -24,13 +24,12 @@ import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import support.{Fixtures, GuiceAppSpec}
-import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
