@@ -20,6 +20,7 @@ import config.FrontendAppConfig.{AfiErrorPage, AfiHomePage, AfiNoAgentServicesAc
 import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
+import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.play.frontend.config.AuthRedirects
@@ -41,6 +42,9 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRed
   type AfiActionWithArn = Request[AnyContent] => Future[Result]
   lazy val affinityGroupAllEnrolls = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment = Enrolment("HMRC-AS-AGENT")
+    .withConfidenceLevel(L200)
+    .withDelegatedAuthRule("afi-auth")
+
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)
   val isAnAgent:Boolean  = true
   val isAuthorisedForPAYE = true
