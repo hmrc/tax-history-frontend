@@ -50,7 +50,7 @@ class select_clientSpec extends GuiceAppSpec with TestUtil {
 
     "display input field label for accessibility" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.select("label.visuallyhidden").text mustBe Messages("employmenthistory.select.client.clients.nino")
+      doc.select("span.visuallyhidden").text mustBe Messages("employmenthistory.select.client.clients.nino")
     }
 
     "display input field hint" in new ViewFixture {
@@ -82,14 +82,14 @@ class select_clientSpec extends GuiceAppSpec with TestUtil {
     "display correct link for too short error hyperlink" in new ViewFixture {
       val view = views.html.taxhistory.select_client(invalidFormTooShort)
       val errorLink = doc.body.getElementById("clientId-error-summary")
-      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-format.link")
+      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-format")
       errorLink.attr("href") mustBe "#clientId"
     }
 
     "display correct link for invalid format hyperlink" in new ViewFixture {
       val view = views.html.taxhistory.select_client(invalidFormWrongFormat)
       val errorLink = doc.body.getElementById("clientId-error-summary")
-      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-format.link")
+      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-format")
       errorLink.attr("href") mustBe "#clientId"
     }
   }

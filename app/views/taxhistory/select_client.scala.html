@@ -26,9 +26,7 @@
                           bodyClasses = None,
                           sidebarLinks = None) {
 
-<div class="section">
     <a href="@FrontendAppConfig.AfiHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
-</div>
 
     <section class="section" >
         @helpers.form(routes.SelectClientController.submitSelectClientPage()){
@@ -57,7 +55,7 @@
                 '_labelClass -> "flash-error",
                 '_labelTextClass -> "visuallyhidden",
                 '_maxlength -> "9",
-                '_inputClass -> "form-control form-control--block uppercase-only input-error",
+                '_inputClass -> "form-control form-control--block uppercase-only",
                 '_inputHint -> Messages("employmenthistory.select.client.nino.hint"))
             </fieldset>
             <div class="form-field">
