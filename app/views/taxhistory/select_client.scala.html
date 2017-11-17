@@ -16,21 +16,23 @@
 
 @import controllers.routes
 @import models.taxhistory.SelectClient
-@import views.html.helpers.textinput
+@import views.html.helpers.input
 @import uk.gov.hmrc.play.views.html.helpers
+@import config.FrontendAppConfig
 
-@(sCForm: Form[SelectClient],
-    sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+@(sCForm: Form[SelectClient])(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.client.title"),
                           bodyClasses = None,
                           sidebarLinks = None) {
-    <header class="page-header"><h1 class="heading-xlarge">@Messages("employmenthistory.select.client.heading")</h1></header>
+
+<div class="section">
+    <a href="@FrontendAppConfig.AfiHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
+</div>
 
     <section class="section" >
         @helpers.form(routes.SelectClientController.submitSelectClientPage()){
             @if(sCForm.hasErrors) {
-
                 <div class="flash error-summary error-summary--show"
                     id="error-summary-display"
                     role="alert"
@@ -39,20 +41,24 @@
                     <h2 id="error-summary-heading" class="h3-heading">@sCForm.errors.head.messages.map(x => Messages(s"$x.title"))</h2>
                     <ul class="js-error-summary-messages">
                         <li role="tooltip">
-                            <a href="#@sCForm.errors.head.key" id="@{sCForm.errors.head.key}-error-summary" data-focuses="@sCForm.errors.head.key">
-                                @sCForm.errors.head.messages.map(x => Messages(s"$x.link"))
+                            <a class="error-font" href="#@sCForm.errors.head.key" id="@{sCForm.errors.head.key}-error-summary" data-focuses="@sCForm.errors.head.key">
+                                @sCForm.errors.head.messages.map(x => Messages(x))
                             </a>
                         </li>
                     </ul>
                 </div>
             }
-            <fieldset class="form-field-group">
-                @textinput(sCForm("clientId"),
-                'label -> Messages("employmenthistory.select.client.clients.nino"),
-                '_labelClass -> "visuallyhidden",
+
+        <header class="page-header"><h1 class="heading-xlarge">@Messages("employmenthistory.select.client.heading")</h1></header>
+
+        <fieldset class="form-field-group">
+                @input(sCForm("clientId"),
+                '_label -> Messages("employmenthistory.select.client.clients.nino"),
+                '_labelClass -> "flash-error",
+                '_labelTextClass -> "visuallyhidden",
                 '_maxlength -> "9",
-                '_inputClass -> "form-control form-control--block uppercase-only",
-                'hint -> Messages("employmenthistory.select.client.nino.hint"))
+                '_inputClass -> "form-control form-control--block uppercase-only input-error",
+                '_inputHint -> Messages("employmenthistory.select.client.nino.hint"))
             </fieldset>
             <div class="form-field">
                 <button class="button" id="continueButton" type="submit">
@@ -61,8 +67,4 @@
             </div>
         }
     </section>
-
-<div class="section">
-    @sideBarLink.map{link=>@link}
-</div>
 }

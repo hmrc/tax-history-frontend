@@ -18,13 +18,12 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.FrontendAuthConnector
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.urls.Link
 import views.html.taxhistory.select_client
 
 import scala.concurrent.Future
@@ -45,24 +44,14 @@ class SelectClientController @Inject()(
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent{
-      val sidebarLink = Link.toInternalPage(
-        url=FrontendAppConfig.AfiHomePage,
-        value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
-      Future.successful(Ok(select_client(selectClientForm,
-        Some(sidebarLink)
-      )))
+      Future.successful(Ok(select_client(selectClientForm)))
     }
   }
 
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        val sidebarLink = Link.toInternalPage(
-          url=FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
-        Future.successful(BadRequest(select_client(formWithErrors,
-          Some(sidebarLink)
-          )))
+        Future.successful(BadRequest(select_client(formWithErrors)))
       },
       validFormData => {
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {

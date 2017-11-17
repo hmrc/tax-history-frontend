@@ -37,7 +37,7 @@ class no_dataSpec extends GuiceAppSpec {
       val title = Messages("employmenthistory.no.data.title")
       doc.title mustBe title
       doc.select("h1").text() mustBe Messages("employmenthistory.no.data.header",nino)
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text() mustBe Messages("employmenthistory.no.data.text")
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text mustBe Messages("employmenthistory.no.data.text")
       doc.getElementById("selectClient").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("selectTaxYear").attr("href") mustBe "/tax-history/select-tax-year"
 

@@ -82,7 +82,7 @@ class select_clientSpec extends GuiceAppSpec with TestUtil {
     "display correct link for too short error hyperlink" in new ViewFixture {
       val view = views.html.taxhistory.select_client(invalidFormTooShort)
       val errorLink = doc.body.getElementById("clientId-error-summary")
-      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-length.link")
+      errorLink.text mustBe Messages("employmenthistory.select.client.error.invalid-format.link")
       errorLink.attr("href") mustBe "#clientId"
     }
 
