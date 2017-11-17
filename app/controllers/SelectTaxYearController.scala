@@ -62,7 +62,13 @@ class SelectTaxYearController @Inject()(
       taxYearResponse.status match {
         case OK => {
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-          httpStatus(select_tax_year(form,
+          val formData = httpStatus match {
+            case Ok => selectTaxYearForm.bind(Json.obj(
+              "selectTaxYear" -> taxYears.head._1
+            ))
+            case _ => form
+          }
+          httpStatus(select_tax_year(formData,
             person.getName.fold(nino.nino)(x => x), taxYears))
         }
         case status => handleHttpFailureResponse(status, nino)
