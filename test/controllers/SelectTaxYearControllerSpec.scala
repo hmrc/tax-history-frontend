@@ -40,6 +40,7 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
 
       val c = injected[SelectTaxYearController]
       val person = Some(Person(Some("first name"),Some("second name"), false))
+
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
@@ -82,7 +83,8 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
         "selectTaxYear" -> "2016"
       )
 
-      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+      val result = controller.submitSelectTaxYearPage().apply(FakeRequest()
+        .withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2016).url)
     }

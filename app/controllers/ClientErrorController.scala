@@ -18,20 +18,26 @@ package controllers
 
 import javax.inject.Inject
 
-import play.api.i18n.{I18nSupport, MessagesApi}
+import config.FrontendAuthConnector
+import connectors.CitizenDetailsConnector
+import models.taxhistory.Person
+import play.api.{Configuration, Environment}
+import play.api.i18n.MessagesApi
 import play.api.mvc.Action
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.play.frontend.controller.FrontendController
 
 import scala.concurrent.Future
 
-class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) extends FrontendController with I18nSupport {
+class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetailsConnector,
+                                      override val authConnector: FrontendAuthConnector,
+                                      override val config: Configuration,
+                                      override val env: Environment,
+                                      implicit val messagesApi: MessagesApi) extends BaseController {
 
   def getNotAuthorised() = Action.async {
     implicit request => {
-      request.session.get("USER_NINO").map(Nino(_)) match {
+      getNinoFromSession(request) match {
         case Some(nino) => Future.successful(Ok(views.html.errors.not_authorised(nino.toString())))
-        case None => Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
+        case None => redirectToSelectClientPage
       }
     }
   }
@@ -50,10 +56,14 @@ class ClientErrorController @Inject()(implicit val messagesApi: MessagesApi) ext
 
   def getNoData() = Action.async {
     implicit request => {
-      request.session.get("USER_NINO").map(Nino(_)) match {
-        case Some(nino) => Future.successful(Ok(views.html.errors.no_data(nino.toString())))
-        case None => Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
-      }
+      val maybeNino =getNinoFromSession(request)
+      maybeNino.fold(redirectToSelectClientPage)(
+        nino =>
+          retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+            case Right(person) => Future.successful(Ok(views.html.errors.no_data(person.getName.fold(nino.toString())(name => name))))
+            case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+          }
+      )
     }
   }
 

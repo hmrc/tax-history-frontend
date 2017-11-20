@@ -22,8 +22,8 @@ import models.taxhistory.Person
 import play.api.Logger
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, Request, Result}
-import uk.gov.hmrc.auth.core.MissingBearerToken
 import uk.gov.hmrc.auth.core.retrieve.~
+import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
@@ -42,13 +42,14 @@ trait BaseController extends I18nSupport with AgentAuth {
     }
   }
 
-  protected[controllers] def authorisedForAgent(eventualResult: Future[Result])
-                                               (implicit hc:HeaderCarrier, request:Request[_]) =  {
-    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
+  def authorisedAgent(nino: Nino, eventualResult:(Nino)=> Future[Result])
+                     (implicit hc:HeaderCarrier, request:Request[_]) = {
+    authorised(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)
+      .retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols =>
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
           case (`isAnAgent`, Some(_)) => {
-            eventualResult
+            eventualResult(nino)
           }
           case (`isAnAgent`, None) => redirectToSubPage
           case _ => redirectToExitPage
@@ -56,6 +57,9 @@ trait BaseController extends I18nSupport with AgentAuth {
       case _ =>
         redirectToExitPage
     }.recoverWith {
+      case i: InsufficientEnrolments =>
+        Logger.error("Error thrown :" + i.getMessage)
+        Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
       case b: BadGatewayException => {
         Logger.warn(s"BadGatewayException:${b.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
@@ -67,6 +71,18 @@ trait BaseController extends I18nSupport with AgentAuth {
       case e =>
         Logger.error("Exception thrown :" + e.getMessage)
         Future.successful(ggSignInRedirect)
+    }
+  }
+
+  protected[controllers] def authorisedForAgent(eventualResult:(Nino) =>Future[Result])
+                                               (implicit hc:HeaderCarrier, request:Request[_]) =  {
+    val maybeNino = getNinoFromSession(request)
+    maybeNino match {
+      case Some(nino) => authorisedAgent(nino, eventualResult)
+      case None => {
+        Logger.warn("No nino supplied.")
+        Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+      }
     }
   }
 
@@ -101,6 +117,12 @@ trait BaseController extends I18nSupport with AgentAuth {
       case _ => Future.successful(Left(BAD_REQUEST))
     }
   }
+
+  def getNinoFromSession(request:Request[_]):Option[Nino] = {
+    request.session.get("USER_NINO").map(Nino(_))
+  }
+
+  def redirectToSelectClientPage:Future[Result] = Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
 
   def redirectToClientErrorPage(status: Int):Future[Result] = {
     status match {

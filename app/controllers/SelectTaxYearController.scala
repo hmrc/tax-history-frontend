@@ -62,8 +62,13 @@ class SelectTaxYearController @Inject()(
       taxYearResponse.status match {
         case OK => {
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-
-          httpStatus(select_tax_year(form,
+          val formData = httpStatus match {
+            case Ok => selectTaxYearForm.bind(Json.obj(
+              "selectTaxYear" -> taxYears.head._1
+            ))
+            case _ => form
+          }
+          httpStatus(select_tax_year(formData,
             person.getName.fold(nino.nino)(x => x), taxYears))
         }
         case status => handleHttpFailureResponse(status, nino)
@@ -71,34 +76,35 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  private def renderSelectTaxYearPage(form: Form[SelectTaxYear], httpStatus: Status)
+  private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-    maybeNino match {
-      case Some(nino) => {
-        retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-          case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-          case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
-        }
-      }
-      case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+      case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+      case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
     }
   }
 
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
-    authorisedForAgent {
-      renderSelectTaxYearPage(selectTaxYearForm, Ok)
+    authorisedForAgent {nino =>
+      renderSelectTaxYearPage(nino, selectTaxYearForm, Ok)
     }
   }
 
   def submitSelectTaxYearPage(): Action[AnyContent] = Action.async { implicit request =>
     selectTaxYearForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        renderSelectTaxYearPage(formWithErrors, BadRequest)
+        val maybeNino = request.session.get("USER_NINO").map(Nino(_))
+        maybeNino match {
+          case Some(nino) => renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
+          case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+        }
       },
-      validFormData => authorisedForAgent {
-        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)))
+      validFormData => authorisedForAgent {_ =>
+        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(
+          validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)))
       }
     )
   }
 }
+
+
