@@ -42,14 +42,15 @@ trait BaseController extends I18nSupport with AgentAuth {
     }
   }
 
-  def authorisedAgent(nino: Nino, eventualResult:(Nino)=> Future[Result])
+  protected def authorisedAgent(predicate: uk.gov.hmrc.auth.core.authorise.Predicate)(
+                              eventualResult :Future[Result])
                      (implicit hc:HeaderCarrier, request:Request[_]) = {
-    authorised(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)
+    authorised(predicate)
       .retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols =>
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
           case (`isAnAgent`, Some(_)) => {
-            eventualResult(nino)
+            eventualResult
           }
           case (`isAnAgent`, None) => redirectToSubPage
           case _ => redirectToExitPage
@@ -78,7 +79,8 @@ trait BaseController extends I18nSupport with AgentAuth {
                                                (implicit hc:HeaderCarrier, request:Request[_]) =  {
     val maybeNino = getNinoFromSession(request)
     maybeNino match {
-      case Some(nino) => authorisedAgent(nino, eventualResult)
+      case Some(nino) => authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("MTDITID",
+        nino.toString) and AuthProviderAgents)(eventualResult(nino))
       case None => {
         Logger.warn("No nino supplied.")
         Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
