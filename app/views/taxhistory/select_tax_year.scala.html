@@ -22,6 +22,8 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 
+<a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+
 @if(form.hasErrors) {
     <div class="flash error-summary error-summary--show"
          id="error-summary-display"

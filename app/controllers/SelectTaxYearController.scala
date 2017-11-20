@@ -97,7 +97,7 @@ class SelectTaxYearController @Inject()(
         renderSelectTaxYearPage(formWithErrors, BadRequest)
       },
       validFormData => authorisedForAgent {
-        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.toInt)))
+        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)))
       }
     )
   }
