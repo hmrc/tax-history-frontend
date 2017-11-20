@@ -100,6 +100,8 @@ employmenthistory.employment.details.benefit = Benefit
 employmenthistory.payerecord.linktext = Return to PAYE record
 employmenthistory.employment.details.caption = Employment Details
 
+employmenthistory.company.benefit.caveat.actual = HMRC has {0}’s P11D from {1} for the {2} to {3} tax year. The company benefits amounts may be an estimate.
+employmenthistory.company.benefit.caveat.estimate = HMRC does not have {0}’s P11D from {1} for the {2} to {3} tax year. The company benefits amounts are a forecast.
 
 ################################## Select tax year ####################################################
 

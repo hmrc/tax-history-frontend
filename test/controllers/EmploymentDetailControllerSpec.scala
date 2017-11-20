@@ -21,6 +21,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import model.api.{CompanyBenefit, Employment, EmploymentStatus, PayAndTax}
+import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -45,7 +46,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
 
       val c = injected[EmploymentDetailController]
       val cbUUID = UUID.randomUUID()
-      val companyBenefits = List(CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00),
+      val companyBenefits = List(CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1)),
         CompanyBenefit(cbUUID, "CarFuelBenefit", 1000))
 
       val payAndTax = PayAndTax(
@@ -73,6 +74,9 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
       when(c.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(companyBenefits)))))
+      val person = Some(Person(Some("first name"),Some("second name"), false))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
   }
@@ -112,10 +116,10 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
       when(controller.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
           None)))
-      val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession(
+        "USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include (Messages("employmenthistory.employment.details.title"))
     }
-
   }
 }
