@@ -44,40 +44,17 @@ class SelectClientController @Inject()(
   }
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-
-    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-      case Some(affinityG) ~ allEnrols ⇒
-        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => Future.successful(Ok(select_client(selectClientForm)))
-          case (`isAnAgent`, None) => redirectToSubPage
-          case _ => redirectToExitPage
-        }
-      case _ =>
-        redirectToExitPage
-    } recover {
-      case e ⇒
-        handleFailure(e)
+    authorisedAgent(AuthProviderAgents) {
+      Future.successful(Ok(select_client(selectClientForm)))
     }
   }
 
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
-      validFormData => {
-        authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-          case Some(affinityG) ~ allEnrols ⇒
-            (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
+      validFormData => authorisedAgent(AuthProviderAgents) {
+        Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
                 .addingToSession("USER_NINO" -> s"${validFormData.clientId.toUpperCase}")
-              case (`isAnAgent`, None) => redirectToSubPage
-              case _ => redirectToExitPage
-            }
-          case _ =>
-            redirectToExitPage
-        } recover {
-          case e ⇒
-            handleFailure(e)
-        }
       }
     )
   }
