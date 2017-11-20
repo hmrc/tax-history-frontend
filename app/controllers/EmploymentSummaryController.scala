@@ -45,7 +45,6 @@ class EmploymentSummaryController @Inject()(
 
   def getTaxHistory(taxYear: Int) = Action.async {
     implicit request => {
-      val maybeNino = request.session.get("USER_NINO").map(Nino(_))
       authorisedForAgent { nino =>
         for {
           maybePerson <- retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino))
