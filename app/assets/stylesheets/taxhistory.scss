@@ -52,7 +52,9 @@ table caption {
 .page-header .heading-xlarge {
   margin: .15em 0 0.5em;
 }
-
+.page-header .heading-large {
+  font-size: 36px;
+}
 .page-header .heading-secondary {
   color: #6f777b;
   display: table-header-group;
@@ -63,6 +65,30 @@ table caption {
   text-transform: none;
 }
 
+.flash.error-summary {
+    border-color: #b10e1e;
+}
+.flash {
+    border: 5px solid #b10e1e;
+}
+
+.form-field--error {
+    border-left: 5px solid #b10e1e;
+    padding-left: 15px;
+}
+
+.form-field--error .error-notification {
+    display: block;
+    font-family: "nta",Arial,sans-serif;
+    font-size: 19px;
+    line-height: 1.25;
+    font-weight: 700;
+    text-transform: none;
+}
+
+.h3-heading {
+    font-size: 24px;
+}
 
 .float-right{
   float:right;

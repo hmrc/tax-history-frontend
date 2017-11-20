@@ -17,7 +17,7 @@
 @import models.taxhistory.SelectTaxYear
 @import uk.gov.hmrc.play.views.html.helpers
 
-@(form: Form[SelectTaxYear], clientNameOrNino: String,
+@(form: Form[SelectTaxYear],
 taxYears:List[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
@@ -33,7 +33,7 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
         <h2 id="error-summary-heading" class="h3-heading">@Messages("employmenthistory.select.tax.year.error.heading")</h2>
         <ul class="js-error-summary-messages">
             <li role="tooltip">
-                <a href="#@form.errors.head.key" id="@{form.errors.head.key}-error-summary" data-focuses="@form.errors.head.key">
+                <a class="error-font" href="#@form.errors.head.key" id="@{form.errors.head.key}-error-summary" data-focuses="@form.errors.head.key">
                     @form.errors.head.messages.map(x => Messages(x))
                 </a>
             </li>
@@ -43,10 +43,9 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
 
 <div class="page-header" >
     <h1 class="heading-xlarge">
-        @Messages("employmenthistory.select.tax.year.header",clientNameOrNino)
+        @Messages("employmenthistory.select.tax.year.h1")
     </h1>
 </div>
-    <h2 class="heading-large">@Messages("employmenthistory.select.tax.year")</h2>
   @helpers.form(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
 
       @helpers.inputRadioGroup(form("selectTaxYear"),
@@ -60,9 +59,6 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
 
       <button id="continueButton" type="submit" class="button">@Messages("lbl.continue")</button>
   }
-    <div class="margin-top-large">
-    <a id="back-link" href="@controllers.routes.SelectClientController.getSelectClientPage().url">
-        @Messages("lbl.select.new.client")</a>
-    </div>
+
 }
 
