@@ -57,7 +57,6 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
-      contentAsString(result) should include(Messages("employmenthistory.select.tax.year.header","first name second name"))
     }
 
     "redirect to technical error page when getTaxYears reurn status internal server error" in new LocalSetup {
@@ -98,7 +97,6 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
         .withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.BAD_REQUEST
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.error.message"))
-      contentAsString(result) should include(Messages("employmenthistory.select.tax.year.header","first name second name"))
     }
 
     "redirect to technical error page when getTaxYears return error on submission" in new LocalSetup {

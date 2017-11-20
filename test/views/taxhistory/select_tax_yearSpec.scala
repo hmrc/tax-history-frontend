@@ -52,7 +52,6 @@ class select_tax_yearSpec extends GuiceAppSpec {
       inputRadio.attr("checked") shouldBe "checked"
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1")).hasText mustBe true
 
-      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
     }
 
     "show correct content on the page for form with error" in new ViewFixture {
@@ -66,7 +65,6 @@ class select_tax_yearSpec extends GuiceAppSpec {
       inputRadio.attr("checked") shouldBe ""
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
 
-      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
 
       doc.getElementById("selectTaxYear-error-summary").text mustBe Messages("employmenthistory.select.tax.year.error.linktext")
       doc.getElementById("error-summary-heading").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
