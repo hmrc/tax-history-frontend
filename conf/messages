@@ -19,6 +19,7 @@ global.link.signout=Sign out
 lbl.no.data.available = No data available
 lbl.no.data.available.text = no data available
 lbl.continue = Continue
+lbl.back = Back
 
 
 ################################## employmenthistory ##############################################
@@ -85,12 +86,11 @@ employmenthistory.select.client.title=Select client - GOV.UK
 employmenthistory.select.client.heading=Enter a client’s National Insurance number
 employmenthistory.select.client.clients.nino=Client National Insurance number
 employmenthistory.select.client.nino.hint=For example, ‘QQ123456C’
-employmenthistory.select.client.error.invalid-length.title=National Insurance number must be 9 characters.
-employmenthistory.select.client.error.invalid-length.link=Please enter a valid National Insurance number
-employmenthistory.select.client.error.invalid-format.title=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
-employmenthistory.select.client.error.invalid-format.link=Please enter a valid National Insurance number
-employmenthistory.select.client.error.empty.title=National Insurance number must be 9 characters.
-employmenthistory.select.client.error.empty.link=Please enter a National Insurance number
+employmenthistory.select.client.error.invalid-format.title=There is a problem
+employmenthistory.select.client.error.invalid-format=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
+employmenthistory.select.client.error.empty.title=There is a problem
+employmenthistory.select.client.error.empty=Enter a National Insurance number
+
 
 ################################ Employment Details ####################################################
 employmenthistory.employment.details.title = Client single record - GOV.UK

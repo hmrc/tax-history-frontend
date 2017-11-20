@@ -67,3 +67,18 @@ table caption {
 .float-right{
   float:right;
 }
+
+.error-font {
+    font-weight: 600 !important;
+    color: #af1324;
+    font-size: 19px !important;
+}
+
+.error-message {
+    margin-top: 0.26316em;
+    margin-bottom: 1.05263em;
+}
+
+.input-error {
+    border: 3px solid #df3034;
+}

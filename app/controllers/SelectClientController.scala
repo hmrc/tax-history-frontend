@@ -48,14 +48,7 @@ class SelectClientController @Inject()(
     authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
       case Some(affinityG) ~ allEnrols ⇒
         (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => {
-            val sidebarLink = Link.toInternalPage(
-              url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
-            Future.successful(Ok(select_client(selectClientForm,
-              Some(sidebarLink)
-            )))
-          }
+          case (`isAnAgent`, Some(_)) => Future.successful(Ok(select_client(selectClientForm)))
           case (`isAnAgent`, None) => redirectToSubPage
           case _ => redirectToExitPage
         }
@@ -69,14 +62,7 @@ class SelectClientController @Inject()(
 
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
-      formWithErrors ⇒ {
-        val sidebarLink = Link.toInternalPage(
-          url=FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
-        Future.successful(BadRequest(select_client(formWithErrors,
-          Some(sidebarLink)
-          )))
-      },
+      formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
       validFormData => {
         authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
           case Some(affinityG) ~ allEnrols ⇒
