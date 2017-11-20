@@ -45,7 +45,7 @@ class CompanyBenefitSpec extends TestUtil with UnitSpec {
 
   lazy val companyBenefit = CompanyBenefit(companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
                                   iabdType = "companyBenefitType",
-                                  amount = BigDecimal(12.00))
+                                  amount = BigDecimal(12.00), source= Some(3))
 
   lazy val companyBenefitList = List(companyBenefit)
 
