@@ -32,89 +32,95 @@
 
 @views.html.main_template(title = Messages("employmenthistory.title")) {
 
-  <div class="page-header" >
+  <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
+    <div class="page-header" >
       <h1 class="heading-xlarge">
-          <span class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
-          (taxYear+1).toString)</span>
-          @Messages("employmenthistory.header",getName)
+        @Messages("employmenthistory.header",getName)
       </h1>
 
-
-  </div>
+    <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
+    </div>
 
     <div class="panel-indent panel-border-wide">
         <p>
-           @Messages("employmenthistory.caveat.text")
+           @Messages("employmenthistory.caveat.p1.text")
+        </p>
+        <p>
+            @Messages("employmenthistory.caveat.p2.text")
+        </p>
+        <p>
+            @Messages("employmenthistory.caveat.p3.text")
         </p>
     </div>
+
 @if(employments.filter(!_.receivingOccupationalPension).nonEmpty) {
-  <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary">
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
-    @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
-      <div>
-        <dt class="cya-question">
-          @employment.employerName
-        </dt>
-        <dd class="cya-answer">
-          @DateHelper.formatDate(employment.startDate)
-          @Messages("lbl.to")
-          @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available.text"))
-        </dd>
-         <dd class="cya-change">
-           <a href="/tax-history/single-record@employment.employmentURI"
-              class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
-        </dd>
-      </div>
-    }
-  </dl>
+    <table id="employment-table">
+        <tbody>
+        <th scope="col" width="26%">@Messages("lbl.employer")</th>
+        <th scope="col" width="27%">@Messages("lbl.date.start")</th>
+        <th scope="col" width="27%">@Messages("lbl.date.end")</th>
+        <th scope="col" width="20%"></th>
+        @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+            <tr>
+                <td> @employment.employerName</td>
+                <td>@DateHelper.formatDate(employment.startDate)</td>
+                <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
+                <td><a href="/tax-history/single-record@employment.employmentURI"
+                       class="float-right" id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")
+                    <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
 }
 
-@if(employments.filter(_.receivingOccupationalPension).nonEmpty) {
-  <dl class="govuk-check-your-answers cya-questions-long" id="check-answers-summary-pensions">
-    <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
-    @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
-        <div>
-            <dt class="cya-question">
-                @employment.employerName
-            </dt>
-            <dd class="cya-answer">
-                @DateHelper.formatDate(employment.startDate)
-                @Messages("lbl.to")
-                @StringUtils.getEndDate(employment, Messages("lbl.text.current"), Messages("lbl.no.data.available.text"))
-            </dd>
-            <dd class="cya-change">
-                <a href="/tax-history/single-record@employment.employmentURI"
-                   class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")<span class="visuallyhidden">for @employment.employerName</span></a>
-            </dd>
-        </div>
-  }
-  </dl>
-}
+    @if(employments.filter(_.receivingOccupationalPension).nonEmpty) {
+        <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
+
+        <table id="pension-table">
+            <tbody>
+            <th scope="col" width="26%">@Messages("lbl.provider")</th>
+            <th scope="col" width="27%">@Messages("lbl.date.start")</th>
+            <th scope="col" width="27%">@Messages("lbl.date.end")</th>
+            <th scope="col" width="20%"></th>
+            @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+            <tr>
+                <td scope="row"> @employment.employerName</td>
+                <td scope="row">@DateHelper.formatDate(employment.startDate)</td>
+                <td scope="row">@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
+                <td scope="row"><a href="/tax-history/single-record@employment.employmentURI"
+                       class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")
+                    <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+
 
     @if(allowances.nonEmpty) {
-        <table class="margin-top-large">
-          <caption class="heading-medium pull-left">@Messages("employmenthistory.allowance.heading")</caption>
+    <h2 class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
+        <table id="allowanceTable" >
           <thead>
             <tr>
-              <th scope="col" width="50%">@Messages("lbl.allowance")</th>
-              <th scope="col">@Messages("lbl.amount")</th>
+              <th>@Messages("lbl.allowance")</th>
+              <th class="numeric">@Messages("lbl.amount")</th>
             </tr>
           </thead>
           <tbody>
           @allowances.map {allowance =>
             <tr>
               <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-              <td>@Currency(allowance.amount)</td>
+              <td class="numeric">@Currency(allowance.amount)</td>
             </tr>
           }
           </tbody>
         </table>
     }
-    <div class="margin-top-large">
-        <a id="back-link" href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">
-            @Messages("employmenthistory.select.different.taxyear.link")
-        </a>
-    </div>
 }
 

@@ -16,11 +16,7 @@
 
 package views.taxhistory
 
-import java.util.UUID
-
-import model.api._
 import models.taxhistory.Person
-import org.joda.time.LocalDate
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import utils.TestUtil
@@ -116,75 +112,3 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
 
 }
 
-trait DetailConstants {
-
-  val eyu1 = EarlierYearUpdate(
-    taxablePayEYU = 0,
-    taxEYU = 8.99,
-    receivedDate = LocalDate.parse("2016-01-21")
-  )
-
-  val eyu2 = EarlierYearUpdate(
-    taxablePayEYU = 10,
-    taxEYU = 18.99,
-    receivedDate = LocalDate.parse("2016-05-21")
-  )
-
-  val eyuList = List(eyu1, eyu2)
-
-  val payAndTax = PayAndTax(
-    taxablePayTotal = Some(4896.80),
-    taxTotal = Some(979.36),
-    earlierYearUpdates = eyuList
-  )
-  val uuid = UUID.randomUUID()
-
-  val completeCBList = List(CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00),
-    CompanyBenefit(uuid, "CarFuelBenefit", 1000),
-    CompanyBenefit(uuid, "MedicalInsurance", 1000.00),
-    CompanyBenefit(uuid, "CarBenefit", 1000.00),
-    CompanyBenefit(uuid, "TelephoneBenefit", 1000.00),
-    CompanyBenefit(uuid, "ServiceBenefit", 1000.00),
-    CompanyBenefit(uuid, "TaxableExpenseBenefit", 1000.00),
-    CompanyBenefit(uuid, "VanBenefit", 1000.00),
-    CompanyBenefit(uuid, "VanFuelBenefit", 1000.00),
-    CompanyBenefit(uuid, "BeneficialLoan", 1000.00),
-    CompanyBenefit(uuid, "TotalBenefitInKind", 1000.00),
-    CompanyBenefit(uuid, "Accommodation", 1000.00),
-    CompanyBenefit(uuid, "Assets", 1000.00),
-    CompanyBenefit(uuid, "AssetTransfer", 1000.00),
-    CompanyBenefit(uuid, "EducationalService", 1000.00),
-    CompanyBenefit(uuid, "Entertaining", 1000.00),
-    CompanyBenefit(uuid, "ExpensesPay", 1000.00),
-    CompanyBenefit(uuid, "Mileage", 1000.00),
-    CompanyBenefit(uuid, "NonQualifyingRelocationExpense", 1000.00),
-    CompanyBenefit(uuid, "NurseryPlaces", 1000.00),
-    CompanyBenefit(uuid, "OtherItems", 1000.00),
-    CompanyBenefit(uuid, "PaymentEmployeesBehalf", 1000.00),
-    CompanyBenefit(uuid, "PersonalIncidentExpenses", 1000.00),
-    CompanyBenefit(uuid, "QualifyingRelocationExpenses", 1000.00),
-    CompanyBenefit(uuid, "EmployerProvidedProfessionalSubscription", 1000.00),
-    CompanyBenefit(uuid, "IncomeTaxPaidNotDeductedFromDirectorsRemuneration", 1000.00),
-    CompanyBenefit(uuid, "TravelAndSubsistence", 1000.00),
-    CompanyBenefit(uuid, "VoucherAndCreditCards", 1000.00),
-    CompanyBenefit(uuid, "NonCashBenefit", 1000.00)
-  )
-
-  val employment =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01")),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentStatus = EmploymentStatus.Live)
-
-  val employmentNoEndDate =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = LocalDate.parse("2016-01-21"),
-    employmentStatus = EmploymentStatus.Live)
-
-}
