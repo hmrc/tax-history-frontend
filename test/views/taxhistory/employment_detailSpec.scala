@@ -107,7 +107,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
         "employment is ongoing" in new ViewFixture {
           val view = views.html.taxhistory.employment_detail(taxYear,
             Some(payAndTax), employmentNoEndDate, completeCBList, clientName, false)
-          println("doc"+doc)
 
           doc.getElementsMatchingOwnText(Messages("lbl.current")).hasText mustBe true
 
