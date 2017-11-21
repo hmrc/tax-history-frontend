@@ -94,10 +94,11 @@ class EmploymentDetailController @Inject()(
     val P11D = 21
     val Assessed_P11D = 28
     val P11D_P9D = 29
-    companyBenefits.exists(x => x.source.contains(P9D)
-      || x.source.contains(P11D)
-      || x.source.contains(Assessed_P11D)
-      || x.source.contains(P11D_P9D))
+    
+    companyBenefits.exists(cb => cb.source.contains(P9D)
+      || cb.source.contains(P11D)
+      || cb.source.contains(Assessed_P11D)
+      || cb.source.contains(P11D_P9D))
 
   }
 
