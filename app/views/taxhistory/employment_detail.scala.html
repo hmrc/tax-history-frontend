@@ -15,18 +15,19 @@
  *@
 
 @import model.api.{PayAndTax, CompanyBenefit, Employment}
-@import utils.{Currency, DateHelper, StringUtils}
+@import utils.{Currency, StringUtils}
+@import utils.DateHelper._
+@import uk.gov.hmrc.time.TaxYear
 
 @(taxYear: Int,
   payAndTax: Option[PayAndTax],
   employment: Employment,
   companyBenefits: List[CompanyBenefit],
-  sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+  clientNameOrNino: String, actualOrForecast: Boolean)(implicit request: Request[_], messages: Messages)
 
 
 @views.html.main_template(title = Messages("employmenthistory.employment.details.title"),
-                        bodyClasses = None,
-                        sidebarLinks = None
+                        bodyClasses = None
                         ){
 
 <header class="page-header">
@@ -90,7 +91,7 @@
       <tbody>
       @payAndTax.earlierYearUpdates.map {cb =>
       <tr>
-        <td>@DateHelper.formatDate(cb.receivedDate)</td>
+        <td>@formatDate(cb.receivedDate)</td>
         <td>@Currency(cb.taxablePayEYU)</td>
         <td>@Currency(cb.taxEYU)</td>
       </tr>
@@ -102,7 +103,18 @@
 
 @if(companyBenefits.nonEmpty) {
     <table id="cb-table">
-        <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.companybenefits")</caption>
+        <h2 class="heading-medium">
+            @Messages("employmenthistory.employment.details.companybenefits")
+        </h2>
+        <p>
+        @if(actualOrForecast) {
+            @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
+            employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
+        } else {
+            @Messages("employmenthistory.company.benefit.caveat.estimate", clientNameOrNino,
+            employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
+        }
+        </p>
         <thead>
         <tr>
             <th scope="col" width="50%">@Messages("employmenthistory.employment.details.benefit")</th>
@@ -121,7 +133,9 @@
 }
 
 <div class="margin-top-large">
-  @sideBarLink.map{link=>@link}
+    <a id="back-link" href="@controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url">
+        @Messages("employmenthistory.payerecord.linktext")
+    </a>
 </div>
 
 }
