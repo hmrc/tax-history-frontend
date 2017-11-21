@@ -53,12 +53,14 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, true)
-      val payeReference = doc.select("#employment-table tbody tr").get(0)
-      val startDate = doc.select("#employment-table tbody tr").get(1)
-      val endDate = doc.select("#employment-table tbody tr").get(2)
-      val taxablePay = doc.select("#employment-table tbody tr").get(3)
-      val incomeTax = doc.select("#employment-table tbody tr").get(4)
+      val name = doc.select("#employment-table tbody tr").get(0)
+      val payeReference = doc.select("#employment-table tbody tr").get(1)
+      val startDate = doc.select("#employment-table tbody tr").get(2)
+      val endDate = doc.select("#employment-table tbody tr").get(3)
+      val taxablePay = doc.select("#pay-and-tax-table tbody tr").get(0)
+      val incomeTax = doc.select("#pay-and-tax-table tbody tr").get(1)
 
+      name.text must include(clientName)
       payeReference.text must include(employment.payeReference)
       startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
       endDate.text must include(employment.endDate.get.toString("d MMMM yyyy"))
@@ -74,7 +76,9 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
       
       val eyuRow0 = doc.select("#eyu-table tbody tr").get(0)
       val eyuRow1 = doc.select("#eyu-table tbody tr").get(1)
+      val eyuCaveat = Messages("employmenthistory.eyu.caveat",(taxYear+1).toString, taxYear.toString, employment.employerName)
 
+      doc.getElementsContainingOwnText(eyuCaveat).hasText mustBe true
       eyuRow0.text must include("21 January 2016")
       eyuRow0.text must include("£0")
       eyuRow0.text must include("£8.99")
@@ -119,7 +123,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
           employment, List.empty, clientName, true)
         val eyutable = doc.getElementById("eyu-table")
         val cbTable = doc.getElementById("cb-table")
-        val taxablePay = doc.select("#employment-table tbody tr").get(3)
+        val taxablePay = doc.select("#pay-and-tax-table tbody tr").get(0)
         eyutable must be(null)
         cbTable must be(null)
         taxablePay.text must include(Messages("employmenthistory.nopaydata"))
