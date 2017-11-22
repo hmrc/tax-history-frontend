@@ -44,54 +44,17 @@ class SelectClientController @Inject()(
   }
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-
-    authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-      case Some(affinityG) ~ allEnrols ⇒
-        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => {
-            val sidebarLink = Link.toInternalPage(
-              url = FrontendAppConfig.AfiHomePage,
-              value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
-            Future.successful(Ok(select_client(selectClientForm,
-              Some(sidebarLink)
-            )))
-          }
-          case (`isAnAgent`, None) => redirectToSubPage
-          case _ => redirectToExitPage
-        }
-      case _ =>
-        redirectToExitPage
-    } recover {
-      case e ⇒
-        handleFailure(e)
+    authorisedAgent(AuthProviderAgents) {
+      Future.successful(Ok(select_client(selectClientForm)))
     }
   }
 
   def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
-      formWithErrors ⇒ {
-        val sidebarLink = Link.toInternalPage(
-          url=FrontendAppConfig.AfiHomePage,
-          value = Some(messagesApi("employmenthistory.afihomepage.linktext"))).copy(id=Some("back-link")).toHtml
-        Future.successful(BadRequest(select_client(formWithErrors,
-          Some(sidebarLink)
-          )))
-      },
-      validFormData => {
-        authorised(AuthProviderAgents).retrieve(affinityGroupAllEnrolls) {
-          case Some(affinityG) ~ allEnrols ⇒
-            (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-              case (`isAnAgent`, Some(_)) => Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
+      formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
+      validFormData => authorisedAgent(AuthProviderAgents) {
+        Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
                 .addingToSession("USER_NINO" -> s"${validFormData.clientId.toUpperCase}")
-              case (`isAnAgent`, None) => redirectToSubPage
-              case _ => redirectToExitPage
-            }
-          case _ =>
-            redirectToExitPage
-        } recover {
-          case e ⇒
-            handleFailure(e)
-        }
       }
     )
   }

@@ -18,7 +18,7 @@ package models.taxhistory
 
 import play.api.libs.json.Json
 
-case class SelectTaxYear(taxYear: String)
+case class SelectTaxYear(taxYear: Option[String])
 
 object SelectTaxYear {
   implicit val format = Json.format[SelectTaxYear]

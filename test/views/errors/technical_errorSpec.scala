@@ -34,10 +34,10 @@ class technical_errorSpec extends GuiceAppSpec {
 
       val title = Messages("employmenthistory.technical.error.title")
       doc.title mustBe title
+      doc.getElementById("back-link").attr("href").contains("/agent-services/individuals") mustBe true
+      doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.technical.error.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.technical.error.message")).size() mustBe 1
-      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client").toLowerCase).attr("href") mustBe "/tax-history/select-client"
-      doc.getElementsMatchingOwnText("Please try again, or *.$").size() mustBe 1
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }

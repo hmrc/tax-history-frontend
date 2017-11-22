@@ -46,24 +46,24 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
       validatedForm.errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.empty")))
     }
 
-    "return an invalid length error when nino is shorter than nine characters" in {
+    "return an invalid format error when nino is shorter than nine characters" in {
       val postData = Json.obj(
         "clientId" -> "123456"
       )
 
       val validatedForm = selectClientForm.bind(postData)
       val errors = validatedForm.errors
-      errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-length")))
+      errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
 
-    "return an invalid length error when nino is longer than nine characters" in {
+    "return an invalid format error when nino is longer than nine characters" in {
       val postData = Json.obj(
         "clientId" -> "1234567890"
       )
 
       val validatedForm = selectClientForm.bind(postData)
       val errors = validatedForm.errors
-      errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-length")))
+      errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
 
     "return an invalid format value error when an invalid nino entered" in {

@@ -26,12 +26,10 @@ object SelectClientForm {
     Form(mapping(
       "clientId" -> text
         .verifying("employmenthistory.select.client.error.empty", isNonEmpty(_))
-        .verifying("employmenthistory.select.client.error.invalid-length", text => if(isNonEmpty(text)) isValidLength(text) else true )
-        .verifying("employmenthistory.select.client.error.invalid-format",text => if(isNonEmpty(text) && isValidLength(text)) isValidNino(text) else true)
+        .verifying("employmenthistory.select.client.error.invalid-format",text => if(isNonEmpty(text)) isValidNino(text) else true)
     )(SelectClient.apply)(SelectClient.unapply))
   }
 
   private def isNonEmpty(nino: String):    Boolean = nino.nonEmpty
-  private def isValidLength(nino: String): Boolean = nino.length == 9
   private def isValidNino(nino: String):   Boolean = isValid(nino.toUpperCase)
 }

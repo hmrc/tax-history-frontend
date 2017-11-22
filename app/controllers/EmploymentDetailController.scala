@@ -22,6 +22,7 @@ import config.{FrontendAppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectClientForm.selectClientForm
 import model.api.{CompanyBenefit, Employment, PayAndTax}
+import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
@@ -42,17 +43,27 @@ class EmploymentDetailController @Inject()(
                                           ) extends BaseController {
 
 
-  def getEmploymentDetails(employmentId: String, taxYear: Int) = Action.async {
-    implicit request =>
-      authorisedForAgent { nino =>
+  private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)
+                                         (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+      case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+      case Right(person) => {
         taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
           empDetailsResponse.status match {
             case OK =>
-              loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId)
+              loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status => Future.successful(handleHttpFailureResponse(status, nino))
           }
         }
+      }
+    }
+  }
+
+  def getEmploymentDetails(employmentId: String, taxYear: Int) = Action.async {
+    implicit request =>
+      authorisedForAgent { nino =>
+        renderEmploymentDetailsPage(nino, taxYear, employmentId)
       }
   }
 
@@ -78,18 +89,30 @@ class EmploymentDetailController @Inject()(
     }
   }
 
-  private def loadEmploymentDetailsPage(empResponse: HttpResponse, nino: Nino, taxYear: Int, employmentId: String)
-                                       (implicit hc: HeaderCarrier, request: Request[_]) = {
-    val employment = empResponse.json.as[Employment]
-    val sidebarLink = Link.toInternalPage(
-        url = controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url,
-        value = Some(messagesApi("employmenthistory.payerecord.linktext")),
-        id = Some("back-link")
-    ).toHtml
-   for {
-     payAndTax <- getPayAndTax(nino, taxYear, employmentId)
-     companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
-   } yield Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax, employment, companyBenefits, Some(sidebarLink)))
+  private def getActualOrEstimateFlag(companyBenefits: List[CompanyBenefit]): Boolean = {
+    val P9D = 3
+    val P11D = 21
+    val Assessed_P11D = 28
+    val P11D_P9D = 29
+    
+    companyBenefits.exists(cb => cb.source.contains(P9D)
+      || cb.source.contains(P11D)
+      || cb.source.contains(Assessed_P11D)
+      || cb.source.contains(P11D_P9D))
 
   }
+
+  private def loadEmploymentDetailsPage(empResponse: HttpResponse,
+                                        nino: Nino,
+                                        taxYear: Int,
+                                        employmentId: String,
+                                        person: Person)(implicit hc: HeaderCarrier, request: Request[_]) = {
+    val employment = empResponse.json.as[Employment]
+    for {
+      payAndTax <- getPayAndTax(nino, taxYear, employmentId)
+      companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
+    } yield Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax,
+      employment, companyBenefits, person.getName.getOrElse(nino.nino), getActualOrEstimateFlag(companyBenefits)))
+  }
+
 }

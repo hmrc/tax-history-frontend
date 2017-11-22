@@ -17,11 +17,12 @@
 @(nameOrNino: String)(implicit request: Request[_], messages: Messages)
 
 @mainContent = {
+  <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
   <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.no.data.header",nameOrNino)</h1>
   <p>@Messages("employmenthistory.no.data.text")</p>
   <ul class="list list-bullet">
    <li><a id="selectTaxYear" href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">@Messages("employmenthistory.select.different.taxyear.link.lower")</a></li>
-   <li><a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client.lower")</a></li>
+   <li><a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employmenthistory.no.data.select.client.link.text")</a></li>
   </ul>
 }
 

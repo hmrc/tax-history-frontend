@@ -17,30 +17,48 @@
 @import models.taxhistory.SelectTaxYear
 @import uk.gov.hmrc.play.views.html.helpers
 
-@(form: Form[SelectTaxYear], clientNameOrNino: String,
+@(form: Form[SelectTaxYear],
 taxYears:List[(String, String)])(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 
+<a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+
+@if(form.hasErrors) {
+    <div class="flash error-summary error-summary--show"
+         id="error-summary-display"
+         role="alert"
+         aria-labelledby="error-summary-heading"
+         tabindex="-1">
+        <h2 id="error-summary-heading" class="h3-heading">@Messages("employmenthistory.select.tax.year.error.heading")</h2>
+        <ul class="js-error-summary-messages">
+            <li role="tooltip">
+                <a class="error-font" href="#@form.errors.head.key" id="@{form.errors.head.key}-error-summary" data-focuses="@form.errors.head.key">
+                    @form.errors.head.messages.map(x => Messages(x))
+                </a>
+            </li>
+        </ul>
+    </div>
+}
+
 <div class="page-header" >
     <h1 class="heading-xlarge">
-        @Messages("employmenthistory.select.tax.year.header",clientNameOrNino)
+        @Messages("employmenthistory.select.tax.year.h1")
     </h1>
 </div>
-    <h2 class="heading-large">@Messages("employmenthistory.select.tax.year")</h2>
   @helpers.form(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
+
       @helpers.inputRadioGroup(form("selectTaxYear"),
       taxYears,
+      'label -> Messages("employmenthistory.select.tax.year.error.message"),
       '_labelClass -> "block-label",
       '_id -> "selectTaxYear",
       '_groupClass -> "subsection margin-bottom--small",
-      '_fieldsetAttributes -> "id=selectTaxYear")
+      '_fieldsetAttributes -> "id=selectTaxYear",
+      'hint -> Messages("employmenthistory.select.tax.year.error.message"))
 
       <button id="continueButton" type="submit" class="button">@Messages("lbl.continue")</button>
   }
-    <div class="margin-top-large">
-    <a id="back-link" href="@controllers.routes.SelectClientController.getSelectClientPage().url">
-        @Messages("lbl.select.new.client")</a>
-    </div>
+
 }
 

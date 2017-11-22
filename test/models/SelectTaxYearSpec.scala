@@ -40,10 +40,10 @@ class SelectTaxYearSpec extends UnitSpec {
 
   "SelectTaxYear" should {
     "transform into Json from object correctly " in {
-      Json.toJson(SelectTaxYear("2014")) shouldBe Json.obj("taxYear" ->"2014")
+      Json.toJson(SelectTaxYear(Some("2014"))) shouldBe Json.obj("taxYear" ->"2014")
     }
     "transform into object from json correctly " in {
-      Json.obj("taxYear" ->"2014").as[SelectTaxYear] shouldBe SelectTaxYear("2014")
+      Json.obj("taxYear" ->"2014").as[SelectTaxYear] shouldBe SelectTaxYear(Some("2014"))
     }
 
   }

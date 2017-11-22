@@ -15,34 +15,41 @@
  *@
 
 @import model.api.{PayAndTax, CompanyBenefit, Employment}
-@import utils.{Currency, DateHelper, StringUtils}
+@import utils.{Currency, StringUtils}
+@import utils.DateHelper._
+@import uk.gov.hmrc.time.TaxYear
 
 @(taxYear: Int,
   payAndTax: Option[PayAndTax],
   employment: Employment,
   companyBenefits: List[CompanyBenefit],
-  sideBarLink: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+  clientNameOrNino: String, actualOrForecast: Boolean)(implicit request: Request[_], messages: Messages)
 
 
 @views.html.main_template(title = Messages("employmenthistory.employment.details.title"),
-                        bodyClasses = None,
-                        sidebarLinks = None
+                        bodyClasses = None
                         ){
+
+<a href="@controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+
 
 <header class="page-header">
     <h1 class="heading-xlarge">@employment.employerName</h1>
-  <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString,
-    (taxYear+1).toString)</p>
+    <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
 </header>
 
 <table id="employment-table">
-    <caption class="heading-medium pull-left"><span class="visuallyhidden">@Messages("employmenthistory.employment.details.caption")</span></caption>
+    <caption><span class="visuallyhidden">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
+  <tr>
+      <th scope="row" width="50%">@Messages("employmenthistory.employment.details.client.name")</th>
+      <td>@clientNameOrNino</td>
+  </tr>
   <tr>
       <th scope="row" width="50%">@Messages("lbl.paye.reference")</th>
       <td>@employment.payeReference</td>
   </tr>
-  <tr class="border-none">
+  <tr>
       <th scope="row">@Messages("lbl.date.start")</th>
       <td>@employment.startDate.toString("d MMMM yyyy")</td>
   </tr>
@@ -52,47 +59,55 @@
           @StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))
       </td>
   </tr>
-  <tr>
-    <th scope="row" width="50%">@Messages("lbl.taxable.pay")</th>
-    <td>
-      @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined){
-      @Currency(payAndTax.get.taxablePayTotal.getOrElse(0))
-      } else {
-      @Messages("employmenthistory.nopaydata")
-      }
-    </td>
-  </tr>
-  <tr>
-    <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
-    <td>
-      @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined){
-      @Currency(payAndTax.get.taxTotal.getOrElse(0))
-      } else {
-      @Messages("employmenthistory.nopaydata")
-      }
-    </td>
-  </tr>
-
   </tbody>
 </table>
+
+<h2 class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading",(taxYear+1).toString)</h2>
+<table id="pay-and-tax-table" >
+    <tr>
+        <th scope="row" width="50%">@Messages("lbl.taxable.income")</th>
+        <td>
+            @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined){
+            @Currency(payAndTax.get.taxablePayTotal.getOrElse(0))
+            } else {
+            @Messages("employmenthistory.nopaydata")
+            }
+        </td>
+    </tr>
+    <tr>
+        <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
+        <td>
+            @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined){
+            @Currency(payAndTax.get.taxTotal.getOrElse(0))
+            } else {
+            @Messages("employmenthistory.nopaydata")
+            }
+        </td>
+    </tr>
+</table>
+
 
 @payAndTax.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
     <table id="eyu-table">
-      <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.eyu")</caption>
+      <h2 class="heading-medium">
+        @Messages("employmenthistory.employment.details.eyu")
+      </h2>
+      <p>@Messages("employmenthistory.eyu.caveat",(taxYear+1).toString,taxYear.toString,employment.employerName)</p>
       <thead>
       <tr>
-        <th scope="col" width="50%">@Messages("employmenthistory.eyu.date.received")</th>
-        <th scope="col" width="25%">@Messages("employmenthistory.eyu.pay")</th>
-        <th scope="col" width="25%">@Messages("employmenthistory.eyu.tax")</th>
+        <th scope="col" width="30%">@Messages("employmenthistory.eyu.pay")</th>
+        <th scope="col" width="30%">@Messages("employmenthistory.eyu.tax")</th>
+        <th scope="col" width="40%">@Messages("employmenthistory.eyu.date.received")</th>
       </tr>
       </thead>
       <tbody>
       @payAndTax.earlierYearUpdates.map {cb =>
       <tr>
-        <td>@DateHelper.formatDate(cb.receivedDate)</td>
+
         <td>@Currency(cb.taxablePayEYU)</td>
         <td>@Currency(cb.taxEYU)</td>
+        <td>@formatDate(cb.receivedDate)</td>
       </tr>
       }
       </tbody>
@@ -102,27 +117,35 @@
 
 @if(companyBenefits.nonEmpty) {
     <table id="cb-table">
-        <caption class="heading-medium pull-left">@Messages("employmenthistory.employment.details.companybenefits")</caption>
+        <h2 class="heading-medium">
+            @Messages("employmenthistory.employment.details.companybenefits")
+        </h2>
+        <p>
+        @if(actualOrForecast) {
+            @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
+            employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
+        } else {
+            @Messages("employmenthistory.company.benefit.caveat.estimate", clientNameOrNino,
+            employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
+        }
+        </p>
         <thead>
         <tr>
             <th scope="col" width="50%">@Messages("employmenthistory.employment.details.benefit")</th>
-            <th scope="col">@Messages("lbl.amount")</th>
+            <th scope="col" class="numeric">@Messages("lbl.amount")</th>
         </tr>
         </thead>
         <tbody>
         @companyBenefits.map {cb =>
         <tr>
             <td>@Messages(s"employmenthistory.cb.${cb.iabdType}")</td>
-            <td>@Currency(cb.amount)</td>
+            <td class="numeric">@Currency(cb.amount)</td>
         </tr>
         }
         </tbody>
     </table>
 }
 
-<div class="margin-top-large">
-  @sideBarLink.map{link=>@link}
-</div>
 
 }
 

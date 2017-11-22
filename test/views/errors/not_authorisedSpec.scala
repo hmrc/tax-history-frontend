@@ -36,8 +36,10 @@ class not_authorisedSpec extends GuiceAppSpec {
 
       val title = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
+      doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
+      doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header",nino)
-      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }

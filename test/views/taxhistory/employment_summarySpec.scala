@@ -16,11 +16,8 @@
 
 package views.taxhistory
 
-import java.util.UUID
-
-import model.api.{Allowance, Employment, EmploymentStatus}
+import model.api.EmploymentStatus
 import models.taxhistory.Person
-import org.joda.time.LocalDate
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import utils.{DateHelper, TestUtil}
@@ -33,110 +30,61 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
 
     val nino = TestUtil.randomNino.toString()
     val taxYear = 2017
-    val person = Some(Person(Some("James"),Some("Dean"),false))
+    val person = Some(Person(Some("James"), Some("Dean"), false))
   }
 
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments,allowances, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
       doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
       doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
-        (taxYear+1).toString))
+        (taxYear + 1).toString))
 
       val viewDetailsElements = doc.getElementById("view-employment-0")
-      viewDetailsElements.html must include("View record<span class=\"visuallyhidden\">for employer-2</span>")
+      viewDetailsElements.html must include(Messages("employmenthistory.view.record")+" <span class=\"visuallyhidden\">"+Messages("employmenthistory.view.record.hidden",nino,"employer-2")+"</span>")
       viewDetailsElements.attr("href") mustBe "/tax-history/single-record"
 
 
       val viewPensionElements = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
-      viewPensionElements.html must include("View record<span class=\"visuallyhidden\">for employer-1</span>")
+      viewPensionElements.html must include(Messages("employmenthistory.view.record")+" <span class=\"visuallyhidden\">"+Messages("employmenthistory.view.record.hidden",nino,"employer-1")+"</span>")
 
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
+
+    "have correct employment content" in new ViewFixture {
+
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
+
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
+      employments.foreach(emp => {
+        doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
+        doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
+        if (emp.employmentStatus == EmploymentStatus.Live) {
+          doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.current"))
+          (d => DateHelper.formatDate(d))).hasText mustBe true
+        } else {
+          doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.no.data.available"))
+          (d => DateHelper.formatDate(d))).hasText mustBe true
+        }
+      })
+
+      allowances.foreach(al => {
+        doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
+      })
+      val caveatParagraphs = doc.select(".panel-border-wide p").text
+
+      caveatParagraphs.contains(Messages("employmenthistory.caveat.p1.text")) mustBe true
+      caveatParagraphs.contains(Messages("employmenthistory.caveat.p2.text")) mustBe true
+      caveatParagraphs.contains(Messages("employmenthistory.caveat.p3.text")) mustBe true
+
+      doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
+    }
   }
-
-  "have correct employment content" in new ViewFixture {
-
-    val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
-
-    doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
-    doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
-    employments.foreach(emp => {
-      doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
-      doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
-      if(emp.employmentStatus == EmploymentStatus.Live) {
-        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.text.current"))
-        (d => DateHelper.formatDate(d))).hasText mustBe true
-      } else {
-        doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.no.data.available.text"))
-        (d => DateHelper.formatDate(d))).hasText mustBe true
-      }
-    })
-
-    allowances.foreach(al => {
-      doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
-    })
-    doc.select(".panel-border-wide").text mustBe Messages("employmenthistory.caveat.text")
-
-    doc.getElementsMatchingOwnText(Messages("employmenthistory.select.different.taxyear.link")).attr("href") mustBe "/tax-history/select-tax-year"
-  }
-}
-
-trait Constants {
-
-  val startDate = new LocalDate("2016-01-21")
-  val endDate = new LocalDate("2016-11-01")
-
-  val emp1 =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = LocalDate.parse("2016-01-21"),
-    endDate = Some(LocalDate.parse("2017-01-01")),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    receivingOccupationalPension = true,
-    employmentStatus = EmploymentStatus.Live
-  )
-
-  val emp2 =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-2",
-    employerName = "employer-2",
-    startDate = LocalDate.parse("2016-01-21"),
-    endDate = None,
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentStatus = EmploymentStatus.Live)
-
-
-  val emp3 =  Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-2",
-    employerName = "employer-2",
-    startDate = LocalDate.parse("2016-01-21"),
-    endDate = None,
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentStatus = EmploymentStatus.Ceased)
-
-  val employments = List(emp1,emp2, emp3)
-
-  val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "FlatRateJobExpenses",
-    amount = BigDecimal(12.00))
-  val allowance2 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "ProfessionalSubscriptions",
-    amount = BigDecimal(22.00))
-  val allowance3 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "EarlierYearsAdjustment",
-    amount = BigDecimal(32.00))
-
-  val allowances = List(allowance1, allowance2, allowance3)
 }

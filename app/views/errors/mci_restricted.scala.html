@@ -18,8 +18,9 @@
 
 
 @mainContent = {
+  <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
   <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.mci.restricted.header")</h1>
-  <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("lbl.select.new.client")</a>
+  <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employmenthistory.mci.restricted.select.client.link.text")</a>
 }
 
 @views.html.main_template(title = Messages("employmenthistory.mci.restricted.title")){ @mainContent }

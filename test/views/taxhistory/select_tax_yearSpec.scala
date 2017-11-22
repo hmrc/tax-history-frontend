@@ -34,10 +34,10 @@ class select_tax_yearSpec extends GuiceAppSpec {
 
     "have correct title, heading and GA pageview event" in new ViewFixture {
 
-      val view = views.html.taxhistory.select_tax_year(validForm, "Name", List.empty)
+      val view = views.html.taxhistory.select_tax_year(validForm, List.empty)
 
       doc.title mustBe Messages("employmenthistory.select.tax.year.title")
-      doc.select("h1").text() mustBe Messages("employmenthistory.select.tax.year.header", "Name")
+      doc.select("h1").text() mustBe Messages("employmenthistory.select.tax.year.h1")
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
@@ -45,14 +45,30 @@ class select_tax_yearSpec extends GuiceAppSpec {
     "show correct content on the page" in new ViewFixture {
       val options = List("2016" -> "value", "2015" -> "value1")
 
-      val view = views.html.taxhistory.select_tax_year(validForm, "Name", options)
+      val view = views.html.taxhistory.select_tax_year(validForm, options)
       val radioGroup =  doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
       val inputRadio = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe "checked"
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1")).hasText mustBe true
+
+    }
+
+    "show correct content on the page for form with error" in new ViewFixture {
+      val invalidForm = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""))
+      val options = List("2016" -> "value", "2015" -> "value1")
+
+      val view = views.html.taxhistory.select_tax_year(invalidForm, options)
+      val radioGroup =  doc.select("input[type='radio']")
+      radioGroup.size() must be(options.size)
+      val inputRadio = doc.getElementById("selectTaxYear-2016")
+      inputRadio.attr("checked") shouldBe ""
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
 
-      doc.getElementsMatchingOwnText(Messages("lbl.select.new.client")).attr("href") mustBe "/tax-history/select-client"
+
+      doc.getElementById("selectTaxYear-error-summary").text mustBe Messages("employmenthistory.select.tax.year.error.linktext")
+      doc.getElementById("error-summary-heading").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
+      doc.select(".error-notification").first().text mustBe Messages("employmenthistory.select.tax.year.error.message")
     }
   }
 

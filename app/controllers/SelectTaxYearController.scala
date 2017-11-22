@@ -56,20 +56,14 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  private def fetchTaxYearsAndRenderPage(form: Form[SelectTaxYear], httpStatus: Status, person: Person, nino: Nino)
+  private def fetchTaxYearsAndRenderPage(form: Form[SelectTaxYear], httpStatus: Status, nino: Nino)
                                         (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       taxYearResponse.status match {
         case OK => {
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-          val formData = httpStatus match {
-            case Ok => selectTaxYearForm.bind(Json.obj(
-              "selectTaxYear" -> taxYears.head._1
-            ))
-            case _ => form
-          }
-          httpStatus(select_tax_year(formData,
-            person.getName.fold(nino.nino)(x => x), taxYears))
+
+          httpStatus(select_tax_year(form, taxYears))
         }
         case status => handleHttpFailureResponse(status, nino)
       }
@@ -80,7 +74,7 @@ class SelectTaxYearController @Inject()(
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-      case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, person, nino)
+      case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, nino)
     }
   }
 
@@ -100,8 +94,11 @@ class SelectTaxYearController @Inject()(
         }
       },
       validFormData => authorisedForAgent {_ =>
-        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(validFormData.taxYear.toInt)))
+        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(
+          validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)))
       }
     )
   }
 }
+
+
