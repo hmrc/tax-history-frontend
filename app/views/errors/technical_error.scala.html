@@ -14,20 +14,15 @@
  * limitations under the License.
  *@
 
+@import config.FrontendAppConfig
+
 @()(implicit request: Request[_], messages: Messages)
 
-
 @mainContent = {
+  <a href="@FrontendAppConfig.AfiHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
+
   <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.technical.error.header")</h1>
   <p> @Messages("employmenthistory.technical.error.message") </p>
-
-
-
-<p>@Html(Messages("employmenthistory.technical.error.link",
- s"<a id='selectClient' href= ${controllers.routes.SelectClientController.getSelectClientPage().url}>${Messages("lbl.select.new.client").toLowerCase}</a>"))
-</p>
-
-
 }
 
 @views.html.main_template(title = Messages("employmenthistory.technical.error.title")){ @mainContent }

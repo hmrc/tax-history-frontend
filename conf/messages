@@ -125,16 +125,19 @@ employmenthistory.select.tax.year.error.message = Select a tax year
 
 ################################ Error Pages ###########################################################
 
-employmenthistory.not.authorised.title = Service unavailable - GOV.UK
-employmenthistory.not.authorised.header = You are not authorised to view {0}’s income record
-employmenthistory.mci.restricted.header = You cannot access this data right now
-employmenthistory.mci.restricted.title = Service unavailable - GOV.UK
-employmenthistory.deceased.header = You cannot access this data
-employmenthistory.deceased.title = Service unavailable - GOV.UK
-employmenthistory.no.data.title = Service unavailable - GOV.UK
-employmenthistory.no.data.header = {0}’s income record contains no data
-employmenthistory.no.data.text = There is no data to show for this tax year. You can:
+employmenthistory.not.authorised.title = You are not authorised to view this income record - GOV.UK
+employmenthistory.not.authorised.header = You are not authorised to view this income record
+employmenthistory.not.authorised.select.client.link.text = Enter another client’s National Insurance number
+employmenthistory.mci.restricted.header = You cannot access their data right now
+employmenthistory.mci.restricted.title = You cannot access their data right now - GOV.UK
+employmenthistory.mci.restricted.select.client.link.text = Enter another client’s National Insurance number
+employmenthistory.deceased.header = You cannot access their data
+employmenthistory.deceased.title = You cannot access their data - GOV.UK
+employmenthistory.deceased.select.client.link.text = Enter another client’s National Insurance number
+employmenthistory.no.data.title = This clients income record contains no data - GOV.UK
+employmenthistory.no.data.header = {0}’s income record contains no data for this tax year
+employmenthistory.no.data.text = You can:
+employmenthistory.no.data.select.client.link.text = enter another client’s National Insurance number
 employmenthistory.technical.error.title = Service unavailable - GOV.UK
-employmenthistory.technical.error.header = We are experiencing technical problems
-employmenthistory.technical.error.message = Something has gone wrong with this service.
-employmenthistory.technical.error.link = Please try again, or {0}.
+employmenthistory.technical.error.header = Service unavailable
+employmenthistory.technical.error.message = Sorry, there is a technical problem and you cannot use the service right now. Please try again later.
