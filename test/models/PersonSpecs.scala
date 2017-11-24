@@ -17,6 +17,7 @@
 package models
 
 import models.taxhistory.Person
+import play.api.libs.json.{JsSuccess, Json}
 import uk.gov.hmrc.play.test.UnitSpec
 
 class PersonSpecs  extends UnitSpec{
@@ -47,9 +48,26 @@ class PersonSpecs  extends UnitSpec{
       person.getName shouldBe None
 
     }
+
     "not able to retrieve name when Person's first Name is not populated" in {
       val person = Person(None ,Some("LastName"), false)
       person.getName shouldBe None
+    }
+
+    "unable to retrieve name when Person values are empty strings" in {
+      val person = Person(Some("") ,Some(""), false)
+      person.getName shouldBe Some(" ")
+    }
+
+    "parse json correctly when null values present" in {
+      val person = Person(None , None, false)
+      val json = Json.parse(
+        """{
+               "firstName":null,
+               "lastName":null,
+               "deceased":false
+        }""")
+      Person.formats.reads(json) shouldBe JsSuccess(person)
     }
   }
 
