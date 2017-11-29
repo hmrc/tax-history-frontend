@@ -38,7 +38,7 @@ trait BaseController extends I18nSupport with AgentAuth {
 
   def logout() = Action.async {
     implicit request => {
-      Future.successful(ggSignInRedirect.withNewSession)
+      Future.successful(Redirect(FrontendAppConfig.serviceSignOut).withNewSession)
     }
   }
 
