@@ -77,9 +77,9 @@
 @betaBanner = {
     @uiLayouts.betaBanner(
         userLoggedIn = true,
-        betaFeedbackUrl = "",
-        betaFeedbackUnauthenticatedUrl = "",
-        showFeedbackLinkInBetaBanner = false
+        betaFeedbackUrl = appConfig.betaFeedbackUrl,
+        betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUnauthenticatedUrl,
+        showFeedbackLinkInBetaBanner = true
     )
 }
 
@@ -87,7 +87,7 @@
 
 @serviceInfo = {
     @uiLayouts.serviceInfo(
-      betaBanner = alphaBanner,
+      betaBanner = betaBanner,
       includeGridWrapper = false,
       serviceInfoContent = Some(serviceInfoContent))
 }
@@ -107,7 +107,7 @@
       mainDataAttributes = mainDataAttributes,
       mainContentHeader = mainContentHeader,
       serviceInfo = serviceInfo,
-      getHelpForm = HtmlFormat.empty,
+      getHelpForm = getHelpForm,
       sidebar = sidebar)
 }
 

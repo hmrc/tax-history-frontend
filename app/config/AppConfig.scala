@@ -25,6 +25,8 @@ trait AppConfig {
   val logoutUrl: String
   val loginContinue:String
   val serviceSignOut:String
+  val betaFeedbackUrl: String
+  val betaFeedbackUnauthenticatedUrl:String
 
 }
 
