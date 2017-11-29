@@ -19,7 +19,7 @@ package controllers
 import javax.inject.Inject
 
 import config.FrontendAppConfig.getString
-import config.FrontendAuthConnector
+import config.{FrontendAppConfig, FrontendAuthConnector}
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
@@ -191,6 +191,15 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
     val result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
+  }
+
+  "Sign out" must {
+    "redirect to feed back survey link" in new HappyPathSetup {
+      val result = controller.logout()(fakeRequest)
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(FrontendAppConfig.serviceSignOut)
+    }
+
   }
 
 

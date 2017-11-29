@@ -37,6 +37,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val loginUrl = getString("login.url")
   override lazy val logoutUrl = getString("logout.url")
   override lazy val loginContinue = getString("login.continue")
+  override lazy val serviceSignOut = loadConfig("service-signout.url")
 
 
 }

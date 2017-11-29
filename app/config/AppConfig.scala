@@ -24,6 +24,7 @@ trait AppConfig {
   val loginUrl: String
   val logoutUrl: String
   val loginContinue:String
+  val serviceSignOut:String
 
 }
 
