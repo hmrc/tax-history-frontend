@@ -24,7 +24,7 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
-  private val contactHostFrontEndUrl = configuration.getString(s"contact-frontend.url").getOrElse("")
+  private val contactHostFrontEndUrl = configuration.getString(s"contact-frontend.public.host").getOrElse("")
 
   private val contactFormServiceIdentifier = "AgentsForIndividuals"
 
@@ -33,8 +33,8 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   val AfiHomePage: String = getString("external-url.afi-home-page.url")
   val AfiNoAgentServicesAccountPage: String = getString("external-url.afi-not-an-agent-page.url")
   val AfiErrorPage: String = getString("external-url.afi-error.url")
-  override lazy val reportAProblemPartialUrl = s"$contactHost/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
-  override lazy val reportAProblemNonJSUrl = s"$contactHost/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemPartialUrl = s"$contactHostFrontEndUrl/contact/problem_reports_ajax?service=$contactFormServiceIdentifier"
+  override lazy val reportAProblemNonJSUrl = s"$contactHostFrontEndUrl/contact/problem_reports_nonjs?service=$contactFormServiceIdentifier"
 
   override lazy val loginUrl = getString("login.url")
   override lazy val logoutUrl = getString("logout.url")
