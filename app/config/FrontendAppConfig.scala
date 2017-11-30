@@ -24,6 +24,8 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
 
   private val contactHost = configuration.getString(s"contact-frontend.host").getOrElse("")
+  private val contactHostFrontEndUrl = configuration.getString(s"contact-frontend.url").getOrElse("")
+
   private val contactFormServiceIdentifier = "AgentsForIndividuals"
 
   override lazy val analyticsToken = loadConfig(s"google-analytics.token")
@@ -39,8 +41,8 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val loginContinue = getString("login.continue")
   override lazy val serviceSignOut = loadConfig("service-signout.url")
 
-  override lazy val betaFeedbackUrl = s"$contactHost/contact/beta-feedback"
-  override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHost/contact/beta-feedback-unauthenticated"
+  override lazy val betaFeedbackUrl = s"$contactHostFrontEndUrl/contact/beta-feedback"
+  override lazy val betaFeedbackUnauthenticatedUrl = s"$contactHostFrontEndUrl/contact/beta-feedback-unauthenticated"
 
 
 }
