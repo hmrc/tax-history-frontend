@@ -52,6 +52,7 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
       val payAndTax = PayAndTax(
         taxablePayTotal = Some(4896.80),
         taxTotal = Some(979.36),
+        paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty
       )
 

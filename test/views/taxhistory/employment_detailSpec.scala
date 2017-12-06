@@ -16,7 +16,10 @@
 
 package views.taxhistory
 
+import java.lang.String
+
 import models.taxhistory.Person
+import org.joda.time.LocalDate
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
@@ -50,7 +53,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
     }
 
     "have correct employment details" in new ViewFixture {
-
+      payAndTax
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, true)
       val name = doc.select("#employment-table tbody tr").get(0)
@@ -59,7 +62,8 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
       val endDate = doc.select("#employment-table tbody tr").get(3)
       val taxablePay = doc.select("#pay-and-tax-table tbody tr").get(0)
       val incomeTax = doc.select("#pay-and-tax-table tbody tr").get(1)
-
+      val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance",employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
+      doc.getElementsContainingOwnText(paymentGuidance).hasText mustBe true
       name.text must include(clientName)
       payeReference.text must include(employment.payeReference)
       startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
@@ -129,6 +133,8 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
         taxablePay.text must include(Messages("employmenthistory.nopaydata"))
         doc.getElementsContainingOwnText(Messages("lbl.company.benefits")).hasText mustBe false
         doc.getElementsContainingOwnText(Messages("employmenthistory.eyu.date.received")).hasText mustBe false
+        val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance",employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
+        doc.getElementsContainingOwnText(paymentGuidance).hasText mustBe false
       }
     }
   }

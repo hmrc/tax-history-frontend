@@ -62,15 +62,18 @@
   </tbody>
 </table>
 
-<h2 class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading",(taxYear+1).toString)</h2>
 <table id="pay-and-tax-table" >
+    <h2 class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading")</h2>
+    @if(payAndTax.isDefined && payAndTax.get.paymentDate.isDefined){
+        <p>@Messages("employmenthistory.pay.and.tax.guidance",employment.employerName,formatDate(payAndTax.get.paymentDate.get))</p>
+    }
     <tr>
         <th scope="row" width="50%">@Messages("lbl.taxable.income")</th>
         <td>
             @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined){
-            @Currency(payAndTax.get.taxablePayTotal.getOrElse(0))
+                @Currency(payAndTax.get.taxablePayTotal.get)
             } else {
-            @Messages("employmenthistory.nopaydata")
+                @Messages("employmenthistory.nopaydata")
             }
         </td>
     </tr>
@@ -78,9 +81,9 @@
         <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
         <td>
             @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined){
-            @Currency(payAndTax.get.taxTotal.getOrElse(0))
+                @Currency(payAndTax.get.taxTotal.get)
             } else {
-            @Messages("employmenthistory.nopaydata")
+                @Messages("employmenthistory.nopaydata")
             }
         </td>
     </tr>
