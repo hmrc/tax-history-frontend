@@ -18,11 +18,13 @@ package model.api
 
 import java.util.UUID
 
+import org.joda.time.LocalDate
 import play.api.libs.json.Json
 
 case class PayAndTax(payAndTaxId:UUID = UUID.randomUUID(),
                      taxablePayTotal: Option[BigDecimal],
                      taxTotal: Option[BigDecimal],
+                     paymentDate: Option[LocalDate],
                      earlierYearUpdates: List[EarlierYearUpdate])
 
 object PayAndTax {

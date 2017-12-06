@@ -2,6 +2,7 @@
   "payAndTaxId":"bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a",
   "taxablePayTotal":1234567.89,
   "taxTotal":2222.22,
+  "paymentDate":"2016-02-20",
   "earlierYearUpdates":
   [
     {
