@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import model.api.{Allowance, Employment, EmploymentStatus}
+import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
@@ -33,7 +33,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
@@ -56,6 +57,11 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     iabdType = "EarlierYearsAdjustment",
     amount = BigDecimal(32.00))
 
+  val taxAccount = TaxAccount(employmentId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    outstandingDebtRestriction = Some(200),
+    underpaymentAmount = Some(300),
+    actualPUPCodedInCYPlusOneTaxYear = Some(400))
+
   val employments = List(employment)
   val allowances =  List(allowance)
 
@@ -74,6 +80,8 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
       when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
+      when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
+        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(taxAccount)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
@@ -119,19 +127,25 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     }
   }
 
-  trait AllowancesTechnicalError {
+  trait NoTaxAccount {
+
     implicit val actorSystem = ActorSystem("test")
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val person = Some(Person(Some("first name"),Some("second name"), false))
+      val person = Some(Person(Some("first name"),Some("second name"), deceased = false))
       val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,Some(Json.arr()))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any()))
+        .thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any()))
+        .thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(allowances)))))
+      when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,Some(Json.arr()))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
+        .thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
     }
   }
@@ -206,10 +220,10 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
     }
 
-    "return 200 and show technical error page when get allowances returns 500" in new AllowancesTechnicalError {
+    "return 200 when no tax account found" in new NoTaxAccount {
       val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.title"))
     }
 
     "return 200 and show technical error page when no citizen details available" in new NoCitizenDetails {

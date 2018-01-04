@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,15 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.FrontendAuthConnector
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import form.SelectClientForm.selectClientForm
-import model.api.{Allowance, Employment}
+import model.api.{Allowance, Employment, TaxAccount}
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.time.TaxYearResolver
-import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -64,22 +61,31 @@ class EmploymentSummaryController @Inject()(
   }
 
   private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person], taxYear: Int)
-                            (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+                                    (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     taxHistoryConnector.getEmploymentsAndPensions(ninoField, taxYear) flatMap { empResponse =>
       empResponse.status match {
-        case OK => {
-          taxHistoryConnector.getAllowances(ninoField, taxYear) map { allowanceResponse =>
-            allowanceResponse.status match {
-              case OK | NOT_FOUND =>
-                val employments = empResponse.json.as[List[Employment]]
-                val allowances = allowanceResponse.json.as[List[Allowance]]
+        case OK =>
+          (for {
+            allowanceResponse <- taxHistoryConnector.getAllowances(ninoField, taxYear)
+            taxAccountResponse <- taxHistoryConnector.getTaxAccount(ninoField, taxYear)
+          } yield (allowanceResponse, taxAccountResponse)).map {
+            dataResponse =>
+              val employments = empResponse.json.as[List[Employment]]
+              val allowanceStatus = dataResponse._1.status
+              val taxAccountStatus = dataResponse._2.status
 
-                Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear,
-                  employments, allowances, person))//.removingFromSession("USER_NINO")
-              case status => handleHttpFailureResponse(status, ninoField)
-            }
+              val allowances = if(allowanceStatus == (OK | NOT_FOUND)) dataResponse._1.json.as[List[Allowance]] else {
+                Logger.info(s"Unexpected Allowance Status: $allowanceStatus")
+                List.empty
+              }
+              val taxAccount = if(dataResponse._2.status == (OK | NOT_FOUND)) dataResponse._2.json.asOpt[TaxAccount] else {
+                Logger.info(s"Unexpected Tax Account Status: $taxAccountStatus")
+                None
+              }
+
+              Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear,
+                employments, allowances, person, taxAccount))
           }
-        }
         case status => Future.successful(handleHttpFailureResponse(status, ninoField))
       }
     }

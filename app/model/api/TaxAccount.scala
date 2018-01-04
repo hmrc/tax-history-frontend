@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package config
+package model.api
 
-import com.typesafe.config.Config
-import net.ceedubs.ficus.Ficus._
-import play.api.Play
-import uk.gov.hmrc.play.config.ControllerConfig
+import java.util.UUID
 
-object ControllerConfiguration extends ControllerConfig {
-  lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
+import play.api.libs.json.Json
+
+case class TaxAccount(employmentId:UUID = UUID.randomUUID(),
+                      outstandingDebtRestriction: Option[BigDecimal]= None,
+                      underpaymentAmount: Option[BigDecimal]= None,
+                      actualPUPCodedInCYPlusOneTaxYear: Option[BigDecimal]= None)
+
+object TaxAccount {
+  implicit val formats = Json.format[TaxAccount]
 }
+

@@ -1,5 +1,5 @@
 @*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,15 @@
 @import model.api.{Employment, Allowance}
 @import models.taxhistory.Person
 @import utils.{Currency, DateHelper, StringUtils}
+@import uk.gov.hmrc.time.TaxYear
 
+@import model.api.TaxAccount
 @(nino: String,
     taxYear: Int,
     employments: List[Employment],
     allowances: List[Allowance],
-    person: Option[Person])(implicit request: Request[_], messages: Messages)
+    person: Option[Person],
+    taxAccount: Option[TaxAccount])(implicit request: Request[_], messages: Messages)
 
 @getName=@{
     person.fold(nino) {
@@ -36,7 +39,7 @@
 
     <div class="page-header" >
       <h1 class="heading-xlarge">
-        @Messages("employmenthistory.header",getName)
+        @Messages("employmenthistory.header", getName)
       </h1>
 
       <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
@@ -54,7 +57,7 @@
         </p>
     </div>
 
-@if(employments.filter(!_.receivingOccupationalPension).nonEmpty) {
+@if(employments.exists(!_.receivingOccupationalPension)) {
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
     <table id="employment-table">
         <tbody>
@@ -77,7 +80,7 @@
     </table>
 }
 
-    @if(employments.filter(_.receivingOccupationalPension).nonEmpty) {
+    @if(employments.exists(_.receivingOccupationalPension)) {
         <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
 
         <table id="pension-table">
@@ -120,6 +123,31 @@
             </tr>
           }
           </tbody>
+        </table>
+    }
+
+    @if(taxAccount.nonEmpty) {
+        <h2 class="heading-medium">@Messages("employmenthistory.tax-account.header", getName)</h2>
+        <table id="taxAccountTable">
+            <tbody>
+                <tr>
+                    <td>@Messages("employmenthistory.tax-account.potential-underpayment.title",
+                    TaxYear.current.currentYear, TaxYear.current.next.currentYear)</td>
+                    <td class="numeric">@taxAccount.get.actualPUPCodedInCYPlusOneTaxYear</td>
+                </tr>
+
+                <tr>
+                    <td>@Messages("employmenthistory.tax-account.underpayment-amount.title",
+                        TaxYear.current.previous.currentYear, TaxYear.current.currentYear)</td>
+                    <td class="numeric">@taxAccount.get.underpaymentAmount</td>
+                </tr>
+
+                <tr>
+                    <td>@Messages("employmenthistory.tax-account.outstanding.debt.title",
+                        TaxYear.current.previous.currentYear, TaxYear.current.currentYear)</td>
+                    <td class="numeric">@taxAccount.get.outstandingDebtRestriction</td>
+                </tr>
+            </tbody>
         </table>
     }
 }
