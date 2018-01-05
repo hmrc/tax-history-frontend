@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, None)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -59,7 +59,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
 
     "have correct employment content" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true

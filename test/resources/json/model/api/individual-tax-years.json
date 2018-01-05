@@ -2,11 +2,13 @@
   {
     "year" : 2016,
     "allowancesURI" : "/2016/allowances",
-    "employmentsURI" : "/2016/employments"
+    "employmentsURI" : "/2016/employments",
+    "taxAccountURI" : "/2016/tax-account"
   },
   {
     "year" : 2015,
     "allowancesURI" : "/2015/allowances",
-    "employmentsURI" : "/2015/employments"
+    "employmentsURI" : "/2015/employments",
+    "taxAccountURI" : "/2015/tax-account"
   }
 ]

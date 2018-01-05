@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,6 +62,11 @@ class TaxHistoryConnector @Inject()(val httpGet: WSHttpT) extends ServicesConfig
   def getTaxYears(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
 
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/tax-years ")
+  }
+
+  def getTaxAccount(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
+
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/tax-account")
   }
 
 }
