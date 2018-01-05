@@ -74,11 +74,11 @@ class EmploymentSummaryController @Inject()(
               val allowanceStatus = dataResponse._1.status
               val taxAccountStatus = dataResponse._2.status
 
-              val allowances = if(allowanceStatus == (OK | NOT_FOUND)) dataResponse._1.json.as[List[Allowance]] else {
+              val allowances = if(allowanceStatus == OK | allowanceStatus == NOT_FOUND) dataResponse._1.json.as[List[Allowance]] else {
                 Logger.info(s"Unexpected Allowance Status: $allowanceStatus")
                 List.empty
               }
-              val taxAccount = if(dataResponse._2.status == (OK | NOT_FOUND)) dataResponse._2.json.asOpt[TaxAccount] else {
+              val taxAccount = if(taxAccountStatus == OK | taxAccountStatus == NOT_FOUND) dataResponse._2.json.asOpt[TaxAccount] else {
                 Logger.info(s"Unexpected Tax Account Status: $taxAccountStatus")
                 None
               }
