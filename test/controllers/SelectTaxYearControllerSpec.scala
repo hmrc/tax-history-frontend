@@ -46,7 +46,7 @@ class SelectTaxYearControllerSpec extends BaseControllerSpec {
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       when(c.taxHistoryConnector.getTaxYears(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,
-        Some(Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2")))))))
+        Some(Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2","uri3")))))))
       c
     }
   }

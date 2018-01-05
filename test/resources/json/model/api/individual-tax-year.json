@@ -1,5 +1,6 @@
 {
   "year" : 2016,
   "allowancesURI" : "/2016/allowances",
-  "employmentsURI" : "/2016/employments"
+  "employmentsURI" : "/2016/employments",
+  "taxAccountURI" : "/2016/tax-account"
 }

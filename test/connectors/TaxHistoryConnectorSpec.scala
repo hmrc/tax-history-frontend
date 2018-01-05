@@ -135,7 +135,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures w
 
     "fetch Tax years from backend" in new LocalSetup {
 
-      val taxYears = List(IndividualTaxYear(2015, "uri1","uri2"), IndividualTaxYear(2015, "uri1","uri2"))
+      val taxYears = List(IndividualTaxYear(2015, "uri1","uri2","uri3"), IndividualTaxYear(2015, "uri1","uri2", "uri3"))
 
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(taxYears)))))

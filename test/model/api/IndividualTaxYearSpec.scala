@@ -26,9 +26,9 @@ class IndividualTaxYearSpec extends TestUtil with UnitSpec {
   lazy val indiviualTaxYearListJson = loadFile("/json/model/api/individual-tax-years.json")
 
   lazy val indivTaxYear1 = IndividualTaxYear(year = 2016, allowancesURI = "/2016/allowances",
-    employmentsURI = "/2016/employments")
+    employmentsURI = "/2016/employments", taxAccountURI = "/2016/tax-account")
   lazy val indivTaxYear2 = IndividualTaxYear(year = 2015, allowancesURI = "/2015/allowances",
-    employmentsURI = "/2015/employments")
+    employmentsURI = "/2015/employments", taxAccountURI = "/2015/tax-account")
 
   lazy val taxYearList = List(indivTaxYear1,indivTaxYear2)
 

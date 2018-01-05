@@ -20,7 +20,8 @@ import play.api.libs.json.Json
 
 case class IndividualTaxYear(year:Int,
                              allowancesURI:String,
-                             employmentsURI:String)
+                             employmentsURI:String,
+                             taxAccountURI:String)
 
 object IndividualTaxYear {
   implicit val formats = Json.format[IndividualTaxYear]
