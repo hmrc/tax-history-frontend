@@ -57,7 +57,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     iabdType = "EarlierYearsAdjustment",
     amount = BigDecimal(32.00))
 
-  val taxAccount = TaxAccount(employmentId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val taxAccount = TaxAccount(taxAccountId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     outstandingDebtRestriction = Some(200),
     underpaymentAmount = Some(300),
     actualPUPCodedInCYPlusOneTaxYear = Some(400))

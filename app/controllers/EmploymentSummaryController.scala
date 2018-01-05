@@ -78,6 +78,7 @@ class EmploymentSummaryController @Inject()(
                 Logger.info(s"Unexpected Allowance Status: $allowanceStatus")
                 List.empty
               }
+
               val taxAccount = if(taxAccountStatus == OK | taxAccountStatus == NOT_FOUND) dataResponse._2.json.asOpt[TaxAccount] else {
                 Logger.info(s"Unexpected Tax Account Status: $taxAccountStatus")
                 None
