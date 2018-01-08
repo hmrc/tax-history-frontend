@@ -131,20 +131,21 @@
         <table id="taxAccountTable">
             <tbody>
                 <tr>
-                    <td>@Messages("employmenthistory.tax-account.potential-underpayment.title",
-                    TaxYear.current.currentYear, TaxYear.current.next.currentYear)</td>
-                    <td class="numeric">@taxAccount.get.actualPUPCodedInCYPlusOneTaxYear</td>
-                </tr>
-
-                <tr>
                     <td>@Messages("employmenthistory.tax-account.underpayment-amount.title",
-                        TaxYear.current.previous.currentYear, TaxYear.current.currentYear)</td>
+                        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")</td>
                     <td class="numeric">@taxAccount.get.underpaymentAmount</td>
                 </tr>
 
                 <tr>
+                    <td>@Messages("employmenthistory.tax-account.potential-underpayment.title",
+                        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}",
+                        s"${TaxYear.current.currentYear}/${TaxYear.current.finishYear.toString.drop(2)}")</td>
+                    <td class="numeric">@taxAccount.get.actualPUPCodedInCYPlusOneTaxYear</td>
+                </tr>
+
+                <tr>
                     <td>@Messages("employmenthistory.tax-account.outstanding.debt.title",
-                        TaxYear.current.previous.currentYear, TaxYear.current.currentYear)</td>
+                        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")</td>
                     <td class="numeric">@taxAccount.get.outstandingDebtRestriction</td>
                 </tr>
             </tbody>
