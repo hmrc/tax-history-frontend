@@ -127,9 +127,9 @@ employmenthistory.select.tax.year.error.message = Select a tax year
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Figures related to {0}’s tax codes
 #CY
-employmenthistory.tax-account.potential-underpayment.title=Underpaid tax for 6 April 2016 to 5 April 2017 included in your tax code for 6 April {0} to 5 April {0}
+employmenthistory.tax-account.potential-underpayment.title=Underpaid tax for {0} included in your clients tax code for {0}
 #CY-1
-employmenthistory.tax-account.underpayment-amount.title=Underpaid tax for earlier years included in your tax code for 6 April {0} to 5 April {0}
+employmenthistory.tax-account.underpayment-amount.title=Underpaid tax for earlier years included in your clients tax code for {0}
 #CY-1
 employmenthistory.tax-account.outstanding.debt.title=Outstanding debt included in your tax code for 6 April {0} to 5 April {0}
 
