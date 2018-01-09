@@ -17,7 +17,6 @@
 package views.taxhistory
 
 import java.util.UUID
-import javafx.util.converter.BigDecimalStringConverter
 
 import model.api._
 import org.joda.time.LocalDate
