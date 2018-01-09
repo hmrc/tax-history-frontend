@@ -144,7 +144,7 @@
                     <td>@Messages("employmenthistory.tax-account.underpayment-amount.title",
                         s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")</td>
                     <td class="numeric">@Messages("lbl.sa110box.underpayment-amount")</td>
-                    <td class="numeric">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0))</td>
+                    <td class="numeric">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0), 2)</td>
                 </tr>
 
                 <tr>
@@ -152,7 +152,7 @@
                         s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}",
                         s"${TaxYear.current.currentYear}/${TaxYear.current.finishYear.toString.drop(2)}")</td>
                     <td style = "border:0" class="numeric">@Messages("lbl.sa110box.potential-underpayment")</td>
-                    <td style = "border:0" class="numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0))</td>
+                    <td style = "border:0" class="numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
                 </tr>
 
                 <tr>
@@ -172,7 +172,7 @@
                     <td>@Messages("employmenthistory.tax-account.outstanding.debt.title",
                         s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")</td>
                     <td class="numeric">@Messages("lbl.sa110box.outstanding.debt")</td>
-                    <td class="numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0))</td>
+                    <td class="numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
                 </tr>
             </tbody>
         </table>
