@@ -72,6 +72,11 @@ trait Constants {
     amount = BigDecimal(32.00))
 
   val allowances = List(allowance1, allowance2, allowance3)
+
+  val oDR = "101.01"
+  val uA = "202.00"
+  val aPC = "301.01"
+  val taxAccount = Some(TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC))))
 }
 
 

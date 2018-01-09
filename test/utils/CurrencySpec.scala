@@ -29,14 +29,23 @@ class CurrencySpec extends PlaySpec {
       Currency(BigDecimal(-100.55)).toString must be("- £100.55")
     }
 
-    "format number to skip .00 from decimals" in {
+    "format number to skip .00 from decimals when no minDPs is provided" in {
       Currency(BigDecimal(100.00)).toString must be("£100")
     }
-    "format number .12 from decimals" in {
+
+    "format number to convert 100.00 to 100.000 when minDPs is 3" in {
+      Currency(BigDecimal(100.00), 3).toString must be("£100.000")
+    }
+
+    "format number to convert 100 to 100.00 when minDPs is 2" in {
+      Currency(BigDecimal(100), 2).toString must be("£100.00")
+    }
+
+    "format number 100.12 from decimals" in {
       Currency(BigDecimal(100.12)).toString must be("£100.12")
     }
 
-    "format -ve number to skip .00 from decimals" in {
+    "format -ve number to skip .00 from decimals when no minDPs is provided" in {
       Currency(BigDecimal(-100.00)).toString must be("- £100")
     }
   }

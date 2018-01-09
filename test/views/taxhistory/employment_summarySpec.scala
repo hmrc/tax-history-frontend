@@ -20,6 +20,7 @@ import model.api.EmploymentStatus
 import models.taxhistory.Person
 import play.api.i18n.Messages
 import support.GuiceAppSpec
+import uk.gov.hmrc.time.TaxYear
 import utils.{DateHelper, TestUtil}
 import views.Fixture
 
@@ -45,13 +46,13 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
         (taxYear + 1).toString))
 
       val viewDetailsElements = doc.getElementById("view-employment-0")
-      viewDetailsElements.html must include(Messages("employmenthistory.view.record")+" <span class=\"visuallyhidden\">"+Messages("employmenthistory.view.record.hidden",nino,"employer-2")+"</span>")
+      viewDetailsElements.html must include(Messages("employmenthistory.view.record") + " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
       viewDetailsElements.attr("href") mustBe "/tax-history/single-record"
 
 
       val viewPensionElements = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
-      viewPensionElements.html must include(Messages("employmenthistory.view.record")+" <span class=\"visuallyhidden\">"+Messages("employmenthistory.view.record.hidden",nino,"employer-1")+"</span>")
+      viewPensionElements.html must include(Messages("employmenthistory.view.record") + " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-1") + "</span>")
 
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
@@ -83,6 +84,25 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p1.text")) mustBe true
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p2.text")) mustBe true
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p3.text")) mustBe true
+    }
+
+    "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, taxAccount)
+
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
+        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")).hasText mustBe true
+      doc.getElementsContainingOwnText(oDR).hasText mustBe true
+
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.title",
+        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}",
+        s"${TaxYear.current.currentYear}/${TaxYear.current.finishYear.toString.drop(2)}")).hasText mustBe true
+      doc.getElementsContainingOwnText(uA.toString).hasText mustBe true
+
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.title",
+        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")).hasText mustBe true
+      doc.getElementsContainingOwnText(aPC.toString).hasText mustBe true
+
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.summary")).hasText mustBe true
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
     }
