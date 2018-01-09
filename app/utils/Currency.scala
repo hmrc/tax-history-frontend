@@ -18,12 +18,11 @@ package utils
 
 import java.util.Locale
 
-case class Currency(value: BigDecimal, decimalPlaces: Int = 0) {
-
+case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 
   override def toString: String = {
     val formatter = java.text.NumberFormat.getCurrencyInstance(Locale.UK)
-    formatter.setMinimumFractionDigits(decimalPlaces)
+    formatter.setMinimumFractionDigits(minDecimalPlaces)
     if (value.signum >0) {
       formatter.format(value)
     }else{
