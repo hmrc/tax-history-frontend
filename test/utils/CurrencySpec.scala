@@ -29,6 +29,10 @@ class CurrencySpec extends PlaySpec {
       Currency(BigDecimal(-100.55)).toString must be("- £100.55")
     }
 
+    "format zero value successfully" in {
+      Currency(BigDecimal(0), 2).toString must be("£0.00")
+    }
+
     "format number to skip .00 from decimals when no minDPs is provided" in {
       Currency(BigDecimal(100.00)).toString must be("£100")
     }
