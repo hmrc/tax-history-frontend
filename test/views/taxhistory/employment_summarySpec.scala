@@ -86,7 +86,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p3.text")) mustBe true
     }
 
-    "have correct tax account content when a populated TaxAcxcount is provided" in new ViewFixture {
+    "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
       val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, taxAccount)
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
