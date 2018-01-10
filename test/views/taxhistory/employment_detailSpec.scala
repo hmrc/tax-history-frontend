@@ -34,7 +34,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
 
     val nino = TestUtil.randomNino.toString()
     val taxYear = 2017
-    val person = Person(Some("James"),Some("Dean"),false)
+    val person = Person(Some("James"),Some("Dean"),Some(false))
     val clientName = person.getName.getOrElse(nino)
   }
 

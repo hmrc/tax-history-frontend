@@ -31,7 +31,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
 
     val nino = TestUtil.randomNino.toString()
     val taxYear = 2017
-    val person = Some(Person(Some("James"), Some("Dean"), false))
+    val person = Some(Person(Some("James"), Some("Dean"), Some(false)))
   }
 
   "employment_summary view" must {

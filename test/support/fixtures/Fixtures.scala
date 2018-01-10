@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package support
+package support.fixtures
 
 import org.joda.time.DateTime
 import uk.gov.hmrc.domain.Nino

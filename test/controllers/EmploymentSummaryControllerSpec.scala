@@ -20,6 +20,7 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import support.fixtures.PersonFixture
 import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
@@ -38,7 +39,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-class EmploymentSummaryControllerSpec extends BaseControllerSpec {
+class EmploymentSummaryControllerSpec extends BaseControllerSpec with PersonFixture{
 
   val startDate = new LocalDate("2016-01-21")
 
@@ -71,7 +72,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val person = Some(Person(Some("first name"),Some("second name"), false))
       val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
@@ -94,7 +94,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val person = Some(Person(Some("first name"),Some("second name"), false))
       val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
@@ -115,7 +114,6 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val person = Some(Person(Some("first name"),Some("second name"), false))
       val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
@@ -133,7 +131,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val person = Some(Person(Some("first name"),Some("second name"), deceased = false))
+      val person = Some(Person(Some("first name"),Some("second name"), deceased = Some(false)))
       val c = injected[EmploymentSummaryController]
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
@@ -195,7 +193,7 @@ class EmploymentSummaryControllerSpec extends BaseControllerSpec {
     implicit val materializer = ActorMaterializer()
     lazy val controller = {
 
-      val person = Some(Person(Some("James"),Some("Bond"),true))
+      val person = Some(Person(Some("James"),Some("Bond"),Some(true)))
 
       val c = injected[EmploymentSummaryController]
 

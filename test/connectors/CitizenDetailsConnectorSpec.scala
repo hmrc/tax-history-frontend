@@ -17,7 +17,7 @@
 package connectors
 
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
-import models.taxhistory.Person
+import support.fixtures.{Fixtures, PersonFixture}
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import play.api.Application
@@ -25,14 +25,14 @@ import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import support.{BaseSpec, Fixtures}
+import support.BaseSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpResponse
 import utils.TestUtil
 
 import scala.concurrent.Future
 
-class CitizenDetailsConnectorSpec extends BaseSpec with Fixtures with TestUtil{
+class CitizenDetailsConnectorSpec extends BaseSpec with Fixtures with TestUtil with PersonFixture {
 
   val http = mock[WSHttpT]
 
@@ -54,12 +54,12 @@ class CitizenDetailsConnectorSpec extends BaseSpec with Fixtures with TestUtil{
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(Person(Some("Davey"),Some("Jones"), false)))))))
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(person))))))
 
       val result = await(connector.getPersonDetails(Nino(nino)))
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Some(Person(Some("Davey"),Some("Jones"), false)))
+      result.json shouldBe Json.toJson(Some(person))
 
     }
   }

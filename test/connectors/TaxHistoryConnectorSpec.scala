@@ -30,7 +30,8 @@ import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import support.{BaseSpec, Fixtures}
+import support.BaseSpec
+import support.fixtures.Fixtures
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpResponse
 import utils.TestUtil

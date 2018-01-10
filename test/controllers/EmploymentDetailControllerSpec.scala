@@ -20,6 +20,7 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import support.fixtures.PersonFixture
 import model.api.{CompanyBenefit, Employment, EmploymentStatus, PayAndTax}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
@@ -36,7 +37,7 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class EmploymentDetailControllerSpec extends BaseControllerSpec {
+class EmploymentDetailControllerSpec extends BaseControllerSpec with PersonFixture{
 
   trait HappyPathSetup {
 
@@ -66,7 +67,6 @@ class EmploymentDetailControllerSpec extends BaseControllerSpec {
         payAndTaxURI = None,
         employmentStatus = EmploymentStatus.Live
       )
-      val person = Some(Person(Some("first name"),Some("second name"), false))
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
