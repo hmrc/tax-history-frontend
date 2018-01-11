@@ -134,25 +134,25 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
 
   "BaseController" must {
 
-    "redirect to afi-not-an-agent-page when there is no enrolment" in new NoEnrolmentsSetup {
+    "redirect to not authorised when there is no enrolment" in new NoEnrolmentsSetup {
       val result = controller.authorisedForAgent(_ =>Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
-    "redirect to afi-not-an-agent-page when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
+    "redirect to not authorised when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
       val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
-    "redirect to afi-not-an-agent-page when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
+    "redirect to not authorised when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
       val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(getString("external-url.afi-not-an-agent-page.url"))
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
     "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {
