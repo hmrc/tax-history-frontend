@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package models.taxhistory
+package support.fixtures
 
-import play.api.libs.json.Json
-import utils.StringUtils.uppcaseToTitleCase
+import models.taxhistory.Person
 
-case class Person(firstName:Option[String], lastName:Option[String], deceased:Option[Boolean]){
+trait PersonFixture {
 
-  def getName = {
-    for {
-      f <- this.firstName
-      l <- this.lastName
-    }yield (uppcaseToTitleCase(f) + " " + uppcaseToTitleCase(l))
-  }
+  val person = Some(Person(Some("first name"),Some("second name"), Some(false)))
 
-}
-
-object Person {
-  implicit val formats = Json.format[Person]
 }

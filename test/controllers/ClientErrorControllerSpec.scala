@@ -38,7 +38,7 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
     implicit val actorSystem = ActorSystem("test")
     implicit val materializer = ActorMaterializer()
 
-    val person = Some(Person(Some("firstname"),Some("secondname"), false))
+    val person = Some(Person(Some("firstname"),Some("secondname"), Some(false)))
     lazy val controller = injected[ClientErrorController]
     when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
       thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
@@ -49,7 +49,7 @@ class ClientErrorControllerSpec extends BaseControllerSpec {
     implicit val actorSystem = ActorSystem("test")
     implicit val materializer = ActorMaterializer()
 
-    val person = Some(Person(Some("firstname"),None, false))
+    val person = Some(Person(Some("firstname"),None, Some(false)))
 
     lazy val controller = injected[ClientErrorController]
     when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).

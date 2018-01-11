@@ -110,7 +110,10 @@ trait BaseController extends I18nSupport with AgentAuth {
           personResponse.status match {
             case OK => {
               val person = personResponse.json.as[Person]
-              if (person.deceased) Left(GONE) else Right(person)
+              person.deceased match {
+                case Some(true) => Left(GONE)
+                case _ => Right(person)
+              }
             }
             case status => Left(status)
           }

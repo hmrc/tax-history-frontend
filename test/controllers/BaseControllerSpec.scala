@@ -20,23 +20,27 @@ import javax.inject.Inject
 
 import config.FrontendAppConfig.getString
 import config.{FrontendAppConfig, FrontendAuthConnector}
+import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import play.api.http.Status
 import play.api.i18n.MessagesApi
+import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import support.{Fixtures, GuiceAppSpec}
+import support.GuiceAppSpec
+import support.fixtures.{Fixtures, PersonFixture}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadGatewayException, SessionKeys}
+import uk.gov.hmrc.http.{BadGatewayException, HttpResponse, SessionKeys}
 import utils.TestUtil
 
 import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
 
@@ -221,6 +225,33 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
     "status from citizen detail service is anything other then LOCKED and GONE" in new HappyPathSetup {
       val result = controller.redirectToClientErrorPage(2)
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+  }
+
+  "retrieveCitizenDetails" when {
+
+    implicit val fakeRequest = FakeRequest("GET", "/")
+
+    "The deceased flag is true" in new HappyPathSetup {
+
+      val json = loadFile("/json/model/api/personDeceasedTrue.json")
+      val hr = HttpResponse(OK,Some(json),Map.empty)
+      await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Left(GONE)
+    }
+
+    "The deceased flag is false" in new HappyPathSetup with PersonFixture {
+
+      val json = loadFile("/json/model/api/personDeceasedFalse.json")
+      val hr = HttpResponse(OK,Some(json),Map.empty)
+      await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Right(person.get)
+    }
+
+    "The deceased flag is not given" in new HappyPathSetup {
+
+      val json = loadFile("/json/model/api/personDeceasedNoValue.json")
+      val hr = HttpResponse(OK,Some(json),Map.empty)
+      val person = Person(Some("first name"), Some("second name"),None)
+      await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Right(person)
     }
   }
 }

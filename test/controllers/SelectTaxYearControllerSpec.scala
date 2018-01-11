@@ -16,6 +16,7 @@
 
 package controllers
 
+import support.fixtures.PersonFixture
 import model.api.IndividualTaxYear
 import models.taxhistory.Person
 import org.mockito.Matchers
@@ -32,14 +33,13 @@ import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class SelectTaxYearControllerSpec extends BaseControllerSpec {
+class SelectTaxYearControllerSpec extends BaseControllerSpec with PersonFixture{
 
   trait LocalSetup {
 
     lazy val controller = {
 
       val c = injected[SelectTaxYearController]
-      val person = Some(Person(Some("first name"),Some("second name"), false))
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
