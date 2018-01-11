@@ -30,7 +30,6 @@ object FrontendAppConfig extends AppConfig with ServicesConfig {
   override lazy val analyticsHost = loadConfig(s"google-analytics.host")
   val AgentAccountHomePage: String = getString("external-url.agent-account-home-page.url")
   val AfiNoAgentServicesAccountPage: String = getString("external-url.afi-not-an-agent-page.url")
-  val AfiErrorPage: String = getString("external-url.afi-error.url")
 
   override lazy val reportAProblemPartialUrl = getString("reportAProblemPartialUrl")
   override lazy val reportAProblemNonJSUrl = getString("reportAProblemNonJSUrl")

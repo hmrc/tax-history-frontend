@@ -16,7 +16,7 @@
 
 package controllers.auth
 
-import config.FrontendAppConfig.{AfiErrorPage, AgentAccountHomePage, AfiNoAgentServicesAccountPage}
+import config.FrontendAppConfig.AfiNoAgentServicesAccountPage
 import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
@@ -50,13 +50,4 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRed
   val isAuthorisedForPAYE = true
   val isNotAuthorisedForPAYE = false
 
-  def handleFailure(e: Throwable): Result =
-    e match {
-      case x: NoActiveSession ⇒
-        Logger.warn(s"could not authenticate user due to: No Active Session " + x)
-        toGGLogin(AgentAccountHomePage)
-      case ex ⇒
-        Logger.warn(s"could not authenticate user due to: $ex")
-        Redirect(AfiErrorPage)
-    }
 }
