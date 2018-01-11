@@ -18,48 +18,31 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAppConfig.getString
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import play.api.{Configuration, Environment}
 import play.api.http.Status
 import play.api.i18n.MessagesApi
-import play.api.libs.json.Json
 import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import play.api.{Configuration, Environment}
-import support.GuiceAppSpec
+import support.ControllerSpec
 import support.fixtures.{Fixtures, PersonFixture}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{BadGatewayException, HttpResponse, SessionKeys}
-import utils.TestUtil
+import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
+import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
+class BaseControllerSpec extends ControllerSpec with Fixtures {
 
-  lazy val nino = randomNino.toString()
-
-  lazy val fakeRequest = FakeRequest("GET", "/").withSession(
-    SessionKeys.sessionId -> "SessionId",
-    SessionKeys.token -> "Token",
-    SessionKeys.userId -> "/auth/oid/tuser",
-    SessionKeys.authToken -> ""
-  )
-
-  lazy val newEnrolments = Set(
-    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
-      confidenceLevel = ConfidenceLevel.L200,
-      state="",delegatedAuthRule = None)
-  )
-
-  lazy val authority = buildFakeAuthority(true)
+  lazy val authority: Authority = buildFakeAuthority(true)
 
   trait HappyPathSetup {
 
@@ -70,7 +53,6 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
       c
     }
   }
-
 
   trait NoEnrolmentsSetup {
 
@@ -256,9 +238,8 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
   }
 }
 
-class Controller  @Inject()(
-                             override val authConnector: FrontendAuthConnector,
-                             override val config: Configuration,
-                             override val env: Environment,
-                             implicit val messagesApi: MessagesApi
-                           ) extends BaseController
+class Controller @Inject()(override val authConnector: FrontendAuthConnector,
+                           override val config: Configuration,
+                           override val env: Environment,
+                           implicit val messagesApi: MessagesApi
+                          ) extends BaseController

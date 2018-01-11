@@ -27,13 +27,14 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class SelectTaxYearControllerSpec extends BaseControllerSpec with PersonFixture{
+class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture{
 
   trait LocalSetup {
 
