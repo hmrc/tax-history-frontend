@@ -22,7 +22,6 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import support.fixtures.PersonFixture
 import model.api.{CompanyBenefit, Employment, EmploymentStatus, PayAndTax}
-import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -31,19 +30,20 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.Helpers._
+import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class EmploymentDetailControllerSpec extends BaseControllerSpec with PersonFixture{
+class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture{
 
   trait HappyPathSetup {
 
-    implicit val actorSystem = ActorSystem("test")
-    implicit val materializer = ActorMaterializer()
-    lazy val controller = {
+    implicit val actorSystem: ActorSystem = ActorSystem("test")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
+    lazy val controller: EmploymentDetailController = {
 
       val c = injected[EmploymentDetailController]
       val cbUUID = UUID.randomUUID()

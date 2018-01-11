@@ -16,8 +16,6 @@
 
 package controllers.auth
 
-import config.FrontendAppConfig.{AfiErrorPage, AfiHomePage, AfiNoAgentServicesAccountPage}
-import play.api.Logger
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
@@ -30,9 +28,9 @@ import scala.concurrent.Future
 
 trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRedirects {
 
-  def redirectToSubPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
+  def redirectToSubPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
 
-  def redirectToExitPage: Future[Result] = Future successful Redirect(AfiNoAgentServicesAccountPage)
+  def redirectToExitPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
 
   def isAgent(group: AffinityGroup): Boolean = group.toString.contains("Agent")
 
@@ -50,13 +48,4 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRed
   val isAuthorisedForPAYE = true
   val isNotAuthorisedForPAYE = false
 
-  def handleFailure(e: Throwable): Result =
-    e match {
-      case x: NoActiveSession ⇒
-        Logger.warn(s"could not authenticate user due to: No Active Session " + x)
-        toGGLogin(AfiHomePage)
-      case ex ⇒
-        Logger.warn(s"could not authenticate user due to: $ex")
-        Redirect(AfiErrorPage)
-    }
 }

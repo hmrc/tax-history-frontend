@@ -23,12 +23,13 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
 
 import scala.concurrent.Future
 
-class SelectClientControllerSpec extends BaseControllerSpec {
+class SelectClientControllerSpec extends ControllerSpec {
 
   trait LocalSetup {
 

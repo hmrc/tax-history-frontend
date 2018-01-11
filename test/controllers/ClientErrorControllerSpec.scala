@@ -23,15 +23,15 @@ import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
 import play.api.libs.json.Json
+import support.{ControllerSpec, GuiceAppSpec}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
 
-class ClientErrorControllerSpec extends BaseControllerSpec {
+class ClientErrorControllerSpec extends ControllerSpec {
 
   trait HappyPathSetup {
 

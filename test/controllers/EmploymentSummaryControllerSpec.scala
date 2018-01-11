@@ -32,6 +32,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import support.ControllerSpec
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
@@ -39,7 +40,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.Future
 
-class EmploymentSummaryControllerSpec extends BaseControllerSpec with PersonFixture{
+class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture{
 
   val startDate = new LocalDate("2016-01-21")
 
