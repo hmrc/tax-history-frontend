@@ -233,55 +233,27 @@ class BaseControllerSpec extends GuiceAppSpec with Fixtures with TestUtil {
     implicit val fakeRequest = FakeRequest("GET", "/")
 
     "The deceased flag is true" in new HappyPathSetup {
-      val json = Json.parse(
 
-        """{
-               "firstName":"first name",
-               "lastName":"second name",
-               "deceased":true
-        }""")
-
+      val json = loadFile("/json/model/api/personDeceasedTrue.json")
       val hr = HttpResponse(OK,Some(json),Map.empty)
-
       await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Left(GONE)
-
     }
 
-    "The deceased flag is false" in new HappyPathSetup with PersonFixture{
+    "The deceased flag is false" in new HappyPathSetup with PersonFixture {
 
-
-      val json = Json.parse(
-
-        """{
-               "firstName":"first name",
-               "lastName":"second name",
-               "deceased":false
-        }""")
-
+      val json = loadFile("/json/model/api/personDeceasedFalse.json")
       val hr = HttpResponse(OK,Some(json),Map.empty)
-
       await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new HappyPathSetup {
-      val json = Json.parse(
 
-        """{
-               "firstName":"first name",
-               "lastName":"second name"
-        }""")
-
+      val json = loadFile("/json/model/api/personDeceasedNoValue.json")
       val hr = HttpResponse(OK,Some(json),Map.empty)
-
       val person = Person(Some("first name"), Some("second name"),None)
-
       await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Right(person)
     }
-
   }
-
-
-
 }
 
 class Controller  @Inject()(
