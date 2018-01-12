@@ -75,6 +75,12 @@ class ClientErrorControllerSpec extends ControllerSpec {
       redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
+    "get No Agent Services Account page" in new HappyPathSetup {
+      val result = controller.getNoAgentServicesAccountPage().apply(FakeRequest())
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.no.agent.services.account.title"))
+    }
+
     "get deceased page" in new HappyPathSetup {
       val result = controller.getDeceased().apply(FakeRequest())
       status(result) shouldBe Status.OK

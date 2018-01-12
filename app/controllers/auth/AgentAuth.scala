@@ -16,6 +16,7 @@
 
 package controllers.auth
 
+import config.FrontendAppConfig.AgentSubscriptionStart
 import play.api.mvc.{AnyContent, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core.ConfidenceLevel.L200
@@ -24,13 +25,14 @@ import uk.gov.hmrc.auth.core.retrieve.Retrievals._
 import uk.gov.hmrc.play.frontend.config.AuthRedirects
 import uk.gov.hmrc.play.frontend.controller.FrontendController
 
+
 import scala.concurrent.Future
 
 trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRedirects {
 
-  def redirectToSubPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
+  def redirectToSubPage: Future[Result] = Future successful Redirect(AgentSubscriptionStart)
 
-  def redirectToExitPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
+  def redirectToExitPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage())
 
   def isAgent(group: AffinityGroup): Boolean = group.toString.contains("Agent")
 

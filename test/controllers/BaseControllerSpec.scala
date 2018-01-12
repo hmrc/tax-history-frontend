@@ -18,6 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
+import config.FrontendAppConfig.AgentSubscriptionStart
 import config.{FrontendAppConfig, FrontendAuthConnector}
 import models.taxhistory.Person
 import org.mockito.Matchers
@@ -116,25 +117,25 @@ class BaseControllerSpec extends ControllerSpec with Fixtures {
 
   "BaseController" must {
 
-    "redirect to not authorised when there is no enrolment" in new NoEnrolmentsSetup {
+    "redirect to agent-subscription-start when there is no enrolment" in new NoEnrolmentsSetup {
       val result = controller.authorisedForAgent(_ =>Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
+      redirectLocation(result) shouldBe Some(AgentSubscriptionStart)
     }
 
-    "redirect to not authorised when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
+    "redirect to not no-agent-services-account when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
       val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
     }
 
-    "redirect to not authorised when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
+    "redirect to not no-agent-services-account when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
       val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
     }
 
     "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {
