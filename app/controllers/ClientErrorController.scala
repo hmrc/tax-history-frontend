@@ -20,10 +20,10 @@ import javax.inject.Inject
 
 import config.FrontendAuthConnector
 import connectors.CitizenDetailsConnector
-import models.taxhistory.Person
 import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
 import play.api.mvc.Action
+import views.html.errors.no_agent_services_account
 
 import scala.concurrent.Future
 
@@ -72,5 +72,11 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
       Future.successful(Ok(views.html.errors.technical_error()))
     }
   }
+
+   def getNoAgentServicesAccountPage = Action.async {
+     implicit request => {
+       Future successful Ok(no_agent_services_account())
+     }
+   }
 
 }

@@ -123,18 +123,18 @@ class BaseControllerSpec extends ControllerSpec with Fixtures {
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
-    "redirect to not authorised when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
+    "redirect to not no-agent-services-account when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
       val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
     }
 
-    "redirect to not authorised when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
+    "redirect to not no-agent-services-account when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
       val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
     }
 
     "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {

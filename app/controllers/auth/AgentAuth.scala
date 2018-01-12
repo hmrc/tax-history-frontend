@@ -30,7 +30,7 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRed
 
   def redirectToSubPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
 
-  def redirectToExitPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
+  def redirectToExitPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage())
 
   def isAgent(group: AffinityGroup): Boolean = group.toString.contains("Agent")
 
