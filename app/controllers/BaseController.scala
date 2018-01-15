@@ -19,117 +19,127 @@ package controllers
 import config.FrontendAppConfig
 import controllers.auth.AgentAuth
 import models.taxhistory.Person
-import play.api.Logger
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, Request, Result}
+import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
+import utils.TaxHistoryLogger
 
 import scala.concurrent.Future
 
-trait BaseController extends I18nSupport with AgentAuth {
-  lazy val ggSignInRedirect: Result = toGGLogin(s"${FrontendAppConfig.loginContinue}")
+trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
+  lazy val ggSignInRedirect: Result = toGGLogin(FrontendAppConfig.loginContinue)
 
-  lazy val logoutLink = Link.toInternalPage(url = controllers.routes.EmploymentSummaryController.logout().url,
-    value = Some("Sign out")).toHtml
+  lazy val logoutLink: Html =
+    Link.toInternalPage(controllers.routes.EmploymentSummaryController.logout().url, Some("Sign out")).toHtml
 
-  def logout() = Action.async {
+  // todo : this needs to go with the rest of the session data
+  val ninoSessionKey = "USER_NINO"
+
+  def logout(): Action[AnyContent] = Action.async {
     implicit request => {
+      logger.info("Sign out of the service")
       Future.successful(Redirect(FrontendAppConfig.serviceSignOut).withNewSession)
     }
   }
 
-  protected def authorisedAgent(predicate: uk.gov.hmrc.auth.core.authorise.Predicate)(
-                              eventualResult :Future[Result])
-                     (implicit hc:HeaderCarrier, request:Request[_]) = {
+  // todo : work out what eventualResult is for, and call it that.
+  protected def authorisedAgent(predicate: uk.gov.hmrc.auth.core.authorise.Predicate)
+                               (eventualResult: Future[Result])
+                               (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+    logger.info("Start authorisation check")
     authorised(predicate)
       .retrieve(affinityGroupAllEnrolls) {
-      case Some(affinityG) ~ allEnrols =>
-        (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
-          case (`isAnAgent`, Some(_)) => {
-            eventualResult
+        case Some(affinityG) ~ allEnrols =>
+          (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
+            case (`isAnAgent`, Some(_)) =>
+              logger.info("Agent is authorised")
+              eventualResult
+            case (`isAnAgent`, None) =>
+              logger.info("No enrolments available for the agent")
+              redirectToSubPage
+            case _ =>
+              logger.info("No affinity group is not agent")
+              redirectToExitPage
           }
-          case (`isAnAgent`, None) => redirectToSubPage
-          case _ => redirectToExitPage
-        }
-      case _ =>
-        redirectToExitPage
-    }.recoverWith {
+        case _ =>
+          logger.info("No affinity group provided")
+          redirectToExitPage
+      }.recoverWith {
       case i: InsufficientEnrolments =>
-        Logger.error("Error thrown :" + i.getMessage)
+        logger.info(s"InsufficientEnrolments:${i.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
-      case b: BadGatewayException => {
-        Logger.warn(s"BadGatewayException:${b.getMessage}")
+      case b: BadGatewayException =>
+        logger.warn(s"BadGatewayException:${b.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
-      }
-      case m: MissingBearerToken => {
-        Logger.warn(s"MissingBearerToken:${m.getMessage}")
+      case m: MissingBearerToken =>
+        logger.warn(s"MissingBearerToken:${m.getMessage}")
         Future.successful(ggSignInRedirect)
-      }
       case e =>
-        Logger.error("Exception thrown :" + e.getMessage)
+        logger.error(s"Exception thrown:${e.getMessage}")
         Future.successful(ggSignInRedirect)
     }
   }
 
-  protected[controllers] def authorisedForAgent(eventualResult:(Nino) =>Future[Result])
-                                               (implicit hc:HeaderCarrier, request:Request[_]) =  {
-    val maybeNino = getNinoFromSession(request)
-    maybeNino match {
-      case Some(nino) => authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("MTDITID",
-        nino.toString) and AuthProviderAgents)(eventualResult(nino))
-      case None => {
-        Logger.warn("No nino supplied.")
+  protected[controllers] def authorisedForAgent(eventualResult: (Nino) => Future[Result])
+                                               (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+    getNinoFromSession(request) match {
+      case Some(nino) =>
+        authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)(eventualResult(nino))
+      case None =>
+        logger.info("No nino supplied")
         Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
-      }
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status:Int, nino: Nino)
-                                       (implicit request: Request[_]) = {
+  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino)
+                                                      (implicit request: Request[_]): Result = {
+    logger.info(s"HttpFailure status is $status")
     status match {
       case NOT_FOUND =>
         Redirect(controllers.routes.ClientErrorController.getNoData())
       case UNAUTHORIZED =>
         Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
-      case s => {
-        Logger.error("Error response returned with status:" + s)
+      case _ =>
         Redirect(controllers.routes.ClientErrorController.getTechnicalError())
-      }
     }
   }
 
-  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse:Future[HttpResponse])
-                                    (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
+  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse: Future[HttpResponse])
+                            (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
     {
       citizenDetailsResponse map {
         personResponse =>
           personResponse.status match {
-            case OK => {
+            case OK =>
               val person = personResponse.json.as[Person]
               person.deceased match {
                 case Some(true) => Left(GONE)
                 case _ => Right(person)
               }
-            }
-            case status => Left(status)
+            case status =>
+              logger.warn(s"citizenDetails lookup returned with status $status")
+              Left(status)
           }
       }
     }.recoverWith {
-      case _ => Future.successful(Left(BAD_REQUEST))
+      case e =>
+        logger.warn(s"citizenDetails lookup failed with ${e.getMessage}")
+        Future.successful(Left(BAD_REQUEST))
     }
   }
 
-  def getNinoFromSession(request:Request[_]):Option[Nino] = {
-    request.session.get("USER_NINO").map(Nino(_))
-  }
+  def getNinoFromSession(request: Request[_]): Option[Nino] =
+    request.session.get(ninoSessionKey).map(Nino(_))
 
-  def redirectToSelectClientPage:Future[Result] = Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
+  def redirectToSelectClientPage: Future[Result] = Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
 
-  def redirectToClientErrorPage(status: Int):Future[Result] = {
+  def redirectToClientErrorPage(status: Int): Future[Result] = {
+    logger.info(s"redirectToClientErrorPage status is $status")
     status match {
       case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
       case GONE => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))

@@ -18,13 +18,11 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.FrontendAuthConnector
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.urls.Link
 import views.html.taxhistory.select_client
 
 import scala.concurrent.Future
@@ -38,7 +36,7 @@ class SelectClientController @Inject()(
 
   //TODO Remove this as it is only included to support legacy url
   @Deprecated
-  def getLegacySelectClientPage() = Action.async { implicit request => {
+  def getLegacySelectClientPage: Action[AnyContent] = Action.async { implicit request => {
       redirectToSelectClientPage
     }
   }
@@ -49,12 +47,12 @@ class SelectClientController @Inject()(
     }
   }
 
-  def submitSelectClientPage(): Action[AnyContent] = Action.async { implicit request =>
+  def submitSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
       formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
       validFormData => authorisedAgent(AuthProviderAgents) {
         Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
-                .addingToSession("USER_NINO" -> s"${validFormData.clientId.toUpperCase}")
+                .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
       }
     )
   }

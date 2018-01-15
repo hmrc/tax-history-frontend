@@ -22,7 +22,7 @@ import config.FrontendAuthConnector
 import connectors.CitizenDetailsConnector
 import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
-import play.api.mvc.Action
+import play.api.mvc.{Action, AnyContent}
 import views.html.errors.no_agent_services_account
 
 import scala.concurrent.Future
@@ -33,50 +33,44 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
                                       override val env: Environment,
                                       implicit val messagesApi: MessagesApi) extends BaseController {
 
-  def getNotAuthorised() = Action.async {
-    implicit request => {
+  def getNotAuthorised: Action[AnyContent] = Action.async {
+    implicit request =>
       getNinoFromSession(request) match {
         case Some(nino) => Future.successful(Ok(views.html.errors.not_authorised(nino.toString())))
         case None => redirectToSelectClientPage
       }
-    }
   }
 
-  def getMciRestricted() = Action.async {
-    implicit request => {
-        Future.successful(Ok(views.html.errors.mci_restricted()))
-      }
-    }
+  def getMciRestricted: Action[AnyContent] = Action.async {
+    implicit request =>
+      Future.successful(Ok(views.html.errors.mci_restricted()))
+  }
 
-  def getDeceased() = Action.async {
-    implicit request => {
+  def getDeceased: Action[AnyContent] = Action.async {
+    implicit request =>
       Future.successful(Ok(views.html.errors.deceased()))
-    }
   }
 
-  def getNoData() = Action.async {
+  def getNoData: Action[AnyContent] = Action.async {
     implicit request => {
-      val maybeNino =getNinoFromSession(request)
-      maybeNino.fold(redirectToSelectClientPage)(
-        nino =>
+      getNinoFromSession(request).
+        fold(redirectToSelectClientPage)(nino =>
           retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
             case Right(person) => Future.successful(Ok(views.html.errors.no_data(person.getName.fold(nino.toString())(name => name))))
             case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
           }
-      )
+        )
     }
   }
 
-  def getTechnicalError() = Action.async {
-    implicit request => {
+  def getTechnicalError: Action[AnyContent] = Action.async {
+    implicit request =>
       Future.successful(Ok(views.html.errors.technical_error()))
-    }
   }
 
-   def getNoAgentServicesAccountPage = Action.async {
-     implicit request => {
-       Future successful Ok(no_agent_services_account())
-     }
-   }
+  def getNoAgentServicesAccountPage: Action[AnyContent] = Action.async {
+    implicit request =>
+      Future successful Ok(no_agent_services_account())
+  }
 
 }
