@@ -22,10 +22,9 @@ import config.FrontendAuthConnector
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
-import models.taxhistory.{Person, SelectTaxYear}
+import models.taxhistory.SelectTaxYear
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
-import play.api.libs.json.Json
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.domain.Nino
@@ -44,7 +43,6 @@ class SelectTaxYearController @Inject()(
                                          override val env: Environment,
                                          implicit val messagesApi: MessagesApi
                                        ) extends BaseController {
-
 
 
   private def getTaxYears(taxYearList: List[IndividualTaxYear]) = {
@@ -74,12 +72,12 @@ class SelectTaxYearController @Inject()(
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-      case Right(person) => fetchTaxYearsAndRenderPage(form, httpStatus, nino)
+      case Right(_) => fetchTaxYearsAndRenderPage(form, httpStatus, nino)
     }
   }
 
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
-    authorisedForAgent {nino =>
+    authorisedForAgent { nino =>
       renderSelectTaxYearPage(nino, selectTaxYearForm, Ok)
     }
   }
@@ -87,13 +85,12 @@ class SelectTaxYearController @Inject()(
   def submitSelectTaxYearPage(): Action[AnyContent] = Action.async { implicit request =>
     selectTaxYearForm.bindFromRequest().fold(
       formWithErrors ⇒ {
-        val maybeNino = request.session.get("USER_NINO").map(Nino(_))
-        maybeNino match {
+        getNinoFromSession(request) match {
           case Some(nino) => renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
           case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
         }
       },
-      validFormData => authorisedForAgent {_ =>
+      validFormData => authorisedForAgent { _ =>
         Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(
           validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)))
       }

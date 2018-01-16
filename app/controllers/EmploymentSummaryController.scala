@@ -40,7 +40,7 @@ class EmploymentSummaryController @Inject()(
                                              implicit val messagesApi: MessagesApi
                                            ) extends BaseController {
 
-  def getTaxHistory(taxYear: Int) = Action.async {
+  def getTaxHistory(taxYear: Int): Action[AnyContent] = Action.async {
     implicit request => {
       authorisedForAgent { nino =>
         for {
@@ -84,8 +84,7 @@ class EmploymentSummaryController @Inject()(
                 None
               }
 
-              Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear,
-                employments, allowances, person, taxAccount))
+              Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear, employments, allowances, person, taxAccount))
           }
         case status => Future.successful(handleHttpFailureResponse(status, ninoField))
       }

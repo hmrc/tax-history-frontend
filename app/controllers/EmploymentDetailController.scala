@@ -18,23 +18,20 @@ package controllers
 
 import javax.inject.Inject
 
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.FrontendAuthConnector
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import form.SelectClientForm.selectClientForm
 import model.api.{CompanyBenefit, Employment, PayAndTax}
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.urls.Link
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmploymentDetailController @Inject()(
-                                            val taxHistoryConnector: TaxHistoryConnector,
+class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryConnector,
                                             val citizenDetailsConnector: CitizenDetailsConnector,
                                             override val authConnector: FrontendAuthConnector,
                                             override val config: Configuration,
@@ -47,20 +44,19 @@ class EmploymentDetailController @Inject()(
                                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-      case Right(person) => {
+      case Right(person) =>
         taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
           empDetailsResponse.status match {
             case OK =>
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status => Future.successful(handleHttpFailureResponse(status, nino))
-          }
         }
       }
     }
   }
 
-  def getEmploymentDetails(employmentId: String, taxYear: Int) = Action.async {
+  def getEmploymentDetails(employmentId: String, taxYear: Int): Action[AnyContent] = Action.async {
     implicit request =>
       authorisedForAgent { nino =>
         renderEmploymentDetailsPage(nino, taxYear, employmentId)
@@ -74,7 +70,9 @@ class EmploymentDetailController @Inject()(
         Some(payAndTaxResponse.json.as[PayAndTax])
       }
     }.recoverWith {
-      case _ => Future.successful(None)
+      case e =>
+        logger.warn(s"getPayAndTaxDetails failed with ${e.getMessage}")
+        Future.successful(None)
     }
   }
 
@@ -85,7 +83,9 @@ class EmploymentDetailController @Inject()(
         cbResponse.json.as[List[CompanyBenefit]]
       }
     }.recoverWith {
-      case _ => Future.successful(List.empty)
+      case e =>
+        logger.warn(s"getCompanyBenefits failed with ${e.getMessage}")
+        Future.successful(List.empty)
     }
   }
 
