@@ -126,6 +126,28 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture{
     }
   }
 
+  trait NullAllowances {
+
+    implicit val actorSystem = ActorSystem("test")
+    implicit val materializer = ActorMaterializer()
+    lazy val controller = {
+
+      val c = injected[EmploymentSummaryController]
+
+      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employments)))))
+      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND, null)))
+      when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
+        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(taxAccount)))))
+      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      c
+    }
+  }
+
   trait NoTaxAccount {
 
     implicit val actorSystem = ActorSystem("test")
@@ -213,7 +235,14 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture{
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
     }
-    "return 200 when no allowances found" in new NoAllowances {
+
+    "return 200 when empty list of allowances found" in new NoAllowances {
+      val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      bodyOf(await(result)) should include(Messages("employmenthistory.title"))
+    }
+
+    "return 200 when null allowances found" in new NullAllowances {
       val result = controller.getTaxHistory(taxYear).apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))

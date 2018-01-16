@@ -26,7 +26,7 @@ import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -70,24 +70,38 @@ class EmploymentSummaryController @Inject()(
             taxAccountResponse <- taxHistoryConnector.getTaxAccount(ninoField, taxYear)
           } yield (allowanceResponse, taxAccountResponse)).map {
             dataResponse =>
-              val employments = empResponse.json.as[List[Employment]]
-              val allowanceStatus = dataResponse._1.status
-              val taxAccountStatus = dataResponse._2.status
-
-              val allowances = if(allowanceStatus == OK | allowanceStatus == NOT_FOUND) dataResponse._1.json.as[List[Allowance]] else {
-                Logger.info(s"Unexpected Allowance Status: $allowanceStatus")
-                List.empty
-              }
-
-              val taxAccount = if(taxAccountStatus == OK | taxAccountStatus == NOT_FOUND) dataResponse._2.json.asOpt[TaxAccount] else {
-                Logger.info(s"Unexpected Tax Account Status: $taxAccountStatus")
-                None
-              }
-
-              Ok(views.html.taxhistory.employment_summary(ninoField.nino, taxYear, employments, allowances, person, taxAccount))
+              Ok(views.html.taxhistory.employment_summary(
+                ninoField.nino,
+                taxYear,
+                getEmploymentsFromResponse(empResponse),
+                getAllowancesFromResponse(dataResponse),
+                person,
+                getTaxAccountFromResponse(dataResponse)))
           }
         case status => Future.successful(handleHttpFailureResponse(status, ninoField))
       }
     }
+  }
+
+  private def getTaxAccountFromResponse(dataResponse: (HttpResponse, HttpResponse)) = {
+    dataResponse._2.status match {
+      case OK => dataResponse._2.json.asOpt[TaxAccount]
+      case status =>
+        Logger.info(s"Tax Account Status: $status")
+        None
+    }
+  }
+
+  private def getAllowancesFromResponse(dataResponse: (HttpResponse, HttpResponse)) = {
+    dataResponse._1.status match {
+      case OK => dataResponse._1.json.as[List[Allowance]]
+      case status =>
+        Logger.info(s"Allowance Status: $status")
+        List.empty
+    }
+  }
+
+  private def getEmploymentsFromResponse(empResponse: HttpResponse) = {
+    empResponse.json.as[List[Employment]]
   }
 }
