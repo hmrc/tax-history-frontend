@@ -42,7 +42,6 @@ trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRed
   type AfiActionWithArn = Request[AnyContent] => Future[Result]
   lazy val affinityGroupAllEnrolls = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment = Enrolment("HMRC-AS-AGENT")
-    .withConfidenceLevel(L200)
     .withDelegatedAuthRule("afi-auth")
 
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)

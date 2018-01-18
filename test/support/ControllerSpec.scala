@@ -41,7 +41,6 @@ trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil {
 
   lazy val newEnrolments = Set(
     Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
-      confidenceLevel = ConfidenceLevel.L200,
       state = "", delegatedAuthRule = None)
   )
 
