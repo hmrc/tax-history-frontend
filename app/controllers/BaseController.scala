@@ -22,6 +22,7 @@ import models.taxhistory.Person
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.twirl.api.Html
+import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
@@ -48,7 +49,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
   }
 
   // todo : work out what eventualResult is for, and call it that.
-  protected def authorisedAgent(predicate: uk.gov.hmrc.auth.core.authorise.Predicate)
+  protected def authorisedAgent(predicate: Predicate)
                                (eventualResult: Future[Result])
                                (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     logger.info("Start authorisation check")

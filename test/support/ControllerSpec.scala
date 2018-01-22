@@ -16,15 +16,10 @@
 
 package support
 
-import javax.inject.Inject
-
-import config.FrontendAuthConnector
-import controllers.BaseController
-import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
-import uk.gov.hmrc.auth.core.{ConfidenceLevel, Enrolment, EnrolmentIdentifier}
+import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.http.SessionKeys
 import utils.TestUtil
 
@@ -40,7 +35,7 @@ trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil {
   )
 
   lazy val newEnrolments = Set(
-    Enrolment("HMRC-AS-AGENT", Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
+    Enrolment(key = "HMRC-AS-AGENT", identifiers = Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
       state = "", delegatedAuthRule = None)
   )
 

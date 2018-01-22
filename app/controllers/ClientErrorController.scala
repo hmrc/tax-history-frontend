@@ -53,13 +53,12 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
 
   def getNoData: Action[AnyContent] = Action.async {
     implicit request => {
-      getNinoFromSession(request).
-        fold(redirectToSelectClientPage)(nino =>
-          retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-            case Right(person) => Future.successful(Ok(views.html.errors.no_data(person.getName.fold(nino.toString())(name => name))))
-            case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-          }
-        )
+      authorisedForAgent { nino =>
+        retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+          case Right(person) => Future.successful(Ok(views.html.errors.no_data(person.getName.fold(nino.toString())(name => name))))
+          case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+        }
+      }
     }
   }
 

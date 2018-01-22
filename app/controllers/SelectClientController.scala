@@ -36,9 +36,8 @@ class SelectClientController @Inject()(
 
   //TODO Remove this as it is only included to support legacy url
   @Deprecated
-  def getLegacySelectClientPage: Action[AnyContent] = Action.async { implicit request => {
-      redirectToSelectClientPage
-    }
+  def getLegacySelectClientPage: Action[AnyContent] = Action.async { implicit request =>
+    redirectToSelectClientPage
   }
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
@@ -49,11 +48,12 @@ class SelectClientController @Inject()(
 
   def submitSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
-      formWithErrors ⇒ Future.successful(BadRequest(select_client(formWithErrors))),
-      validFormData => authorisedAgent(AuthProviderAgents) {
-        Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
-                .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
-      }
+      formWithErrors => Future.successful(BadRequest(select_client(formWithErrors))),
+      validFormData =>
+        authorisedAgent(AuthProviderAgents) {
+          Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
+            .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
+        }
     )
   }
 }
