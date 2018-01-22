@@ -36,7 +36,7 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>
       getNinoFromSession(request)
-        .fold(redirectToSelectClientPage)(_ => Future successful Ok(not_authorised))
+        .fold(redirectToSelectClientPage)(_ => Future successful Ok(not_authorised()))
   }
 
   def getMciRestricted: Action[AnyContent] = Action.async {
