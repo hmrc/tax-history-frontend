@@ -19,14 +19,15 @@ package controllers
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import models.taxhistory.Person
-import play.api.http.Status
-import play.api.i18n.Messages
-import play.api.test.FakeRequest
-import play.api.test.Helpers._
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import support.{ControllerSpec, GuiceAppSpec}
+import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import support.ControllerSpec
+import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
+import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments, InsufficientEnrolments}
 import uk.gov.hmrc.http.HttpResponse
 
 import scala.concurrent.Future
@@ -35,83 +36,114 @@ class ClientErrorControllerSpec extends ControllerSpec {
 
   trait HappyPathSetup {
 
-    implicit val actorSystem = ActorSystem("test")
-    implicit val materializer = ActorMaterializer()
+    implicit val actorSystem: ActorSystem = ActorSystem("test")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-    val person = Some(Person(Some("firstname"),Some("secondname"), Some(false)))
-    lazy val controller = injected[ClientErrorController]
+    val person = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
+    lazy val controller: ClientErrorController = injected[ClientErrorController]
     when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
-      thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
+    when(controller.authConnector.authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+  }
+
+  trait NoRelationshipPathSetup {
+
+    implicit val actorSystem: ActorSystem = ActorSystem("test")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
+
+    val person = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
+    lazy val controller: ClientErrorController = injected[ClientErrorController]
+    when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
+      thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
+    when(controller.authConnector.authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any()))
+      .thenReturn(Future failed new InsufficientEnrolments)
   }
 
   trait NoCitizenDetailsPathSetup {
 
-    implicit val actorSystem = ActorSystem("test")
-    implicit val materializer = ActorMaterializer()
+    implicit val actorSystem: ActorSystem = ActorSystem("test")
+    implicit val materializer: ActorMaterializer = ActorMaterializer()
 
-    val person = Some(Person(Some("firstname"),None, Some(false)))
+    val person = Some(Person(Some("firstname"), None, deceased = Some(false)))
 
-    lazy val controller = injected[ClientErrorController]
+    lazy val controller: ClientErrorController = injected[ClientErrorController]
     when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
-      thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
+      thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
+    when(controller.authConnector.authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
   }
 
   "ClientErrorController" should {
     "get Mci restricted page" in new HappyPathSetup {
       val result = controller.getMciRestricted().apply(FakeRequest())
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.mci.restricted.title"))
     }
 
-    "get Not Authorised page" in new HappyPathSetup {
+    "get Not Authorised page with a NINO and relationship" in new HappyPathSetup {
       val result = controller.getNotAuthorised().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.not.authorised.title"))
+    }
+
+    "get Not Authorised page with a NINO and no relationship when accessing /no-data" in new NoRelationshipPathSetup {
+      val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
+    }
+
+    "get Select Client page without a NINO in session when accessing /no-data" in {
+      lazy val controller: ClientErrorController = injected[ClientErrorController]
+
+      val result = controller.getNoData().apply(FakeRequest())
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
     "get Not Authorised page without NINO" in new HappyPathSetup {
       val result = controller.getNotAuthorised().apply(FakeRequest())
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
     "get No Agent Services Account page" in new HappyPathSetup {
       val result = controller.getNoAgentServicesAccountPage().apply(FakeRequest())
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.no.agent.services.account.title"))
     }
 
     "get deceased page" in new HappyPathSetup {
       val result = controller.getDeceased().apply(FakeRequest())
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.deceased.title"))
     }
 
     "get No Data Available page" in new HappyPathSetup {
       val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       val body = bodyOf(await(result))
       body should include(Messages("employmenthistory.no.data.title"))
-      body should include(Messages("employmenthistory.no.data.header","firstname secondname"))
+      body should include(Messages("employmenthistory.no.data.header", "firstname secondname"))
     }
 
     "get No Data Available page without citizen details surname" in new NoCitizenDetailsPathSetup {
       val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       val body = bodyOf(await(result))
       body should include(Messages("employmenthistory.no.data.title"))
-      body should include(Messages("employmenthistory.no.data.header",nino))
+      body should include(Messages("employmenthistory.no.data.header", nino))
     }
 
-    "get No Data Available page without NINO" in new HappyPathSetup {
+    "get Select Client page without NINO when accessing /no-data" in new HappyPathSetup {
       val result = controller.getNoData().apply(FakeRequest())
-      status(result) shouldBe Status.SEE_OTHER
-      redirectLocation (result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
     "get Technical Error page" in new HappyPathSetup {
       val result = controller.getTechnicalError().apply(FakeRequest())
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.technical.error.title"))
     }
   }
