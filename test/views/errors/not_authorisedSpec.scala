@@ -18,27 +18,25 @@ package views.errors
 
 import play.api.i18n.Messages
 import support.GuiceAppSpec
-import utils.TestUtil
 import views.Fixture
 
 class not_authorisedSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
-    val nino = TestUtil.randomNino.toString()
   }
 
   "not authorised view" must {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
 
-      val view = views.html.errors.not_authorised(nino)
+      val view = views.html.errors.not_authorised()
 
       val title = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
-      doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header",nino)
+      doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true

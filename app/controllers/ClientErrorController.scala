@@ -23,7 +23,7 @@ import connectors.CitizenDetailsConnector
 import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import views.html.errors.no_agent_services_account
+import views.html.errors._
 
 import scala.concurrent.Future
 
@@ -35,31 +35,28 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
 
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>
-      getNinoFromSession(request) match {
-        case Some(nino) => Future.successful(Ok(views.html.errors.not_authorised(nino.toString())))
-        case None => redirectToSelectClientPage
-      }
+      getNinoFromSession(request)
+        .fold(redirectToSelectClientPage)(_ => Future successful Ok(not_authorised))
   }
 
   def getMciRestricted: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.errors.mci_restricted()))
+      Future.successful(Ok(mci_restricted()))
   }
 
   def getDeceased: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.errors.deceased()))
+      Future.successful(Ok(deceased()))
   }
 
   def getNoData: Action[AnyContent] = Action.async {
     implicit request => {
-      getNinoFromSession(request).
-        fold(redirectToSelectClientPage)(nino =>
-          retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-            case Right(person) => Future.successful(Ok(views.html.errors.no_data(person.getName.fold(nino.toString())(name => name))))
-            case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-          }
-        )
+      authorisedForAgent { nino =>
+        retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+          case Right(person) => Future.successful(Ok(no_data(person.getName.fold(nino.toString())(name => name))))
+          case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
+        }
+      }
     }
   }
 
