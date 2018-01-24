@@ -54,14 +54,14 @@ class SelectTaxYearController @Inject()(
     }
   }
 
-  private def fetchTaxYearsAndRenderPage(form: Form[SelectTaxYear], httpStatus: Status, nino: Nino)
+  private def fetchTaxYearsAndRenderPage(form: Form[SelectTaxYear], httpStatus: Status, nino: Nino, clientName:Option[String])
                                         (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       taxYearResponse.status match {
         case OK => {
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
 
-          httpStatus(select_tax_year(form, taxYears))
+          httpStatus(select_tax_year(form, taxYears, clientName.getOrElse(nino.value)))
         }
         case status => handleHttpFailureResponse(status, nino)
       }
@@ -72,7 +72,7 @@ class SelectTaxYearController @Inject()(
                                      (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-      case Right(_) => fetchTaxYearsAndRenderPage(form, httpStatus, nino)
+      case Right(p) => fetchTaxYearsAndRenderPage(form, httpStatus, nino, p.getName)
     }
   }
 

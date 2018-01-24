@@ -18,7 +18,8 @@
 @import uk.gov.hmrc.play.views.html.helpers
 
 @(form: Form[SelectTaxYear],
-taxYears:List[(String, String)])(implicit request: Request[_], messages: Messages)
+taxYears:List[(String, String)],
+clientName:String)(implicit request: Request[_], messages: Messages)
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 
@@ -43,6 +44,7 @@ taxYears:List[(String, String)])(implicit request: Request[_], messages: Message
 
 <div class="page-header" >
     <h1 class="heading-xlarge">
+        <span class="pre-heading">@Messages("employmenthistory.display.client.name",s"${clientName}")</span>
         @Messages("employmenthistory.select.tax.year.h1")
     </h1>
 </div>
