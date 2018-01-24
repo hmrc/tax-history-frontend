@@ -128,30 +128,24 @@
 
     @if(taxAccount.nonEmpty) {
         <h2 class="heading-medium">@Messages("employmenthistory.tax-account.header")</h2>
-        <p>
-            @Messages("employmenthistory.tax-account.caveat.text")
-        </p>
         <table id="taxAccountTable">
             <thead>
                 <tr>
-                    <th scope="col" width="50%">@Messages("lbl.details")</th>
-                    <th scope="col" width="25%" class="numeric">@Messages("lbl.sa110box")</th>
+                    <th scope="col" width="75%">@Messages("lbl.details")</th>
                     <th scope="col" width="25%" class="numeric">@Messages("lbl.amount")</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>@Messages("employmenthistory.tax-account.underpayment-amount.title",
-                        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")</td>
-                    <td class="numeric">@Messages("lbl.sa110box.underpayment-amount")</td>
+                        s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")</td>
                     <td class="numeric">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0), 2)</td>
                 </tr>
 
                 <tr>
                     <td style = "border:0">@Messages("employmenthistory.tax-account.potential-underpayment.title",
-                        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}",
-                        s"${TaxYear.current.currentYear}/${TaxYear.current.finishYear.toString.drop(2)}")</td>
-                    <td style = "border:0" class="numeric">@Messages("lbl.sa110box.potential-underpayment")</td>
+                        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}",
+                        s"${TaxYear.current.currentYear}",s"${TaxYear.current.finishYear}")</td>
                     <td style = "border:0" class="numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
                 </tr>
 
@@ -170,8 +164,7 @@
 
                 <tr>
                     <td>@Messages("employmenthistory.tax-account.outstanding.debt.title",
-                        s"${TaxYear.current.previous.currentYear}/${TaxYear.current.previous.finishYear.toString.drop(2)}")</td>
-                    <td class="numeric">@Messages("lbl.sa110box.outstanding.debt")</td>
+                        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")</td>
                     <td class="numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
                 </tr>
             </tbody>

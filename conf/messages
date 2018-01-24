@@ -23,10 +23,6 @@ lbl.back = Back
 lbl.employer = Employer
 lbl.provider = Provider
 lbl.details = Details
-lbl.sa110box = SA110 box
-lbl.sa110box.underpayment-amount = 7
-lbl.sa110box.potential-underpayment = 8
-lbl.sa110box.outstanding.debt = 9
 
 
 ################################## Client Income Record / Employment Summary ##############################################
@@ -130,15 +126,14 @@ employmenthistory.select.tax.year.error.message = Select a tax year
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Underpaid tax and other debts
-employmenthistory.tax-account.caveat.text=You might need this data if you fill in a Self-Assessment return for your client, SA110 boxes 7, 8 and 9.
 #CY
-employmenthistory.tax-account.potential-underpayment.title=Underpaid tax for {0} included in your clients tax code for {1}
+employmenthistory.tax-account.potential-underpayment.title=Underpaid tax for {0} to {1} included in your clients tax code for {2} to {3}
 employmenthistory.tax-account.potential-underpayment.summary = Why does this differ from the amount on the P2 Coding Notice?
 employmenthistory.tax-account.potential-underpayment.content = This data reflects the up to date information for your client.
 #CY-1
-employmenthistory.tax-account.underpayment-amount.title=Underpaid tax for earlier years included in your clients tax code for {0}
+employmenthistory.tax-account.underpayment-amount.title=Underpaid tax for earlier years included in your clients tax code for {0} to {1}
 #CY-1
-employmenthistory.tax-account.outstanding.debt.title=Outstanding debt included in your clients tax code for {0}
+employmenthistory.tax-account.outstanding.debt.title=Outstanding debt included in your clients tax code for {0} to {1}
 
 ################################ Error Pages ###########################################################
 
