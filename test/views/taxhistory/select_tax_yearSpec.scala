@@ -28,16 +28,18 @@ class select_tax_yearSpec extends GuiceAppSpec {
     implicit val requestWithToken = addToken(request)
     val postData = Json.obj("selectTaxYear" -> "2016")
     val validForm = selectTaxYearForm.bind(postData)
+    val name = "Test Name"
   }
 
   "select_tax_year view" must {
 
     "have correct title, heading and GA pageview event" in new ViewFixture {
 
-      val view = views.html.taxhistory.select_tax_year(validForm, List.empty)
+      val view = views.html.taxhistory.select_tax_year(validForm, List.empty, name)
 
       doc.title mustBe Messages("employmenthistory.select.tax.year.title")
-      doc.select("h1").text() mustBe Messages("employmenthistory.select.tax.year.h1")
+      doc.select("h1").text() must include (Messages("employmenthistory.display.client.name",s"${name}"))
+      doc.select("h1").text() must include (Messages("employmenthistory.select.tax.year.h1"))
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
@@ -45,12 +47,12 @@ class select_tax_yearSpec extends GuiceAppSpec {
     "show correct content on the page" in new ViewFixture {
       val options = List("2016" -> "value", "2015" -> "value1")
 
-      val view = views.html.taxhistory.select_tax_year(validForm, options)
+      val view = views.html.taxhistory.select_tax_year(validForm, options, name)
       val radioGroup =  doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
       val inputRadio = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe "checked"
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1",s"${name}")).hasText mustBe true
 
     }
 
@@ -58,7 +60,7 @@ class select_tax_yearSpec extends GuiceAppSpec {
       val invalidForm = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""))
       val options = List("2016" -> "value", "2015" -> "value1")
 
-      val view = views.html.taxhistory.select_tax_year(invalidForm, options)
+      val view = views.html.taxhistory.select_tax_year(invalidForm, options, name)
       val radioGroup =  doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
       val inputRadio = doc.getElementById("selectTaxYear-2016")
