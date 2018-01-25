@@ -46,7 +46,7 @@ employmenthistory.caveat.p2.text = You should always check with your client befo
 employmenthistory.caveat.p3.text = We will not provide missing information by phone or provide certain data, such as bankruptcy.
 employmenthistory.select.different.taxyear.link = Select a different tax year
 employmenthistory.select.different.taxyear.link.lower = select a different tax year
-
+employmenthistory.display.client.name = {0}''s income records
 
 ################################## Company Benefits & Allowances ##################################
 
