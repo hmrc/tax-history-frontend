@@ -35,7 +35,7 @@
 
 <header class="page-header">
     <h1 class="heading-xlarge">@employment.employerName</h1>
-    <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
+    <p id = "taxYearRange" class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
 </header>
 
 <table id="employment-table">
@@ -43,7 +43,7 @@
   <tbody>
   <tr>
       <th scope="row" width="50%">@Messages("employmenthistory.employment.details.client.name")</th>
-      <td>@clientNameOrNino</td>
+      <td id="clientName">@clientNameOrNino</td>
   </tr>
   <tr>
       <th scope="row" width="50%">@Messages("lbl.paye.reference")</th>

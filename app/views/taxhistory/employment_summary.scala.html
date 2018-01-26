@@ -42,17 +42,17 @@
         @Messages("employmenthistory.header", getName)
       </h1>
 
-      <p class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
+      <p id="taxYearRange" class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
     </div>
 
     <div class="panel-indent panel-border-wide">
-        <p>
+        <p id="disclaimer-0">
            @Messages("employmenthistory.caveat.p1.text")
         </p>
-        <p>
+        <p id="disclaimer-1">
             @Messages("employmenthistory.caveat.p2.text")
         </p>
-        <p>
+        <p id="disclaimer-2">
             @Messages("employmenthistory.caveat.p3.text")
         </p>
     </div>
