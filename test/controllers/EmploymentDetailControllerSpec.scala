@@ -70,12 +70,16 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture{
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+
       when(c.taxHistoryConnector.getPayAndTaxDetails(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTax)))))
+
       when(c.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
+
       when(c.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(companyBenefits)))))
+
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
       c
