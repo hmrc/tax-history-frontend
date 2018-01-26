@@ -67,7 +67,7 @@
         <th scope="col" width="20%"></th>
         @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
-                <td> @employment.employerName</td>
+                <td>@employment.employerName</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI"
