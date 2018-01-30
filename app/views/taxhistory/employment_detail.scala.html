@@ -42,11 +42,11 @@
     <caption><span class="visuallyhidden">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
   <tr>
-      <th scope="row" width="50%">@Messages("employmenthistory.employment.details.client.name")</th>
+      <th scope="row" class="width50pc">@Messages("employmenthistory.employment.details.client.name")</th>
       <td id="clientName">@clientNameOrNino</td>
   </tr>
   <tr>
-      <th scope="row" width="50%">@Messages("lbl.paye.reference")</th>
+      <th scope="row" class="width50pc">@Messages("lbl.paye.reference")</th>
       <td>@employment.payeReference</td>
   </tr>
   <tr>
@@ -54,7 +54,7 @@
       <td>@employment.startDate.toString("d MMMM yyyy")</td>
   </tr>
   <tr>
-      <th scope="row" width="50%">@Messages("lbl.date.end")</th>
+      <th scope="row" class="width50pc">@Messages("lbl.date.end")</th>
       <td>
           @StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))
       </td>
@@ -62,13 +62,16 @@
   </tbody>
 </table>
 
-<table id="pay-and-tax-table" >
+<div>
     <h2 class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading")</h2>
     @if(payAndTax.isDefined && payAndTax.get.paymentDate.isDefined){
-        <p>@Messages("employmenthistory.pay.and.tax.guidance",employment.employerName,formatDate(payAndTax.get.paymentDate.get))</p>
+    <p>@Messages("employmenthistory.pay.and.tax.guidance",employment.employerName,formatDate(payAndTax.get.paymentDate.get))</p>
     }
+</div>
+
+<table id="pay-and-tax-table" >
     <tr>
-        <th scope="row" width="50%">@Messages("lbl.taxable.income")</th>
+        <th scope="row" class="width50pc">@Messages("lbl.taxable.income")</th>
         <td>
             @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined){
                 @Currency(payAndTax.get.taxablePayTotal.get)
@@ -78,7 +81,7 @@
         </td>
     </tr>
     <tr>
-        <th scope="row" width="50%">@Messages("lbl.income.tax")</th>
+        <th scope="row" class="width50pc">@Messages("lbl.income.tax")</th>
         <td>
             @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined){
                 @Currency(payAndTax.get.taxTotal.get)
@@ -92,16 +95,20 @@
 
 @payAndTax.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
+
+    <div>
+        <h2 class="heading-medium">
+            @Messages("employmenthistory.employment.details.eyu")
+        </h2>
+        <p>@Messages("employmenthistory.eyu.caveat",(taxYear+1).toString,taxYear.toString,employment.employerName)</p>
+    </div>
+
     <table id="eyu-table">
-      <h2 class="heading-medium">
-        @Messages("employmenthistory.employment.details.eyu")
-      </h2>
-      <p>@Messages("employmenthistory.eyu.caveat",(taxYear+1).toString,taxYear.toString,employment.employerName)</p>
       <thead>
       <tr>
-        <th scope="col" width="30%">@Messages("employmenthistory.eyu.pay")</th>
-        <th scope="col" width="30%">@Messages("employmenthistory.eyu.tax")</th>
-        <th scope="col" width="40%">@Messages("employmenthistory.eyu.date.received")</th>
+        <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.pay")</th>
+        <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.tax")</th>
+        <th scope="col" class="width40pc">@Messages("employmenthistory.eyu.date.received")</th>
       </tr>
       </thead>
       <tbody>
@@ -119,22 +126,26 @@
 }
 
 @if(companyBenefits.nonEmpty) {
-    <table id="cb-table">
+
+    <div>
         <h2 class="heading-medium">
             @Messages("employmenthistory.employment.details.companybenefits")
         </h2>
         <p>
-        @if(actualOrForecast) {
+            @if(actualOrForecast) {
             @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
             employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
-        } else {
+            } else {
             @Messages("employmenthistory.company.benefit.caveat.estimate", clientNameOrNino,
             employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
-        }
+            }
         </p>
+    </div>
+
+    <table id="cb-table">
         <thead>
         <tr>
-            <th scope="col" width="50%">@Messages("employmenthistory.employment.details.benefit")</th>
+            <th scope="col" class="width50pc">@Messages("employmenthistory.employment.details.benefit")</th>
             <th scope="col" class="numeric">@Messages("lbl.amount")</th>
         </tr>
         </thead>
@@ -151,4 +162,3 @@
 
 
 }
-
