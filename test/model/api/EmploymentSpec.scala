@@ -41,11 +41,8 @@ import utils.TestUtil
 
 class EmploymentSpec extends TestUtil with UnitSpec {
 
-  lazy val employmentJson = loadFile("/json/model/api/employment.json")
-  lazy val employmentNoEndDateJson = loadFile("/json/model/api/employmentNoEndDate.json")
-  lazy val employmentListJson = loadFile("/json/model/api/employments.json")
 
-  lazy val employment1 =  Employment(
+  lazy val employment1 = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -57,27 +54,8 @@ class EmploymentSpec extends TestUtil with UnitSpec {
     employmentStatus = EmploymentStatus.Live
   )
 
-  lazy val employment2 = Employment(
-    employmentId = UUID.fromString("019f5fee-d5e4-4f3e-9569-139b8ad81a87"),
-    payeReference = "paye-2",
-    employerName = "employer-2",
-    startDate = LocalDate.parse("2016-02-22"),
-    companyBenefitsURI = None,
-    payAndTaxURI = None,
-    employmentURI = None,
-    employmentStatus = EmploymentStatus.Live
-  )
-
-  lazy val employmentList = List(employment1,employment2)
-
   "Employment" should {
 
-    "transform into Json from object correctly " in {
-      Json.toJson(employment1) shouldBe employmentJson
-    }
-    "transform into object from json correctly " in {
-      employmentJson.as[Employment] shouldBe employment1
-    }
     "generate employmentId when none is supplied" in {
       val emp = Employment(payeReference = "paye-1",
         employerName = "employer-1",
@@ -90,16 +68,6 @@ class EmploymentSpec extends TestUtil with UnitSpec {
       emp.employmentId.toString.nonEmpty shouldBe true
       emp.employmentId shouldNot be(employment1.employmentId)
     }
-    "transform into Json from object list correctly " in {
-      Json.toJson(employmentList) shouldBe employmentListJson
-    }
-    "transform into object list from json correctly " in {
-      employmentListJson.as[List[Employment]] shouldBe employmentList
-    }
-    "allow omission of endDate, companyBenefitsURI, payAndTaxURI and employmentsURI in json" in {
-      employmentNoEndDateJson.as[Employment] shouldBe employment2
-    }
-
   }
 }
 
