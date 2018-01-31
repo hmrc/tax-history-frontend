@@ -40,8 +40,6 @@ import utils.TestUtil
 
 class CompanyBenefitSpec extends TestUtil with UnitSpec {
 
-  lazy val companyBenefitJson = loadFile("/json/model/api/companyBenefit.json")
-  lazy val companyBenefitListJson = loadFile("/json/model/api/companyBenefits.json")
 
   lazy val companyBenefit = CompanyBenefit(companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
                                   iabdType = "companyBenefitType",
@@ -50,22 +48,11 @@ class CompanyBenefitSpec extends TestUtil with UnitSpec {
   lazy val companyBenefitList = List(companyBenefit)
 
   "CompanyBenefit" should {
-    "transform into Json from object correctly " in {
-      Json.toJson(companyBenefit) shouldBe companyBenefitJson
-    }
-    "transform into object from json correctly " in {
-      companyBenefitJson.as[CompanyBenefit] shouldBe companyBenefit
-    }
+
     "generate companyBenefitId when none is supplied" in {
       val comBenefit = CompanyBenefit(iabdType = "otherCompanyBenefitType", amount = BigDecimal(10.00))
       comBenefit.companyBenefitId.toString.nonEmpty shouldBe true
       comBenefit.companyBenefitId shouldNot be(companyBenefit.companyBenefitId)
-    }
-    "transform into Json from object list correctly " in {
-      Json.toJson(companyBenefitList) shouldBe companyBenefitListJson
-    }
-    "transform into object list from json correctly " in {
-      companyBenefitListJson.as[List[CompanyBenefit]] shouldBe companyBenefitList
     }
   }
 }

@@ -41,16 +41,6 @@ import utils.TestUtil
 
 class PayAndTaxSpec extends TestUtil with UnitSpec {
 
-  lazy val payAndTaxNoEyuJson = loadFile("/json/model/api/payAndTaxNoEyu.json")
-  lazy val payAndTaxWithEyuJson = loadFile("/json/model/api/payAndTaxWithEyu.json")
-  lazy val payAndTaxValuesNoneJson = loadFile("/json/model/api/payAndTaxValuesNone.json")
-
-  lazy val eyuList = List(EarlierYearUpdate(
-                            earlierYearUpdateId = UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
-                            taxablePayEYU = BigDecimal(123.45),
-                            taxEYU = BigDecimal(67.89),
-                            receivedDate = new LocalDate("2015-05-29")))
-
   lazy val payAndTaxNoEyu =  PayAndTax(
                                 payAndTaxId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
                                 taxablePayTotal = Some(BigDecimal(76543.21)),
@@ -58,42 +48,8 @@ class PayAndTaxSpec extends TestUtil with UnitSpec {
                                 paymentDate = Some(new LocalDate("2016-02-20")),
                                 earlierYearUpdates = Nil)
 
-  lazy val payAndTaxValuesNone = PayAndTax(
-                                  payAndTaxId = UUID.fromString("2dd8910e-95a4-4ede-b8af-977ca27b4a78"),
-                                  taxablePayTotal = None,
-                                  taxTotal = None,
-                                  paymentDate = None,
-                                  earlierYearUpdates = Nil)
-
-  lazy val payAndTaxWithEyu = PayAndTax(
-                                payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
-                                taxablePayTotal = Some(BigDecimal(1234567.89)),
-                                taxTotal = Some(BigDecimal(2222.22)),
-                                paymentDate = Some(new LocalDate("2016-02-20")),
-                                earlierYearUpdates = eyuList)
 
   "PayAndTax" should {
-
-    "transform into Json from object correctly without Eyu's" in {
-      Json.toJson(payAndTaxNoEyu) shouldBe payAndTaxNoEyuJson
-    }
-    "transform into object from json correctly  without Eyu's" in {
-      payAndTaxNoEyuJson.as[PayAndTax] shouldBe payAndTaxNoEyu
-    }
-
-    "transform into Json from object correctly with Eyu's" in {
-      Json.toJson(payAndTaxWithEyu) shouldBe payAndTaxWithEyuJson
-    }
-    "transform into object from json correctly with Eyu's" in {
-      payAndTaxWithEyuJson.as[PayAndTax] shouldBe payAndTaxWithEyu
-    }
-
-    "transform into Json from object correctly without pay, tax or Eyu's" in {
-      Json.toJson(payAndTaxValuesNone) shouldBe payAndTaxValuesNoneJson
-    }
-    "transform into object from json correctly without pay, tax or Eyu's" in {
-      payAndTaxValuesNoneJson.as[PayAndTax] shouldBe payAndTaxValuesNone
-    }
 
     "generate employmentId when none is supplied" in {
       val payAndTax = PayAndTax(
