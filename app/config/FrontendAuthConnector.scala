@@ -18,15 +18,16 @@ package config
 
 import javax.inject.Inject
 
+import play.api.Configuration
+import play.api.Mode.Mode
 import uk.gov.hmrc.auth.core.PlayAuthConnector
 import uk.gov.hmrc.play.config.ServicesConfig
-import uk.gov.hmrc.play.frontend.auth.connectors.{AuthConnector => LegacyFrontendAuthConnector}
 
 
 
 
-class FrontendAuthConnector @Inject() (
-  val http: WSHttpT
-) extends PlayAuthConnector with LegacyFrontendAuthConnector with ServicesConfig {
+class FrontendAuthConnector @Inject() (val http: WSHttpT,
+                                       val runModeConfiguration: Configuration,
+                                       val mode: Mode) extends PlayAuthConnector with ServicesConfig {
   val serviceUrl = baseUrl("auth")
 }

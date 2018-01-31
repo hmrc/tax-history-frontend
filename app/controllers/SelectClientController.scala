@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAuthConnector
+import config.{AppConfig, FrontendAuthConnector}
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
@@ -31,8 +31,13 @@ class SelectClientController @Inject()(
                                         override val authConnector: FrontendAuthConnector,
                                         override val config: Configuration,
                                         override val env: Environment,
-                                        implicit val messagesApi: MessagesApi
+                                        implicit val messagesApi: MessagesApi,
+                                        implicit val appConfig: AppConfig
                                       ) extends BaseController {
+
+  val loginContinue: String = appConfig.loginContinue
+  val serviceSignout: String = appConfig.serviceSignOut
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   //TODO Remove this as it is only included to support legacy url
   @Deprecated

@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package config
+package views
 
-import com.typesafe.config.Config
-import net.ceedubs.ficus.Ficus._
-import play.api.Play
-import uk.gov.hmrc.play.config.ControllerConfig
+import config.AppConfig
 
-object ControllerConfiguration extends ControllerConfig {
-  lazy val controllerConfigs = Play.current.configuration.underlying.as[Config]("controllers")
+trait TestAppConfig {
+  implicit val appConfig = new AppConfig {
+    val analyticsToken: String = ???
+    val analyticsHost: String = ???
+    val reportAProblemPartialUrl: String = ???
+    val reportAProblemNonJSUrl: String = ???
+    val loginUrl: String = ???
+    val logoutUrl: String = ???
+    val loginContinue: String = ???
+    val serviceSignOut: String = ???
+    val betaFeedbackUrl: String = ???
+    val betaFeedbackUnauthenticatedUrl: String = ???
+    val agentAccountHomePage: String = ???
+    val agentSubscriptionStart: String = ???
+  }
 }

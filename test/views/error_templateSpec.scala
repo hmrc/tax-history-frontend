@@ -19,7 +19,7 @@ package views
 import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 
-class error_templateSpec extends GuiceAppSpec {
+class error_templateSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

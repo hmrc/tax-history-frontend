@@ -16,20 +16,49 @@
 
 package modules
 
-import com.google.inject.AbstractModule
-import filters._
-import uk.gov.hmrc.play.frontend.filters._
+import com.google.inject.{AbstractModule, Provider}
+import com.google.inject.name.Names
+import config.AppConfig
+import play.api.{Configuration, Environment}
+import play.api.Play._
+import uk.gov.hmrc.play.bootstrap.filters.frontend.HeadersFilter
 
-class LocalGuiceModule extends AbstractModule {
+class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
   override def configure() = {
 
-    //These library components must be bound in this way, or using providers
-    bind(classOf[CookieCryptoFilter]).toInstance(SessionCookieCryptoFilter)
-    bind(classOf[HeadersFilter]).toInstance(HeadersFilter)
-    bind(classOf[DeviceIdFilter]).toProvider(classOf[DeviceIdCookieFilterProvider])
-    bind(classOf[CSRFExceptionsFilter]).toProvider(classOf[CSRFExceptionsFilterProvider])
-    bind(classOf[SessionTimeoutFilter]).toProvider(classOf[SessionTimeoutFilterProvider])
-    bind(classOf[CacheControlFilter]).toInstance(CacheControlFilter.fromConfig("caching.allowedContentTypes"))
+    bind(classOf[String]).annotatedWith(Names.named("contactFormServiceIdentifier")).toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
 
+    bind(classOf[AppConfig]).toProvider(new Provider[AppConfig] {
+      def getConfStringOrThrow(key: String, default: Option[String] = None): String =
+        configuration.getString(key).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$key'"))
+
+      def get: AppConfig = new AppConfig {
+        val contactHost = getConfStringOrThrow("contact-frontend.host", default = Some(""))
+        val serviceSignOut = getConfStringOrThrow("service-signout.url")
+        val analyticsToken = getConfStringOrThrow("google-analytics.token")
+        val analyticsHost = getConfStringOrThrow("google-analytics.host")
+        val agentAccountHomePage = getConfStringOrThrow("external-url.agent-account-home-page.url")
+        val agentSubscriptionStart = getConfStringOrThrow("external-url.agent-subscription-start.url")
+        val reportAProblemPartialUrl = getConfStringOrThrow("reportAProblemPartialUrl")
+        val reportAProblemNonJSUrl = getConfStringOrThrow("reportAProblemNonJSUrl")
+        val loginUrl = getConfStringOrThrow("login.url")
+        val logoutUrl = getConfStringOrThrow("logout.url")
+        val loginContinue = getConfStringOrThrow("login.continue")
+        val betaFeedbackUrl = getConfStringOrThrow("betaFeedbackUrl")
+        val betaFeedbackUnauthenticatedUrl = getConfStringOrThrow("betaFeedbackUnauthenticatedUrl")
+      }
+    })
+
+
+    //These library components must be bound in this way, or using providers
+    bind(classOf[HeadersFilter]).to(classOf[HeadersFilter])
+  }
+
+  private def bindConfigString(propertyName: String, default: Option[String] = None) =
+    bind(classOf[String]).annotatedWith(Names.named(s"$propertyName")).toProvider(ConfigStringProvider(propertyName, default))
+
+  private case class ConfigStringProvider(propertyName: String, default: Option[String] = None) extends Provider[String] {
+    lazy val get =
+      configuration.getString(propertyName).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$propertyName'"))
   }
 }

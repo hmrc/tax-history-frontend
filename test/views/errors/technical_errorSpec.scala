@@ -18,10 +18,9 @@ package views.errors
 
 import play.api.i18n.Messages
 import support.GuiceAppSpec
-import views.Fixture
-import config.FrontendAppConfig
+import views.{Fixture, TestAppConfig}
 
-class technical_errorSpec extends GuiceAppSpec {
+class technical_errorSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
@@ -35,7 +34,7 @@ class technical_errorSpec extends GuiceAppSpec {
 
       val title = Messages("employmenthistory.technical.error.title")
       doc.title mustBe title
-      doc.getElementById("back-link").attr("href").contains(FrontendAppConfig.AgentAccountHomePage) mustBe true
+      doc.getElementById("back-link").attr("href").contains(appConfig.agentAccountHomePage) mustBe true
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.technical.error.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.technical.error.message")).size() mustBe 1

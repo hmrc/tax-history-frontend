@@ -26,7 +26,9 @@ trait AppConfig {
   val loginContinue:String
   val serviceSignOut:String
   val betaFeedbackUrl: String
-  val betaFeedbackUnauthenticatedUrl:String
+  val betaFeedbackUnauthenticatedUrl: String
+  val agentAccountHomePage: String
+  val agentSubscriptionStart: String
 
 }
 

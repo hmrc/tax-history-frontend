@@ -14,12 +14,12 @@
  * limitations under the License.
  *@
 
-@import config.FrontendAppConfig
+@import config.AppConfig
 
-@()(implicit request: Request[_], messages: Messages)
+@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainContent = {
-  <a href="@FrontendAppConfig.AgentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
+  <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
   <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.technical.error.header")</h1>
   <p> @Messages("employmenthistory.technical.error.message") </p>

@@ -14,6 +14,9 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.layouts
+@import config.AppConfig
+
 @(title: String,
   sidebarLinks: Option[Html] = None,
   contentHeader: Option[Html] = None,
@@ -22,9 +25,8 @@
   linkElement : Option[Html] = None,
   scriptElem: Option[Html] = None,
   headerNavLink: Option[Html] = None,
-  analyticsAdditionalJs: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages)
+  analyticsAdditionalJs: Option[Html] = None)(mainContent: Html)(implicit request : Request[_], messages: Messages, appConfig: AppConfig)
 
-@import uk.gov.hmrc.play.views.html.layouts
 
 @linkElement = {
 }
@@ -38,7 +40,7 @@
 }
 
 
-@govuk_wrapper(appConfig = config.FrontendAppConfig,
+@govuk_wrapper(appConfig = appConfig,
                title = title,
                mainClass = mainClass,
                bodyClasses = bodyClasses,

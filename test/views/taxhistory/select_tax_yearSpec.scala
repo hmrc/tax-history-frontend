@@ -20,9 +20,9 @@ import form.SelectTaxYearForm.selectTaxYearForm
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import support.GuiceAppSpec
-import views.Fixture
+import views.{Fixture, TestAppConfig}
 
-class select_tax_yearSpec extends GuiceAppSpec {
+class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

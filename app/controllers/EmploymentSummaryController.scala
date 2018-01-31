@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAuthConnector
+import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.{Allowance, Employment, TaxAccount}
 import models.taxhistory.Person
@@ -37,8 +37,13 @@ class EmploymentSummaryController @Inject()(
                                              override val authConnector: FrontendAuthConnector,
                                              override val config: Configuration,
                                              override val env: Environment,
-                                             implicit val messagesApi: MessagesApi
+                                             implicit val messagesApi: MessagesApi,
+                                             implicit val appConfig: AppConfig
                                            ) extends BaseController {
+
+  val loginContinue: String = appConfig.loginContinue
+  val serviceSignout: String = appConfig.serviceSignOut
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   def getTaxHistory(taxYear: Int): Action[AnyContent] = Action.async {
     implicit request => {

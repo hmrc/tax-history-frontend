@@ -18,16 +18,17 @@ package views.taxhistory
 
 import java.lang.String
 
+import config.AppConfig
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.TestUtil
-import views.Fixture
+import views.{Fixture, TestAppConfig}
 import utils.DateHelper._
 
-class employment_detailSpec extends GuiceAppSpec with DetailConstants {
+class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
@@ -53,7 +54,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
     }
 
     "have correct employment details" in new ViewFixture {
-      payAndTax
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, true)
       val name = doc.select("#employment-table tbody tr").get(0)

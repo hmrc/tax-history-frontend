@@ -22,9 +22,9 @@ import play.api.i18n.Messages
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{DateHelper, TestUtil}
-import views.Fixture
+import views.{Fixture, TestAppConfig}
 
-class employment_summarySpec extends GuiceAppSpec with Constants {
+class employment_summarySpec extends GuiceAppSpec with Constants with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

@@ -19,9 +19,9 @@ package views.errors
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import utils.TestUtil
-import views.Fixture
+import views.{Fixture, TestAppConfig}
 
-class no_dataSpec extends GuiceAppSpec {
+class no_dataSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
