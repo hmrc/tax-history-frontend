@@ -33,7 +33,7 @@ clientName:String)(implicit request: Request[_], messages: Messages)
          tabindex="-1">
         <h2 id="error-summary-heading" class="h3-heading">@Messages("employmenthistory.select.tax.year.error.heading")</h2>
         <ul class="js-error-summary-messages">
-            <li role="menuitemradio">
+            <li>
                 <a class="error-font" href="#@form.errors.head.key" id="@{form.errors.head.key}-error-summary" data-focuses="@form.errors.head.key">
                     @form.errors.head.messages.map(x => Messages(x))
                 </a>
@@ -42,9 +42,9 @@ clientName:String)(implicit request: Request[_], messages: Messages)
     </div>
 }
 
-<div class="page-header" >
+<div class="page-header">
     <h1 class="heading-xlarge">
-        <span class="pre-heading">@Messages("employmenthistory.display.client.name",s"${clientName}")</span>
+        <span class="pre-heading">@Messages("employmenthistory.display.client.name",s"$clientName")</span>
         @Messages("employmenthistory.select.tax.year.h1")
     </h1>
 </div>
