@@ -61,10 +61,12 @@
     <h2 class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
     <table id="employment-table">
         <tbody>
-        <th scope="col" width="26%">@Messages("lbl.employer")</th>
-        <th scope="col" width="27%">@Messages("lbl.date.start")</th>
-        <th scope="col" width="27%">@Messages("lbl.date.end")</th>
-        <th scope="col" width="20%"></th>
+        <tr>
+        <th scope="col" class="width26pc">@Messages("lbl.employer")</th>
+        <th scope="col" class="width27pc">@Messages("lbl.date.start")</th>
+        <th scope="col" class="width27pc">@Messages("lbl.date.end")</th>
+        <th scope="col" class="width20pc"></th>
+        </tr>
         @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
                 <td>@employment.employerName</td>
@@ -85,16 +87,18 @@
 
         <table id="pension-table">
             <tbody>
-            <th scope="col" width="26%">@Messages("lbl.provider")</th>
-            <th scope="col" width="27%">@Messages("lbl.date.start")</th>
-            <th scope="col" width="27%">@Messages("lbl.date.end")</th>
-            <th scope="col" width="20%"></th>
+            <tr>
+            <th scope="col" class="width26pc">@Messages("lbl.provider")</th>
+            <th scope="col" class="width27pc">@Messages("lbl.date.start")</th>
+            <th scope="col" class="width27pc">@Messages("lbl.date.end")</th>
+            <th scope="col" class="width20pc"></th>
+            </tr>
             @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
-                <td scope="row"> @employment.employerName</td>
-                <td scope="row">@DateHelper.formatDate(employment.startDate)</td>
-                <td scope="row">@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
-                <td scope="row"><a href="/tax-history/single-record@employment.employmentURI"
+                <td> @employment.employerName</td>
+                <td>@DateHelper.formatDate(employment.startDate)</td>
+                <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
+                <td><a href="/tax-history/single-record@employment.employmentURI"
                        class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")
                     <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                 </td>
@@ -131,8 +135,8 @@
         <table id="taxAccountTable">
             <thead>
                 <tr>
-                    <th scope="col" width="75%">@Messages("lbl.details")</th>
-                    <th scope="col" width="25%" class="numeric">@Messages("lbl.amount")</th>
+                    <th scope="col" class="width75pc">@Messages("lbl.details")</th>
+                    <th scope="col" class="numeric width25pc">@Messages("lbl.amount")</th>
                 </tr>
             </thead>
             <tbody>
@@ -150,9 +154,9 @@
                 </tr>
 
                 <tr>
-                    <td colspan="3">
-                        <details role="group">
-                            <summary role="button">
+                    <td colspan="2">
+                        <details>
+                            <summary>
                                 <span class="summary">@Messages("employmenthistory.tax-account.potential-underpayment.summary")</span>
                             </summary>
                             <div class="panel-border-narrow panel" id="details-content-0">
