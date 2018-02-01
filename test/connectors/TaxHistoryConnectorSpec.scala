@@ -31,14 +31,13 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
 import support.BaseSpec
-import support.fixtures.Fixtures
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpResponse
 import utils.TestUtil
 
 import scala.concurrent.Future
 
-class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with Fixtures with TestUtil {
+class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
 
   val http = mock[WSHttpT]
   val startDate = new LocalDate("2016-01-21")

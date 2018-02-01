@@ -18,7 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAuthConnector
+import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.{CompanyBenefit, Employment, PayAndTax}
 import models.taxhistory.Person
@@ -36,9 +36,13 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
                                             override val authConnector: FrontendAuthConnector,
                                             override val config: Configuration,
                                             override val env: Environment,
-                                            implicit val messagesApi: MessagesApi
+                                            implicit val messagesApi: MessagesApi,
+                                            implicit val appConfig: AppConfig
                                           ) extends BaseController {
 
+  val loginContinue: String = appConfig.loginContinue
+  val serviceSignout: String = appConfig.serviceSignOut
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)
                                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {

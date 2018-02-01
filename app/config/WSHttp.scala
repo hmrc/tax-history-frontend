@@ -16,9 +16,11 @@
 
 package config
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
 import com.google.inject.ImplementedBy
+import play.api.{Configuration, Environment}
+import play.api.Mode.Mode
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.config.{AppName, RunMode}
 import uk.gov.hmrc.play.http.ws._
@@ -32,6 +34,7 @@ trait WSHttpT extends HttpGet with WSGet
   with AppName with RunMode
 
 @Singleton
-class WSHttp extends WSHttpT {
+class WSHttp @Inject() (val environment: Environment, val runModeConfiguration: Configuration, val appNameConfiguration: Configuration) extends WSHttpT {
+  val mode: Mode = environment.mode
   override val hooks = NoneRequired
 }

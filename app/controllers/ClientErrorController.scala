@@ -18,11 +18,11 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAuthConnector
+import config.{AppConfig, FrontendAuthConnector}
 import connectors.CitizenDetailsConnector
-import play.api.{Configuration, Environment}
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
+import play.api.{Configuration, Environment}
 import views.html.errors._
 
 import scala.concurrent.Future
@@ -31,7 +31,12 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
                                       override val authConnector: FrontendAuthConnector,
                                       override val config: Configuration,
                                       override val env: Environment,
-                                      implicit val messagesApi: MessagesApi) extends BaseController {
+                                      implicit val messagesApi: MessagesApi,
+                                      implicit val appConfig: AppConfig) extends BaseController {
+
+  val loginContinue: String = appConfig.loginContinue
+  val serviceSignout: String = appConfig.serviceSignOut
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>

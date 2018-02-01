@@ -17,7 +17,7 @@
 package connectors
 
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
-import support.fixtures.{Fixtures, PersonFixture}
+import support.fixtures.PersonFixture
 import org.mockito.Matchers.{eq => meq, _}
 import org.mockito.Mockito._
 import play.api.Application
@@ -32,7 +32,7 @@ import utils.TestUtil
 
 import scala.concurrent.Future
 
-class CitizenDetailsConnectorSpec extends BaseSpec with Fixtures with TestUtil with PersonFixture {
+class CitizenDetailsConnectorSpec extends BaseSpec with TestUtil with PersonFixture {
 
   val http = mock[WSHttpT]
 

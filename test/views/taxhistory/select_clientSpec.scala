@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
+import config.AppConfig
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import support.GuiceAppSpec
 import utils.TestUtil
-import views.Fixture
+import views.{Fixture, TestAppConfig}
 
-class select_clientSpec extends GuiceAppSpec with TestUtil {
+class select_clientSpec extends GuiceAppSpec with TestUtil with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)

@@ -16,10 +16,11 @@
 
 @import models.taxhistory.SelectTaxYear
 @import uk.gov.hmrc.play.views.html.helpers
+@import config.AppConfig
 
 @(form: Form[SelectTaxYear],
 taxYears:List[(String, String)],
-clientName:String)(implicit request: Request[_], messages: Messages)
+clientName:String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 

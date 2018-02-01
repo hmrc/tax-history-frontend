@@ -18,8 +18,7 @@ package controllers
 
 import javax.inject.Inject
 
-import config.FrontendAppConfig.AgentSubscriptionStart
-import config.{FrontendAppConfig, FrontendAuthConnector}
+import config.{AppConfig, FrontendAuthConnector}
 import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -31,19 +30,17 @@ import play.api.mvc.Results
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
-import support.fixtures.{Fixtures, PersonFixture}
+import support.fixtures.PersonFixture
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
-import uk.gov.hmrc.play.frontend.auth.connectors.domain.Authority
+import views.TestAppConfig
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class BaseControllerSpec extends ControllerSpec with Fixtures {
-
-  lazy val authority: Authority = buildFakeAuthority(true)
+class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   trait HappyPathSetup {
 
@@ -121,7 +118,7 @@ class BaseControllerSpec extends ControllerSpec with Fixtures {
       val result = controller.authorisedForAgent(_ =>Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(AgentSubscriptionStart)
+      redirectLocation(result) shouldBe Some(controller.appConfig.agentSubscriptionStart)
     }
 
     "redirect to not no-agent-services-account when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
@@ -184,7 +181,7 @@ class BaseControllerSpec extends ControllerSpec with Fixtures {
     "redirect to feed back survey link" in new HappyPathSetup {
       val result = controller.logout()(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(FrontendAppConfig.serviceSignOut)
+      redirectLocation(result) shouldBe Some(controller.appConfig.serviceSignOut)
     }
 
   }
@@ -242,5 +239,10 @@ class BaseControllerSpec extends ControllerSpec with Fixtures {
 class Controller @Inject()(override val authConnector: FrontendAuthConnector,
                            override val config: Configuration,
                            override val env: Environment,
-                           implicit val messagesApi: MessagesApi
-                          ) extends BaseController
+                           implicit val messagesApi: MessagesApi,
+                           implicit val appConfig: AppConfig
+                          ) extends BaseController {
+  val loginContinue: String = appConfig.loginContinue
+  val serviceSignout: String = appConfig.serviceSignOut
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
+}

@@ -16,7 +16,6 @@
 
 package controllers
 
-import config.FrontendAppConfig
 import controllers.auth.AgentAuth
 import models.taxhistory.Person
 import play.api.i18n.I18nSupport
@@ -33,7 +32,18 @@ import utils.TaxHistoryLogger
 import scala.concurrent.Future
 
 trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
-  lazy val ggSignInRedirect: Result = toGGLogin(FrontendAppConfig.loginContinue)
+
+  /**
+    * The URI to direct to for login.
+    */
+  val loginContinue: String
+
+  /**
+    * The URI to direct to for signout.
+    */
+  val serviceSignout: String
+
+  lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 
   lazy val logoutLink: Html =
     Link.toInternalPage(controllers.routes.EmploymentSummaryController.logout().url, Some("Sign out")).toHtml
@@ -44,7 +54,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
   def logout(): Action[AnyContent] = Action.async {
     implicit request => {
       logger.info("Sign out of the service")
-      Future.successful(Redirect(FrontendAppConfig.serviceSignOut).withNewSession)
+      Future.successful(Redirect(serviceSignout).withNewSession)
     }
   }
 
