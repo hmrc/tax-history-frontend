@@ -118,7 +118,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
       val result = controller.authorisedForAgent(_ =>Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(appConfig.agentSubscriptionStart)
+      redirectLocation(result) shouldBe Some(controller.appConfig.agentSubscriptionStart)
     }
 
     "redirect to not no-agent-services-account when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
@@ -181,7 +181,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
     "redirect to feed back survey link" in new HappyPathSetup {
       val result = controller.logout()(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(appConfig.serviceSignOut)
+      redirectLocation(result) shouldBe Some(controller.appConfig.serviceSignOut)
     }
 
   }

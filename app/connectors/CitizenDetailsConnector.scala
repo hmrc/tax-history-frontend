@@ -19,7 +19,7 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import config.WSHttpT
-import play.api.Configuration
+import play.api.{Configuration, Environment}
 import play.api.Mode.Mode
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
@@ -29,7 +29,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class CitizenDetailsConnector @Inject()(val httpGet: WSHttpT, val runModeConfiguration: Configuration, val mode: Mode) extends ServicesConfig {
+class CitizenDetailsConnector @Inject()(val httpGet: WSHttpT, val runModeConfiguration: Configuration, val environment: Environment) extends ServicesConfig {
+
+  val mode: Mode = environment.mode
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     override def read(method: String, url: String, response: HttpResponse) = response

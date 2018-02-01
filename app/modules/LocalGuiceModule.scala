@@ -51,7 +51,7 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
 
 
     //These library components must be bound in this way, or using providers
-    bind(classOf[HeadersFilter]).to(classOf[HeadersFilter])
+    //bind(classOf[HeadersFilter]).to(classOf[HeadersFilter])
   }
 
   private def bindConfigString(propertyName: String, default: Option[String] = None) =

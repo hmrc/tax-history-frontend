@@ -19,7 +19,7 @@ package config
 
 import javax.inject.{Inject, Named, Singleton}
 
-import play.api.Configuration
+import play.api.{Configuration, Environment}
 import play.api.Mode.Mode
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.LoadAuditingConfig
@@ -27,6 +27,6 @@ import uk.gov.hmrc.play.config.AppName
 
 
 @Singleton
-class FrontendAuditConnector @Inject() (val configuration: Configuration, val mode: Mode) extends AuditConnector {
-  override lazy val auditingConfig = LoadAuditingConfig(configuration, mode, s"auditing")
+class FrontendAuditConnector @Inject() (val configuration: Configuration, val environment: Environment) extends AuditConnector {
+  override lazy val auditingConfig = LoadAuditingConfig(configuration, environment.mode, s"auditing")
 }

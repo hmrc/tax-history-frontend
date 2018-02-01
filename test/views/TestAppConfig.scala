@@ -20,17 +20,17 @@ import config.AppConfig
 
 trait TestAppConfig {
   implicit val appConfig = new AppConfig {
-    val analyticsToken: String = ???
-    val analyticsHost: String = ???
-    val reportAProblemPartialUrl: String = ???
-    val reportAProblemNonJSUrl: String = ???
-    val loginUrl: String = ???
-    val logoutUrl: String = ???
-    val loginContinue: String = ???
-    val serviceSignOut: String = ???
-    val betaFeedbackUrl: String = ???
-    val betaFeedbackUnauthenticatedUrl: String = ???
-    val agentAccountHomePage: String = ???
-    val agentSubscriptionStart: String = ???
+    val analyticsToken: String = "faketoken"
+    val analyticsHost: String = "fakehost"
+    val reportAProblemPartialUrl: String = "fakeurl"
+    val reportAProblemNonJSUrl: String = "fakeurl"
+    val loginUrl: String = "fakeurl"
+    val logoutUrl: String = "fakeurl"
+    val loginContinue: String = "fakeurl"
+    val serviceSignOut: String = "fakeurl"
+    val betaFeedbackUrl: String = "fakeurl"
+    val betaFeedbackUnauthenticatedUrl: String = "fakeurl"
+    val agentAccountHomePage: String = "fakeurl"
+    val agentSubscriptionStart: String = "fakeurl"
   }
 }

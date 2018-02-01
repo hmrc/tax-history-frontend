@@ -19,7 +19,7 @@ package connectors
 import javax.inject.{Inject, Singleton}
 
 import config.WSHttpT
-import play.api.Configuration
+import play.api.{Configuration, Environment}
 import play.api.Mode.Mode
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
@@ -29,7 +29,9 @@ import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 import scala.concurrent.Future
 
 @Singleton
-class TaxHistoryConnector @Inject()(val mode: Mode, val runModeConfiguration: Configuration, val httpGet: WSHttpT) extends ServicesConfig {
+class TaxHistoryConnector @Inject()(val environment: Environment, val runModeConfiguration: Configuration, val httpGet: WSHttpT) extends ServicesConfig {
+
+  protected def mode: Mode = environment.mode
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     override def read(method: String, url: String, response: HttpResponse) = response

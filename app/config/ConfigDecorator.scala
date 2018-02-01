@@ -18,13 +18,15 @@ package config
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.Configuration
+import play.api.{Configuration, Environment}
 import play.api.Mode.Mode
 import play.api.i18n.Langs
 import uk.gov.hmrc.play.config.ServicesConfig
 
 @Singleton
-class ConfigDecorator @Inject()(val runModeConfiguration: Configuration, val mode: Mode, langs: Langs) extends ServicesConfig {
+class ConfigDecorator @Inject()(val runModeConfiguration: Configuration, val environment: Environment, langs: Langs) extends ServicesConfig {
+
+  val mode: Mode = environment.mode
 
   lazy val companyAuthHost = runModeConfiguration.getString(s"external-url.company-auth.host").getOrElse("")
   lazy val taxHistoryFrontendHost = runModeConfiguration.getString(s"external-url.tax-history-frontend.host").getOrElse("")
