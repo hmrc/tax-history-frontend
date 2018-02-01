@@ -19,17 +19,15 @@ package form
 import models.taxhistory.SelectClient
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
+import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.domain.Nino.isValid
 
 object SelectClientForm {
   val selectClientForm: Form[SelectClient] = {
     Form(mapping(
       "clientId" -> text
-        .verifying("employmenthistory.select.client.error.empty", isNonEmpty(_))
-        .verifying("employmenthistory.select.client.error.invalid-format",text => if(isNonEmpty(text)) isValidNino(text) else true)
+        .verifying("employmenthistory.select.client.error.empty", _.nonEmpty)
+        .verifying("employmenthistory.select.client.error.invalid-format", text => text.isEmpty || Nino.isValid(text.toUpperCase))
     )(SelectClient.apply)(SelectClient.unapply))
   }
-
-  private def isNonEmpty(nino: String):    Boolean = nino.nonEmpty
-  private def isValidNino(nino: String):   Boolean = isValid(nino.toUpperCase)
 }

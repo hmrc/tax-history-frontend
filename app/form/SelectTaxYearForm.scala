@@ -24,7 +24,7 @@ object SelectTaxYearForm {
   val selectTaxYearForm: Form[SelectTaxYear] = {
     Form(mapping(
       "selectTaxYear" -> optional(text)
-        .verifying("employmenthistory.select.tax.year.error.linktext", text => text.fold(false)(_.nonEmpty))
+        .verifying("employmenthistory.select.tax.year.error.linktext", _.exists(_.nonEmpty))
     )(SelectTaxYear.apply)(SelectTaxYear.unapply))
   }
 }
