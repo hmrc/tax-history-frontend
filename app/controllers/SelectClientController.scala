@@ -39,12 +39,6 @@ class SelectClientController @Inject()(
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  //TODO Remove this as it is only included to support legacy url
-  @Deprecated
-  def getLegacySelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-    redirectToSelectClientPage
-  }
-
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedAgent(AuthProviderAgents) {
       Future.successful(Ok(select_client(selectClientForm)))
@@ -57,7 +51,7 @@ class SelectClientController @Inject()(
       validFormData =>
         authorisedAgent(AuthProviderAgents) {
           Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
-            .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
+            .addingToSession(CustomSessionKeys.Nino -> s"${validFormData.clientId.toUpperCase}")
         }
     )
   }
