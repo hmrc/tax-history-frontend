@@ -74,7 +74,7 @@
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI" class="float-right"
-                       onClick="ga('link - click', 'Employments', 'View Record')"
+                       onClick="ga('send', 'event', 'Employments', 'Click', 'View Record')"
                        id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")
                     <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                 </td>
@@ -101,7 +101,7 @@
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI"
-                       onClick="ga('link - click', 'Pensions', 'View Record')"
+                onClick="ga('send', 'event', 'Pensions', 'Click', 'View Record')"
                        class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")
                     <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                 </td>

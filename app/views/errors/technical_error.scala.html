@@ -18,10 +18,6 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@analyticsAdditionalJs = @{
-    "ga('send', 'error - field', 'Technical Error', 'Technical Error');"
-}
-
 @mainContent = {
     <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
