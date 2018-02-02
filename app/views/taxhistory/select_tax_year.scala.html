@@ -58,7 +58,10 @@ clientName:String)(implicit request: Request[_], messages: Messages, appConfig: 
       '_id -> "selectTaxYear",
       '_groupClass -> "subsection margin-bottom--small",
       '_fieldsetAttributes -> "id=selectTaxYear",
-      'hint -> Messages("employmenthistory.select.tax.year.error.message"))
+      'hint -> Messages("employmenthistory.select.tax.year.error.message"),
+      '_legend -> Html(Messages("employmenthistory.select.tax.year.error.message")),
+      '_legendClass -> "hidden"
+)
 
       <button id="continueButton" type="submit" class="button">@Messages("lbl.continue")</button>
   }
