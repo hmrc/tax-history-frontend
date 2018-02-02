@@ -66,7 +66,7 @@
         <th scope="col" class="width26pc">@Messages("lbl.employer")</th>
         <th scope="col" class="width27pc">@Messages("lbl.date.start")</th>
         <th scope="col" class="width27pc">@Messages("lbl.date.end")</th>
-        <th scope="col" class="width20pc"></th>
+        <th scope="col" class="width20pc alignRight">@Messages("lbl.Actions")</th>
         </tr>
         @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
@@ -93,7 +93,7 @@
             <th scope="col" class="width26pc">@Messages("lbl.provider")</th>
             <th scope="col" class="width27pc">@Messages("lbl.date.start")</th>
             <th scope="col" class="width27pc">@Messages("lbl.date.end")</th>
-            <th scope="col" class="width20pc"></th>
+            <th scope="col" class="width20pc alignRight">@Messages("lbl.Actions")</th>
             </tr>
             @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
