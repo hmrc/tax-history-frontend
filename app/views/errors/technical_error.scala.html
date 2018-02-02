@@ -18,11 +18,17 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainContent = {
-  <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
-
-  <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.technical.error.header")</h1>
-  <p> @Messages("employmenthistory.technical.error.message") </p>
+@analyticsAdditionalJs = @{
+    "ga('send', 'error - field', 'Technical Error', 'Technical Error');"
 }
 
-@views.html.main_template(title = Messages("employmenthistory.technical.error.title")){ @mainContent }
+@mainContent = {
+    <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
+
+    <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.technical.error.header")</h1>
+    <p> @Messages("employmenthistory.technical.error.message") </p>
+}
+
+@views.html.main_template(title = Messages("employmenthistory.technical.error.title")) {
+    @mainContent
+}
