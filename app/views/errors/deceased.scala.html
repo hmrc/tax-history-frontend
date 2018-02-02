@@ -18,11 +18,17 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-
-@mainContent = {
-  <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
-  <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.deceased.header")</h1>
-  <a id="selectClient" href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employmenthistory.deceased.select.client.link.text")</a>
+@analyticsAdditionalJs = @{
+    "ga('send', 'error - field', 'Is Client Deceased', 'Client Deceased');"
 }
 
-@views.html.main_template(title = Messages("employmenthistory.deceased.title")){ @mainContent }
+@mainContent = {
+    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+    <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.deceased.header")</h1>
+    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
+    id="selectClient">@Messages("employmenthistory.deceased.select.client.link.text")</a>
+}
+
+@views.html.main_template(title = Messages("employmenthistory.deceased.title")) {
+    @mainContent
+}
