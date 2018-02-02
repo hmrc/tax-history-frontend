@@ -9,6 +9,7 @@ lbl.company.benefits.desc = Benefits
 lbl.amount = Amount
 lbl.date.start = Start date
 lbl.date.end = End date
+lbl.Actions = Actions
 lbl.to = to
 lbl.text.current = current
 lbl.current = Current
