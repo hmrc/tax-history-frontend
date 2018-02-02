@@ -18,10 +18,6 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@analyticsAdditionalJs = @{
-    "ga('send', 'error - field', 'Agent Client Relationship Check', 'Not Authorised');"
-}
-
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
     <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.not.authorised.header")</h1>

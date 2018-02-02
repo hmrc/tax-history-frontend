@@ -18,10 +18,6 @@
 
 @(nameOrNino: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@analyticsAdditionalJs = @{
-    "ga('send', 'error - field', 'Data Available', 'No Data');"
-}
-
 @mainContent = {
     <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
     <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.no.data.header", nameOrNino)</h1>
