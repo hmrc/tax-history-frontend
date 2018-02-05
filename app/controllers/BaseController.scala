@@ -48,9 +48,6 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
   lazy val logoutLink: Html =
     Link.toInternalPage(controllers.routes.EmploymentSummaryController.logout().url, Some("Sign out")).toHtml
 
-  // todo : this needs to go with the rest of the session data
-  val ninoSessionKey = "USER_NINO"
-
   def logout(): Action[AnyContent] = Action.async {
     implicit request => {
       logger.info("Sign out of the service")
@@ -58,9 +55,14 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
     }
   }
 
-  // todo : work out what eventualResult is for, and call it that.
+
+  /**
+    * This function is designed to be wrapped around a block of code (`result`).
+    * Checks the authorisation condition (`predicate`) and return `result` if authorised.
+    * Otherwise, handles the authorisation failure.
+    */
   protected def authorisedAgent(predicate: Predicate)
-                               (eventualResult: Future[Result])
+                               (result: => Future[Result])
                                (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     logger.info("Start authorisation check")
     authorised(predicate)
@@ -69,7 +71,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
             case (`isAnAgent`, Some(_)) =>
               logger.info("Agent is authorised")
-              eventualResult
+              result
             case (`isAnAgent`, None) =>
               logger.info("No enrolments available for the agent")
               redirectToSubPage
@@ -96,11 +98,16 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
     }
   }
 
-  protected[controllers] def authorisedForAgent(eventualResult: (Nino) => Future[Result])
+  /**
+    * This function is designed to be wrapped around a block of code (`result`).
+    * Checks the authorisation of the NINO in the session and return the output of `result` if authorised.
+    * Otherwise, handles the authorisation failure.
+    */
+  protected[controllers] def authorisedForAgent(result: (Nino) => Future[Result])
                                                (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     getNinoFromSession(request) match {
       case Some(nino) =>
-        authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)(eventualResult(nino))
+        authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("MTDITID", nino.toString) and AuthProviderAgents)(result(nino))
       case None =>
         logger.info("No nino supplied")
         Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
@@ -145,7 +152,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
   }
 
   def getNinoFromSession(request: Request[_]): Option[Nino] =
-    request.session.get(ninoSessionKey).map(Nino(_))
+    request.session.get(CustomSessionKeys.Nino).map(Nino(_))
 
   def redirectToSelectClientPage: Future[Result] = Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
 

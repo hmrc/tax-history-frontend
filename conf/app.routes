@@ -4,7 +4,6 @@
 GET   /assets/*file                                       @controllers.Assets.at(path="/public", file)
 GET   /client-income-record/:taxYear                      @controllers.EmploymentSummaryController.getTaxHistory(taxYear:Int)
 GET   /logout                                             @controllers.EmploymentSummaryController.logout()
-GET   /agent/select-client                                @controllers.SelectClientController.getLegacySelectClientPage()
 GET   /select-client                                      @controllers.SelectClientController.getSelectClientPage()
 POST  /select-client                                      @controllers.SelectClientController.submitSelectClientPage()
 GET   /single-record/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
