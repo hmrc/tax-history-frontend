@@ -46,7 +46,7 @@ class select_clientSpec extends GuiceAppSpec with TestUtil with TestAppConfig {
 
     "have the correct heading" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      heading.html mustBe Messages("employmenthistory.select.client.heading")
+      doc.body.getElementById("title").text() mustBe Messages("employmenthistory.select.client.heading")
     }
 
     "display input field label for accessibility" in new ViewFixture {
