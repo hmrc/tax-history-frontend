@@ -26,42 +26,47 @@
                           bodyClasses = None,
                           sidebarLinks = None) {
 
-    <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
+<a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
-    <section class="section" >
-        @helpers.form(routes.SelectClientController.submitSelectClientPage()){
-            @if(sCForm.hasErrors) {
-                <div class="flash error-summary error-summary--show"
-                    id="error-summary-display"
-                    role="alert"
-                    aria-labelledby="error-summary-heading"
-                    tabindex="-1">
-                    <h2 id="error-summary-heading" class="h3-heading">@sCForm.errors.head.messages.map(x => Messages(s"$x.title"))</h2>
-                    <ul class="js-error-summary-messages">
-                        <li role="tooltip">
-                            <a class="error-font" href="#@sCForm.errors.head.key" id="@{sCForm.errors.head.key}-error-summary" data-focuses="@sCForm.errors.head.key">
-                                @sCForm.errors.head.messages.map(x => Messages(x))
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            }
-        <header class="page-header"><h1 class="heading-xlarge">@Messages("employmenthistory.select.client.heading")</h1></header>
+<section class="section" >
 
-        <fieldset class="form-field-group">
-                @input(sCForm("clientId"),
-                '_label -> Messages("employmenthistory.select.client.clients.nino"),
-                '_labelClass -> "flash-error",
-                '_labelTextClass -> "visuallyhidden",
-                '_maxlength -> "9",
-                '_inputClass -> "form-control form-control--block uppercase-only",
-                '_inputHint -> Messages("employmenthistory.select.client.nino.hint"))
-            </fieldset>
-            <div class="form-field">
-                <button class="button" id="continueButton" type="submit">
-                    @Messages("employmenthistory.select.client.continue")
-                </button>
+
+    @helpers.form(routes.SelectClientController.submitSelectClientPage()){
+        @if(sCForm.hasErrors) {
+            <div class="flash error-summary error-summary--show"
+                 id="error-summary-display"
+                 role="alert"
+                 aria-labelledby="error-summary-heading"
+                 tabindex="-1">
+                <h2 id="error-summary-heading" class="h3-heading">@sCForm.errors.head.messages.map(x => Messages(s"$x.title"))</h2>
+                <ul class="js-error-summary-messages">
+                    <li role="tooltip">
+                        <a class="error-font" href="#@sCForm.errors.head.key" id="@{sCForm.errors.head.key}-error-summary" data-focuses="@sCForm.errors.head.key">
+                            @sCForm.errors.head.messages.map(x => Messages(x))
+                        </a>
+                    </li>
+                </ul>
             </div>
         }
-    </section>
+    <header class="page-header"><h3 class="heading-xlarge" id= "title">@Messages("employmenthistory.select.client.heading")</h3></header>
+
+    <fieldset class="form-field-group">
+        @input(sCForm("clientId"),
+        '_label -> Messages("employmenthistory.select.client.clients.nino"),
+        '_labelClass -> "flash-error",
+        '_labelTextClass -> "visuallyhidden",
+        '_maxlength -> "9",
+        '_inputClass -> "form-control form-control--block uppercase-only",
+        '_inputHint -> Messages("employmenthistory.select.client.nino.hint"),
+        '_legend -> Html(Messages("employmenthistory.select.client.heading")),
+        '_legendClass -> "hidden"
+        )
+    </fieldset>
+    <div class="form-field">
+        <button class="button" id="continueButton" type="submit">
+            @Messages("employmenthistory.select.client.continue")
+        </button>
+    </div>
+    }
+</section>
 }
