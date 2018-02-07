@@ -33,14 +33,14 @@
 
     @helpers.form(routes.SelectClientController.submitSelectClientPage()){
         @if(sCForm.hasErrors) {
-            <div class="flash error-summary error-summary--show"
+            <div class="error-summary error-summary--show"
                  id="error-summary-display"
                  role="alert"
                  aria-labelledby="error-summary-heading"
                  tabindex="-1">
                 <h2 id="error-summary-heading" class="h3-heading">@sCForm.errors.head.messages.map(x => Messages(s"$x.title"))</h2>
                 <ul class="js-error-summary-messages">
-                    <li role="tooltip">
+                    <li>
                         <a class="error-font" href="#@sCForm.errors.head.key" id="@{sCForm.errors.head.key}-error-summary" data-focuses="@sCForm.errors.head.key">
                             @sCForm.errors.head.messages.map(x => Messages(x))
                         </a>
@@ -48,7 +48,9 @@
                 </ul>
             </div>
         }
-    <header class="page-header"><h3 class="heading-xlarge" id= "title">@Messages("employmenthistory.select.client.heading")</h3></header>
+    <div class="page-header">
+    <h1 class="heading-xlarge" id= "title">@Messages("employmenthistory.select.client.heading")</h1>
+    </div>
 
     <fieldset class="form-field-group">
         @input(sCForm("clientId"),
