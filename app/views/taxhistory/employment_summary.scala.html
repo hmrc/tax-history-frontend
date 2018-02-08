@@ -59,7 +59,7 @@
     </div>
 
 @if(employments.exists(!_.receivingOccupationalPension)) {
-    <h2 id = "Employments" class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
+    <h2 id = "EmploymentDetails" class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
     <table id="employment-table">
         <tbody>
         <tr>
@@ -134,7 +134,7 @@
     }
 
     @if(taxAccount.nonEmpty) {
-        <h2 id = "UnderpaidT&D" class="heading-medium">@Messages("employmenthistory.tax-account.header")</h2>
+        <h2 id = "UnderpaidTaxAndDebts" class="heading-medium">@Messages("employmenthistory.tax-account.header")</h2>
         <table id="taxAccountTable">
             <thead>
                 <tr>
