@@ -40,7 +40,7 @@
 </header>
 
 <table id="employment-table">
-    <caption><span class="visuallyhidden">@Messages("employmenthistory.employment.details.caption")</span></caption>
+    <caption><span class="visuallyhidden" id="EmploymentDetails">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
   <tr>
       <th scope="row" class="width50pc">@Messages("employmenthistory.employment.details.client.name")</th>
@@ -64,7 +64,7 @@
 </table>
 
 <div>
-    <h2 class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading")</h2>
+    <h2 id="Payments" class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading")</h2>
     @if(payAndTax.isDefined && payAndTax.get.paymentDate.isDefined){
     <p>@Messages("employmenthistory.pay.and.tax.guidance",employment.employerName,formatDate(payAndTax.get.paymentDate.get))</p>
     }
@@ -98,9 +98,7 @@
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
 
     <div>
-        <h2 class="heading-medium">
-            @Messages("employmenthistory.employment.details.eyu")
-        </h2>
+        <h2 class="heading-medium" id="EYD">@Messages("employmenthistory.employment.details.eyu")</h2>
         <p>@Messages("employmenthistory.eyu.caveat",(taxYear+1).toString,taxYear.toString,employment.employerName)</p>
     </div>
 
@@ -129,9 +127,7 @@
 @if(companyBenefits.nonEmpty) {
 
     <div>
-        <h2 class="heading-medium">
-            @Messages("employmenthistory.employment.details.companybenefits")
-        </h2>
+        <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
         <p>
             @if(actualOrForecast) {
             @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
