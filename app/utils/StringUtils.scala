@@ -19,16 +19,21 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 
 object StringUtils {
-  def uppcaseToTitleCase(s:String): String ={
+  def uppcaseToTitleCase(s: String): String = {
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
 
-  def getEndDate(employment: Employment, current: String, noDataAvailable: String): String = {
-    employment.endDate.map(DateHelper.formatDate(_)).getOrElse {
-      employment.employmentStatus match {
-        case EmploymentStatus.Live => current
-        case _                     => noDataAvailable
-      }
+  def getEmploymentStatus(employment: Employment, current: String, ceased: String): String = {
+    employment.employmentStatus match {
+      case EmploymentStatus.Live => current
+      case _ => ceased
+    }
+  }
+
+  def getEndDate(employment: Employment, unknown: String, ongoing: String): String = {
+    employment.employmentStatus match {
+      case EmploymentStatus.PotentiallyCeased => unknown
+      case _ => employment.endDate.map(DateHelper.formatDate).getOrElse(ongoing)
     }
   }
 

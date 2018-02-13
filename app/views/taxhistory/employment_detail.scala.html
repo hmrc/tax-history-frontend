@@ -35,20 +35,25 @@
 
 
 <header class="page-header">
+    <span class="pre-heading">@Messages("employmenthistory.display.client.name", s"$clientNameOrNino")</span>
     <h1 class="heading-xlarge">@employment.employerName</h1>
-    <p id = "taxYearRange" class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
+    <span id = "taxYearRange" class="heading-secondary">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</span>
 </header>
 
 <table id="employment-table">
     <caption><span class="visuallyhidden" id="EmploymentDetails">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
-  <tr>
+@*  <tr>
       <th scope="row" class="width50pc">@Messages("employmenthistory.employment.details.client.name")</th>
       <td id="clientName">@clientNameOrNino</td>
-  </tr>
+  </tr>*@
   <tr>
       <th scope="row" class="width50pc">@Messages("lbl.paye.reference")</th>
       <td>@employment.payeReference</td>
+  </tr>
+  <tr>
+      <th scope="row" class="width50pc">@Messages("lbl.payroll.id")</th>
+      <td>@employment.worksNumber</td>
   </tr>
   <tr>
       <th scope="row">@Messages("lbl.date.start")</th>
@@ -57,8 +62,12 @@
   <tr>
       <th scope="row" class="width50pc">@Messages("lbl.date.end")</th>
       <td>
-          @StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))
+          @StringUtils.getEndDate(employment, Messages("lbl.end-date.unknown"), Messages("lbl.end-date.ongoing"))
       </td>
+  </tr>
+  <tr>
+      <th scope="row">@Messages("lbl.status")</th>
+      <td>@StringUtils.getEmploymentStatus(employment, Messages("lbl.current"), Messages("lbl.ceased"))</td>
   </tr>
   </tbody>
 </table>

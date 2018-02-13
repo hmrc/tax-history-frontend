@@ -32,7 +32,8 @@ case class Employment(employmentId:UUID = UUID.randomUUID(),
                       payAndTaxURI:Option[String] = None,
                       employmentURI:Option[String] = None,
                       receivingOccupationalPension: Boolean = false,
-                      employmentStatus: EmploymentStatus)
+                      employmentStatus: EmploymentStatus,
+                      worksNumber: String)
 
 object Employment {
   implicit val jsonReads :Reads[Employment]= (
@@ -45,7 +46,8 @@ object Employment {
       (JsPath \ "payAndTaxURI").readNullable[String] and
       (JsPath \ "employmentURI").readNullable[String] and
       (JsPath \ "receivingOccupationalPension").read[Boolean] and
-      JsPath.read[EmploymentStatus]
+      JsPath.read[EmploymentStatus] and
+      (JsPath \ "worksNumber").read[String]
     ) (Employment.apply _)
 
 
@@ -59,7 +61,8 @@ object Employment {
       (JsPath \ "payAndTaxURI").writeNullable[String] and
       (JsPath \ "employmentURI").writeNullable[String] and
       (JsPath \ "receivingOccupationalPension").write[Boolean] and
-      JsPath.write[EmploymentStatus]
+      JsPath.write[EmploymentStatus] and
+      (JsPath \ "worksNumber").write[String]
     )(unlift(Employment.unapply))
 }
 

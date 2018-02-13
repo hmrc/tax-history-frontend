@@ -72,7 +72,7 @@
             <tr>
                 <td>@employment.employerName</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
-                <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
+                <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.ceased"))</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI" class="float-right"
                        onClick="ga('send', 'event', 'Employments', 'Click', 'View Record')"
                        id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")
