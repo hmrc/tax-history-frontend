@@ -73,6 +73,10 @@ article h2.org-name {
   color: #0b0c0c;
 }
 
+.pre-heading-small {
+  font-size: 24px;
+}
+
 table caption {
   text-align: left;
 }
@@ -91,6 +95,14 @@ table caption {
 
 .page-header .heading-xlarge {
   margin: .15em 0 0.5em;
+}
+
+.page-header .heading-xlarge-no-bottom {
+  margin: .15em 0 0;
+}
+
+.page-header .heading-small-with-bottom {
+  margin: .15em 0 1em;
 }
 
 .page-header .heading-large {
