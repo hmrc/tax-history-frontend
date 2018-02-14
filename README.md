@@ -1,9 +1,9 @@
-# Tax-History-Frontend ( Agents for Individuals )
+# Tax History Frontend
 
 [ ![Download](https://api.bintray.com/packages/hmrc/releases/tax-history-frontend/images/download.svg) ](https://bintray.com/hmrc/releases/tax-history-frontend/_latestVersion)
 
 
-Source code for the front end microservice for the Agents for Individuals service
+Source code for the front end microservice for the Income Record Viewer service
 
 
 ### License
