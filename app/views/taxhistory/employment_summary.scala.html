@@ -72,7 +72,7 @@
             <tr>
                 <td>@employment.employerName</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
-                <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.ceased"))</td>
+                <td>@StringUtils.getEndDate(employment, Messages("lbl.end-date.unknown"), Messages("lbl.end-date.ongoing"))</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI" class="float-right"
                        onClick="ga('send', 'event', 'Employments', 'Click', 'View Record')"
                        id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")
@@ -99,7 +99,7 @@
             <tr>
                 <td> @employment.employerName</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
-                <td>@StringUtils.getEndDate(employment, Messages("lbl.current"), Messages("lbl.no.data.available"))</td>
+                <td>@StringUtils.getEndDate(employment, Messages("lbl.end-date.unknown"), Messages("lbl.end-date.ongoing"))</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI"
                 onClick="ga('send', 'event', 'Pensions', 'Click', 'View Record')"
                        class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")
