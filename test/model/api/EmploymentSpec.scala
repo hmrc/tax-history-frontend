@@ -35,12 +35,10 @@ package model.api
 import java.util.UUID
 
 import org.joda.time.LocalDate
-import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestUtil
 
 class EmploymentSpec extends TestUtil with UnitSpec {
-
 
   lazy val employment1 = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -51,7 +49,8 @@ class EmploymentSpec extends TestUtil with UnitSpec {
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    employmentStatus = EmploymentStatus.Live
+    employmentStatus = EmploymentStatus.Live,
+    worksNumber = "00191048716"
   )
 
   "Employment" should {
@@ -63,13 +62,11 @@ class EmploymentSpec extends TestUtil with UnitSpec {
         endDate = Some(LocalDate.parse("2017-01-01")),
         companyBenefitsURI = None,
         payAndTaxURI = None,
-        employmentStatus = EmploymentStatus.Live
+        employmentStatus = EmploymentStatus.Live,
+        worksNumber = "00191048716"
       )
       emp.employmentId.toString.nonEmpty shouldBe true
       emp.employmentId shouldNot be(employment1.employmentId)
     }
   }
 }
-
-
-

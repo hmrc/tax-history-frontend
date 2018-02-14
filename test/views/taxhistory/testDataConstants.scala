@@ -26,7 +26,7 @@ trait Constants {
   val startDate = new LocalDate("2016-01-21")
   val endDate = new LocalDate("2016-11-01")
 
-  val emp1 =  Employment(
+  val emp1 = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -35,10 +35,11 @@ trait Constants {
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     receivingOccupationalPension = true,
-    employmentStatus = EmploymentStatus.Live
+    employmentStatus = EmploymentStatus.Live,
+    worksNumber = "00191048716"
   )
 
-  val emp2 =  Employment(
+  val emp2 = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-2",
     employerName = "employer-2",
@@ -46,10 +47,10 @@ trait Constants {
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentStatus = EmploymentStatus.Live)
+    employmentStatus = EmploymentStatus.Live,
+    worksNumber = "00191048716")
 
-
-  val emp3 =  Employment(
+  val emp3 = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-2",
     employerName = "employer-2",
@@ -57,9 +58,10 @@ trait Constants {
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentStatus = EmploymentStatus.Ceased)
+    employmentStatus = EmploymentStatus.Ceased,
+    worksNumber = "00191048716")
 
-  val employments = List(emp1,emp2, emp3)
+  val employments = List(emp1, emp2, emp3)
 
   val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "FlatRateJobExpenses",
@@ -78,7 +80,6 @@ trait Constants {
   val aPC = "301.01"
   val taxAccount = Some(TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC))))
 }
-
 
 trait DetailConstants {
 
@@ -102,7 +103,7 @@ trait DetailConstants {
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = eyuList
   )
-  val uuid = UUID.randomUUID()
+  val uuid: UUID = UUID.randomUUID()
 
   val completeCBList = List(CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00),
     CompanyBenefit(uuid, "CarFuelBenefit", 1000),
@@ -135,7 +136,7 @@ trait DetailConstants {
     CompanyBenefit(uuid, "NonCashBenefit", 1000.00)
   )
 
-  val employment =  Employment(
+  val employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -143,15 +144,15 @@ trait DetailConstants {
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentStatus = EmploymentStatus.Live)
+    employmentStatus = EmploymentStatus.Live,
+    worksNumber = "00191048716")
 
-  val employmentNoEndDate =  Employment(
+  val employmentNoEndDate = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
     startDate = LocalDate.parse("2016-01-21"),
-    employmentStatus = EmploymentStatus.Live)
+    employmentStatus = EmploymentStatus.Live,
+    worksNumber = "00191048716")
 
 }
-
-

@@ -31,5 +31,5 @@ trait TestUtil {
     Json.parse(jsonString)
   }
 
-  def randomNino() = Nino(new Generator(new Random()).nextNino.value.replaceFirst("MA", "AA"))
+  def randomNino = Nino(new Generator(new Random()).nextNino.value.replaceFirst("MA", "AA"))
 }

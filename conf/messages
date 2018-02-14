@@ -1,5 +1,6 @@
 ################################### Generic Labels ################################################
 lbl.organisation.name = Organisation name
+lbl.payroll.id=Payroll ID
 lbl.paye.reference = PAYE reference
 lbl.taxable.income = Taxable income
 lbl.income.tax = Income tax
@@ -8,15 +9,19 @@ lbl.allowance = Allowance
 lbl.company.benefits.desc = Benefits
 lbl.amount = Amount
 lbl.date.start = Start date
+lbl.status=Status
 lbl.date.end = End date
 lbl.Actions = Actions
 lbl.to = to
 lbl.text.current = current
 lbl.current = Current
+lbl.ceased=Ceased
 lbl.agents.for.individual = Agents for Individuals
 lbl.select.new.client = Select a new client
 lbl.select.new.client.lower = select a new client
 global.link.signout=Sign out
+lbl.end-date.unknown=Unknown
+lbl.end-date.ongoing=Ongoing
 lbl.no.data.available = No data available
 lbl.no.data.available.text = no data available
 lbl.continue = Continue

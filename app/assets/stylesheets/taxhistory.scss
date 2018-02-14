@@ -1,4 +1,3 @@
-
 @import "check-your-answers";
 
 .panel-border-wide {
@@ -7,41 +6,44 @@
 }
 
 table {
-    margin-bottom:2.5em;
+  margin-bottom: 2.5em;
 }
 
-.width75pc{
-width: 75%
+.width75pc {
+  width: 75%
 }
 
-.width50pc{
-width: 50%
+.width50pc {
+  width: 50%
 }
 
-.width26pc{
-width: 26%
+.width26pc {
+  width: 26%
 }
 
-.width20pc{
-width: 20%
+.width20pc {
+  width: 20%
 }
 
-.width25pc{
-width: 25%
+.width25pc {
+  width: 25%
 }
 
-.width27pc{
-width: 27%
+.width27pc {
+  width: 27%
 }
 
-.width30pc{
-width: 30%
+.width30pc {
+  width: 30%
 }
 
-.width40pc{
-width: 40%
+.width40pc {
+  width: 40%
 }
 
+.boldFont {
+  font-weight: bold
+}
 
 table tr.border-none th,
 table tr.border-none td {
@@ -56,7 +58,6 @@ table tr.border-none td {
   }
 }
 
-
 .uppercase-only {
   text-transform: uppercase;
 }
@@ -67,9 +68,13 @@ article h2.org-name {
   margin-bottom: 1em;
 }
 
-.org-name .pre-heading{
+.org-name .pre-heading {
   font-size: 19px;
   color: #0b0c0c;
+}
+
+.pre-heading-small {
+  font-size: 24px;
 }
 
 table caption {
@@ -91,65 +96,76 @@ table caption {
 .page-header .heading-xlarge {
   margin: .15em 0 0.5em;
 }
+
+.page-header .heading-xlarge-no-bottom {
+  margin: .15em 0 0;
+}
+
+.page-header .heading-small-with-bottom {
+  margin: .15em 0 1em;
+}
+
 .page-header .heading-large {
   font-size: 36px;
 }
+
 .page-header .heading-secondary {
   margin: 50px 0px 50px 0px;
 }
 
 .flash.error-summary {
-    border-color: #b10e1e;
+  border-color: #b10e1e;
 }
+
 .flash {
-    border: 5px solid #b10e1e;
+  border: 5px solid #b10e1e;
 }
 
 .form-field--error {
-    border-left: 5px solid #b10e1e;
-    padding-left: 15px;
+  border-left: 5px solid #b10e1e;
+  padding-left: 15px;
 }
 
 .form-field--error .error-notification {
-    display: block;
-    font-family: "nta",Arial,sans-serif;
-    font-size: 19px;
-    line-height: 1.25;
-    font-weight: 700;
-    text-transform: none;
+  display: block;
+  font-family: "nta", Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.25;
+  font-weight: 700;
+  text-transform: none;
 }
 
 .h3-heading {
-    font-size: 24px;
+  font-size: 24px;
 }
 
-.float-right{
-  float:right;
+.float-right {
+  float: right;
 }
 
 .error-font {
-    font-weight: 600 !important;
-    color: #af1324;
-    font-size: 19px !important;
+  font-weight: 600 !important;
+  color: #af1324;
+  font-size: 19px !important;
 }
 
 .error-message {
-    margin-top: 0.26316em;
-    margin-bottom: 1.05263em;
+  margin-top: 0.26316em;
+  margin-bottom: 1.05263em;
 }
 
 .input-error {
-    border: 3px solid #df3034;
+  border: 3px solid #df3034;
 }
 
 .numeric {
-    text-align: right;
+  text-align: right;
 }
 
 .alignRight {
-    text-align: right;
+  text-align: right;
 }
 
 .hidden {
-    visibility: hidden;
+  visibility: hidden;
 }

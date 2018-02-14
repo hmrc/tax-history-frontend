@@ -20,7 +20,7 @@ import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 
 object DateHelper {
-  def formatDate(date: LocalDate) = {
+  def formatDate(date: LocalDate): String = {
     DateTimeFormat.forPattern("d MMMM yyyy").print(date)
   }
 }
