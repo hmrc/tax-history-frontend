@@ -19,7 +19,7 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 
 object StringUtils {
-  def uppcaseToTitleCase(s: String): String = {
+  def uppercaseToTitleCase(s: String): String = {
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
 

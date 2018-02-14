@@ -23,12 +23,13 @@ import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
-import play.api.{Configuration, Environment}
 import play.api.http.Status
 import play.api.i18n.MessagesApi
-import play.api.mvc.Results
+import play.api.libs.json.JsValue
+import play.api.mvc.{Result, Results}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
 import support.ControllerSpec
 import support.fixtures.PersonFixture
 import uk.gov.hmrc.auth.core._
@@ -37,54 +38,54 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
 import views.TestAppConfig
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   trait HappyPathSetup {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(newEnrolments))))
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       c
     }
   }
 
   trait NoEnrolmentsSetup {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent) , Enrolments(Set()))))
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(Set()))))
       c
     }
   }
 
   trait NoEnrolmentsAndNotAnAgentSetup {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(Set()))))
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
       c
     }
   }
 
   trait NoEnrolmentsAndNoAffinityGroupSetup {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual) , Enrolments(Set()))))
+        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
       c
     }
   }
 
   trait failureOnRetrievalOfEnrolment {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.failed(new BadGatewayException("error")))
@@ -94,7 +95,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   trait failureOnMissingBearerToken {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.failed(new MissingBearerToken))
@@ -104,7 +105,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   trait failureInsufficientEnrolments {
 
-    lazy val controller = {
+    lazy val controller: Controller = {
       val c = injected[Controller]
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.failed(new InsufficientEnrolments))
@@ -115,28 +116,28 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   "BaseController" must {
 
     "redirect to agent-subscription-start when there is no enrolment" in new NoEnrolmentsSetup {
-      val result = controller.authorisedForAgent(_ =>Future.successful(Results.Ok("test")))(hc,
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controller.appConfig.agentSubscriptionStart)
     }
 
     "redirect to not no-agent-services-account when there is no enrolment and is not an agent" in new NoEnrolmentsAndNotAnAgentSetup {
-      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
     }
 
     "redirect to not no-agent-services-account when there is no enrolment and has no affinity group" in new NoEnrolmentsAndNoAffinityGroupSetup {
-      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
     }
 
     "load error page when failed to fetch enrolment" in new failureOnRetrievalOfEnrolment {
-      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
@@ -144,14 +145,14 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
 
     "redirect to gg when not logged in" in new failureOnMissingBearerToken {
-      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       await(result.header.headers.get("Location")).get should include("/gg/sign-in")
     }
 
     "redirect to not authorised page when user is not authorised" in new failureInsufficientEnrolments {
-      val result = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
@@ -160,26 +161,26 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   "show not found error page when 404 returned from connector" in new HappyPathSetup {
 
-    val result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
   }
 
   "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
-    val result = controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
   }
 
   "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
-    val result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }
 
   "Sign out" must {
     "redirect to feed back survey link" in new HappyPathSetup {
-      val result = controller.logout()(fakeRequest)
+      val result: Future[Result] = controller.logout()(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controller.appConfig.serviceSignOut)
     }
@@ -189,21 +190,21 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   "redirect to MciRestricted" when {
     "status from citizen detail service is Locked" in new HappyPathSetup {
-      val result = controller.redirectToClientErrorPage(LOCKED)
+      val result: Future[Result] = controller.redirectToClientErrorPage(LOCKED)
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getMciRestricted().url)
     }
   }
 
   "redirect to Deceased" when {
     "status from citizen detail service is GONE" in new HappyPathSetup {
-      val result = controller.redirectToClientErrorPage(GONE)
+      val result: Future[Result] = controller.redirectToClientErrorPage(GONE)
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getDeceased().url)
     }
   }
 
   "redirect to Technical error page" when {
     "status from citizen detail service is anything other then LOCKED and GONE" in new HappyPathSetup {
-      val result = controller.redirectToClientErrorPage(2)
+      val result: Future[Result] = controller.redirectToClientErrorPage(2)
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
   }
@@ -214,24 +215,24 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
     "The deceased flag is true" in new HappyPathSetup {
 
-      val json = loadFile("/json/model/api/personDeceasedTrue.json")
-      val hr = HttpResponse(OK,Some(json),Map.empty)
-      await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Left(GONE)
+      val json: JsValue = loadFile("/json/model/api/personDeceasedTrue.json")
+      val hr = HttpResponse(OK, Some(json), Map.empty)
+      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
     }
 
     "The deceased flag is false" in new HappyPathSetup with PersonFixture {
 
-      val json = loadFile("/json/model/api/personDeceasedFalse.json")
-      val hr = HttpResponse(OK,Some(json),Map.empty)
-      await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Right(person.get)
+      val json: JsValue = loadFile("/json/model/api/personDeceasedFalse.json")
+      val hr = HttpResponse(OK, Some(json), Map.empty)
+      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new HappyPathSetup {
 
-      val json = loadFile("/json/model/api/personDeceasedNoValue.json")
-      val hr = HttpResponse(OK,Some(json),Map.empty)
-      val person = Person(Some("first name"), Some("second name"),None)
-      await(controller.retrieveCitizenDetails(randomNino(),Future(hr))) shouldBe Right(person)
+      val json: JsValue = loadFile("/json/model/api/personDeceasedNoValue.json")
+      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val person = Person(Some("first name"), Some("second name"), None)
+      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person)
     }
   }
 }

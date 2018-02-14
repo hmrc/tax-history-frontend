@@ -18,6 +18,7 @@ package views.taxhistory
 
 import model.api.EmploymentStatus
 import models.taxhistory.Person
+import org.jsoup.nodes.Element
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
@@ -29,7 +30,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
 
-    val nino = TestUtil.randomNino.toString()
+    val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2017
     val person = Some(Person(Some("James"), Some("Dean"), Some(false)))
   }
@@ -45,14 +46,16 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
         (taxYear + 1).toString))
 
-      val viewDetailsElements = doc.getElementById("view-employment-0")
-      viewDetailsElements.html must include(Messages("employmenthistory.view.record") + " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
+      val viewDetailsElements: Element = doc.getElementById("view-employment-0")
+      viewDetailsElements.html must include(Messages("employmenthistory.view.record") +
+        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
       viewDetailsElements.attr("href") mustBe "/tax-history/single-record"
 
 
-      val viewPensionElements = doc.getElementById("view-pension-0")
+      val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
-      viewPensionElements.html must include(Messages("employmenthistory.view.record") + " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-1") + "</span>")
+      viewPensionElements.html must include(Messages("employmenthistory.view.record") +
+        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-1") + "</span>")
 
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
@@ -67,11 +70,10 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       employments.foreach(emp => {
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
         doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true
-        if (emp.employmentStatus == EmploymentStatus.Live) {
-          doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.current"))
-          (d => DateHelper.formatDate(d))).hasText mustBe true
+        if (emp.employmentStatus == EmploymentStatus.PotentiallyCeased) {
+          doc.getElementsMatchingOwnText(Messages("lbl.end-date.unknown")).hasText mustBe true
         } else {
-          doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.no.data.available"))
+          doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.end-date.ongoing"))
           (d => DateHelper.formatDate(d))).hasText mustBe true
         }
       })
@@ -79,7 +81,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       allowances.foreach(al => {
         doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
       })
-      val caveatParagraphs = doc.select(".panel-border-wide p").text
+      val caveatParagraphs: String = doc.select(".panel-border-wide p").text
 
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p1.text")) mustBe true
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p2.text")) mustBe true
