@@ -24,10 +24,15 @@ object StringUtils {
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
   }
 
-  def getEmploymentStatus(employment: Employment, current: String, ceased: String): String = {
+  def getEmploymentStatus(employment: Employment)(implicit messages: Messages): String = {
+    val current = Messages("lbl.employment.status.current")
+    val ceased = Messages("lbl.employment.status.ceased")
+    val unknown = Messages("lbl.employment.status.unknown")
+
     employment.employmentStatus match {
-      case EmploymentStatus.Live => current
-      case _ => ceased
+      case EmploymentStatus.Live    => current
+      case EmploymentStatus.Unknown => unknown
+      case _                        => ceased
     }
   }
 
