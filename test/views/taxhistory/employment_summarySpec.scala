@@ -49,8 +49,9 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val viewDetailsElements: Element = doc.getElementById("view-employment-0")
       viewDetailsElements.html must include(Messages("employmenthistory.view.record") +
         " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
-      viewDetailsElements.attr("href") mustBe "/tax-history/single-record"
 
+     val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
+     viewDetailsElementsNoRecord.html must include(Messages("lbl.none"))
 
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"

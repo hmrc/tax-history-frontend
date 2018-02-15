@@ -19,10 +19,7 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
 
-object StringUtils {
-  def uppercaseToTitleCase(s: String): String = {
-    if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
-  }
+object ControllerUtils {
 
   def getEmploymentStatus(employment: Employment)(implicit messages: Messages): String = {
     val current = Messages("lbl.employment.status.current")
@@ -43,6 +40,13 @@ object StringUtils {
       case EmploymentStatus.PotentiallyCeased => unknown
       case EmploymentStatus.Unknown           => employment.endDate.map(DateHelper.formatDate).getOrElse(unknown)
       case _                                  => employment.endDate.map(DateHelper.formatDate).getOrElse(ongoing)
+    }
+  }
+
+  def hasEmploymentDetails(employment: Employment):Boolean = {
+    employment.employmentStatus match{
+      case EmploymentStatus.Unknown => false
+      case _                        => true
     }
   }
 

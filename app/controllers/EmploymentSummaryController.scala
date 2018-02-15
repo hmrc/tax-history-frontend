@@ -20,9 +20,9 @@ import javax.inject.Inject
 
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import model.api.{Allowance, Employment, TaxAccount}
+import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
 import models.taxhistory.Person
-import play.api.i18n.MessagesApi
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
@@ -109,4 +109,5 @@ class EmploymentSummaryController @Inject()(
   private def getEmploymentsFromResponse(empResponse: HttpResponse) = {
     empResponse.json.as[List[Employment]]
   }
+
 }
