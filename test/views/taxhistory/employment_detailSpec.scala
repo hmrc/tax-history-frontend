@@ -111,7 +111,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         val view = views.html.taxhistory.employment_detail(taxYear,
           Some(payAndTax), employmentNoEndDate, completeCBList, clientName, actualOrForecast = false)
 
-        doc.getElementsMatchingOwnText(Messages("lbl.current")).hasText mustBe true
+        doc.getElementsMatchingOwnText(Messages("lbl.employment.status.current")).hasText mustBe true
 
         val caveat_estimate = Messages("employmenthistory.company.benefit.caveat.estimate",
           clientName, employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))

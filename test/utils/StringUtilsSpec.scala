@@ -119,7 +119,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEmploymentStatus(emp, "current", "Ceased") shouldBe "current"
+      StringUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.current")
     }
 
     "return alternate message when employment is not Live" in {
@@ -132,7 +132,20 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
-      StringUtils.getEmploymentStatus(emp, "current", "Ceased") shouldBe "Ceased"
+      StringUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.ceased")
+    }
+
+    "return unknown message when employment status is unknown" in {
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentStatus = EmploymentStatus.Unknown,
+        worksNumber = "00191048716")
+
+      StringUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.unknown")
     }
   }
 }
