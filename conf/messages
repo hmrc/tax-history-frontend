@@ -17,6 +17,7 @@ lbl.text.current = current
 lbl.employment.status.current = Current
 lbl.employment.status.ceased = Ceased
 lbl.employment.status.unknown = Unknown
+lbl.none = None
 lbl.agents.for.individual = Agents for Individuals
 lbl.select.new.client = Select a new client
 lbl.select.new.client.lower = select a new client

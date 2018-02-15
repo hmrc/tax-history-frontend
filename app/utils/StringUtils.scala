@@ -46,4 +46,11 @@ object StringUtils {
     }
   }
 
+  def hasEmploymentDetails(employment: Employment):Boolean = {
+    employment.employmentStatus match{
+      case EmploymentStatus.Unknown => false
+      case _                        => true
+    }
+  }
+
 }
