@@ -34,7 +34,7 @@ lbl.details = Details
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear =Tax year 6 April {0} to 5 April {1}
 employmenthistory.title = Client income record - GOV.UK
-employmenthistory.header = {0}’s income record
+employmenthistory.header = {0}''s income record
 employmenthistory.missing.client.name = client
 
 employmenthistory.afihomepage.linktext = Return to agent account
@@ -44,7 +44,7 @@ employmenthistory.eyu.pay = Pay
 employmenthistory.eyu.tax = Tax
 employmenthistory.eyu.date.received = Date received
 employmenthistory.view.record = View record
-employmenthistory.view.record.hidden = View {0}’s income record for {1}
+employmenthistory.view.record.hidden = View {0}''s income record for {1}
 employmenthistory.table.header.employments = Employments
 employmenthistory.table.header.pensions = Pensions
 employmenthistory.caveat.p1.text = The information on this page was previously available by phone from HMRC.
@@ -78,11 +78,11 @@ employmenthistory.cb.Mileage=Mileage
 employmenthistory.cb.NonQualifyingRelocationExpense=Non qualifying relocation expenses
 employmenthistory.cb.NurseryPlaces=Nursery places
 employmenthistory.cb.OtherItems=Other items
-employmenthistory.cb.PaymentEmployeesBehalf=Payments on employee’s behalf
+employmenthistory.cb.PaymentEmployeesBehalf=Payments on employee''s behalf
 employmenthistory.cb.PersonalIncidentExpenses=Personal incidental expenses
 employmenthistory.cb.QualifyingRelocationExpenses=Qualifying relocation expenses
 employmenthistory.cb.EmployerProvidedProfessionalSubscription=Employer provided professional subscriptions
-employmenthistory.cb.IncomeTaxPaidNotDeductedFromDirectorsRemuneration=Income Tax paid (but not deducted from director’s remuneration)
+employmenthistory.cb.IncomeTaxPaidNotDeductedFromDirectorsRemuneration=Income Tax paid (but not deducted from director''s remuneration)
 employmenthistory.cb.TravelAndSubsistence=Travel and subsistence
 employmenthistory.cb.VoucherAndCreditCards=Vouchers and credit cards
 employmenthistory.cb.NonCashBenefit=Non Cash benefit
@@ -95,9 +95,9 @@ employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
 employmenthistory.select.client.title=Select client - GOV.UK
-employmenthistory.select.client.heading=Enter a client’s National Insurance number
+employmenthistory.select.client.heading=Enter a client''s National Insurance number
 employmenthistory.select.client.clients.nino=Client National Insurance number
-employmenthistory.select.client.nino.hint=For example, ‘QQ123456C’
+employmenthistory.select.client.nino.hint=For example, ''QQ123456C''
 employmenthistory.select.client.error.invalid-format.title=There is a problem
 employmenthistory.select.client.error.invalid-format=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
 employmenthistory.select.client.error.empty.title=There is a problem
@@ -115,15 +115,15 @@ employmenthistory.employment.details.caption = Employment Details
 employmenthistory.pay.and.tax.heading = Payments
 employmenthistory.pay.and.tax.guidance = Cumulative totals for {0} up to {1}.
 employmenthistory.eyu.caveat = EYU is a correction to year-to-date taxable income and Income Tax. These amounts were received after 19 April {0} and affect the {1} to {0} tax year. EYU corrections are not included in the taxable income and Income Tax submissions for {2}.
-employmenthistory.company.benefit.caveat.actual = HMRC has {0}’s P11D from {1} for the {2} to {3} tax year. The company benefits amounts may be an estimate.
-employmenthistory.company.benefit.caveat.estimate = HMRC does not have {0}’s P11D from {1} for the {2} to {3} tax year. The company benefits amounts are a forecast.
+employmenthistory.company.benefit.caveat.actual = HMRC has {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts may be an estimate.
+employmenthistory.company.benefit.caveat.estimate = HMRC does not have {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts are a forecast.
 
 
 ################################## Select tax year ####################################################
 
 employmenthistory.select.tax.year.title = Select tax year - GOV.UK
 employmenthistory.select.tax.year.h1 = Select the tax year you want to view
-employmenthistory.select.tax.year.header = {0}’s income record
+employmenthistory.select.tax.year.header = {0}''s income record
 employmenthistory.select.tax.year.option = {0} to {1}
 employmenthistory.select.tax.year = Select a tax year
 employmenthistory.select.tax.year.error.heading = There is a problem
@@ -145,17 +145,17 @@ employmenthistory.tax-account.outstanding.debt.title=Outstanding debt included i
 
 employmenthistory.not.authorised.title = You are not authorised to view this income record - GOV.UK
 employmenthistory.not.authorised.header = You are not authorised to view this income record
-employmenthistory.not.authorised.select.client.link.text = Enter another client’s National Insurance number
+employmenthistory.not.authorised.select.client.link.text = Enter another client''s National Insurance number
 employmenthistory.mci.restricted.header = You cannot access their data right now
 employmenthistory.mci.restricted.title = You cannot access their data right now - GOV.UK
-employmenthistory.mci.restricted.select.client.link.text = Enter another client’s National Insurance number
+employmenthistory.mci.restricted.select.client.link.text = Enter another client''s National Insurance number
 employmenthistory.deceased.header = You cannot access their data
 employmenthistory.deceased.title = You cannot access their data - GOV.UK
-employmenthistory.deceased.select.client.link.text = Enter another client’s National Insurance number
+employmenthistory.deceased.select.client.link.text = Enter another client''s National Insurance number
 employmenthistory.no.data.title = This clients income record contains no data - GOV.UK
 employmenthistory.no.data.header = {0}’s income record contains no data for this tax year
 employmenthistory.no.data.text = You can:
-employmenthistory.no.data.select.client.link.text = enter another client’s National Insurance number
+employmenthistory.no.data.select.client.link.text = enter another client''s National Insurance number
 employmenthistory.technical.error.title = Service unavailable - GOV.UK
 employmenthistory.technical.error.header = Service unavailable
 employmenthistory.technical.error.message = Sorry, there is a technical problem and you cannot use the service right now. Please try again later.
