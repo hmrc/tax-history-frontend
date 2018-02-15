@@ -107,6 +107,7 @@ class EmploymentSummaryController @Inject()(
   }
 
   private def getEmploymentsFromResponse(empResponse: HttpResponse) = {
+    println("right here"+empResponse.json)
     empResponse.json.as[List[Employment]]
   }
 }
