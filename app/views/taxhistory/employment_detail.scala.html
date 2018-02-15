@@ -15,7 +15,7 @@
  *@
 
 @import model.api.{PayAndTax, CompanyBenefit, Employment}
-@import utils.{Currency, StringUtils}
+@import utils.{Currency, ControllerUtils}
 @import utils.DateHelper._
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
@@ -58,12 +58,12 @@
   <tr>
       <th scope="row" class="width50pc boldFont">@Messages("lbl.date.end")</th>
       <td>
-          @StringUtils.getEndDate(employment)
+          @ControllerUtils.getEndDate(employment)
       </td>
   </tr>
   <tr>
       <th scope="row" class="boldFont">@Messages("lbl.status")</th>
-      <td>@StringUtils.getEmploymentStatus(employment)</td>
+      <td>@ControllerUtils.getEmploymentStatus(employment)</td>
   </tr>
   </tbody>
 </table>
