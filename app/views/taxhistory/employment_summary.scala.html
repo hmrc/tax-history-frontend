@@ -16,7 +16,7 @@
 
 @import model.api.{Employment, Allowance}
 @import models.taxhistory.Person
-@import utils.{Currency, DateHelper, StringUtils}
+@import utils.{Currency, DateHelper, ControllerUtils}
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 
@@ -73,10 +73,10 @@
             <tr>
                 <td>@employment.employerName</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
-                <td>@StringUtils.getEndDate(employment)</td>
-                <td>@StringUtils.getEmploymentStatus(employment)</td>
+                <td>@ControllerUtils.getEndDate(employment)</td>
+                <td>@ControllerUtils.getEmploymentStatus(employment)</td>
                 <td id=@{s"view-employment-${index}"}>
-                    @if(StringUtils.hasEmploymentDetails(employment)) {
+                    @if(ControllerUtils.hasEmploymentDetails(employment)) {
                         <a href="/tax-history/single-record@employment.employmentURI" class="float-right"
                         onClick="ga('send', 'event', 'Employments', 'Click', 'View Record')"
                         >@Messages("employmenthistory.view.record")
@@ -106,7 +106,7 @@
             <tr>
                 <td> @employment.employerName</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
-                <td>@StringUtils.getEndDate(employment)</td>
+                <td>@ControllerUtils.getEndDate(employment)</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI"
                 onClick="ga('send', 'event', 'Pensions', 'Click', 'View Record')"
                        class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")
