@@ -17,6 +17,7 @@
 package utils
 
 import model.api.{Employment, EmploymentStatus}
+import play.api.i18n.Messages
 
 object StringUtils {
   def uppercaseToTitleCase(s: String): String = {
@@ -30,10 +31,13 @@ object StringUtils {
     }
   }
 
-  def getEndDate(employment: Employment, unknown: String, ongoing: String): String = {
+  def getEndDate(employment: Employment)(implicit messages: Messages): String = {
+    val unknown = Messages("lbl.end-date.unknown")
+    val ongoing = Messages("lbl.end-date.ongoing")
     employment.employmentStatus match {
       case EmploymentStatus.PotentiallyCeased => unknown
-      case _ => employment.endDate.map(DateHelper.formatDate).getOrElse(ongoing)
+      case EmploymentStatus.Unknown           => employment.endDate.map(DateHelper.formatDate).getOrElse(unknown)
+      case _                                  => employment.endDate.map(DateHelper.formatDate).getOrElse(ongoing)
     }
   }
 

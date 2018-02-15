@@ -21,9 +21,10 @@ import java.util.UUID
 import model.api.{Employment, EmploymentStatus}
 import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
-import uk.gov.hmrc.play.test.UnitSpec
+import play.api.i18n.Messages
+import support.GuiceAppSpec
 
-class StringUtilsSpec extends UnitSpec {
+class StringUtilsSpec extends GuiceAppSpec {
 
   "StringUtils - getEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
@@ -36,7 +37,7 @@ class StringUtilsSpec extends UnitSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp, "unknown", "ongoing") shouldBe "ongoing"
+      StringUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.ongoing")
     }
 
     "return end date when there is an end date and employment status is Live" in {
@@ -51,7 +52,7 @@ class StringUtilsSpec extends UnitSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp, "unknown", "ongoing") shouldBe DateTimeFormat.forPattern("d MMMM yyyy").print(parsedEndDate)
+      StringUtils.getEndDate(emp) shouldBe DateTimeFormat.forPattern("d MMMM yyyy").print(parsedEndDate)
     }
 
     "return error message when employment status is PotentiallyCeased" in {
@@ -64,7 +65,7 @@ class StringUtilsSpec extends UnitSpec {
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp, "unknown", "ongoing") shouldBe "unknown"
+      StringUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
     }
 
     "return formatted end date" in {
@@ -77,7 +78,33 @@ class StringUtilsSpec extends UnitSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp, "current", "no data") shouldBe "1 February 2016"
+      StringUtils.getEndDate(emp) shouldBe "1 February 2016"
+    }
+
+    "return date when Employment Status is unknown and endDate is provided" in {
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentStatus = EmploymentStatus.Unknown,
+        worksNumber = "00191048716")
+
+      StringUtils.getEndDate(emp) shouldBe "1 February 2016"
+    }
+
+    "return unknown when Employment Status is unknown and no endDate is provided" in {
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = None,
+        employmentStatus = EmploymentStatus.Unknown,
+        worksNumber = "00191048716")
+
+      StringUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
     }
   }
 
