@@ -35,7 +35,7 @@
 
 
 <header class="page-header">
-    <span class="pre-heading pre-heading-small">@Messages("employmenthistory.display.client.name", s"$clientNameOrNino")</span>
+    <span id = "ClientIncomeRecord" class="pre-heading pre-heading-small">@Messages("employmenthistory.display.client.name", s"$clientNameOrNino")</span>
     <h1 class="heading-xlarge-no-bottom">@employment.employerName</h1>
     <span id = "taxYearRange" class="heading-small heading-small-with-bottom">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</span>
 </header>

@@ -19,10 +19,7 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
 
-object StringUtils {
-  def uppercaseToTitleCase(s: String): String = {
-    if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
-  }
+object ControllerUtils {
 
   def getEmploymentStatus(employment: Employment)(implicit messages: Messages): String = {
     val current = Messages("lbl.employment.status.current")

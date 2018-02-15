@@ -24,9 +24,9 @@ import org.joda.time.format.DateTimeFormat
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 
-class StringUtilsSpec extends GuiceAppSpec {
+class ControllerUtilsSpec extends GuiceAppSpec {
 
-  "StringUtils - getEndDate" must {
+  "ControllerUtils - getEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
       val emp =  Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -37,7 +37,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.ongoing")
+      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.ongoing")
     }
 
     "return end date when there is an end date and employment status is Live" in {
@@ -52,7 +52,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp) shouldBe DateTimeFormat.forPattern("d MMMM yyyy").print(parsedEndDate)
+      ControllerUtils.getEndDate(emp) shouldBe DateTimeFormat.forPattern("d MMMM yyyy").print(parsedEndDate)
     }
 
     "return error message when employment status is PotentiallyCeased" in {
@@ -65,7 +65,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
+      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
     }
 
     "return formatted end date" in {
@@ -78,7 +78,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp) shouldBe "1 February 2016"
+      ControllerUtils.getEndDate(emp) shouldBe "1 February 2016"
     }
 
     "return date when Employment Status is unknown and endDate is provided" in {
@@ -91,7 +91,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp) shouldBe "1 February 2016"
+      ControllerUtils.getEndDate(emp) shouldBe "1 February 2016"
     }
 
     "return unknown when Employment Status is unknown and no endDate is provided" in {
@@ -104,11 +104,11 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
-      StringUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
+      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
     }
   }
 
-  "StringUtils - getEmploymentStatus" must {
+  "ControllerUtils - getEmploymentStatus" must {
     "return default message when employment is Live" in {
       val emp =  Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -119,7 +119,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
-      StringUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.current")
+      ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.current")
     }
 
     "return alternate message when employment is not Live" in {
@@ -132,7 +132,7 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
-      StringUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.ceased")
+      ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.ceased")
     }
 
     "return unknown message when employment status is unknown" in {
@@ -145,7 +145,37 @@ class StringUtilsSpec extends GuiceAppSpec {
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
-      StringUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.unknown")
+      ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.unknown")
+    }
+  }
+
+  "ControllerUtils - hasEmploymentDetails" must {
+    "return true when employment status is not unknown" in {
+      val emp =  Employment(
+        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        payeReference = "paye",
+        employerName = "employer",
+        startDate = LocalDate.parse("2016-01-21"),
+        endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentStatus = EmploymentStatus.PotentiallyCeased,
+        worksNumber = "00191048716")
+
+      ControllerUtils.hasEmploymentDetails(emp) shouldBe true
+    }
+
+    "ControllerUtils - hasEmploymentDetails" must {
+      "return false when employment status is unknown" in {
+        val emp =  Employment(
+          employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+          payeReference = "paye",
+          employerName = "employer",
+          startDate = LocalDate.parse("2016-01-21"),
+          endDate = Some(LocalDate.parse("2016-02-01")),
+          employmentStatus = EmploymentStatus.Unknown,
+          worksNumber = "00191048716")
+
+        ControllerUtils.hasEmploymentDetails(emp) shouldBe false
+      }
     }
   }
 }

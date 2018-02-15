@@ -75,11 +75,11 @@
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@StringUtils.getEndDate(employment)</td>
                 <td>@StringUtils.getEmploymentStatus(employment)</td>
-                <td>
+                <td id=@{s"view-employment-${index}"}>
                     @if(StringUtils.hasEmploymentDetails(employment)) {
                         <a href="/tax-history/single-record@employment.employmentURI" class="float-right"
                         onClick="ga('send', 'event', 'Employments', 'Click', 'View Record')"
-                        id=@{s"view-employment-${index}"}>@Messages("employmenthistory.view.record")
+                        >@Messages("employmenthistory.view.record")
                         <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                     } else {
                         @Messages("lbl.none")
