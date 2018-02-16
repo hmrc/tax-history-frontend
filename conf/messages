@@ -32,6 +32,19 @@ lbl.employer = Employer
 lbl.provider = Provider
 lbl.details = Details
 
+################################## Google Analytics ##############################################
+lbl.ga.link-click=link - click
+lbl.ga.action.employments=Employments
+lbl.ga.action.pensions=Pensions
+lbl.ga.label.view-record=View Record
+lbl.ga.accordian-hide=Accordian - hide
+lbl.ga.accordian-expand=Accordian - expand
+lbl.ga.action.underpaid-tax-and-debts=Underpaid tax and debts
+lbl.ga.label.why-does-this-differ=Why does this differ
+lbl.ga.error-field=error - field
+lbl.ga.action.enter-nino=Enter a clients NINO
+lbl.ga.label.enter-nino=Error message displayed
+
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear =Tax year 6 April {0} to 5 April {1}

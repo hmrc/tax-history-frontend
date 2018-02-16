@@ -33,6 +33,15 @@
 
     @helpers.form(routes.SelectClientController.submitSelectClientPage()){
         @if(sCForm.hasErrors) {
+            <script>
+                    $(document).ready(function () {
+                        ga('send', 'event', {
+                            'eventCategory': '@Messages("lbl.ga.error-field")',
+                            'eventAction': '@Messages("lbl.ga.action.enter-nino")',
+                            'eventLabel': '@Messages("lbl.ga.label.enter-nino")'
+                        });
+                    });
+            </script>
             <div class="error-summary error-summary--show"
                  id="error-summary-display"
                  role="alert"
