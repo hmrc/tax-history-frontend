@@ -59,10 +59,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       val endDate: Element = doc.select("#employment-table tbody tr").get(3)
       val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
       val incomeTax: Element = doc.select("#pay-and-tax-table tbody tr").get(1)
-      val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName,
-        payAndTax.paymentDate.get.toString("d MMMM yyyy"))
 
-      doc.getElementsContainingOwnText(paymentGuidance).hasText mustBe true
       payrollId.text must include(employment.worksNumber)
       payeReference.text must include(employment.payeReference)
       startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
