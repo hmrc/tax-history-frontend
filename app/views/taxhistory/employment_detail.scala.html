@@ -77,7 +77,7 @@
 
 <table id="pay-and-tax-table" >
     <tr>
-        <th scope="row" class="width50pc">@Messages("lbl.taxable.income")</th>
+        <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
         <td>
             @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined){
                 @Currency(payAndTax.get.taxablePayTotal.get)
@@ -87,7 +87,7 @@
         </td>
     </tr>
     <tr>
-        <th scope="row" class="width50pc">@Messages("lbl.income.tax")</th>
+        <th scope="row" class="width50pc boldFont" >@Messages("lbl.income.tax")</th>
         <td>
             @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined){
                 @Currency(payAndTax.get.taxTotal.get)
@@ -162,5 +162,35 @@
     </table>
 }
 
+@if(true){
+
+    <h2 class = "heading-medium ">@Messages("tax.code.heading")</h2>
+
+    <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
+
+    <h1>taxcodegohere</h1>
+
+    <p>@Messages("tax.code.caveat")</p>
+
+    <table id = "allowance-table">
+    <thread>
+        <tr>
+            <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
+            <th scope = "col" class = "width25pc boldFont">@Messages("tax.code.source.amount") </th>
+            <th scope = "col" class = "numeric boldFont">@Messages("tax.code.allowance") </th>
+        </tr>
+    </thread>
+    </table>
+
+<table id = "deductions-table">
+    <thread>
+        <tr>
+            <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
+            <th scope = "col" class = "width25pc boldFont">@Messages("tax.code.source.amount") </th>
+            <th scope = "col" class = "numeric boldFont">@Messages("tax.code.deduction") </th>
+        </tr>
+    </thread>
+</table>
+}
 
 }

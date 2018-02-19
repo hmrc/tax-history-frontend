@@ -19,6 +19,7 @@ package views.taxhistory
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
@@ -30,8 +31,9 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
 
+    val currentTaxYear:Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
-    val taxYear = 2017
+    val taxYear = 2016
     val person = Person(Some("James"), Some("Dean"), Some(false))
     val clientName: String = person.getName.getOrElse(nino)
   }
@@ -134,7 +136,42 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         doc.getElementsContainingOwnText(paymentGuidance).hasText mustBe false
       }
     }
-  }
 
+    "not show tax code breakdown " when {
+      "employment details are for previous year" in new ViewFixture {
+
+        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+          employment, completeCBList, clientName, actualOrForecast = true)
+
+        doc.getElementsContainingOwnText(Messages("tax.code.heading")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.allowance")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.deduction")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.allowance.type")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.deduction.type")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.source.amount")).hasText mustBe false
+
+      }
+    }
+
+    "Show tax code breakdown " when {
+      "employment details are for current year" in new ViewFixture {
+
+        val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
+          employment, completeCBList, clientName, actualOrForecast = true)
+
+        doc.getElementsContainingOwnText(Messages("tax.code.heading")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.allowance")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.deduction")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.allowance.type")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.deduction.type")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.source.amount")).hasText mustBe true
+
+      }
+    }
+  }
 }
 
