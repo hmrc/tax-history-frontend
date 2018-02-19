@@ -33,6 +33,7 @@
 
     @helpers.form(routes.SelectClientController.submitSelectClientPage()){
         @if(sCForm.hasErrors) {
+            <script src='@routes.Assets.at("scripts/jquery-1.11.1.min.js")' type='text/javascript'></script>
             <script>
                     $(document).ready(function () {
                         ga('send', 'event', {
