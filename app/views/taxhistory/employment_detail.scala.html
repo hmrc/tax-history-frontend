@@ -70,9 +70,6 @@
 
 <div>
     <h2 id="Payments" class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading")</h2>
-    @if(payAndTax.isDefined && payAndTax.get.paymentDate.isDefined){
-    <p>@Messages("employmenthistory.pay.and.tax.guidance",employment.employerName,formatDate(payAndTax.get.paymentDate.get))</p>
-    }
 </div>
 
 <table id="pay-and-tax-table" >
