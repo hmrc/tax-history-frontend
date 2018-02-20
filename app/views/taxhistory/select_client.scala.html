@@ -33,6 +33,22 @@
 
     @helpers.form(routes.SelectClientController.submitSelectClientPage()){
         @if(sCForm.hasErrors) {
+            <script>
+                    function gaEvent() {
+                        ga('send', 'event', {
+                            'eventCategory': '@Messages("lbl.ga.error-field")',
+                            'eventAction': '@Messages("lbl.ga.action.enter-nino")',
+                            'eventLabel': '@Messages("lbl.ga.label.enter-nino")'
+                        });
+                    }
+                    if (document.readyState !== 'loading') gaEvent();
+                    // modern browsers
+                    else if (document.addEventListener) document.addEventListener('DOMContentLoaded', gaEvent);
+                    // IE <= 8
+                    else document.attachEvent('onreadystatechange', function(){
+                            if (document.readyState ==='complete') gaEvent();
+                        });
+            </script>
             <div class="error-summary error-summary--show"
                  id="error-summary-display"
                  role="alert"

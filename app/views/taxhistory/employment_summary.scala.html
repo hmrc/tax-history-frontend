@@ -35,7 +35,6 @@
 }
 
 @views.html.main_template(title = Messages("employmenthistory.title")) {
-
   <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
     <div class="page-header" >
@@ -78,7 +77,7 @@
                 <td id=@{s"view-employment-${index}"}>
                     @if(ControllerUtils.hasEmploymentDetails(employment)) {
                         <a href="/tax-history/single-record@employment.employmentURI" class="float-right"
-                        onClick="ga('send', 'event', 'Employments', 'Click', 'View Record')"
+                        data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.employments") :@Messages("lbl.ga.label.view-record")'
                         >@Messages("employmenthistory.view.record")
                         <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                     } else {
@@ -108,7 +107,7 @@
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@ControllerUtils.getEndDate(employment)</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI"
-                onClick="ga('send', 'event', 'Pensions', 'Click', 'View Record')"
+                data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.pensions") :@Messages("lbl.ga.label.view-record")'
                        class="float-right" id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view.record")
                     <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                 </td>
@@ -166,7 +165,16 @@
                 <tr>
                     <td colspan="2">
                         <details>
-                            <summary>
+                            <script>
+                                    $(document).ready(function () {
+                                        ga('send', 'event', {
+                                            'eventCategory': '@Messages("lbl.ga.accordian-hide")',
+                                            'eventAction': '@Messages("lbl.ga.action.underpaid-tax-and-debts")',
+                                            'eventLabel': '@Messages("lbl.ga.label.why-does-this-differ")'
+                                        });
+                                    });
+                            </script>
+                            <summary data-journey-click='@Messages("lbl.ga.accordian-expand") :@Messages("lbl.ga.action.underpaid-tax-and-debts") :@Messages("lbl.ga.label.why-does-this-differ")'>
                                 <span class="summary">@Messages("employmenthistory.tax-account.potential-underpayment.summary")</span>
                             </summary>
                             <div class="panel-border-narrow panel" id="details-content-0">
