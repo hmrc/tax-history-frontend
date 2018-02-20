@@ -97,15 +97,15 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       doc.getElementsContainingOwnText(oDR).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.title",
-        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}",
-        s"${TaxYear.current.currentYear}",s"${TaxYear.current.finishYear}")).hasText mustBe true
+        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
+
       doc.getElementsContainingOwnText(uA.toString).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.title",
         s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
       doc.getElementsContainingOwnText(aPC.toString).hasText mustBe true
 
-      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.summary")).hasText mustBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.text")).hasText mustBe true
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
     }
