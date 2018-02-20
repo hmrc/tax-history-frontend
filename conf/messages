@@ -146,15 +146,11 @@ employmenthistory.select.tax.year.error.message = Select a tax year
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Underpaid tax and debts
-#CY
-employmenthistory.tax-account.potential-underpayment.title=Underpaid tax for tax year {0} to {1} included in your client''s tax code {2} to {3}
-employmenthistory.tax-account.potential-underpayment.summary = Why does this differ from the amount on the P2 Coding Notice?
-employmenthistory.tax-account.potential-underpayment.content = This data reflects the up to date information for your client.
-#CY-1
-employmenthistory.tax-account.underpayment-amount.title=Underpaid tax for earlier years included in your client''s tax code for tax year {0} to {1}
-#CY-1
-employmenthistory.tax-account.outstanding.debt.title=Outstanding debt included in your client''s tax code for tax year {0} to {1}
 
+employmenthistory.tax-account.underpayment-amount.title=Confirmed underpaid tax included in your clients tax code for the tax year {0} to {1}, carried over from earlier years.
+employmenthistory.tax-account.potential-underpayment.title=Estimated underpaid tax in your clients tax code for the current tax, carried over from tax year {0} to {1}.
+employmenthistory.tax-account.outstanding.debt.title=Other outstanding debt included in your client''s tax code for tax year {0} to {1}, carried over from previous tax years.
+employmenthistory.tax-account.outstanding.debt.text = Debts may relate to Self Assessment, tax credits or National Insurance class 2.
 ################################ Error Pages ###########################################################
 
 employmenthistory.not.authorised.title = You are not authorised to view this income record - GOV.UK

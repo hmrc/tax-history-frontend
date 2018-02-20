@@ -156,38 +156,20 @@
                 </tr>
 
                 <tr>
-                    <td style = "border:0">@Messages("employmenthistory.tax-account.potential-underpayment.title",
-                        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}",
-                        s"${TaxYear.current.currentYear}",s"${TaxYear.current.finishYear}")</td>
-                    <td style = "border:0" class="numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
-                </tr>
-
-                <tr>
-                    <td colspan="2">
-                        <details>
-                            <script>
-                                    $(document).ready(function () {
-                                        ga('send', 'event', {
-                                            'eventCategory': '@Messages("lbl.ga.accordian-hide")',
-                                            'eventAction': '@Messages("lbl.ga.action.underpaid-tax-and-debts")',
-                                            'eventLabel': '@Messages("lbl.ga.label.why-does-this-differ")'
-                                        });
-                                    });
-                            </script>
-                            <summary data-journey-click='@Messages("lbl.ga.accordian-expand") :@Messages("lbl.ga.action.underpaid-tax-and-debts") :@Messages("lbl.ga.label.why-does-this-differ")'>
-                                <span class="summary">@Messages("employmenthistory.tax-account.potential-underpayment.summary")</span>
-                            </summary>
-                            <div class="panel-border-narrow panel" id="details-content-0">
-                                <p>@Messages("employmenthistory.tax-account.potential-underpayment.content")</p>
-                            </div>
-                        </details>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>@Messages("employmenthistory.tax-account.outstanding.debt.title",
+                    <td>@Messages("employmenthistory.tax-account.potential-underpayment.title",
                         s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")</td>
+                    <td class="numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
+                </tr>
+
+                <tr>
+                    <td>
+                        @Messages("employmenthistory.tax-account.outstanding.debt.title",
+                        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")
+                        <br>
+                        <p class = "grey-and-small">@Messages("employmenthistory.tax-account.outstanding.debt.text")</p>
+                    </td>
                     <td class="numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
+
                 </tr>
             </tbody>
         </table>
