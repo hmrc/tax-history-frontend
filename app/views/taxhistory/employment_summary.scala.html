@@ -35,8 +35,6 @@
 }
 
 @views.html.main_template(title = Messages("employmenthistory.title")) {
-  <script src='@routes.Assets.at("scripts/jquery-1.11.1.min.js")' type='text/javascript'></script>
-
   <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
     <div class="page-header" >
