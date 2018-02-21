@@ -169,7 +169,7 @@
 
     <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-    <h1>@{incomeSource.get.taxCode ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)}</h1>
+    <h1>@{incomeSource.get.taxCode}@{ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)}</h1>
 
     <p>@Messages("tax.code.caveat")</p>
 
