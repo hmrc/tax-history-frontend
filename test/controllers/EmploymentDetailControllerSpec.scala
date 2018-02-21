@@ -70,7 +70,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         worksNumber = "00191048716"
       )
 
-      val maybeIncomeSource = MaybeIncomeSource(Some( new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, "")))
+      val IncomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(

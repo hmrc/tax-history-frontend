@@ -52,5 +52,13 @@ class CurrencySpec extends PlaySpec {
     "format -ve number to skip .00 from decimals when no minDPs is provided" in {
       Currency(BigDecimal(-100.00)).toString must be("- £100")
     }
+
+    "return nothing when using fromOptionBD if none is provided" in {
+      Currency.fromOptionBD(None) must be ("")
+    }
+
+    "format +ve value successfully when using fromOptionBD" in {
+      Currency.fromOptionBD(Some(100.55)) must be ("£100.55")
+    }
   }
 }
