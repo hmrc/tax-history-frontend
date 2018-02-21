@@ -81,7 +81,7 @@
                         >@Messages("employmenthistory.view")
                         <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
                     } else {
-                        @Messages("lbl.none")
+                    <span id=@{s"view-employment-${index}"} >@Messages("lbl.none")</span>
                     }
                 </td>
             </tr>

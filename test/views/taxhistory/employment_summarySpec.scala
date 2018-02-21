@@ -43,11 +43,11 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
       doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
-      doc.getElementsByClass("heading-secondary").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
+      doc.getElementsByClass("pre-heading-small boldFont").html must be(Messages("employmenthistory.taxyear", taxYear.toString,
         (taxYear + 1).toString))
 
       val viewDetailsElements: Element = doc.getElementById("view-employment-0")
-      viewDetailsElements.html must include(Messages("employmenthistory.view.record") +
+      viewDetailsElements.html must include(Messages("employmenthistory.view") +
         " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
 
      val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
@@ -55,7 +55,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
-      viewPensionElements.html must include(Messages("employmenthistory.view.record") +
+      viewPensionElements.html must include(Messages("employmenthistory.view") +
         " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-1") + "</span>")
 
       doc.select("script").toString contains
