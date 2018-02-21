@@ -16,7 +16,6 @@
 
 package model.api
 
-import model.api
 import play.api.libs.json.Json
 
 case class TaDeduction(`type`:Int,
@@ -46,16 +45,9 @@ case class IncomeSource(employmentId:Int,
                         taxCode: String,
                         basisOperation: Option[Int],
                         employmentTaxDistrictNumber: Int,
-                        employmentPayeRef: String
-                       )
+                        employmentPayeRef: String)
 
 object IncomeSource {
   implicit val formats = Json.format[IncomeSource]
 }
-
-//case class NpsTaxAccount(incomeSources: List[IncomeSource])
-
-//object NpsTaxAccount {
-//  implicit val formats = Json.format[NpsTaxAccount]
-//}
 

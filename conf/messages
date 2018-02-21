@@ -95,7 +95,7 @@ employmenthistory.al.ProfessionalSubscriptions=Professional subscriptions
 employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 
 ################################ Tax Codes ####################################################
-tax.code.heading = Tax code breakdown{0}
+tax.code.heading = Tax code breakdown
 tax.code.subheading = latest tax code issued
 tax.code.caveat = The source amount only appears if it differs from the allowance or deduction.
 tax.code.allowance = Allowance

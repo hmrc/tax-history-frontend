@@ -165,11 +165,11 @@
 
 @if(incomeSource.isDefined) {
 
-    <h2 class = "heading-medium ">@Messages("tax.code.heading",{ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)})</h2>
+    <h2 class = "heading-medium ">@Messages("tax.code.heading")</h2>
 
     <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-    <h1>@{incomeSource.get.taxCode}</h1>
+    <h1>@{incomeSource.get.taxCode ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)}</h1>
 
     <p>@Messages("tax.code.caveat")</p>
 
