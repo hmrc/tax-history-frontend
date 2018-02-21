@@ -106,6 +106,17 @@ employmenthistory.al.FlatRateJobExpenses=Flat rate job expenses
 employmenthistory.al.ProfessionalSubscriptions=Professional subscriptions
 employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 
+################################ Tax Codes ####################################################
+tax.code.heading = Tax code breakdown
+tax.code.subheading = latest tax code issued
+tax.code.caveat = The source amount only appears if it differs from the allowance or deduction.
+tax.code.allowance = Allowance
+tax.code.deduction = Deduction
+tax.code.allowance.type = Allowance type
+tax.code.deduction.type = Deduction type
+tax.code.source.amount = Source amount
+
+
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
 employmenthistory.select.client.title=Select client - GOV.UK

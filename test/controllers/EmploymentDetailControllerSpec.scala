@@ -21,7 +21,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import support.fixtures.PersonFixture
-import model.api.{CompanyBenefit, Employment, EmploymentStatus, PayAndTax}
+import model.api._
 import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -70,6 +70,9 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         worksNumber = "00191048716"
       )
 
+      val IncomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
+
+
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
 
@@ -84,6 +87,9 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
 
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(person)))))
+
+      when(c.taxHistoryConnector.getIncomeSource(any(),any(),any())(any())).
+        thenReturn(Future.successful((HttpResponse(Status.OK, None))))
       c
     }
   }

@@ -28,7 +28,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
 
   "ControllerUtils - getEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -43,7 +43,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     "return end date when there is an end date and employment status is Live" in {
       val parsedEndDate = LocalDate.parse("2016-02-07")
 
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -56,7 +56,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     }
 
     "return error message when employment status is PotentiallyCeased" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -69,7 +69,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     }
 
     "return formatted end date" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -82,7 +82,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     }
 
     "return date when Employment Status is unknown and endDate is provided" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -95,7 +95,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     }
 
     "return unknown when Employment Status is unknown and no endDate is provided" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -110,7 +110,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
 
   "ControllerUtils - getEmploymentStatus" must {
     "return default message when employment is Live" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -123,7 +123,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     }
 
     "return alternate message when employment is not Live" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -136,7 +136,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
     }
 
     "return unknown message when employment status is unknown" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -151,7 +151,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
 
   "ControllerUtils - hasEmploymentDetails" must {
     "return true when employment status is not unknown" in {
-      val emp =  Employment(
+      val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
@@ -165,7 +165,7 @@ class ControllerUtilsSpec extends GuiceAppSpec {
 
     "ControllerUtils - hasEmploymentDetails" must {
       "return false when employment status is unknown" in {
-        val emp =  Employment(
+        val emp = Employment(
           employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
           payeReference = "paye",
           employerName = "employer",
@@ -178,4 +178,40 @@ class ControllerUtilsSpec extends GuiceAppSpec {
       }
     }
   }
+
+  "ControllerUtils - displaySource " must {
+    "return none when both source amount and amount are the same" in {
+      val sourceAmount: Option[BigDecimal] = Some(1)
+      val amount: BigDecimal = 1
+
+      ControllerUtils.displaySource(sourceAmount, amount) shouldBe None
+    }
+
+    "return the source amount when both source amount and amount are different" in {
+      val sourceAmount: Option[BigDecimal] = Some(2)
+      val amount: BigDecimal = 1
+
+      ControllerUtils.displaySource(sourceAmount, amount) shouldBe Some(2)
+    }
+  }
+
+  "ControllerUtils - displaytaxCode " must {
+    "return X when basisOperation is either a 1 0r a 3" in {
+      val basisOperation1: Option[Int] = Some(1)
+      val basisOperation3: Option[Int] = Some(3)
+
+      ControllerUtils.displayTaxCode(basisOperation1) shouldBe Some("X")
+      ControllerUtils.displayTaxCode(basisOperation3) shouldBe Some("X")
+    }
+    "return None in all other cases" in {
+      val basisOperation2: Option[Int] = Some(2)
+      val basisOperation4: Option[Int] = Some(4)
+
+      ControllerUtils.displayTaxCode(basisOperation2) shouldBe None
+      ControllerUtils.displayTaxCode(basisOperation4) shouldBe None
+      ControllerUtils.displayTaxCode(None) shouldBe None
+    }
+
+  }
+
 }

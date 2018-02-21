@@ -20,7 +20,8 @@ import javax.inject.Inject
 
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import model.api.{CompanyBenefit, Employment, PayAndTax}
+import model.api._
+import model.api.IncomeSource._
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
@@ -106,6 +107,23 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
 
   }
 
+  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
+                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[IncomeSource]] = {
+    {
+      taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId) map { iSResponse =>
+        if (iSResponse.body.isEmpty) {
+          None
+        } else {
+          Some(iSResponse.json.as[IncomeSource])
+        }
+      }
+    }.recoverWith {
+      case e =>
+        logger.warn(s"getIncomeSource failed with ${e.getMessage}")
+        Future.successful(None)
+    }
+  }
+
   private def loadEmploymentDetailsPage(empResponse: HttpResponse,
                                         nino: Nino,
                                         taxYear: Int,
@@ -115,8 +133,9 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
     for {
       payAndTax <- getPayAndTax(nino, taxYear, employmentId)
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
+      incomeSource <- getIncomeSource(nino, taxYear, employmentId)
     } yield Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax,
-      employment, companyBenefits, person.getName.getOrElse(nino.nino), getActualOrEstimateFlag(companyBenefits)))
+      employment, companyBenefits, person.getName.getOrElse(nino.nino), getActualOrEstimateFlag(companyBenefits), incomeSource))
   }
 
 }
