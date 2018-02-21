@@ -50,4 +50,13 @@ object ControllerUtils {
     }
   }
 
+  def displaySource(sourceAmount:Option[BigDecimal], amount: BigDecimal):Option[BigDecimal] =
+    if (sourceAmount.contains(amount)) None else sourceAmount
+
+  def displayTaxCode(basisOperation: Option[Int]):Option[String] =
+    basisOperation match{
+      case (Some(1) | Some(3)) => Some("X")
+      case _ => None
+    }
+
 }

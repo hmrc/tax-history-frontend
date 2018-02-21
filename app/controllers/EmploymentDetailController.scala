@@ -107,18 +107,22 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
 
   }
 
-  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
-                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[IncomeSource]] = {
-    {
-      taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId) map { iSResponce =>
-        iSResponce.json.as[Option[IncomeSource]]
+    private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
+                               (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[IncomeSource]] = {
+      {
+        taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId) map { iSResponce =>
+          if (iSResponce.body.isEmpty) {
+            None
+          } else {
+            Some(iSResponce.json.as[IncomeSource])
+          }
+        }
+      }.recoverWith {
+        case e =>
+          logger.warn(s"getIncomeSource failed with ${e.getMessage}")
+          Future.successful(None)
       }
-    }.recoverWith {
-      case e =>
-        logger.warn(s"getIncomeSource failed with ${e.getMessage}")
-        Future.successful(None)
     }
-  }
 
   private def loadEmploymentDetailsPage(empResponse: HttpResponse,
                                         nino: Nino,

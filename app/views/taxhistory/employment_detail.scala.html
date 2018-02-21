@@ -163,10 +163,9 @@
     </table>
 }
 
-@if(incomeSource == None){<p>it is not defined </p>}
 @if(incomeSource.isDefined) {
 
-    <h2 class = "heading-medium ">@Messages("tax.code.heading")</h2>
+    <h2 class = "heading-medium ">@Messages("tax.code.heading",{ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)})</h2>
 
     <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
@@ -185,9 +184,9 @@
         <tbody>
         @incomeSource.get.allowances.map{iSAllowance =>
         <tr>
-            <td>iSAllowance.npsDescription</td>
-            <td>iSAllowance.sourceAmount</td>
-            <td>isAllowance.amount</td>
+            <td>@{iSAllowance.npsDescription}</td>
+            <td>@{Currency.fromOptionBD(ControllerUtils.displaySource(iSAllowance.sourceAmount, iSAllowance.amount))}</td>
+            <td class="numeric">@{Currency(iSAllowance.amount)}</td>
         <tr>
         }
         </tbody>
@@ -201,6 +200,15 @@
             <th scope = "col" class = "numeric boldFont">@Messages("tax.code.deduction") </th>
         </tr>
     </thread>
+    <tbody>
+    @incomeSource.get.deductions.map{iSDeductions =>
+    <tr>
+        <td>@{iSDeductions.npsDescription}</td>
+        <td>@{Currency.fromOptionBD(ControllerUtils.displaySource(iSDeductions.sourceAmount, iSDeductions.amount))}</td>
+        <td class="numeric" >@{Currency(iSDeductions.amount)}</td>
+    <tr>
+        }
+    </tbody>
 </table>
 }
 

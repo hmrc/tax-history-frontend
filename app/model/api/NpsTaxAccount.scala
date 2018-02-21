@@ -16,8 +16,8 @@
 
 package model.api
 
+import model.api
 import play.api.libs.json.Json
-import play.mvc.BodyParser.Json
 
 case class TaDeduction(`type`:Int,
                        npsDescription: String,
@@ -50,12 +50,7 @@ case class IncomeSource(employmentId:Int,
                        )
 
 object IncomeSource {
-
-  val incomeSourceReads :Reads[IncomeSource] =(
-    (JsPath \ "employmentId:").readInt
-      )
-
-  val incomeSourceWrites :Writes[IncomeSource] =()
+  implicit val formats = Json.format[IncomeSource]
 }
 
 //case class NpsTaxAccount(incomeSources: List[IncomeSource])
