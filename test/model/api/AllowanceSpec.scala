@@ -42,7 +42,7 @@ class AllowanceSpec extends TestUtil with UnitSpec {
 
 
 
-  lazy val allowance1 = IabdAllowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  lazy val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "allowanceType",
     amount = BigDecimal(12.00))
 
@@ -51,7 +51,7 @@ class AllowanceSpec extends TestUtil with UnitSpec {
   "Allowance" should {
 
     "generate allowanceId when none is supplied" in {
-      val allowance = IabdAllowance(iabdType = "otherAllowanceType", amount = BigDecimal(10.00))
+      val allowance = Allowance(iabdType = "otherAllowanceType", amount = BigDecimal(10.00))
       allowance.allowanceId.toString.nonEmpty shouldBe true
       allowance.allowanceId shouldNot be(allowance1.allowanceId)
     }

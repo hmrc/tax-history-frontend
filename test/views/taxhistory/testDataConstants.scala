@@ -74,13 +74,13 @@ trait Constants {
 
   val employments = List(emp1, emp2, emp3, emp4)
 
-  val allowance1 = IabdAllowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "FlatRateJobExpenses",
     amount = BigDecimal(12.00))
-  val allowance2 = IabdAllowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance2 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "ProfessionalSubscriptions",
     amount = BigDecimal(22.00))
-  val allowance3 = IabdAllowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance3 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "EarlierYearsAdjustment",
     amount = BigDecimal(32.00))
 

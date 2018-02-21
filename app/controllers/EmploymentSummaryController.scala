@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import model.api.{IabdAllowance, Employment, EmploymentStatus, TaxAccount}
+import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
 import models.taxhistory.Person
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc._
@@ -99,7 +99,7 @@ class EmploymentSummaryController @Inject()(
 
   private def getAllowancesFromResponse(dataResponse: (HttpResponse, HttpResponse)) = {
     dataResponse._1.status match {
-      case OK => dataResponse._1.json.as[List[IabdAllowance]]
+      case OK => dataResponse._1.json.as[List[Allowance]]
       case status =>
         Logger.info(s"Allowance Status: $status")
         List.empty

@@ -21,7 +21,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import support.fixtures.PersonFixture
-import model.api.{IabdAllowance, Employment, EmploymentStatus, TaxAccount}
+import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
@@ -57,7 +57,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     worksNumber = "00191048716"
   )
 
-  val allowance = IabdAllowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "EarlierYearsAdjustment",
     amount = BigDecimal(32.00))
 

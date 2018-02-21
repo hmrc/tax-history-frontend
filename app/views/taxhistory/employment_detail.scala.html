@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import model.api.{PayAndTax, CompanyBenefit, Employment}
+@import model.api.{PayAndTax, CompanyBenefit, Employment, IncomeSource}
 @import utils.{Currency, ControllerUtils}
 @import utils.DateHelper._
 @import uk.gov.hmrc.time.TaxYear
@@ -24,7 +24,8 @@
   payAndTax: Option[PayAndTax],
   employment: Employment,
   companyBenefits: List[CompanyBenefit],
-  clientNameOrNino: String, actualOrForecast: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  clientNameOrNino: String, actualOrForecast: Boolean,
+  incomeSource:Option[IncomeSource])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
 @views.html.main_template(title = Messages("employmenthistory.employment.details.title"),
@@ -162,13 +163,14 @@
     </table>
 }
 
-@if(true){
+@if(incomeSource == None){<p>it is not defined </p>}
+@if(incomeSource.isDefined) {
 
     <h2 class = "heading-medium ">@Messages("tax.code.heading")</h2>
 
     <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-    <h1>taxcodegohere</h1>
+    <h1>@{incomeSource.get.taxCode}</h1>
 
     <p>@Messages("tax.code.caveat")</p>
 
@@ -180,6 +182,15 @@
             <th scope = "col" class = "numeric boldFont">@Messages("tax.code.allowance") </th>
         </tr>
     </thread>
+        <tbody>
+        @incomeSource.get.allowances.map{iSAllowance =>
+        <tr>
+            <td>iSAllowance.npsDescription</td>
+            <td>iSAllowance.sourceAmount</td>
+            <td>isAllowance.amount</td>
+        <tr>
+        }
+        </tbody>
     </table>
 
 <table id = "deductions-table">

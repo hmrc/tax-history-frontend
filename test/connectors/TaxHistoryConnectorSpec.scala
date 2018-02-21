@@ -71,7 +71,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
 
     "fetch allowance for tax history" in new LocalSetup {
 
-      val allowance = IabdAllowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+      val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
         iabdType = "allowanceType",
         amount = BigDecimal(12.00))
 
