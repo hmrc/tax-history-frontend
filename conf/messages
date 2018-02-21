@@ -70,7 +70,6 @@ employmenthistory.select.different.taxyear.link.lower = select a different tax y
 employmenthistory.display.client.name = {0}''s income records
 
 ################################## Company Benefits & Allowances ##################################
-
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
 employmenthistory.cb.CarFuelBenefit=Car fuel benefit
 employmenthistory.cb.MedicalInsurance=Medical insurance
@@ -134,7 +133,6 @@ employmenthistory.company.benefit.caveat.estimate = HMRC does not have {0}''s P1
 
 
 ################################## Select tax year ####################################################
-
 employmenthistory.select.tax.year.title = Select tax year - GOV.UK
 employmenthistory.select.tax.year.h1 = Select the tax year you want to view
 employmenthistory.select.tax.year.header = {0}''s income record
@@ -146,13 +144,12 @@ employmenthistory.select.tax.year.error.message = Select a tax year
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Underpaid tax and debts
-
 employmenthistory.tax-account.underpayment-amount.title=Confirmed underpaid tax included in your clients tax code for the tax year {0} to {1}, carried over from earlier years.
 employmenthistory.tax-account.potential-underpayment.title=Estimated underpaid tax in your clients tax code for the current tax, carried over from tax year {0} to {1}.
 employmenthistory.tax-account.outstanding.debt.title=Other outstanding debt included in your client''s tax code for tax year {0} to {1}, carried over from previous tax years.
 employmenthistory.tax-account.outstanding.debt.text = Debts may relate to Self Assessment, tax credits or National Insurance class 2.
-################################ Error Pages ###########################################################
 
+################################ Error Pages ###########################################################
 employmenthistory.not.authorised.title = You are not authorised to view this income record - GOV.UK
 employmenthistory.not.authorised.header = You are not authorised to view this income record
 employmenthistory.not.authorised.select.client.link.text = Enter another client''s National Insurance number
@@ -163,7 +160,7 @@ employmenthistory.deceased.header = You cannot access their data
 employmenthistory.deceased.title = You cannot access their data - GOV.UK
 employmenthistory.deceased.select.client.link.text = Enter another client''s National Insurance number
 employmenthistory.no.data.title = This clients income record contains no data - GOV.UK
-employmenthistory.no.data.header = {0}’s income record contains no data for this tax year
+employmenthistory.no.data.header = The client’s income record contains no data for this tax year
 employmenthistory.no.data.text = You can:
 employmenthistory.no.data.select.client.link.text = enter another client''s National Insurance number
 employmenthistory.technical.error.title = Service unavailable - GOV.UK
