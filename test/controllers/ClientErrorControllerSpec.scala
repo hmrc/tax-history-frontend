@@ -87,20 +87,6 @@ class ClientErrorControllerSpec extends ControllerSpec {
       bodyOf(await(result)) should include(Messages("employmenthistory.not.authorised.title"))
     }
 
-    "get Not Authorised page with a NINO and no relationship when accessing /no-data" in new NoRelationshipPathSetup {
-      val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
-    }
-
-    "get Select Client page without a NINO in session when accessing /no-data" in {
-      lazy val controller: ClientErrorController = injected[ClientErrorController]
-
-      val result = controller.getNoData().apply(FakeRequest())
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
-    }
-
     "get Not Authorised page without NINO" in new HappyPathSetup {
       val result = controller.getNotAuthorised().apply(FakeRequest())
       status(result) shouldBe SEE_OTHER
@@ -120,25 +106,11 @@ class ClientErrorControllerSpec extends ControllerSpec {
     }
 
     "get No Data Available page" in new HappyPathSetup {
-      val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe OK
-      val body = bodyOf(await(result))
-      body should include(Messages("employmenthistory.no.data.title"))
-      body should include(Messages("employmenthistory.no.data.header", "firstname secondname"))
-    }
-
-    "get No Data Available page without citizen details surname" in new NoCitizenDetailsPathSetup {
-      val result = controller.getNoData().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe OK
-      val body = bodyOf(await(result))
-      body should include(Messages("employmenthistory.no.data.title"))
-      body should include(Messages("employmenthistory.no.data.header", nino))
-    }
-
-    "get Select Client page without NINO when accessing /no-data" in new HappyPathSetup {
       val result = controller.getNoData().apply(FakeRequest())
-      status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
+      status(result) shouldBe OK
+      val body = bodyOf(await(result))
+      body should include(Messages("employmenthistory.no.data.title"))
+      body should include(Messages("employmenthistory.no.data.header"))
     }
 
     "get Technical Error page" in new HappyPathSetup {
