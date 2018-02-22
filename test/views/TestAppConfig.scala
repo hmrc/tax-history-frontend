@@ -32,5 +32,6 @@ trait TestAppConfig {
     val betaFeedbackUnauthenticatedUrl: String = "fakeurl"
     val agentAccountHomePage: String = "fakeurl"
     val agentSubscriptionStart: String = "fakeurl"
+    override val agentInvitation: String = "fakeurl"
   }
 }

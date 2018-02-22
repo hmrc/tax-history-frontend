@@ -21,8 +21,14 @@
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
     <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.not.authorised.header")</h1>
-    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
-    id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a>
+    <p>@Messages("employmenthistory.no.data.text")</p>
+    <ul class = "list-bullet">
+        <li><a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
+                id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a></li>
+
+        <li><a href="@appConfig.agentInvitation"
+               id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</a></li>
+    </ul>
 }
 
 @views.html.main_template(title = Messages("employmenthistory.not.authorised.title")) {
