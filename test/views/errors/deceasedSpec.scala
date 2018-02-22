@@ -38,6 +38,7 @@ class deceasedSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.deceased.header")
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.deceased.text"))
       doc.getElementsMatchingOwnText(Messages("employmenthistory.deceased.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
@@ -45,3 +46,4 @@ class deceasedSpec extends GuiceAppSpec with TestAppConfig {
   }
 
 }
+
