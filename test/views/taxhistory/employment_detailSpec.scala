@@ -37,7 +37,10 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     val taxYear = 2016
     val person = Person(Some("James"), Some("Dean"), Some(false))
     val clientName: String = person.getName.getOrElse(nino)
-    val testIncomeSource:Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
+    val incomeSourceNoDeductions:Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
+
+    val deductions:List[TaDeduction] = List(TaDeduction(1,"test",1.0,Some(1.0)))
+    val incomeSourceWithDeductions:Option[IncomeSource]= Some(IncomeSource(1, 1, None, deductions, List.empty, "", None, 1, ""))
   }
 
   "employment_detail view" must {
@@ -145,29 +148,47 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         doc.getElementsContainingOwnText(Messages("tax.code.heading")).hasText mustBe false
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe false
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe false
-        doc.getElementsContainingOwnText(Messages("tax.code.allowance")).hasText mustBe false
-        doc.getElementsContainingOwnText(Messages("tax.code.deduction")).hasText mustBe false
-        doc.getElementsContainingOwnText(Messages("tax.code.allowance.type")).hasText mustBe false
-        doc.getElementsContainingOwnText(Messages("tax.code.deduction.type")).hasText mustBe false
-        doc.getElementsContainingOwnText(Messages("tax.code.source.amount")).hasText mustBe false
 
+        doc.getElementsByClass("allowance-table").size() mustBe 0
+        doc.getElementsByClass("deductions-table").size() mustBe 0
+
+        doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText mustBe false
       }
     }
 
-    "Show tax code breakdown " when {
-      "employment details are for current year" in new ViewFixture {
+    "Show tax code breakdown with deductions " when {
+      "employment details are for current year and there are deductions" in new ViewFixture {
 
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
-          employment, completeCBList, clientName, actualOrForecast = true, testIncomeSource)
+          employment, completeCBList, clientName, actualOrForecast = true, incomeSourceWithDeductions)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading",{""})).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.allowance")).hasText mustBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.deduction")).hasText mustBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.allowance.type")).hasText mustBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.deduction.type")).hasText mustBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.source.amount")).hasText mustBe true
+
+        doc.getElementsByClass("allowance-table").size() mustBe 1
+        doc.getElementsByClass("deductions-table").size() mustBe 1
+
+        doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText mustBe false
+
+      }
+    }
+
+    "Show tax code breakdown without deductions and show no deductions text " when {
+      "employment details are for current year and there are no deductions" in new ViewFixture {
+
+        val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
+          employment, completeCBList, clientName, actualOrForecast = true, incomeSourceNoDeductions)
+
+        doc.getElementsContainingOwnText(Messages("tax.code.heading",{""})).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
+
+        doc.getElementsByClass("allowance-table").size() mustBe 1
+        doc.getElementsByClass("deductions-table").size() mustBe 0
+
+        doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText mustBe true
+
 
       }
     }

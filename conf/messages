@@ -115,7 +115,7 @@ tax.code.deduction = Deduction
 tax.code.allowance.type = Allowance type
 tax.code.deduction.type = Deduction type
 tax.code.source.amount = Source amount
-
+tax.code.no.deductions = There are no deductions.
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
@@ -170,7 +170,7 @@ employmenthistory.mci.restricted.select.client.link.text = Enter another client'
 employmenthistory.deceased.header = You cannot access their data
 employmenthistory.deceased.title = You cannot access their data - GOV.UK
 employmenthistory.deceased.select.client.link.text = Enter another client''s National Insurance number
-employmenthistory.no.data.title = This clients income record contains no data - GOV.UK
+employmenthistory.no.data.title = This client’s income record contains no data - GOV.UK
 employmenthistory.no.data.header = The client’s income record contains no data for this tax year
 employmenthistory.no.data.text = You can:
 employmenthistory.no.data.select.client.link.text = enter another client''s National Insurance number
