@@ -183,7 +183,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         doc.getElementsContainingOwnText(Messages("tax.code.heading",{""})).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.allowance")).hasText mustBe true
 
         doc.getElementsByClass("allowance-table").size() mustBe 1
         doc.getElementsByClass("deductions-table").size() mustBe 0
