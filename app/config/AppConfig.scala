@@ -29,6 +29,6 @@ trait AppConfig {
   val betaFeedbackUnauthenticatedUrl: String
   val agentAccountHomePage: String
   val agentSubscriptionStart: String
-
+  val agentInvitation:String
 }
 

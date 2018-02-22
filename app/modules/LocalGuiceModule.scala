@@ -46,6 +46,7 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         val loginContinue = getConfStringOrThrow("login.continue")
         val betaFeedbackUrl = getConfStringOrThrow("betaFeedbackUrl")
         val betaFeedbackUnauthenticatedUrl = getConfStringOrThrow("betaFeedbackUnauthenticatedUrl")
+        val agentInvitation = getConfStringOrThrow("external-url.agent-invitation.url")
       }
     })
 
