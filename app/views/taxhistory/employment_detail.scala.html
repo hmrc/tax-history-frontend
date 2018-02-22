@@ -170,7 +170,7 @@
 
     <p>@Messages("tax.code.caveat")</p>
 
-    <table id = "allowance-table">
+    <table class="allowance-table">
     <thread>
         <tr>
             <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
@@ -188,25 +188,27 @@
         }
         </tbody>
     </table>
-
-<table id = "deductions-table">
-    <thread>
-        <tr>
-            <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
-            <th scope = "col" class = "width25pc boldFont">@Messages("tax.code.source.amount") </th>
-            <th scope = "col" class = "numeric boldFont">@Messages("tax.code.deduction") </th>
-        </tr>
-    </thread>
-    <tbody>
-    @incomeSource.get.deductions.map{iSDeductions =>
-    <tr>
-        <td>@{iSDeductions.npsDescription}</td>
-        <td>@{Currency.fromOptionBD(ControllerUtils.displaySource(iSDeductions.sourceAmount, iSDeductions.amount))}</td>
-        <td class="numeric" >@{Currency(iSDeductions.amount)}</td>
-    <tr>
-        }
-    </tbody>
-</table>
+@if(incomeSource.get.deductions.nonEmpty){
+    <table class = "deductions-table">
+        <thread>
+            <tr>
+                <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
+                <th scope = "col" class = "width25pc boldFont">@Messages("tax.code.source.amount") </th>
+                <th scope = "col" class = "numeric boldFont">@Messages("tax.code.deduction") </th>
+           </tr>
+       </thread>
+       <tbody>
+       @incomeSource.get.deductions.map{iSDeductions =>
+       <tr>
+           <td>@{iSDeductions.npsDescription}</td>
+           <td>@{Currency.fromOptionBD(ControllerUtils.displaySource(iSDeductions.sourceAmount, iSDeductions.amount))}</td>
+          <td class="numeric" >@{Currency(iSDeductions.amount)}</td>
+      <tr>
+         }
+        </tbody>
+    </table>
+} else {
+<span class ="grey">@Messages("tax.code.no.deductions")</span>
 }
-
+}
 }
