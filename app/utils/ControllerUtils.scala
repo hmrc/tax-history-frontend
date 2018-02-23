@@ -59,4 +59,8 @@ object ControllerUtils {
       case _ => None
     }
 
+  def sentenceCase(input :String):String={
+    input.toLowerCase.capitalize
+  }
+
 }
