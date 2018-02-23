@@ -108,7 +108,7 @@ employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 
 ################################ Tax Codes ####################################################
 tax.code.heading = Tax code breakdown
-tax.code.subheading = latest tax code issued
+tax.code.subheading =Latest tax code issued
 tax.code.caveat = The source amount only appears if it differs from the allowance or deduction.
 tax.code.allowance = Allowance
 tax.code.deduction = Deduction
