@@ -21,6 +21,11 @@
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
     <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.mci.restricted.header")</h1>
+    <p>@Messages("employmenthistory.mci.restricted.text")</p>
+    <ul class = "list-bullet">
+        <li>@Messages("employmenthistory.mci.restricted.telephone")</li>
+        <li>@Messages("employmenthistory.mci.restricted.textphone")</li>
+    </ul>
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
     id="selectClient">@Messages("employmenthistory.mci.restricted.select.client.link.text")</a>
 }
