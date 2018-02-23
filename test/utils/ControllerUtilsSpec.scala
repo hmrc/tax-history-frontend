@@ -211,7 +211,12 @@ class ControllerUtilsSpec extends GuiceAppSpec {
       ControllerUtils.displayTaxCode(basisOperation4) shouldBe None
       ControllerUtils.displayTaxCode(None) shouldBe None
     }
+  }
 
+  "ControllerUtils - sentenceCase " must {
+    "return the input with the first letter capitalised and the rest lower case" in {
+      ControllerUtils.sentenceCase("heLLo WorLD") shouldBe "Hello world"
+    }
   }
 
 }
