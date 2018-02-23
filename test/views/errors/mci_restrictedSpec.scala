@@ -38,6 +38,9 @@ class mci_restrictedSpec extends GuiceAppSpec with TestAppConfig {
       doc.title mustBe title
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.text")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.telephone")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.textphone")).hasText mustBe true
       doc.select("h1").text() mustBe Messages("employmenthistory.mci.restricted.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
       doc.select("script").toString contains
