@@ -16,15 +16,14 @@
 
 package views.taxhistory
 
-import model.api.{IncomeSource, TaAllowance, TaDeduction}
+import model.api.{IncomeSource, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
-import utils.TestUtil
+import utils.{ControllerUtils, TestUtil}
 import views.{Fixture, TestAppConfig}
 
 class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestAppConfig {
@@ -32,15 +31,15 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
 
-    val currentTaxYear:Int = TaxYear.current.startYear
+    val currentTaxYear: Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2016
     val person = Person(Some("James"), Some("Dean"), Some(false))
     val clientName: String = person.getName.getOrElse(nino)
-    val incomeSourceNoDeductions:Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
+    val incomeSourceNoDeductions: Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
-    val deductions:List[TaDeduction] = List(TaDeduction(1,"test",1.0,Some(1.0)))
-    val incomeSourceWithDeductions:Option[IncomeSource]= Some(IncomeSource(1, 1, None, deductions, List.empty, "", None, 1, ""))
+    val deductions: List[TaDeduction] = List(TaDeduction(1, "test", 1.0, Some(1.0)))
+    val incomeSourceWithDeductions: Option[IncomeSource] = Some(IncomeSource(1, 1, None, deductions, List.empty, "", None, 1, ""))
   }
 
   "employment_detail view" must {
@@ -73,7 +72,23 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       endDate.text must include(employment.endDate.get.toString("d MMMM yyyy"))
       taxablePay.text must include("£4,896.8")
       incomeTax.text must include("£979.36")
+    }
 
+    "not have payroll ID and status for a pension" in new ViewFixture {
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+        employment.copy(receivingOccupationalPension = true), List.empty, clientName, actualOrForecast = true, None)
+      val payeReference: Element = doc.select("#employment-table tbody tr").get(0)
+      val startDate: Element = doc.select("#employment-table tbody tr").get(1)
+      val endDate: Element = doc.select("#employment-table tbody tr").get(2)
+      val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
+      val incomeTax: Element = doc.select("#pay-and-tax-table tbody tr").get(1)
+
+      doc.getElementsContainingText(employment.worksNumber).hasText mustBe false
+      doc.getElementsContainingText(ControllerUtils.getEmploymentStatus(employment)).hasText mustBe false
+      startDate.text must include(employment.startDate.toString("d MMMM yyyy"))
+      endDate.text must include(employment.endDate.get.toString("d MMMM yyyy"))
+      taxablePay.text must include("£4,896.8")
+      incomeTax.text must include("£979.36")
     }
 
     "have correct Earlier Year Update details" in new ViewFixture {
@@ -162,7 +177,9 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
           employment, completeCBList, clientName, actualOrForecast = true, incomeSourceWithDeductions)
 
-        doc.getElementsContainingOwnText(Messages("tax.code.heading",{""})).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.heading", {
+          ""
+        })).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
 
@@ -180,7 +197,9 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
           employment, completeCBList, clientName, actualOrForecast = true, incomeSourceNoDeductions)
 
-        doc.getElementsContainingOwnText(Messages("tax.code.heading",{""})).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.heading", {
+          ""
+        })).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
 

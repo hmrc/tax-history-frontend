@@ -48,10 +48,12 @@
       <th scope="row" class="width50pc boldFont">@Messages("lbl.paye.reference")</th>
       <td>@employment.payeReference</td>
   </tr>
-  <tr>
-      <th scope="row" class="width50pc boldFont">@Messages("lbl.payroll.id")</th>
-      <td>@employment.worksNumber</td>
-  </tr>
+  @if(!employment.receivingOccupationalPension) {
+      <tr>
+          <th scope="row" class="width50pc boldFont">@Messages("lbl.payroll.id")</th>
+          <td>@employment.worksNumber</td>
+      </tr>
+  }
   <tr>
       <th scope="row" class="boldFont">@Messages("lbl.date.start")</th>
       <td>@employment.startDate.toString("d MMMM yyyy")</td>
@@ -62,10 +64,12 @@
           @ControllerUtils.getEndDate(employment)
       </td>
   </tr>
-  <tr>
-      <th scope="row" class="boldFont">@Messages("lbl.status")</th>
-      <td>@ControllerUtils.getEmploymentStatus(employment)</td>
-  </tr>
+  @if(!employment.receivingOccupationalPension) {
+      <tr>
+          <th scope="row" class="boldFont">@Messages("lbl.status")</th>
+          <td>@ControllerUtils.getEmploymentStatus(employment)</td>
+      </tr>
+  }
   </tbody>
 </table>
 
