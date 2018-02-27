@@ -212,7 +212,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "Not Show tax code, paye Refrence, payroll id, early year updates, or company benefits" when {
       "The employment is recievingJobseekersAllowance = true" in new ViewFixture {
 
-
         val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
           employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
 
