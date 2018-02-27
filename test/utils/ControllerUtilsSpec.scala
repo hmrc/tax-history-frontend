@@ -23,8 +23,9 @@ import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import play.api.i18n.Messages
 import support.GuiceAppSpec
+import views.taxhistory.DetailConstants
 
-class ControllerUtilsSpec extends GuiceAppSpec {
+class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
 
   "ControllerUtils - getEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
@@ -216,6 +217,16 @@ class ControllerUtilsSpec extends GuiceAppSpec {
   "ControllerUtils - sentenceCase " must {
     "return the input with the first letter capitalised and the rest lower case" in {
       ControllerUtils.sentenceCase("heLLo WorLD") shouldBe "Hello world"
+    }
+  }
+
+  "ControllerUtils - isJobSeekerAllowance" must {
+    "return the employers name if receivingJobSeekersAllowance is false" in {
+      ControllerUtils.isJobSeekerAllowance(employment) shouldBe "employer-1"
+    }
+
+    "return the term Jobseeker''s Allowance if receivingJobSeekersAllowance is true" in {
+      ControllerUtils.isJobSeekerAllowance(employmentWithJobseekers) shouldBe Messages("employmenthistory.job.seekers")
     }
   }
 
