@@ -63,4 +63,9 @@ object ControllerUtils {
     input.toLowerCase.capitalize
   }
 
+  def isJobSeekerAllowance(employment: Employment)(implicit messages: Messages):String={
+    if (employment.receivingJobSeekersAllowance) Messages("employmenthistory.job.seekers")
+    else employment.employerName
+  }
+
 }

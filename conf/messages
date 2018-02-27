@@ -68,6 +68,7 @@ employmenthistory.caveat.p3.text = You should always check with your client befo
 employmenthistory.select.different.taxyear.link = Select a different tax year
 employmenthistory.select.different.taxyear.link.lower = select a different tax year
 employmenthistory.display.client.name = {0}''s income records
+employmenthistory.job.seekers =Jobseeker''s Allowance
 
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
