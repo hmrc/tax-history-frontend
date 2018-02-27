@@ -177,9 +177,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
           employment, completeCBList, clientName, actualOrForecast = true, incomeSourceWithDeductions)
 
-        doc.getElementsContainingOwnText(Messages("tax.code.heading", {
-          ""
-        })).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.heading", {""})).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
 
@@ -197,9 +195,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
           employment, completeCBList, clientName, actualOrForecast = true, incomeSourceNoDeductions)
 
-        doc.getElementsContainingOwnText(Messages("tax.code.heading", {
-          ""
-        })).hasText mustBe true
+        doc.getElementsContainingOwnText(Messages("tax.code.heading", {""})).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe true
 
