@@ -37,18 +37,20 @@
 
 <header class="page-header">
     <span id = "ClientIncomeRecord" class="pre-heading pre-heading-small">@Messages("employmenthistory.display.client.name", s"$clientNameOrNino")</span>
-    <h1 class="heading-xlarge-no-bottom">@employment.employerName</h1>
+    <h1 class="heading-xlarge-no-bottom">@ControllerUtils.isJobSeekerAllowance(employment)</h1>
     <span id = "taxYearRange" class="heading-small heading-small-with-bottom">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</span>
 </header>
 
 <table id="employment-table">
     <caption><span class="visuallyhidden" id="EmploymentDetails">@Messages("employmenthistory.employment.details.caption")</span></caption>
   <tbody>
+  @if(!employment.receivingJobSeekersAllowance) {
   <tr>
       <th scope="row" class="width50pc boldFont">@Messages("lbl.paye.reference")</th>
       <td>@employment.payeReference</td>
   </tr>
-  @if(!employment.receivingOccupationalPension) {
+  }
+  @if(!employment.receivingOccupationalPension && !employment.receivingJobSeekersAllowance) {
       <tr>
           <th scope="row" class="width50pc boldFont">@Messages("lbl.payroll.id")</th>
           <td>@employment.worksNumber</td>
@@ -100,7 +102,7 @@
     </tr>
 </table>
 
-
+@if(!employment.receivingJobSeekersAllowance) {
 @payAndTax.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
 
@@ -164,6 +166,7 @@
     </table>
 }
 
+
 @if(incomeSource.isDefined) {
 
     <h2 class = "heading-medium ">@Messages("tax.code.heading")</h2>
@@ -213,6 +216,7 @@
     </table>
 } else {
 <span class ="grey">@Messages("tax.code.no.deductions")</span>
+}
 }
 }
 }

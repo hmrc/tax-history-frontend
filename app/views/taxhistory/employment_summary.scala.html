@@ -70,7 +70,7 @@
         </tr>
         @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
-                <td>@employment.employerName</td>
+                <td>@ControllerUtils.isJobSeekerAllowance(employment)</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@ControllerUtils.getEndDate(employment)</td>
                 <td>@ControllerUtils.getEmploymentStatus(employment)</td>
@@ -103,7 +103,7 @@
             </tr>
             @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
-                <td>@ControllerUtils.isJobSeekerAllowance(employment)</td>
+                <td> @{employment.employerName}</td>
                 <td>@DateHelper.formatDate(employment.startDate)</td>
                 <td>@ControllerUtils.getEndDate(employment)</td>
                 <td><a href="/tax-history/single-record@employment.employmentURI"

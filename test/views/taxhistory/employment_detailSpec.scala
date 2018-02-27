@@ -20,6 +20,7 @@ import model.api.{IncomeSource, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
@@ -207,6 +208,33 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
       }
     }
+
+    "Not Show tax code, paye Refrence, payroll id, early year updates, or company benefits" when {
+      "The employment is recievingJobseekersAllowance = true" in new ViewFixture {
+
+
+        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+          employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
+
+        doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.eyu")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.eyu.caveat")).hasText mustBe false
+
+        doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.companybenefits")).hasText mustBe false
+
+        doc.getElementsContainingOwnText(Messages("lbl.payroll.id")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("lbl.paye.reference")).hasText mustBe false
+
+        doc.getElementsContainingOwnText(Messages("tax.code.heading", {""})).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText mustBe false
+        doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText mustBe false
+
+        doc.getElementsByClass("allowance-table").size() mustBe 0
+        doc.getElementsByClass("deductions-table").size() mustBe 0
+
+        doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText mustBe false
+      }
+    }
+
   }
 }
 
