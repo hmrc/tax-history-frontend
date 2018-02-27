@@ -60,6 +60,9 @@ class TaxHistoryConnector @Inject()(val environment: Environment, val runModeCon
   def getTaxAccount(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/tax-account")
 
+  def getStatusPension(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+    httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/state-pension")
+
   def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/income-source")
 }

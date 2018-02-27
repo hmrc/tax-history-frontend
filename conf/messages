@@ -67,7 +67,8 @@ employmenthistory.select.different.taxyear.link=Select a different tax year
 employmenthistory.select.different.taxyear.link.lower=select a different tax year
 employmenthistory.display.client.name={0}''s income records
 employmenthistory.job.seekers=Jobseeker''s Allowance
-
+employmenthistory.state.pensions=State Pensions
+employmenthistory.state.pensions.text=Your client may claim up to {0} pro rata this year. To calculate their payments for the year, confirm with your client when their pension entitlement began.
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
 employmenthistory.cb.CarFuelBenefit=Car fuel benefit

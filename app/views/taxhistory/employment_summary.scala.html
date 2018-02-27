@@ -20,13 +20,14 @@
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 
-@import model.api.TaxAccount
+@import model.api.{TaxAccount, StatePension}
 @(nino: String,
     taxYear: Int,
     employments: List[Employment],
     allowances: List[Allowance],
     person: Option[Person],
-    taxAccount: Option[TaxAccount])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+    taxAccount: Option[TaxAccount],
+    statePension: Option[StatePension])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @getName=@{
     person.fold(nino) {
@@ -173,6 +174,11 @@
                 </tr>
             </tbody>
         </table>
+    }
+
+    @if(statePension.nonEmpty){
+        <h2 id = "StatePensions" class="heading-medium">@Messages("employmenthistory.state.pensions")</h2>
+        <p>@Messages("employmenthistory.state.pensions.text",s"${Currency(statePension.get.grossAmount)}")</p>
     }
 }
 
