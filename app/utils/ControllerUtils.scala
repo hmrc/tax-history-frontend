@@ -50,7 +50,7 @@ object ControllerUtils {
     }
   }
 
-  def displaySource(sourceAmount:Option[BigDecimal], amount: BigDecimal):Option[BigDecimal] =
+  def displaySource(sourceAmount:Option[BigDecimal], amount: BigDecimal): Option[BigDecimal] =
     if (sourceAmount.contains(amount)) None else sourceAmount
 
   def displayTaxCode(basisOperation: Option[Int]):Option[String] =
@@ -59,11 +59,11 @@ object ControllerUtils {
       case _ => None
     }
 
-  def sentenceCase(input :String):String={
+  def sentenceCase(input :String): String = {
     input.toLowerCase.capitalize
   }
 
-  def isJobSeekerAllowance(employment: Employment)(implicit messages: Messages):String={
+  def isJobSeekerAllowance(employment: Employment)(implicit messages: Messages): String = {
     if (employment.receivingJobSeekersAllowance) Messages("employmenthistory.job.seekers")
     else employment.employerName
   }

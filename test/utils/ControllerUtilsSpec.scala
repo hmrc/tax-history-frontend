@@ -23,8 +23,9 @@ import org.joda.time.LocalDate
 import org.joda.time.format.DateTimeFormat
 import play.api.i18n.Messages
 import support.GuiceAppSpec
+import views.taxhistory.DetailConstants
 
-class ControllerUtilsSpec extends GuiceAppSpec {
+class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants{
 
   "ControllerUtils - getEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
@@ -221,38 +222,12 @@ class ControllerUtilsSpec extends GuiceAppSpec {
 
   "ControllerUtils - isJobSeekerAllowance" must {
     "return the employers name if receivingJobSeekersAllowance is false" in {
-
-      val empoloymentWithNoJobSeekersAllowance = Employment (
-        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        payeReference = "paye-1",
-        employerName = "employer-1",
-        startDate = LocalDate.parse("2016-01-21"),
-        endDate = Some(LocalDate.parse("2017-01-01")),
-        companyBenefitsURI = None,
-        payAndTaxURI = None,
-        receivingJobSeekersAllowance = false,
-        employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716"
-      )
-
-      ControllerUtils.isJobSeekerAllowance(empoloymentWithNoJobSeekersAllowance) shouldBe "employer-1"
+      ControllerUtils.isJobSeekerAllowance(employment) shouldBe "employer-1"
     }
 
     "return the term Jobseeker''s Allowance if receivingJobSeekersAllowance is true" in {
 
-      val empoloymentWithNoJobSeekersAllowance = Employment (
-        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        payeReference = "paye-1",
-        employerName = "employer-1",
-        startDate = LocalDate.parse("2016-01-21"),
-        endDate = Some(LocalDate.parse("2017-01-01")),
-        companyBenefitsURI = None,
-        payAndTaxURI = None,
-        receivingJobSeekersAllowance = true,
-        employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716"
-      )
-      ControllerUtils.isJobSeekerAllowance(empoloymentWithNoJobSeekersAllowance) shouldBe Messages("employmenthistory.job.seekers")
+      ControllerUtils.isJobSeekerAllowance(employmentWithJobseekers) shouldBe Messages("employmenthistory.job.seekers")
     }
   }
 
