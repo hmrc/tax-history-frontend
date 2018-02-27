@@ -1,36 +1,36 @@
 ################################### Generic Labels ################################################
-lbl.organisation.name = Organisation name
+lbl.organisation.name=Organisation name
 lbl.payroll.id=Payroll ID
-lbl.paye.reference = PAYE reference
-lbl.taxable.income = Taxable income
-lbl.income.tax = Income tax
-lbl.company.benefits = Company Benefits
-lbl.allowance = Allowance
-lbl.company.benefits.desc = Benefits
-lbl.amount = Amount
-lbl.date.start = Start date
+lbl.paye.reference=PAYE reference
+lbl.taxable.income=Taxable income
+lbl.income.tax=Income tax
+lbl.company.benefits=Company Benefits
+lbl.allowance=Allowance
+lbl.company.benefits.desc=Benefits
+lbl.amount=Amount
+lbl.date.start=Start date
 lbl.status=Status
-lbl.date.end = End date
-lbl.record = Record
-lbl.to = to
-lbl.text.current = current
-lbl.employment.status.current = Current
-lbl.employment.status.ceased = Ceased
-lbl.employment.status.unknown = Unknown
-lbl.none = None
-lbl.agents.for.individual = Agents for Individuals
-lbl.select.new.client = Select a new client
-lbl.select.new.client.lower = select a new client
+lbl.date.end=End date
+lbl.record=Record
+lbl.to=to
+lbl.text.current=current
+lbl.employment.status.current=Current
+lbl.employment.status.ceased=Ceased
+lbl.employment.status.unknown=Unknown
+lbl.none=None
+lbl.agents.for.individual=Agents for Individuals
+lbl.select.new.client=Select a new client
+lbl.select.new.client.lower=select a new client
 global.link.signout=Sign out
 lbl.end-date.unknown=Unknown
 lbl.end-date.ongoing=Ongoing
-lbl.no.data.available = No data available
-lbl.no.data.available.text = no data available
-lbl.continue = Continue
-lbl.back = Back
-lbl.employer = Employer
-lbl.provider = Provider
-lbl.details = Details
+lbl.no.data.available=No data available
+lbl.no.data.available.text=no data available
+lbl.continue=Continue
+lbl.back=Back
+lbl.employer=Employer
+lbl.provider=Provider
+lbl.details=Details
 
 ################################## Google Analytics ##############################################
 lbl.ga.link-click=link - click
@@ -45,30 +45,28 @@ lbl.ga.error-field=error - field
 lbl.ga.action.enter-nino=Enter a clients NINO
 lbl.ga.label.enter-nino=Error message displayed
 
-
 ################################## Client Income Record / Employment Summary ##############################################
-employmenthistory.taxyear =Tax year 6 April {0} to 5 April {1}
-employmenthistory.title = Client income record - GOV.UK
-employmenthistory.header = {0}''s income record
-employmenthistory.missing.client.name = client
-
-employmenthistory.afihomepage.linktext = Return to agent account
-employmenthistory.nopaydata = No data available
-employmenthistory.allowance.heading = Allowances
-employmenthistory.eyu.pay = Pay
-employmenthistory.eyu.tax = Tax
-employmenthistory.eyu.date.received = Date received
-employmenthistory.view = View
-employmenthistory.view.record.hidden = View {0}''s income record for {1}
-employmenthistory.table.header.employments = Employments
-employmenthistory.table.header.pensions = Pensions
-employmenthistory.caveat.p1.text = The information on this page was previously available by phone from HMRC.
-employmenthistory.caveat.p2.text = It is as accurate as possible but might not include recent updates from your client, their employers or agents.
-employmenthistory.caveat.p3.text = You should always check with your client before using this information.
-employmenthistory.select.different.taxyear.link = Select a different tax year
-employmenthistory.select.different.taxyear.link.lower = select a different tax year
-employmenthistory.display.client.name = {0}''s income records
-employmenthistory.job.seekers =Jobseeker''s Allowance
+employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
+employmenthistory.title=Client income record - GOV.UK
+employmenthistory.header={0}''s income record
+employmenthistory.missing.client.name=client
+employmenthistory.afihomepage.linktext=Return to agent account
+employmenthistory.nopaydata=No data available
+employmenthistory.allowance.heading=Allowances
+employmenthistory.eyu.pay=Pay
+employmenthistory.eyu.tax=Tax
+employmenthistory.eyu.date.received=Date received
+employmenthistory.view=View
+employmenthistory.view.record.hidden=View {0}''s income record for {1}
+employmenthistory.table.header.employments=Employments
+employmenthistory.table.header.pensions=Pensions
+employmenthistory.caveat.p1.text=The information on this page was previously available by phone from HMRC.
+employmenthistory.caveat.p2.text=It is as accurate as possible but might not include recent updates from your client, their employers or agents.
+employmenthistory.caveat.p3.text=You should always check with your client before using this information.
+employmenthistory.select.different.taxyear.link=Select a different tax year
+employmenthistory.select.different.taxyear.link.lower=select a different tax year
+employmenthistory.display.client.name={0}''s income records
+employmenthistory.job.seekers=Jobseeker''s Allowance
 
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
@@ -81,7 +79,6 @@ employmenthistory.cb.TaxableExpenseBenefit=Taxable expenses benefit
 employmenthistory.cb.VanBenefit=Van benefit
 employmenthistory.cb.VanFuelBenefit=Van fuel benefit
 employmenthistory.cb.BeneficialLoan=Beneficial loan
-
 employmenthistory.cb.TotalBenefitInKind=Benefits in kind
 employmenthistory.cb.Accommodation=Accommodation
 employmenthistory.cb.Assets=Assets
@@ -101,22 +98,20 @@ employmenthistory.cb.IncomeTaxPaidNotDeductedFromDirectorsRemuneration=Income Ta
 employmenthistory.cb.TravelAndSubsistence=Travel and subsistence
 employmenthistory.cb.VoucherAndCreditCards=Vouchers and credit cards
 employmenthistory.cb.NonCashBenefit=Non Cash benefit
-
-
 employmenthistory.al.FlatRateJobExpenses=Flat rate job expenses
 employmenthistory.al.ProfessionalSubscriptions=Professional subscriptions
 employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 
 ################################ Tax Codes ####################################################
-tax.code.heading = Tax code breakdown
-tax.code.subheading =Latest tax code issued
-tax.code.caveat = The source amount only appears if it differs from the allowance or deduction.
-tax.code.allowance = Allowance
-tax.code.deduction = Deduction
-tax.code.allowance.type = Allowance type
-tax.code.deduction.type = Deduction type
-tax.code.source.amount = Source amount
-tax.code.no.deductions = There are no deductions.
+tax.code.heading=Tax code breakdown
+tax.code.subheading=Latest tax code issued
+tax.code.caveat=The source amount only appears if it differs from the allowance or deduction.
+tax.code.allowance=Allowance
+tax.code.deduction=Deduction
+tax.code.allowance.type=Allowance type
+tax.code.deduction.type=Deduction type
+tax.code.source.amount=Source amount
+tax.code.no.deductions=There are no deductions.
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
@@ -129,59 +124,57 @@ employmenthistory.select.client.error.invalid-format=National Insurance number m
 employmenthistory.select.client.error.empty.title=There is a problem
 employmenthistory.select.client.error.empty=Enter a National Insurance number
 
-
 ################################ Employment Details ####################################################
-employmenthistory.employment.details.title = Client single record - GOV.UK
-employmenthistory.employment.details.eyu = Earlier Year Update (EYU)
-employmenthistory.employment.details.companybenefits = Company Benefits
-employmenthistory.employment.details.benefit = Benefit
-employmenthistory.employment.details.client.name = Client name
-employmenthistory.payerecord.linktext = Return to PAYE record
-employmenthistory.employment.details.caption = Employment Details
-employmenthistory.pay.and.tax.heading = Payments
-employmenthistory.eyu.caveat = EYU is a correction to year-to-date taxable income and Income Tax. These amounts were received after 19 April {0} and affect the {1} to {0} tax year. EYU corrections are not included in the taxable income and Income Tax submissions for {2}.
-employmenthistory.company.benefit.caveat.actual = HMRC has {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts may be an estimate.
-employmenthistory.company.benefit.caveat.estimate = HMRC does not have {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts are a forecast.
-
+employmenthistory.employment.details.title=Client single record - GOV.UK
+employmenthistory.employment.details.eyu=Earlier Year Update (EYU)
+employmenthistory.employment.details.companybenefits=Company Benefits
+employmenthistory.employment.details.benefit=Benefit
+employmenthistory.employment.details.client.name=Client name
+employmenthistory.payerecord.linktext=Return to PAYE record
+employmenthistory.employment.details.caption=Employment Details
+employmenthistory.pay.and.tax.heading=Payments
+employmenthistory.eyu.caveat=EYU is a correction to year-to-date taxable income and Income Tax. These amounts were received after 19 April {0} and affect the {1} to {0} tax year. EYU corrections are not included in the taxable income and Income Tax submissions for {2}.
+employmenthistory.company.benefit.caveat.actual=HMRC has {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts may be an estimate.
+employmenthistory.company.benefit.caveat.estimate=HMRC does not have {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts are a forecast.
 
 ################################## Select tax year ####################################################
-employmenthistory.select.tax.year.title = Select tax year - GOV.UK
-employmenthistory.select.tax.year.h1 = Select the tax year you want to view
-employmenthistory.select.tax.year.header = {0}''s income record
-employmenthistory.select.tax.year.option = {0} to {1}
-employmenthistory.select.tax.year = Select a tax year
-employmenthistory.select.tax.year.error.heading = There is a problem
-employmenthistory.select.tax.year.error.linktext = Select a tax year
-employmenthistory.select.tax.year.error.message = Select a tax year
+employmenthistory.select.tax.year.title=Select tax year - GOV.UK
+employmenthistory.select.tax.year.h1=Select the tax year you want to view
+employmenthistory.select.tax.year.header={0}''s income record
+employmenthistory.select.tax.year.option={0} to {1}
+employmenthistory.select.tax.year=Select a tax year
+employmenthistory.select.tax.year.error.heading=There is a problem
+employmenthistory.select.tax.year.error.linktext=Select a tax year
+employmenthistory.select.tax.year.error.message=Select a tax year
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Underpaid tax and debts
 employmenthistory.tax-account.underpayment-amount.title=Confirmed underpaid tax included in your clients tax code for the tax year {0} to {1}, carried over from earlier years.
 employmenthistory.tax-account.potential-underpayment.title=Estimated underpaid tax in your clients tax code for the current tax, carried over from tax year {0} to {1}.
 employmenthistory.tax-account.outstanding.debt.title=Other outstanding debt included in your client''s tax code for tax year {0} to {1}, carried over from previous tax years.
-employmenthistory.tax-account.outstanding.debt.text = Debts may relate to Self Assessment, tax credits or National Insurance class 2.
+employmenthistory.tax-account.outstanding.debt.text=Debts may relate to Self Assessment, tax credits or National Insurance class 2.
 
 ################################ Error Pages ###########################################################
-employmenthistory.not.authorised.title = You are not authorised to view this income record - GOV.UK
-employmenthistory.not.authorised.header =You do not have access to this client''s income record
-employmenthistory.not.authorised.select.client.link.text =re-enter National Insurance number
-employmenthistory.not.authorised.invite.client.link.text =invite a new client to share their income record with you
-employmenthistory.mci.restricted.header =You do not have access to this client''s income record
-employmenthistory.mci.restricted.text =For further information, contact HMRC on:
-employmenthistory.mci.restricted.telephone =telephone 0300 200 3300
-employmenthistory.mci.restricted.textphone =textphone 0300 200 3319
-employmenthistory.mci.restricted.title = You cannot access their data right now - GOV.UK
-employmenthistory.mci.restricted.select.client.link.text = Enter another client''s National Insurance number
-employmenthistory.deceased.header =You do not have access to this client''s income record
-employmenthistory.deceased.text =Please check with your client.
-employmenthistory.deceased.title = You cannot access their data - GOV.UK
-employmenthistory.deceased.select.client.link.text = Enter another client''s National Insurance number
-employmenthistory.no.data.title = This client’s income record contains no data - GOV.UK
-employmenthistory.no.data.header = The client’s income record contains no data for this tax year
-employmenthistory.no.data.text = You can:
-employmenthistory.no.data.select.client.link.text = enter another client''s National Insurance number
-employmenthistory.technical.error.title = Service unavailable - GOV.UK
-employmenthistory.technical.error.header = Service unavailable
-employmenthistory.technical.error.message =We''re experiencing technical problems, so you won''t be able to use the service at the moment. Try again later.
+employmenthistory.not.authorised.title=You are not authorised to view this income record - GOV.UK
+employmenthistory.not.authorised.header=You do not have access to this client''s income record
+employmenthistory.not.authorised.select.client.link.text=re-enter National Insurance number
+employmenthistory.not.authorised.invite.client.link.text=invite a new client to share their income record with you
+employmenthistory.mci.restricted.header=You do not have access to this client''s income record
+employmenthistory.mci.restricted.text=For further information, contact HMRC on:
+employmenthistory.mci.restricted.telephone=telephone 0300 200 3300
+employmenthistory.mci.restricted.textphone=textphone 0300 200 3319
+employmenthistory.mci.restricted.title=You cannot access their data right now - GOV.UK
+employmenthistory.mci.restricted.select.client.link.text=Enter another client''s National Insurance number
+employmenthistory.deceased.header=You do not have access to this client''s income record
+employmenthistory.deceased.text=Please check with your client.
+employmenthistory.deceased.title=You cannot access their data - GOV.UK
+employmenthistory.deceased.select.client.link.text=Enter another client''s National Insurance number
+employmenthistory.no.data.title=This client’s income record contains no data - GOV.UK
+employmenthistory.no.data.header=The client’s income record contains no data for this tax year
+employmenthistory.no.data.text=You can:
+employmenthistory.no.data.select.client.link.text=enter another client''s National Insurance number
+employmenthistory.technical.error.title=Service unavailable - GOV.UK
+employmenthistory.technical.error.header=Service unavailable
+employmenthistory.technical.error.message=We''re experiencing technical problems, so you won''t be able to use the service at the moment. Try again later.
 employmenthistory.no.agent.services.account.title=Your agent business does not have an Agent Services account
 employmenthistory.no.agent.services.account.p1=If you are authorised to act on their behalf, you can create an account now.
