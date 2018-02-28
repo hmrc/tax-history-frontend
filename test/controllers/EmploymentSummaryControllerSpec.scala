@@ -21,7 +21,7 @@ import java.util.UUID
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import support.fixtures.PersonFixture
-import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
+import model.api._
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
@@ -69,6 +69,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
   val employments = List(employment)
   val allowances = List(allowance)
 
+  val statePension = StatePension(100,"test")
+
   trait HappyPathSetup {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
@@ -85,6 +87,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(taxAccount)))))
+      when(c.taxHistoryConnector.getStatusPension(any(),any())(any())).
+        thenReturn((Future.successful(HttpResponse(Status.OK, Some(Json.toJson(statePension))))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(person)))))
       c

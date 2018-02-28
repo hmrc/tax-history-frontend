@@ -113,9 +113,16 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "Show state pensions when they have them" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, taxAccount, Some(StatePension(100,"test")))
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, Some(StatePension(100,"test")))
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe true
+  }
+
+  "Don't show state pensions when they don't have them" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, None)
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe false
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe false
   }
 }
