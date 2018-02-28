@@ -118,7 +118,10 @@
         </table>
     }
 
-
+    @if(statePension.nonEmpty){
+        <h2 id = "StatePensions" class="heading-medium">@Messages("employmenthistory.state.pensions")</h2>
+        <p>@Messages("employmenthistory.state.pensions.text",s"${Currency(statePension.get.grossAmount,2)}")</p>
+    }
 
     @if(allowances.nonEmpty) {
     <h2 id = "Allowances" class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
@@ -174,11 +177,6 @@
                 </tr>
             </tbody>
         </table>
-    }
-
-    @if(statePension.nonEmpty){
-        <h2 id = "StatePensions" class="heading-medium">@Messages("employmenthistory.state.pensions")</h2>
-        <p>@Messages("employmenthistory.state.pensions.text",s"${Currency(statePension.get.grossAmount,2)}")</p>
     }
 }
 
