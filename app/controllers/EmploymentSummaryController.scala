@@ -73,7 +73,7 @@ class EmploymentSummaryController @Inject()(
           (for {
             allowanceResponse <- taxHistoryConnector.getAllowances(ninoField, taxYear)
             taxAccountResponse <- taxHistoryConnector.getTaxAccount(ninoField, taxYear)
-            statePensionResponse <- taxHistoryConnector.getStatusPension(ninoField, taxYear)
+            statePensionResponse <- taxHistoryConnector.getStatePension(ninoField, taxYear)
           } yield (allowanceResponse, taxAccountResponse, statePensionResponse)).map {
             dataResponse =>
               Ok(views.html.taxhistory.employment_summary(

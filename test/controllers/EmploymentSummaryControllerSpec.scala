@@ -87,7 +87,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatusPension(any(),any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any(),any())(any())).
         thenReturn((Future.successful(HttpResponse(Status.OK, Some(Json.toJson(statePension))))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(person)))))
