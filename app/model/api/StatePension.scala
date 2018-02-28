@@ -17,7 +17,7 @@
 package model.api
 import play.api.libs.json.Json
 
-case class StatePension(grossAmount: Int, typeDescription: String)
+case class StatePension(grossAmount: BigDecimal, typeDescription: String)
 
 object StatePension {
   implicit val formats = Json.format[StatePension]
