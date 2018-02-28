@@ -16,10 +16,11 @@
 
 package views.taxhistory
 
-import model.api.EmploymentStatus
+import model.api.{EmploymentStatus, StatePension}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{DateHelper, TestUtil}
@@ -38,7 +39,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, None, None)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
@@ -64,7 +65,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
     "have correct employment content" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, None)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, None, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
@@ -90,7 +91,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     }
 
     "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, taxAccount)
+      val view = views.html.taxhistory.employment_summary(nino, taxYear, employments, allowances, None, taxAccount, None)
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
         s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
@@ -109,5 +110,19 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
     }
+  }
+
+  "Show state pensions when they have them" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, Some(StatePension(100,"test")))
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe true
+  }
+
+  "Don't show state pensions when they don't have them" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, None)
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe false
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe false
   }
 }

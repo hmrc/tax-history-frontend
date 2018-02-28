@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import model.api.{Allowance, Employment, EmploymentStatus, TaxAccount}
+import model.api._
 import models.taxhistory.Person
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc._
@@ -73,33 +73,35 @@ class EmploymentSummaryController @Inject()(
           (for {
             allowanceResponse <- taxHistoryConnector.getAllowances(ninoField, taxYear)
             taxAccountResponse <- taxHistoryConnector.getTaxAccount(ninoField, taxYear)
-          } yield (allowanceResponse, taxAccountResponse)).map {
+            statePensionResponse <- taxHistoryConnector.getStatePension(ninoField, taxYear)
+          } yield (allowanceResponse, taxAccountResponse, statePensionResponse)).map {
             dataResponse =>
               Ok(views.html.taxhistory.employment_summary(
                 ninoField.nino,
                 taxYear,
                 getEmploymentsFromResponse(empResponse),
-                getAllowancesFromResponse(dataResponse),
+                getAllowancesFromResponse(allowancesResponse = dataResponse._1),
                 person,
-                getTaxAccountFromResponse(dataResponse)))
+                getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
+                getStatePensionsFromResponse(statePensionResponse = dataResponse._3)))
           }
         case status => Future.successful(handleHttpFailureResponse(status, ninoField))
       }
     }
   }
 
-  private def getTaxAccountFromResponse(dataResponse: (HttpResponse, HttpResponse)) = {
-    dataResponse._2.status match {
-      case OK => dataResponse._2.json.asOpt[TaxAccount]
+  private def getTaxAccountFromResponse(taxAccountResponse: HttpResponse) = {
+    taxAccountResponse.status match {
+      case OK => taxAccountResponse.json.asOpt[TaxAccount]
       case status =>
         Logger.info(s"Tax Account Status: $status")
         None
     }
   }
 
-  private def getAllowancesFromResponse(dataResponse: (HttpResponse, HttpResponse)) = {
-    dataResponse._1.status match {
-      case OK => dataResponse._1.json.as[List[Allowance]]
+  private def getAllowancesFromResponse(allowancesResponse: HttpResponse) = {
+    allowancesResponse.status match {
+      case OK => allowancesResponse.json.as[List[Allowance]]
       case status =>
         Logger.info(s"Allowance Status: $status")
         List.empty
@@ -108,6 +110,15 @@ class EmploymentSummaryController @Inject()(
 
   private def getEmploymentsFromResponse(empResponse: HttpResponse) = {
     empResponse.json.as[List[Employment]]
+  }
+
+  private def getStatePensionsFromResponse(statePensionResponse: HttpResponse) = {
+    statePensionResponse.status match {
+      case OK => statePensionResponse.json.asOpt[StatePension]
+      case status =>
+        Logger.info(s"State Pension Status: $status")
+        None
+    }
   }
 
 }
