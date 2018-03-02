@@ -16,7 +16,7 @@
 
 package controllers
 
-import javax.inject.Inject
+import javax.inject.{Inject, Named}
 
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
@@ -72,7 +72,8 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[PayAndTax]] = {
     {
       taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId) map { payAndTaxResponse =>
-        Some(payAndTaxResponse.json.as[PayAndTax])
+        val result = payAndTaxResponse.json.as[PayAndTax]
+        if(appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
       }
     }.recoverWith {
       case e =>
@@ -80,6 +81,7 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
         Future.successful(None)
     }
   }
+
 
   private def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)
                                 (implicit hc: HeaderCarrier, request: Request[_]): Future[List[CompanyBenefit]] = {
