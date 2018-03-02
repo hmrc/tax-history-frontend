@@ -100,6 +100,12 @@
             }
             </td>
         </tr>
+        @if(payAndTax.isDefined && payAndTax.get.studentLoan.isDefined) {
+        <tr>
+            <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
+            <td>@Currency(payAndTax.get.studentLoan.get)</td>
+        <tr>
+        }
     </table>
 
     @if(!employment.receivingJobSeekersAllowance) {

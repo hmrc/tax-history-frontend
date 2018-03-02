@@ -108,6 +108,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
         taxablePayTotal = Some(BigDecimal(1234567.89)),
         taxTotal = Some(BigDecimal(2222.22)),
+        studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = eyuList)
 
@@ -144,6 +145,24 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(taxYears)
+    }
+
+    "fetch payAndTax data from backend" in new LocalSetup {
+
+      val payAndTax = PayAndTax(
+        taxablePayTotal = Some(4896.80),
+        taxTotal = Some(979.36),
+        studentLoan = Some(101.00),
+        paymentDate = Some(new LocalDate("2016-02-20")),
+        earlierYearUpdates = List.empty)
+
+      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
+        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTax)))))
+
+      val result = await(connector.getPayAndTaxDetails(Nino(nino),2017,"testID"))
+
+      result.status shouldBe Status.OK
+      result.json shouldBe Json.toJson(payAndTax)
     }
   }
 

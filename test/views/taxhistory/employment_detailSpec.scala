@@ -234,6 +234,22 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       }
     }
 
+    "Show student loans when data is available" in new ViewFixture {
+
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+        employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
+
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText mustBe true
+      doc.getElementsMatchingOwnText("£101").hasText mustBe true
+    }
+
+    "Not show student loans when data is available" in new ViewFixture {
+
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxNoStudentLoan),
+        employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
+
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText mustBe false
+    }
   }
 }
 

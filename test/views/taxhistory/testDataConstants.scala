@@ -111,9 +111,18 @@ trait DetailConstants {
   val payAndTax = PayAndTax(
     taxablePayTotal = Some(4896.80),
     taxTotal = Some(979.36),
+    studentLoan = Some(101.00),
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = eyuList
   )
+
+  val payAndTaxNoStudentLoan = PayAndTax(
+    taxablePayTotal = Some(4896.80),
+    taxTotal = Some(979.36),
+    studentLoan = None,
+    paymentDate = Some(new LocalDate("2016-02-20")),
+    earlierYearUpdates = eyuList)
+
   val uuid: UUID = UUID.randomUUID()
 
   val completeCBList = List(CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00),
