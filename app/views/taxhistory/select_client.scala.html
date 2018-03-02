@@ -38,7 +38,7 @@
                         ga('send', 'event', {
                             'eventCategory': '@Messages("lbl.ga.error-field")',
                             'eventAction': '@Messages("lbl.ga.action.enter-nino")',
-                            'eventLabel': '@Messages("lbl.ga.label.enter-nino")'
+                            'eventLabel': '@sCForm.errors.head.messages.map(x => Messages(x))'
                         });
                     }
                     if (document.readyState !== 'loading') gaEvent();
