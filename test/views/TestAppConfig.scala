@@ -19,7 +19,7 @@ package views
 import config.AppConfig
 
 trait TestAppConfig {
-  implicit val appConfig = new AppConfig {
+  implicit val appConfig: AppConfig = new AppConfig {
     val analyticsToken: String = "faketoken"
     val analyticsHost: String = "fakehost"
     val reportAProblemPartialUrl: String = "fakeurl"
@@ -32,6 +32,7 @@ trait TestAppConfig {
     val betaFeedbackUnauthenticatedUrl: String = "fakeurl"
     val agentAccountHomePage: String = "fakeurl"
     val agentSubscriptionStart: String = "fakeurl"
-    override val agentInvitation: String = "fakeurl"
+    val agentInvitation: String = "fakeurl"
+    val studentLoanFlag: Boolean = true
   }
 }

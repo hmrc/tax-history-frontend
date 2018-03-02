@@ -20,8 +20,8 @@ import javax.inject.Inject
 
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import model.api._
 import model.api.IncomeSource._
+import model.api._
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
@@ -32,13 +32,13 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
-class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryConnector,
-                                            val citizenDetailsConnector: CitizenDetailsConnector,
-                                            override val authConnector: FrontendAuthConnector,
-                                            override val config: Configuration,
-                                            override val env: Environment,
-                                            implicit val messagesApi: MessagesApi,
-                                            implicit val appConfig: AppConfig
+class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryConnector,
+                                           val citizenDetailsConnector: CitizenDetailsConnector,
+                                           override val authConnector: FrontendAuthConnector,
+                                           override val config: Configuration,
+                                           override val env: Environment,
+                                           implicit val messagesApi: MessagesApi,
+                                           implicit val appConfig: AppConfig
                                           ) extends BaseController {
 
   val loginContinue: String = appConfig.loginContinue
@@ -56,8 +56,8 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status => Future.successful(handleHttpFailureResponse(status, nino))
+          }
         }
-      }
     }
   }
 
@@ -72,7 +72,8 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[PayAndTax]] = {
     {
       taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId) map { payAndTaxResponse =>
-        Some(payAndTaxResponse.json.as[PayAndTax])
+        val result = payAndTaxResponse.json.as[PayAndTax]
+        if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
       }
     }.recoverWith {
       case e =>
@@ -99,7 +100,7 @@ class EmploymentDetailController @Inject()( val taxHistoryConnector: TaxHistoryC
     val P11D = 21
     val Assessed_P11D = 28
     val P11D_P9D = 29
-    
+
     companyBenefits.exists(cb => cb.source.contains(P9D)
       || cb.source.contains(P11D)
       || cb.source.contains(Assessed_P11D)

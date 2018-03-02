@@ -31,6 +31,9 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
     bind(classOf[AppConfig]).toProvider(new Provider[AppConfig] {
       def getConfStringOrThrow(key: String, default: Option[String] = None): String =
         configuration.getString(key).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$key'"))
+      def getConfBooleanOrThrow(key: String): Boolean =
+        configuration.getBoolean(key).getOrElse(throw new RuntimeException(s"No configuration value found for '$key'"))
+
 
       def get: AppConfig = new AppConfig {
         val contactHost = getConfStringOrThrow("contact-frontend.host", default = Some(""))
@@ -47,6 +50,7 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         val betaFeedbackUrl = getConfStringOrThrow("betaFeedbackUrl")
         val betaFeedbackUnauthenticatedUrl = getConfStringOrThrow("betaFeedbackUnauthenticatedUrl")
         val agentInvitation = getConfStringOrThrow("external-url.agent-invitation.url")
+        val studentLoanFlag = getConfBooleanOrThrow("featureFlags.studentLoanFlag")
       }
     })
 
@@ -54,9 +58,6 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
     //These library components must be bound in this way, or using providers
     //bind(classOf[HeadersFilter]).to(classOf[HeadersFilter])
   }
-
-  private def bindConfigString(propertyName: String, default: Option[String] = None) =
-    bind(classOf[String]).annotatedWith(Names.named(s"$propertyName")).toProvider(ConfigStringProvider(propertyName, default))
 
   private case class ConfigStringProvider(propertyName: String, default: Option[String] = None) extends Provider[String] {
     lazy val get =
