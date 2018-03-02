@@ -43,7 +43,6 @@ lbl.ga.action.underpaid-tax-and-debts=Underpaid tax and debts
 lbl.ga.label.why-does-this-differ=Why does this differ
 lbl.ga.error-field=error - field
 lbl.ga.action.enter-nino=Enter a clients NINO
-lbl.ga.label.enter-nino=Error message displayed
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
