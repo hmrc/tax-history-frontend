@@ -123,6 +123,9 @@
             }
             </tbody>
         </table>
+    } else {
+        <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
+        <p class="grey">@Messages("employmenthistory.no.pensions")</p>
     }
 
     @if(statePension.nonEmpty){
@@ -143,10 +146,25 @@
                 </thead>
                 <tbody>
                 @allowances.map { allowance =>
-                    <tr>
-                        <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-                        <td class="numeric">@Currency(allowance.amount)</td>
-                    </tr>
+                    @if(allowance.iabdType.equals("EarlierYearsAdjustment")) {
+                        <tr>
+                            <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")
+                                <p>
+                                    <details>
+                                        <summary class="summary" role="button">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
+                            <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
+                                <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
+                            </details>
+                            </p>
+                            </td>
+                            <td class="numeric" valign="top">@Currency(allowance.amount)</td>
+                        </tr>
+                    } else {
+                        <tr>
+                            <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
+                            <td class="numeric">@Currency(allowance.amount)</td>
+                        </tr>
+                    }
                 }
                 </tbody>
             </table>

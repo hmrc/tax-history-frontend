@@ -64,6 +64,7 @@ employmenthistory.employment.records=Employment records
 employmenthistory.no.employments=HMRC has no employment record for your client for this tax year.
 employmenthistory.table.header.employments=Employments
 employmenthistory.table.header.pensions=Private Pensions
+employmenthistory.no.pensions=HMRC has no pension income record for your client for this tax year.
 employmenthistory.caveat.p1.text=The information on this page was previously available by phone from HMRC.
 employmenthistory.caveat.p2.text=It is as accurate as possible but might not include recent updates from your client, their employers or agents.
 employmenthistory.caveat.p3.text=You should always check with your client before using this information.
@@ -73,6 +74,9 @@ employmenthistory.display.client.name={0}''s income records
 employmenthistory.job.seekers=Jobseeker''s Allowance
 employmenthistory.state.pensions=State Pension
 employmenthistory.state.pensions.text=Your client may claim up to {0} pro rata this year. To calculate their payments for the year, confirm with your client when their pension entitlement began.
+employmenthistory.allowances.eya.summary.header=What is this?
+employmenthistory.allowances.eya.summary.detail1=HMRC can adjust a client''s tax code to repay tax the client has paid in a previous tax year. This is called an earlier year adjustment (EYA).
+employmenthistory.allowances.eya.summary.detail2=An EYA can be included in this year''s code number for expenses or overpayments (HMRC will include any repayment supplement).
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
 employmenthistory.cb.CarFuelBenefit=Car fuel benefit
