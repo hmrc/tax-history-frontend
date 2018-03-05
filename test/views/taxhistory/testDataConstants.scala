@@ -72,7 +72,20 @@ trait Constants {
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
+  val pension = Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-3",
+    employerName = "employer-3",
+    startDate = LocalDate.parse("2016-01-21"),
+    endDate = None,
+    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    receivingOccupationalPension = true,
+    employmentStatus = EmploymentStatus.Unknown,
+    worksNumber = "00191048716")
+
   val employments = List(emp1, emp2, emp3, emp4)
+  val employmentWithPensionOnly = List(pension)
 
   val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "FlatRateJobExpenses",

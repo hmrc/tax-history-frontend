@@ -140,6 +140,13 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.description")).hasText mustBe false
   }
 
+  "show alternative text instead of employments table when they are no employment records only pensions" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employmentWithPensionOnly, allowances, None, taxAccount, None)
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.employment.records")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.no.employments")).hasText mustBe true
+  }
+
   "Show the what's this link when the allowance is an early year adjustment" in new ViewFixture {
     val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowances.eya.summary.header")).hasText mustBe true
