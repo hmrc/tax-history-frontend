@@ -119,6 +119,9 @@
             }
             </tbody>
         </table>
+    } else {
+        <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
+        <p class="grey">@Messages("employmenthistory.no.pensions")</p>
     }
 
     @if(statePension.nonEmpty){
