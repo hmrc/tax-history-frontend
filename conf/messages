@@ -70,6 +70,9 @@ employmenthistory.display.client.name={0}''s income records
 employmenthistory.job.seekers=Jobseeker''s Allowance
 employmenthistory.state.pensions=State Pension
 employmenthistory.state.pensions.text=Your client may claim up to {0} pro rata this year. To calculate their payments for the year, confirm with your client when their pension entitlement began.
+employmenthistory.allowances.eya.summary.header=What is this?
+employmenthistory.allowances.eya.summary.detail1=HMRC can adjust a client''s tax code to repay tax the client has paid in a previous tax year. This is called an earlier year adjustment (EYA).
+employmenthistory.allowances.eya.summary.detail2=An EYA can be included in this year’s code number for expenses or overpayments (HMRC will include any repayment supplement).
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
 employmenthistory.cb.CarFuelBenefit=Car fuel benefit
