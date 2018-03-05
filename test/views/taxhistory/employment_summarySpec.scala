@@ -125,4 +125,18 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe false
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe false
   }
+
+  "Show allowances when they exist" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, None)
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.description")).hasText mustBe true
+  }
+
+  "Don't show allowances when they do not exist" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, List.empty, None, taxAccount, None)
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe false
+    doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.description")).hasText mustBe false
+  }
 }
