@@ -35,6 +35,10 @@
     }
 }
 
+@isCurrentYear=@{
+    TaxYear.current.currentYear == taxYear
+}
+
 @views.html.main_template(title = Messages("employmenthistory.title")) {
   <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
@@ -129,43 +133,47 @@
         <p>@Messages("employmenthistory.state.pensions.text",s"${Currency(statePension.get.grossAmount,2)}")</p>
     }
 
-    @if(allowances.nonEmpty) {
-    <h2 id = "Allowances" class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
-    <p>@Messages("employmenthistory.allowance.description")</p>
-        <table id="allowanceTable" >
-          <thead>
-            <tr>
-              <th>@Messages("lbl.allowance")</th>
-              <th class="numeric">@Messages("lbl.amount")</th>
-            </tr>
-          </thead>
-          <tbody>
-          @allowances.map { allowance =>
-              @if(allowance.iabdType.equals("EarlierYearsAdjustment")) {
-                  <tr>
-                      <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")
-                          <p>
-                            <details>
-                                <summary class="summary" role="button">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
-                                <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
+    @if(!isCurrentYear) {
+        <h2 id = "Allowances" class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
+        @if(allowances.nonEmpty) {
+            <p>@Messages("employmenthistory.allowance.description")</p>
+            <table id="allowanceTable" >
+                <thead>
+                    <tr>
+                        <th>@Messages("lbl.allowance")</th>
+                        <th class="numeric">@Messages("lbl.amount")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @allowances.map { allowance =>
+                    @if(allowance.iabdType.equals("EarlierYearsAdjustment")) {
+                        <tr>
+                            <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")
+                                <p>
+                                    <details>
+                                        <summary class="summary" role="button">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
+                            <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
                                 <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
                             </details>
-                          </p>
-                      </td>
-                      <td class="numeric" valign="top">@Currency(allowance.amount)</td>
-                  </tr>
-              } else {
-                  <tr>
-                      <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-                      <td class="numeric">@Currency(allowance.amount)</td>
-                  </tr>
-              }
-          }
-          </tbody>
-        </table>
+                            </p>
+                            </td>
+                            <td class="numeric" valign="top">@Currency(allowance.amount)</td>
+                        </tr>
+                    } else {
+                        <tr>
+                            <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
+                            <td class="numeric">@Currency(allowance.amount)</td>
+                        </tr>
+                    }
+                }
+                </tbody>
+            </table>
+        } else {
+            <p class="grey">@Messages("employmenthistory.allowance.no-allowances")</p>
+        }
     }
 
-    @if(taxAccount.nonEmpty) {
+    @if(taxAccount.nonEmpty && !isCurrentYear) {
         <h2 id = "UnderpaidTaxAndDebts" class="heading-medium">@Messages("employmenthistory.tax-account.header")</h2>
         <table id="taxAccountTable">
             <thead>
