@@ -85,6 +85,7 @@ trait Constants {
     amount = BigDecimal(32.00))
 
   val allowances = List(allowance1, allowance2, allowance3)
+  val allowancesNoEYA = List(allowance1,allowance2)
 
   val oDR = "101.01"
   val uA = "202.00"
