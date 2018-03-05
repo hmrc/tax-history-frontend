@@ -53,6 +53,7 @@ employmenthistory.missing.client.name=client
 employmenthistory.afihomepage.linktext=Return to agent account
 employmenthistory.nopaydata=No data available
 employmenthistory.allowance.heading=Allowances
+employmenthistory.allowance.description=Your client gets tax relief on these amounts.
 employmenthistory.eyu.pay=Pay
 employmenthistory.eyu.tax=Tax
 employmenthistory.eyu.date.received=Date received
