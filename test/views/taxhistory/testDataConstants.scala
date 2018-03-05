@@ -85,6 +85,7 @@ trait Constants {
     worksNumber = "00191048716")
 
   val employments = List(emp1, emp2, emp3, emp4)
+  val employmentsNoPensions = List(emp2,emp3,emp4)
   val employmentWithPensionOnly = List(pension)
 
   val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
