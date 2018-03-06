@@ -146,7 +146,7 @@
                 </thead>
                 <tbody>
                 @allowances.map { allowance =>
-                    @if(allowance.iabdType.equals("EarlierYearsAdjustment")) {
+                    @if(allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag) {
                         <tr>
                             <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")
                                 <p>

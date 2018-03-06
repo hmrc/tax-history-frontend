@@ -158,7 +158,7 @@
                 <thead>
                     <tr>
                         <th scope="col" class="width60pc">@Messages("employmenthistory.employment.details.benefit")</th>
-                        <th scope="col" class="width25pc">@Messages("lbl.source")</th>
+                        <th scope="col" class="width25pc">@if(appConfig.companyBenefitsFlag) { @Messages("lbl.source") }</th>
                         <th scope="col" class="numeric">@Messages("lbl.amount")</th>
                     </tr>
                 </thead>
@@ -166,7 +166,7 @@
                 @companyBenefits.map { cb =>
                     <tr>
                         <td>@Messages(s"employmenthistory.cb.${cb.iabdType}")</td>
-                        <td>@ControllerUtils.benefitSource(cb.source)</td>
+                        <td>@if(appConfig.companyBenefitsFlag) { @ControllerUtils.benefitSource(cb.source) }</td>
                         <td class="numeric">@Currency(cb.amount)</td>
                     </tr>
                 }
