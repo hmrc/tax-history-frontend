@@ -187,7 +187,7 @@ TaxYear.current.currentYear == taxYear
 
             <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-            <h1>@{
+            <h1 id="tax-code">@{
                 incomeSource.get.taxCode
             }@{
                 ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
@@ -195,7 +195,7 @@ TaxYear.current.currentYear == taxYear
 
             <p>@Messages("tax.code.caveat")</p>
 
-            <table class="allowance-table">
+            <table class="allowance-table" id="tc-allowance-table">
                 <thread>
                     <tr>
                         <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
@@ -220,7 +220,7 @@ TaxYear.current.currentYear == taxYear
                 </tbody>
             </table>
             @if(incomeSource.get.deductions.nonEmpty) {
-                <table class = "deductions-table">
+                <table class = "deductions-table" id="tc-deduction-table">
                     <thread>
                         <tr>
                             <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
