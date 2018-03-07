@@ -34,5 +34,7 @@ trait TestAppConfig {
     val agentSubscriptionStart: String = "fakeurl"
     val agentInvitation: String = "fakeurl"
     val studentLoanFlag: Boolean = true
+    val companyBenefitsFlag: Boolean = true
+    val eyaWhatsThisFlag: Boolean = true
   }
 }

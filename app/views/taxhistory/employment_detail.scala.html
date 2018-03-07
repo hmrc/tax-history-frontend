@@ -27,6 +27,9 @@
         clientNameOrNino: String, actualOrForecast: Boolean,
         incomeSource: Option[IncomeSource])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@isCurrentYear=@{
+TaxYear.current.currentYear == taxYear
+}
 
 @views.html.main_template(title = Messages("employmenthistory.employment.details.title"),
     bodyClasses = None
@@ -162,7 +165,7 @@
                 <thead>
                     <tr>
                         <th scope="col" class="width60pc">@Messages("employmenthistory.employment.details.benefit")</th>
-                        <th scope="col" class="width25pc">@Messages("lbl.source")</th>
+                        <th scope="col" class="width25pc">@if(appConfig.companyBenefitsFlag) { @Messages("lbl.source") }</th>
                         <th scope="col" class="numeric">@Messages("lbl.amount")</th>
                     </tr>
                 </thead>
@@ -170,12 +173,16 @@
                 @companyBenefits.map { cb =>
                     <tr>
                         <td>@Messages(s"employmenthistory.cb.${cb.iabdType}")</td>
-                        <td>@ControllerUtils.benefitSource(cb.source)</td>
+                        <td>@if(appConfig.companyBenefitsFlag) { @ControllerUtils.benefitSource(cb.source) }</td>
                         <td class="numeric">@Currency(cb.amount)</td>
                     </tr>
                 }
                 </tbody>
             </table>
+        }
+        @if(!isCurrentYear && companyBenefits.isEmpty){
+            <h2 class="heading-medium" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
+            <p class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
         }
 
         @if(incomeSource.isDefined) {
@@ -184,7 +191,7 @@
 
             <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-            <h1>@{
+            <h1 id="tax-code">@{
                 incomeSource.get.taxCode
             }@{
                 ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
@@ -192,7 +199,7 @@
 
             <p>@Messages("tax.code.caveat")</p>
 
-            <table class="allowance-table">
+            <table class="allowance-table" id="tc-allowance-table">
                 <thread>
                     <tr>
                         <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
@@ -217,7 +224,7 @@
                 </tbody>
             </table>
             @if(incomeSource.get.deductions.nonEmpty) {
-                <table class = "deductions-table">
+                <table class = "deductions-table" id="tc-deduction-table">
                     <thread>
                         <tr>
                             <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
