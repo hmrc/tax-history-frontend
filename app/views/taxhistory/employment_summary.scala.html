@@ -95,7 +95,7 @@
     </table>
 } else {
 <h2 class="heading-medium">@Messages("employmenthistory.employment.records")</h2>
-<p class="grey">@Messages("employmenthistory.no.employments")</p>
+<p class="grey" id="no-benefits">@Messages("employmenthistory.no.employments")</p>
 }
 
     @if(employments.exists(_.receivingOccupationalPension)) {
@@ -125,7 +125,7 @@
         </table>
     } else {
         <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
-        <p class="grey">@Messages("employmenthistory.no.pensions")</p>
+        <p id="no-pensions" class="grey">@Messages("employmenthistory.no.pensions")</p>
     }
 
     @if(statePension.nonEmpty){
@@ -169,7 +169,7 @@
                 </tbody>
             </table>
         } else {
-            <p class="grey">@Messages("employmenthistory.allowance.no-allowances")</p>
+            <p id="no-allowances" class="grey">@Messages("employmenthistory.allowance.no-allowances")</p>
         }
     }
 

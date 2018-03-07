@@ -112,7 +112,7 @@ TaxYear.current.currentYear == taxYear
             }
         </table>
     } else {
-        <p class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,employment.startDate.toString("d MMMM yyyy"))</p>
+        <p id="no-payments" class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,employment.startDate.toString("d MMMM yyyy"))</p>
     }
 
     @if(!employment.receivingJobSeekersAllowance) {
@@ -146,10 +146,9 @@ TaxYear.current.currentYear == taxYear
             }
         }
 
+        <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
         @if(companyBenefits.nonEmpty) {
-
             <div>
-                <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
                 <p>
                 @if(actualOrForecast) {
                     @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
@@ -181,8 +180,7 @@ TaxYear.current.currentYear == taxYear
             </table>
         }
         @if(!isCurrentYear && companyBenefits.isEmpty){
-            <h2 class="heading-medium" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
-            <p class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
+            <p id="no-benefits"class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
         }
 
         @if(incomeSource.isDefined) {
@@ -249,7 +247,7 @@ TaxYear.current.currentYear == taxYear
                     </tbody>
                 </table>
             } else {
-                <span class ="grey">@Messages("tax.code.no.deductions")</span>
+                <span id="no-deductions" class ="grey">@Messages("tax.code.no.deductions")</span>
             }
         }
     }
