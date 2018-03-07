@@ -141,14 +141,13 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     }
 
     "show data not available" when {
-      "input data missing for payAndTax and Company benefit" in new ViewFixture {
+      "input data missing for payAndTax" in new ViewFixture {
         val view = views.html.taxhistory.employment_detail(taxYear, None,
           employment, List.empty, clientName, actualOrForecast = true, None)
         val eyutable: Element = doc.getElementById("eyu-table")
         val cbTable: Element = doc.getElementById("cb-table")
         val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
         taxablePay.text must include(Messages("employmenthistory.nopaydata"))
-        doc.getElementsContainingOwnText(Messages("lbl.company.benefits")).hasText mustBe false
         doc.getElementsContainingOwnText(Messages("employmenthistory.eyu.date.received")).hasText mustBe false
         val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
         doc.getElementsContainingOwnText(paymentGuidance).hasText mustBe false
@@ -249,6 +248,13 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText mustBe false
+    }
+
+    "show alternate text when no company benefits are available" in new ViewFixture {
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+        employment, List.empty, clientName, actualOrForecast = true, None)
+
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.employment.details.no.benefits","employer-1")).hasText mustBe true
     }
   }
 }
