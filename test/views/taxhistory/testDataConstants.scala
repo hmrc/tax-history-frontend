@@ -131,6 +131,14 @@ trait DetailConstants {
     earlierYearUpdates = eyuList
   )
 
+  val payAndTaxNoTotal = PayAndTax(
+    taxablePayTotal = None,
+    taxTotal = None,
+    studentLoan = Some(101.00),
+    paymentDate = Some(new LocalDate("2016-02-20")),
+    earlierYearUpdates = List.empty
+  )
+
   val payAndTaxNoStudentLoan = PayAndTax(
     taxablePayTotal = Some(4896.80),
     taxTotal = Some(979.36),

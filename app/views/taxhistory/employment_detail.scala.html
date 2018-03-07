@@ -82,34 +82,38 @@ TaxYear.current.currentYear == taxYear
         <h2 id="Payments" class="heading-medium">@Messages("employmenthistory.pay.and.tax.heading")</h2>
     </div>
 
-    <table id="pay-and-tax-table" >
-        <tr>
-            <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
-            <td>
-            @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined) {
-                @Currency(payAndTax.get.taxablePayTotal.get)
-            } else {
-                @Messages("employmenthistory.nopaydata")
+    @if(payAndTax.isDefined){
+        <table id="pay-and-tax-table" >
+            <tr>
+                <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
+                <td>
+                @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined) {
+                    @Currency(payAndTax.get.taxablePayTotal.get)
+                } else {
+                    @Messages("employmenthistory.nopaydata")
+                }
+                </td>
+            </tr>
+            <tr>
+                <th scope="row" class="width50pc boldFont" >@Messages("lbl.income.tax")</th>
+                <td>
+                @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined) {
+                    @Currency(payAndTax.get.taxTotal.get)
+                } else {
+                    @Messages("employmenthistory.nopaydata")
+                }
+                </td>
+            </tr>
+            @if(payAndTax.isDefined && payAndTax.get.studentLoan.isDefined) {
+            <tr>
+                <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
+                <td>@Currency(payAndTax.get.studentLoan.get)</td>
+            <tr>
             }
-            </td>
-        </tr>
-        <tr>
-            <th scope="row" class="width50pc boldFont" >@Messages("lbl.income.tax")</th>
-            <td>
-            @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined) {
-                @Currency(payAndTax.get.taxTotal.get)
-            } else {
-                @Messages("employmenthistory.nopaydata")
-            }
-            </td>
-        </tr>
-        @if(payAndTax.isDefined && payAndTax.get.studentLoan.isDefined) {
-        <tr>
-            <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
-            <td>@Currency(payAndTax.get.studentLoan.get)</td>
-        <tr>
-        }
-    </table>
+        </table>
+    } else {
+        <p class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,employment.startDate.toString("d MMMM yyyy"))</p>
+    }
 
     @if(!employment.receivingJobSeekersAllowance) {
         @payAndTax.map { payAndTax =>
