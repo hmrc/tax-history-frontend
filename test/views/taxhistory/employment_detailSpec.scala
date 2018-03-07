@@ -141,7 +141,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     }
 
     "show data not available" when {
-      "input data missing for payAndTax and Company benefit" in new ViewFixture {
+      "input data missing for payAndTax" in new ViewFixture {
         val view = views.html.taxhistory.employment_detail(taxYear, None,
           employment, List.empty, clientName, actualOrForecast = true, None)
         val eyutable: Element = doc.getElementById("eyu-table")

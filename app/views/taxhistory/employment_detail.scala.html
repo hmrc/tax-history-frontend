@@ -176,7 +176,7 @@ TaxYear.current.currentYear == taxYear
                 </tbody>
             </table>
         }
-        @if(!isCurrentYear && !companyBenefits.nonEmpty){
+        @if(!isCurrentYear && companyBenefits.empty){
             <h2 class="heading-medium" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
             <p class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
         }

@@ -171,7 +171,6 @@ trait DetailConstants {
     CompanyBenefit(uuid, "NonCashBenefit", 1000.00)
   )
 
-
   val employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
