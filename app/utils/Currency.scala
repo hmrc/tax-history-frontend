@@ -48,5 +48,10 @@ object Currency {
 
   implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
 
+  implicit def withPositive(value:BigDecimal):String ={
+    if (value >= 0) "+" + Currency(value)
+    else "-" + Currency(value.abs)
+  }
+
 }
 
