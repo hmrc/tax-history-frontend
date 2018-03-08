@@ -40,7 +40,7 @@
 }
 
 @views.html.main_template(title = Messages("employmenthistory.title")) {
-  <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+  <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
 
     <div class="page-header" >
       <h1 class="no-bottom-margin heading-xlarge">
@@ -70,7 +70,7 @@
         <th scope="col" class="width20pc boldFont">@Messages("lbl.employer")</th>
         <th scope="col" class="width20pc boldFont">@Messages("lbl.date.start")</th>
         <th scope="col" class="width20pc boldFont">@Messages("lbl.date.end")</th>
-         <th scope="col" class="width20pc boldFont" >@Messages("lbl.status")</th>
+        <th scope="col" class="width20pc boldFont">@Messages("lbl.status")</th>
         <th scope="col" class="width20pc boldFont">@Messages("lbl.record")</th>
         </tr>
         @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>

@@ -26,10 +26,7 @@
                           bodyClasses = None,
                           sidebarLinks = None) {
 
-<a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
-
-<section class="section" >
-
+<a href="@appConfig.agentAccountHomePage" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
 
     @helpers.form(routes.SelectClientController.submitSelectClientPage()){
         @if(sCForm.hasErrors) {
@@ -86,5 +83,4 @@
         </button>
     </div>
     }
-</section>
 }

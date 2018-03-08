@@ -24,7 +24,7 @@ clientName:String)(implicit request: Request[_], messages: Messages, appConfig: 
 
 @views.html.main_template(title = Messages("employmenthistory.select.tax.year.title")){
 
-<a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+<a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
 
 @if(form.hasErrors) {
     <div class="flash error-summary error-summary--show"
