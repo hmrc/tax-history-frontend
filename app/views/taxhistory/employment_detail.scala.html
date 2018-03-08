@@ -148,7 +148,7 @@ TaxYear.current.currentYear == taxYear
                 </details>
             }
         }
-        @if(companyBenefits.nonEmpty) {
+        @if(companyBenefits.nonEmpty && !employment.receivingOccupationalPension) {
             <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
             <div>
                 <p>
