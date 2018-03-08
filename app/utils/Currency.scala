@@ -35,7 +35,8 @@ case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 object Currency {
   implicit def fromOptionBD(value:Option[BigDecimal]): String = {
     value match {
-      case Some(amount) => Currency(amount).toString
+      case Some(amount) => {
+        Currency(amount).toString}
       case None => ""
     }
   }
@@ -47,6 +48,11 @@ object Currency {
   implicit def currencyToDouble(c: Currency): Double = c.value.toDouble
 
   implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
+
+  implicit def withPositive(value:BigDecimal):String ={
+    if (value >= 0) "+" + Currency(value)
+    else "-" + Currency(value.abs)
+  }
 
 }
 

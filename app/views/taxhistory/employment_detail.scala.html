@@ -118,36 +118,38 @@ TaxYear.current.currentYear == taxYear
     @if(!employment.receivingJobSeekersAllowance) {
         @payAndTax.map { payAndTax =>
             @if(payAndTax.earlierYearUpdates.nonEmpty) {
+                <details id ="EYUs">
+                     <summary class="summary" role="button">@Messages("employmenthistory.eyu.button")</summary>
 
-                <div>
-                    <h2 class="heading-medium" id="EarlierYearUpdates">@Messages("employmenthistory.employment.details.eyu")</h2>
-                    <p>@Messages("employmenthistory.eyu.caveat", (taxYear + 1).toString, taxYear.toString, employment.employerName)</p>
-                </div>
+                    <div class ="panel-indent">
+                    <p>@Messages("employmenthistory.eyu.caveat.1", (employment.startDate.toString("d MMMM yyyy")))</p>
+                    <p>@Messages("employmenthistory.eyu.caveat.2")</p>
 
-                <table id="eyu-table">
-                    <thead>
+                    <table id="eyu-table">
+                        <thead>
                         <tr>
                             <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.pay")</th>
                             <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.tax")</th>
                             <th scope="col" class="width40pc">@Messages("employmenthistory.eyu.date.received")</th>
                         </tr>
-                    </thead>
-                    <tbody>
-                    @payAndTax.earlierYearUpdates.map { cb =>
+                        </thead>
+                        <tbody>
+                        @payAndTax.earlierYearUpdates.map { cb =>
                         <tr>
 
-                            <td>@Currency(cb.taxablePayEYU)</td>
-                            <td>@Currency(cb.taxEYU)</td>
+                            <td>@Currency.withPositive(cb.taxablePayEYU)</td>
+                            <td>@Currency.withPositive(cb.taxEYU)</td>
                             <td>@formatDate(cb.receivedDate)</td>
                         </tr>
-                    }
-                    </tbody>
-                </table>
+                        }
+                        </tbody>
+                    </table>
+                    </div>
+                </details>
             }
         }
-
-        <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
         @if(companyBenefits.nonEmpty) {
+            <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
             <div>
                 <p>
                 @if(actualOrForecast) {
@@ -180,6 +182,7 @@ TaxYear.current.currentYear == taxYear
             </table>
         }
         @if(!isCurrentYear && companyBenefits.isEmpty){
+            <h2 class="heading-medium" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
             <p id="no-benefits"class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
         }
 
