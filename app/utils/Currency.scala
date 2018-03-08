@@ -35,8 +35,7 @@ case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 object Currency {
   implicit def fromOptionBD(value:Option[BigDecimal]): String = {
     value match {
-      case Some(amount) => {
-        Currency(amount).toString}
+      case Some(amount) => Currency(amount).toString
       case None => ""
     }
   }
