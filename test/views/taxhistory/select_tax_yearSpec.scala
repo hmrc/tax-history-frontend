@@ -19,8 +19,10 @@ package views.taxhistory
 import form.SelectTaxYearForm.selectTaxYearForm
 import play.api.i18n.Messages
 import play.api.libs.json.Json
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import views.{Fixture, TestAppConfig}
+import controllers.routes
 
 class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
 
@@ -71,6 +73,18 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementById("selectTaxYear-error-summary").text mustBe Messages("employmenthistory.select.tax.year.error.linktext")
       doc.getElementById("error-summary-heading").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
       doc.select(".error-notification").first().text mustBe Messages("employmenthistory.select.tax.year.error.message")
+    }
+
+    "show correct links and text in side bar" in new ViewFixture {
+      val view = views.html.taxhistory.select_tax_year(validForm, List.empty, name)
+
+      doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
+      doc.getElementById("nav-bar").child(0).attr("href") shouldBe "fakeurl"
+
+      doc.getElementById("nav-bar").child(3).text shouldBe Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")
+
+      doc.getElementById("nav-bar").child(4).text shouldBe Messages("employemntHistory.select.tax.year.sidebar.change.client")
+      doc.getElementById("nav-bar").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
     }
   }
 

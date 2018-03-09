@@ -163,6 +163,9 @@ employmenthistory.select.tax.year=Select a tax year
 employmenthistory.select.tax.year.error.heading=There is a problem
 employmenthistory.select.tax.year.error.linktext=Select a tax year
 employmenthistory.select.tax.year.error.message=Select a tax year
+employemntHistory.select.tax.year.sidebar.agent-services-home =Agent services home
+employemntHistory.select.tax.year.sidebar.income.and.tax=View client income and tax record
+employemntHistory.select.tax.year.sidebar.change.client=Change client
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Underpaid tax and debts
