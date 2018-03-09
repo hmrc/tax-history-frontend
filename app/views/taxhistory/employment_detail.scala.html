@@ -35,7 +35,7 @@ TaxYear.current.currentYear == taxYear
     bodyClasses = None
 ) {
 
-    <a href="@controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url" class="link-back" id="back-link">@Messages("lbl.back")</a>
+    <a href="@controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
 
 
     <header class="page-header">
@@ -83,7 +83,7 @@ TaxYear.current.currentYear == taxYear
     </div>
 
     @if(payAndTax.isDefined){
-        <table id="pay-and-tax-table" >
+        <table id="pay-and-tax-table" class="small-bottom-margin">
             <tr>
                 <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
                 <td>
@@ -122,10 +122,10 @@ TaxYear.current.currentYear == taxYear
                      <summary class="summary" role="button">@Messages("employmenthistory.eyu.button")</summary>
 
                     <div class ="panel-indent">
-                    <p>@Messages("employmenthistory.eyu.caveat.1", (employment.startDate.toString("d MMMM yyyy")))</p>
+                    <p>@Messages("employmenthistory.eyu.caveat.1", employment.startDate.toString("d MMMM yyyy"))</p>
                     <p>@Messages("employmenthistory.eyu.caveat.2")</p>
 
-                    <table id="eyu-table">
+                    <table id="eyu-table" class="no-bottom-margin">
                         <thead>
                         <tr>
                             <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.pay")</th>
@@ -148,7 +148,7 @@ TaxYear.current.currentYear == taxYear
                 </details>
             }
         }
-        @if(companyBenefits.nonEmpty) {
+        @if(companyBenefits.nonEmpty && !employment.receivingOccupationalPension) {
             <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
             <div>
                 <p>
