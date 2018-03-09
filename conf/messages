@@ -158,6 +158,12 @@ employmenthistory.eyu.caveat.2=EYU corrections are included in the taxable incom
 employmenthistory.company.benefit.caveat.actual=HMRC has {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts may be an estimate.
 employmenthistory.company.benefit.caveat.estimate=HMRC does not have {0}''s P11D from {1} for the {2} to {3} tax year. The company benefits amounts are a forecast.
 employmenthistory.student.loans=Student loan
+employmenthistory.sidebar.links.more-options=More Options
+employmenthistory.sidebar.links.agent-services-home=Agent services home
+employmenthistory.sidebar.links.income-and-tax=View client income and tax records
+employmenthistory.sidebar.links.change-client=Change client
+employmenthistory.sidebar.links.income-records={0}'s income records
+employmenthistory.sidebar.links.change-tax-year=Change tax year
 
 ################################## Select tax year ####################################################
 employmenthistory.select.tax.year.title=Select tax year - GOV.UK
