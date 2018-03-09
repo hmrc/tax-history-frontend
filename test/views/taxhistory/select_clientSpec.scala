@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-import config.AppConfig
 import form.SelectClientForm.selectClientForm
 import models.taxhistory.SelectClient
 import org.jsoup.nodes.Element
-import org.scalatestplus.play.PlaySpec
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -76,7 +74,7 @@ class select_clientSpec extends GuiceAppSpec with UnitSpec with TestUtil with Te
 
     "capitalise input characters" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.body.getElementById("clientId").className should include ("uppercase-only")
+      doc.body.getElementById("clientId").className should include("uppercase-only")
     }
 
     "display continue button" in new ViewFixture {
