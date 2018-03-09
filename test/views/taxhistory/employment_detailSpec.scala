@@ -60,10 +60,10 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "have correct employment details" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, actualOrForecast = true, None)
-      val payeReference: Element = doc.select("#employment-table tbody tr").get(0)
-      val payrollId: Element = doc.select("#employment-table tbody tr").get(1)
-      val startDate: Element = doc.select("#employment-table tbody tr").get(2)
-      val endDate: Element = doc.select("#employment-table tbody tr").get(3)
+      val payeReference: Element = doc.getElementById("employment-data").child(1)
+      val payrollId: Element = doc.getElementById("employment-data").child(3)
+      val startDate: Element = doc.getElementById("employment-data").child(5)
+      val endDate: Element = doc.getElementById("employment-data").child(7)
       val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
       val incomeTax: Element = doc.select("#pay-and-tax-table tbody tr").get(1)
 
@@ -78,9 +78,9 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "not have payroll ID and status for a pension" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment.copy(receivingOccupationalPension = true), List.empty, clientName, actualOrForecast = true, None)
-      val payeReference: Element = doc.select("#employment-table tbody tr").get(0)
-      val startDate: Element = doc.select("#employment-table tbody tr").get(1)
-      val endDate: Element = doc.select("#employment-table tbody tr").get(2)
+      val payeReference: Element = doc.getElementById("employment-data").child(1)
+      val startDate: Element = doc.getElementById("employment-data").child(3)
+      val endDate: Element = doc.getElementById("employment-data").child(5)
       val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
       val incomeTax: Element = doc.select("#pay-and-tax-table tbody tr").get(1)
 
