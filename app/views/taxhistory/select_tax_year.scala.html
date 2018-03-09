@@ -44,8 +44,8 @@ clientName:String)(implicit request: Request[_], messages: Messages, appConfig: 
 }
 
 <div class="page-header">
-        <span class="pre-heading">@Messages("employmenthistory.display.client.name",s"$clientName")</span>
-        <h1 class="heading-xlarge no-bottom-margin">@Messages("employmenthistory.select.tax.year.h1")</h1>
+        <span class="pre-heading" id ="pre-header">@Messages("employmenthistory.display.client.name",s"$clientName")</span>
+        <h1 class="heading-xlarge no-bottom-margin" id ="header">@Messages("employmenthistory.select.tax.year.h1")</h1>
 </div>
   @helpers.form(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
       @helpers.inputRadioGroup(form("selectTaxYear"),
