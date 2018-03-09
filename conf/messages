@@ -83,6 +83,9 @@ employemntHistory.employment.summary.sidebar.income.and.tax=View client income a
 employemntHistory.employment.summary.sidebar.change.client=Change client
 employemntHistory.employment.summary.sidebar.income.record={0}''s income records
 employemntHistory.employment.summary.sidebar.change.tax.year=Change tax year
+employmenthistory.employment.summary.tab.1=Employment records
+employmenthistory.employment.summary.tab.2=Allowances
+employmenthistory.employment.summary.tab.3=Underpaid tax and debts
 
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
