@@ -21,7 +21,6 @@ import model.api.{EmploymentStatus, StatePension}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{DateHelper, TestUtil}
@@ -53,8 +52,8 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       viewDetailsElements.html must include(Messages("employmenthistory.view") +
         " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
 
-     val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
-     viewDetailsElementsNoRecord.html must include(Messages("lbl.none"))
+      val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
+      viewDetailsElementsNoRecord.html must include(Messages("lbl.none"))
 
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
@@ -96,16 +95,16 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, None)
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
-        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
+        s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
       doc.getElementsContainingOwnText(oDR).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.title",
-        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
+        s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
 
       doc.getElementsContainingOwnText(uA.toString).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.title",
-        s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
+        s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
       doc.getElementsContainingOwnText(aPC.toString).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.text")).hasText mustBe true
@@ -115,7 +114,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "Show state pensions when they have them" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100,"test")))
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100, "test")))
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe true
@@ -188,7 +187,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     doc.getElementById("nav-bar").child(4).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.client")
     doc.getElementById("nav-bar").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
 
-    doc.getElementById("nav-bar").child(7).text shouldBe Messages("employemntHistory.employment.summary.sidebar.income.record",nino.toString)
+    doc.getElementById("nav-bar").child(7).text shouldBe Messages("employemntHistory.employment.summary.sidebar.income.record", nino.toString)
 
     doc.getElementById("nav-bar").child(8).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.tax.year")
     doc.getElementById("nav-bar").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
