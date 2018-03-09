@@ -16,10 +16,12 @@
 
 package views.taxhistory
 
+import controllers.routes
 import model.api.{EmploymentStatus, StatePension}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{DateHelper, TestUtil}
@@ -173,6 +175,23 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   "Don't show the what's this link when there is no early year adjustment" in new ViewFixture {
     val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowancesNoEYA, None, taxAccount, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowances.eya.summary.header")).hasText mustBe false
+  }
+
+  "Show correct heading and links for nav bar" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None)
+
+    doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
+    doc.getElementById("nav-bar").child(0).attr("href") shouldBe "fakeurl"
+
+    doc.getElementById("nav-bar").child(3).text shouldBe Messages("employemntHistory.employment.summary.sidebar.income.and.tax")
+
+    doc.getElementById("nav-bar").child(4).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.client")
+    doc.getElementById("nav-bar").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
+
+    doc.getElementById("nav-bar").child(7).text shouldBe Messages("employemntHistory.employment.summary.sidebar.income.record",nino.toString)
+
+    doc.getElementById("nav-bar").child(8).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.tax.year")
+    doc.getElementById("nav-bar").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
   }
 
 }
