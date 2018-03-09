@@ -67,9 +67,9 @@ clientName:String)(implicit request: Request[_], messages: Messages, appConfig: 
     </div>
     <div class ="grid-layout__column grid-layout__column--1-3">
         <section class="section subsection section--blue-top" id="nav-bar">
-            <a href="@appConfig.agentAccountHomePage" id="">@Messages("employmenthistory.select.client.sidebar.agent-services-home")</a>
+            <a href="@appConfig.agentAccountHomePage" id="">@Messages("employmenthistory.employment.summary.sidebar.agent-services-home")</a>
             <br><br>
-            <h2 class="heading-small">@Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")</h2>
+            <h2 class="heading-small no-bottom-margin">@Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")</h2>
             <a href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employemntHistory.select.tax.year.sidebar.change.client")</a>
         </section>
     </div>
