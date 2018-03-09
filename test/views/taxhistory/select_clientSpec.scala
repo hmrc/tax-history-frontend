@@ -37,29 +37,29 @@ class select_clientSpec extends GuiceAppSpec with UnitSpec with TestUtil with Te
 
   }
 
-  "select_client view" must {
+  "select_client view" should {
 
     "have the correct title and GA page view event" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.title mustBe Messages("employmenthistory.select.client.title")
+      doc.title shouldBe Messages("employmenthistory.select.client.title")
 
       doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
+        "ga('send', 'pageview', { 'anonymizeIp': true })" shouldBe true
     }
 
     "have the correct heading" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.body.getElementById("title").text() mustBe Messages("employmenthistory.select.client.heading")
+      doc.body.getElementById("title").text() shouldBe Messages("employmenthistory.select.client.heading")
     }
 
     "display input field label for accessibility" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.select("span.visuallyhidden").text mustBe Messages("employmenthistory.select.client.clients.nino")
+      doc.select("span.visuallyhidden").text shouldBe Messages("employmenthistory.select.client.clients.nino")
     }
 
     "display input field hint" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      doc.body.getElementsByClass("form-hint").get(0).text mustBe Messages("employmenthistory.select.client.nino.hint")
+      doc.body.getElementsByClass("form-hint").get(0).text shouldBe Messages("employmenthistory.select.client.nino.hint")
     }
 
     "display input field" in new ViewFixture {
