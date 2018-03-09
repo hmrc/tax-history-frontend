@@ -192,7 +192,7 @@ TaxYear.current.currentYear == taxYear
 
             <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-            <h1 id="tax-code">@{
+            <h1 class="no-top-margin"id="tax-code">@{
                 incomeSource.get.taxCode
             }@{
                 ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
@@ -204,7 +204,7 @@ TaxYear.current.currentYear == taxYear
                 <thread>
                     <tr>
                         <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
-                        <th scope = "col" class = "width25pc boldFont">@Messages("tax.code.source.amount") </th>
+                        <th scope = "col" class = "width30pc numeric boldFont">@Messages("tax.code.source.amount") </th>
                         <th scope = "col" class = "numeric boldFont">@Messages("tax.code.allowance") </th>
                     </tr>
                 </thread>
@@ -214,7 +214,7 @@ TaxYear.current.currentYear == taxYear
                         <td>@{
                             ControllerUtils.sentenceCase(iSAllowance.npsDescription)
                         }</td>
-                        <td>@{
+                        <td class="numeric">@{
                             Currency.fromOptionBD(ControllerUtils.displaySource(iSAllowance.sourceAmount, iSAllowance.amount))
                         }</td>
                         <td class="numeric">@{
@@ -229,7 +229,7 @@ TaxYear.current.currentYear == taxYear
                     <thread>
                         <tr>
                             <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
-                            <th scope = "col" class = "width25pc boldFont">@Messages("tax.code.source.amount") </th>
+                            <th scope = "col" class = "width30pc numeric boldFont">@Messages("tax.code.source.amount") </th>
                             <th scope = "col" class = "numeric boldFont">@Messages("tax.code.deduction") </th>
                         </tr>
                     </thread>
@@ -239,7 +239,7 @@ TaxYear.current.currentYear == taxYear
                             <td>@{
                                 ControllerUtils.sentenceCase(iSDeductions.npsDescription)
                             }</td>
-                            <td>@{
+                            <td class="numeric">@{
                                 Currency.fromOptionBD(ControllerUtils.displaySource(iSDeductions.sourceAmount, iSDeductions.amount))
                             }</td>
                             <td class="numeric" >@{
