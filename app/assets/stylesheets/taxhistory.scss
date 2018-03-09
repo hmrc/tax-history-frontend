@@ -13,8 +13,12 @@
   margin-bottom: 0em !important;
 }
 
-.no-top-margin{
- margin-top: 0em !important;
+.no-top-margin {
+  margin-top: 0em !important;
+}
+
+.small-margin-bottom {
+  margin-bottom: 15px;
 }
 
 table {
@@ -214,4 +218,9 @@ color : #6f777b;
 
 .hidden {
   visibility: hidden;
+}
+
+.employment-summary {
+  background: #f8f8f8;
+  padding: 1.25em 1.25em 0.25em 1.25em;
 }
