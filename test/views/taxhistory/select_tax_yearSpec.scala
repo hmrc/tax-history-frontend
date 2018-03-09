@@ -16,21 +16,25 @@
 
 package views.taxhistory
 
+import controllers.routes
 import form.SelectTaxYearForm.selectTaxYearForm
+import models.taxhistory.SelectTaxYear
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
+import play.api.data.Form
 import play.api.i18n.Messages
-import play.api.libs.json.Json
-import play.twirl.api.HtmlFormat
+import play.api.libs.json.{JsObject, Json}
+import play.twirl.api.Html
 import support.GuiceAppSpec
 import views.{Fixture, TestAppConfig}
-import controllers.routes
 
 class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
     implicit val requestWithToken = addToken(request)
-    val postData = Json.obj("selectTaxYear" -> "2016")
-    val validForm = selectTaxYearForm.bind(postData)
-    val name = "Test Name"
+    val postData: JsObject = Json.obj("selectTaxYear" -> "2016")
+    val validForm: Form[SelectTaxYear] = selectTaxYearForm.bind(postData)
+    val name: String = "Test Name"
   }
 
   "select_tax_year view" must {
@@ -40,8 +44,8 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
       val view = views.html.taxhistory.select_tax_year(validForm, List.empty, name)
 
       doc.title mustBe Messages("employmenthistory.select.tax.year.title")
-      doc.getElementById("pre-header").text() must include (Messages("employmenthistory.display.client.name",s"${name}"))
-      doc.getElementById("header").text() must include (Messages("employmenthistory.select.tax.year.h1"))
+      doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"${name}"))
+      doc.getElementById("header").text() must include(Messages("employmenthistory.select.tax.year.h1"))
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
@@ -49,23 +53,23 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
     "show correct content on the page" in new ViewFixture {
       val options = List("2016" -> "value", "2015" -> "value1")
 
-      val view = views.html.taxhistory.select_tax_year(validForm, options, name)
-      val radioGroup =  doc.select("input[type='radio']")
+      val view: Html = views.html.taxhistory.select_tax_year(validForm, options, name)
+      val radioGroup: Elements = doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
-      val inputRadio = doc.getElementById("selectTaxYear-2016")
+      val inputRadio: Element = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe "checked"
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1",s"${name}")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1", s"${name}")).hasText mustBe true
 
     }
 
     "show correct content on the page for form with error" in new ViewFixture {
-      val invalidForm = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""))
+      val invalidForm: Form[SelectTaxYear] = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""))
       val options = List("2016" -> "value", "2015" -> "value1")
 
       val view = views.html.taxhistory.select_tax_year(invalidForm, options, name)
-      val radioGroup =  doc.select("input[type='radio']")
+      val radioGroup: Elements = doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
-      val inputRadio = doc.getElementById("selectTaxYear-2016")
+      val inputRadio: Element = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe ""
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
 
