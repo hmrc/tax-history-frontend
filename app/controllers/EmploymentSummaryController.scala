@@ -136,7 +136,7 @@ class EmploymentSummaryController @Inject()(
     {
       val (pensions, employments) = allPayAndTax.partition { pat =>
         val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId == pat.payAndTaxId)
-        matchedRecord.get.receivingOccupationalPension
+        matchedRecord.fold(false){_.receivingOccupationalPension}
       }
 
       Future successful Some(TotalIncome(
