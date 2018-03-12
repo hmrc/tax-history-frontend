@@ -64,7 +64,8 @@ employmenthistory.view.record.hidden=View {0}''s income record for {1}
 employmenthistory.employment.records=Employment records
 employmenthistory.no.employments=HMRC has no employment record for your client for this tax year.
 employmenthistory.table.header.employments=Employments
-employmenthistory.table.header.pensions=Private Pensions
+employmenthistory.table.header.pensions.private=Private Pensions
+employmenthistory.table.header.pensions=Pension
 employmenthistory.no.pensions=HMRC has no pension income record for your client for this tax year.
 employmenthistory.caveat.p1.text=The information on this page was previously available by phone from HMRC.
 employmenthistory.caveat.p2.text=It is as accurate as possible but might not include recent updates from your client, their employers or agents.
@@ -83,6 +84,9 @@ employemntHistory.employment.summary.sidebar.income.and.tax=View client income a
 employemntHistory.employment.summary.sidebar.change.client=Change client
 employemntHistory.employment.summary.sidebar.income.record={0}''s income records
 employemntHistory.employment.summary.sidebar.change.tax.year=Change tax year
+employmenthistory.employment.summary.tab.1=Employment records
+employmenthistory.employment.summary.tab.2=Allowances
+employmenthistory.employment.summary.tab.3=Underpaid tax and debts
 
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
