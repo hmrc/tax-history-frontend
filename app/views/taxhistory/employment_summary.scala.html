@@ -20,14 +20,15 @@
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 
-@import model.api.{TaxAccount, StatePension}
+@import model.api.{TaxAccount, StatePension, TotalIncome}
 @(nino: String,
     taxYear: Int,
     employments: List[Employment],
     allowances: List[Allowance],
     person: Option[Person],
     taxAccount: Option[TaxAccount],
-    statePension: Option[StatePension])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+    statePension: Option[StatePension],
+    incomeTotals: Option[TotalIncome])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @getName=@{
     person.fold(nino) {
@@ -100,7 +101,7 @@
                     @employmentTable
                 </div>
                 <div class ="grid-layout__column grid-layout__column--1-3">
-                    <p>total</p>
+                    <p>Employments totals</p>
                 </div>
             </div>
             }
@@ -117,7 +118,7 @@
             }
             </div>
             <div class ="grid-layout__column grid-layout__column--1-3">
-                <p>total</p>
+                <p>Pension Totals</p>
             </div>
             </div>
 

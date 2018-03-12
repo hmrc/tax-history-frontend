@@ -81,7 +81,7 @@ class EmploymentSummaryController @Inject()(
             taxAccountResponse <- taxAccountFuture
             statePensionResponse <- statePensionFuture
             allPayAndTaxResponse <- allPayAndTaxFuture
-            incomeTotals = buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse))
+            incomeTotals <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse))
           } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals)).map {
             dataResponse =>
               Ok(views.html.taxhistory.employment_summary(
@@ -91,7 +91,8 @@ class EmploymentSummaryController @Inject()(
                 getAllowancesFromResponse(allowancesResponse = dataResponse._1),
                 person,
                 getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
-                getStatePensionsFromResponse(statePensionResponse = dataResponse._3)))
+                getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
+                incomeTotals = dataResponse._4))
           }
         case status => Future.successful(handleHttpFailureResponse(status, ninoField))
       }
@@ -131,17 +132,23 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[PayAndTax]): TotalIncome = {
-    val (pensions, employments) = allPayAndTax.partition { pat =>
-      val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId == pat.payAndTaxId)
-      matchedRecord.fold(false) {_.receivingOccupationalPension}
-    }
+  private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[PayAndTax]): Future[Option[TotalIncome]] = {
+    {
+      val (pensions, employments) = allPayAndTax.partition { pat =>
+        val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId == pat.payAndTaxId)
+        matchedRecord.get.receivingOccupationalPension
+      }
 
-    TotalIncome(
-      employmentTaxablePayTotal = employments.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-      pensionTaxablePayTotal = pensions.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-      employmentTaxTotal = employments.map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
-      pensionTaxTotal = pensions.map(_.taxTotal.getOrElse(BigDecimal(0))).sum
-    )
+      Future successful Some(TotalIncome(
+        employmentTaxablePayTotal = employments.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+        pensionTaxablePayTotal = pensions.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+        employmentTaxTotal = employments.map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
+        pensionTaxTotal = pensions.map(_.taxTotal.getOrElse(BigDecimal(0))).sum
+      ))
+    }.recoverWith {
+      case e =>
+        logger.warn(s"buildIncomeTotals failed with ${e.getMessage}")
+        Future successful None
+    }
   }
 }

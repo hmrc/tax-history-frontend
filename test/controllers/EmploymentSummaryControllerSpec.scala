@@ -66,10 +66,26 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     underpaymentAmount = Some(300),
     actualPUPCodedInCYPlusOneTaxYear = Some(400))
 
-  val employments = List(employment)
+  val employments = List(employment, employment.copy(employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4")))
   val allowances = List(allowance)
 
-  val statePension = StatePension(100,"test")
+  val statePension = StatePension(100, "test")
+
+  val payAndTax = List(
+    PayAndTax(
+      payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      taxablePayTotal = Some(4896.80),
+      taxTotal = Some(979.36),
+      studentLoan = None,
+      paymentDate = Some(new LocalDate("2016-02-20")),
+      earlierYearUpdates = List.empty),
+    PayAndTax(
+      payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
+      taxablePayTotal = Some(4896.80),
+      taxTotal = Some(979.36),
+      studentLoan = None,
+      paymentDate = Some(new LocalDate("2016-02-20")),
+      earlierYearUpdates = List.empty))
 
   trait HappyPathSetup {
 
@@ -87,8 +103,10 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatePension(any(),any())(any())).
-        thenReturn((Future.successful(HttpResponse(Status.OK, Some(Json.toJson(statePension))))))
+      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(statePension)))))
+      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(payAndTax)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(person)))))
       c
