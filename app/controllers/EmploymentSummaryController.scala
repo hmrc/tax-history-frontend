@@ -22,7 +22,7 @@ import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
 import models.taxhistory.Person
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
@@ -70,16 +70,24 @@ class EmploymentSummaryController @Inject()(
     taxHistoryConnector.getEmploymentsAndPensions(ninoField, taxYear) flatMap { empResponse =>
       empResponse.status match {
         case OK =>
+          val employments: List[Employment] = getEmploymentsFromResponse(empResponse)
+          val allowanceFuture = taxHistoryConnector.getAllowances(ninoField, taxYear)
+          val taxAccountFuture = taxHistoryConnector.getTaxAccount(ninoField, taxYear)
+          val statePensionFuture = taxHistoryConnector.getStatePension(ninoField, taxYear)
+          val allPayAndTaxFuture = taxHistoryConnector.getAllPayAndTax(ninoField, taxYear)
+
           (for {
-            allowanceResponse <- taxHistoryConnector.getAllowances(ninoField, taxYear)
-            taxAccountResponse <- taxHistoryConnector.getTaxAccount(ninoField, taxYear)
-            statePensionResponse <- taxHistoryConnector.getStatePension(ninoField, taxYear)
-          } yield (allowanceResponse, taxAccountResponse, statePensionResponse)).map {
+            allowanceResponse <- allowanceFuture
+            taxAccountResponse <- taxAccountFuture
+            statePensionResponse <- statePensionFuture
+            allPayAndTaxResponse <- allPayAndTaxFuture
+            incomeTotals = buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse))
+          } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals)).map {
             dataResponse =>
               Ok(views.html.taxhistory.employment_summary(
                 ninoField.nino,
                 taxYear,
-                getEmploymentsFromResponse(empResponse),
+                employments,
                 getAllowancesFromResponse(allowancesResponse = dataResponse._1),
                 person,
                 getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
@@ -108,9 +116,11 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def getEmploymentsFromResponse(empResponse: HttpResponse) = {
+  private def getEmploymentsFromResponse(empResponse: HttpResponse) =
     empResponse.json.as[List[Employment]]
-  }
+
+  private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) =
+    patResponse.json.as[List[PayAndTax]]
 
   private def getStatePensionsFromResponse(statePensionResponse: HttpResponse) = {
     statePensionResponse.status match {
@@ -121,4 +131,17 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
+  private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[PayAndTax]): TotalIncome = {
+    val (pensions, employments) = allPayAndTax.partition { pat =>
+      val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId == pat.payAndTaxId)
+      matchedRecord.fold(false) {_.receivingOccupationalPension}
+    }
+
+    TotalIncome(
+      employmentTaxablePayTotal = employments.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+      pensionTaxablePayTotal = pensions.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+      employmentTaxTotal = employments.map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
+      pensionTaxTotal = pensions.map(_.taxTotal.getOrElse(BigDecimal(0))).sum
+    )
+  }
 }
