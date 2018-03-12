@@ -93,7 +93,7 @@
     <ul>
         <li id="tabContent1" data-tab-content="1" class="tab-content" role="tabpanel" aria-labelledby="tab1">
             @if(employments.exists(!_.receivingOccupationalPension)) {
-            <h2 id = "EmploymentDetails" class="heading-medium">@Messages("employmenthistory.table.header.employments")</h2>
+            <h2 id = "EmploymentDetails" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.employments")</h2>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
             <table id="employment-table">
@@ -136,7 +136,8 @@
                 </div>
 
             @if(employments.exists(_.receivingOccupationalPension)) {
-            <h2 id = "Pensions"class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
+            <h2 id = "Pensions"class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
+            <p class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions")</p>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
             <table id="pension-table" class="small-text">
@@ -162,7 +163,7 @@
                 </tbody>
             </table>
             } else {
-            <h2 class="heading-medium">@Messages("employmenthistory.table.header.pensions")</h2>
+            <h2 class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
             <p id="no-pensions" class="grey">@Messages("employmenthistory.no.pensions")</p>
             }
             </div>
@@ -172,9 +173,9 @@
             </div>
 
             @if(statePension.nonEmpty){
+            <h2 id = "StatePensions" class="heading-small blue-underline-thin">@Messages("employmenthistory.state.pensions")</h2>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-            <h2 id = "StatePensions" class="heading-medium">@Messages("employmenthistory.state.pensions")</h2>
             <p>@Messages("employmenthistory.state.pensions.text",s"${Currency(statePension.get.grossAmount,2)}")</p>
                 </div>
                 <div class ="grid-layout__column grid-layout__column--1-3"></div>
@@ -186,7 +187,7 @@
         @if(!isCurrentYear) {<li id="tabContent2" data-tab-content="2" class="tab-content" role="tabpanel" aria-labelledby="tab2">
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
             <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-            <h2 id = "Allowances" class="heading-medium">@Messages("employmenthistory.allowance.heading")</h2>
+            <h2 id = "Allowances" class="heading-medium blue-underline">@Messages("employmenthistory.allowance.heading")</h2>
             @if(allowances.nonEmpty) {
             <p>@Messages("employmenthistory.allowance.description")</p>
             <table id="allowanceTable" >
@@ -232,7 +233,7 @@
 
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
             <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-        <h2 id = "UnderpaidTaxAndDebts" class="heading-medium">@Messages("employmenthistory.tax-account.header")</h2>
+        <h2 id = "UnderpaidTaxAndDebts" class="heading-medium blue-underline">@Messages("employmenthistory.tax-account.header")</h2>
         <table id="taxAccountTable">
             <thead>
             <tr>
