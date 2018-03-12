@@ -103,9 +103,12 @@
                 <div class ="grid-layout__column grid-layout__column--1-3">
                     @if(incomeTotals.nonEmpty){
                     <span class="boldFont">@Messages("employemnthistory.employment.total.income")</span>
-                    <span class="total-summary-big">@Currency(incomeTotals.get.employmentTaxablePayTotal)</span>
+                    <br>
+                    <span class="total-summary-big" id="employmentIncome">@Currency(incomeTotals.get.employmentTaxablePayTotal)</span>
+                    <br>
                     <span class="boldFont small-text">@Messages("employemnthistory.employment.total.income.tax")</span>
-                    <span class="total-summary-small">@Currency(incomeTotals.get.employmentTaxTotal)</span>
+                    <br>
+                    <span class="total-summary-small" id="employmentIncomeTax">@Currency(incomeTotals.get.employmentTaxTotal)</span>
                     }
                 </div>
             </div>
@@ -124,10 +127,13 @@
             </div>
             <div class ="grid-layout__column grid-layout__column--1-3">
                 @if(incomeTotals.nonEmpty){
-                <span class="boldFont">@Messages("employemnthistory.pension.total.income")</span>
-                <span class="total-summary-big">@Currency(incomeTotals.get.pensionTaxablePayTotal)</span>
-                <span class="boldFont small-text">@Messages("employemnthistory.employment.total.income.tax")</spanclass>
-                <span class="total-summary-small">@Currency(incomeTotals.get.pensionTaxTotal)</span>
+                <span class="boldFont">@Messages("employemnthistory.employment.total.income")</span>
+                <br>
+                <span class="total-summary-big" id="pensionIncome">@Currency(incomeTotals.get.pensionTaxablePayTotal)</span>
+                <br>
+                <span class="boldFont small-text">@Messages("employmenthistory.pension.total.income")</span>
+                <br>
+                <span class="total-summary-small" id="pensionIncomeTax">@Currency(incomeTotals.get.pensionTaxTotal)</span>
                 }
             </div>
             </div>

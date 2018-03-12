@@ -358,7 +358,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
     }
-    
+
     "return 200 when pay and tax records do not match employment records" in new NonMatchingPayAndTax {
       val result = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result) shouldBe OK
@@ -419,6 +419,12 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     "redirect to gg and clear session data" in new HappyPathSetup {
       val result: Future[Result] = controller.logout()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe SEE_OTHER
+    }
+  }
+
+  "buildIncomeTotals" should {
+    "calculate the totals correctly" in new HappyPathSetup {
+      buildIncomeTotals()
     }
   }
 }

@@ -21,6 +21,7 @@ import model.api.{EmploymentStatus, StatePension}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{DateHelper, TestUtil}
@@ -191,6 +192,14 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
     doc.getElementById("nav-bar").child(8).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.tax.year")
     doc.getElementById("nav-bar").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
+  }
+
+  "Show correct total amounts " in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome))
+    doc.getElementById("pensionIncome").text() shouldBe ("£200")
+    doc.getElementById("employmentIncomeTax").text() shouldBe ("£300")
+    doc.getElementById("employmentIncome").text() shouldBe ("£100")
+    doc.getElementById("pensionIncomeTax").text() shouldBe ("£400")
   }
 
 }

@@ -84,7 +84,15 @@ trait Constants {
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
+  val totalIncome =TotalIncome(
+    employmentTaxablePayTotal = BigDecimal(100),
+    pensionTaxablePayTotal=BigDecimal(200),
+    employmentTaxTotal=BigDecimal(300),
+    pensionTaxTotal=BigDecimal(400)
+  )
+
   val employments = List(emp1, emp2, emp3, emp4)
+  val employmentWithPensions =List(emp1,emp2,pension)
   val employmentsNoPensions = List(emp2,emp3,emp4)
   val employmentWithPensionOnly = List(pension)
 
@@ -209,5 +217,7 @@ trait DetailConstants {
     startDate = LocalDate.parse("2016-01-21"),
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
+
+
 
 }
