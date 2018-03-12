@@ -162,7 +162,7 @@ employmenthistory.sidebar.links.more-options=More Options
 employmenthistory.sidebar.links.agent-services-home=Agent services home
 employmenthistory.sidebar.links.income-and-tax=View client income and tax records
 employmenthistory.sidebar.links.change-client=Change client
-employmenthistory.sidebar.links.income-records={0}'s income records
+employmenthistory.sidebar.links.income-records={0}''s income records
 employmenthistory.sidebar.links.change-tax-year=Change tax year
 
 ################################## Select tax year ####################################################
