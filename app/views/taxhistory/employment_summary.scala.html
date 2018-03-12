@@ -78,6 +78,7 @@
         </section>
     </div>
 </div>
+
 <div data-tabs>
     <ul class="tabs-nav" role="tablist">
         <li id="tab1" data-tab-link="1" role="tab" aria-selected="true" aria-controls="tabContent1" tabindex="0">
@@ -92,76 +93,24 @@
     </ul>
     <ul>
         <li id="tabContent1" data-tab-content="1" class="tab-content" role="tabpanel" aria-labelledby="tab1">
-            @if(employments.exists(!_.receivingOccupationalPension)) {
+            @if(employments.exists(!_.receivingOccupationalPension)){
             <h2 id = "EmploymentDetails" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.employments")</h2>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-            <table id="employment-table">
-                <tbody>
-                <tr>
-                    <th scope="col" class="small-text width30pc boldFont">@Messages("lbl.employer")</th>
-                    <th scope="col" class="small-text width22p5pc boldFont">@Messages("lbl.date.start")</th>
-                    <th scope="col" class="small-text width22p5pc boldFont">@Messages("lbl.date.end")</th>
-                    <th scope="col" class="small-text width15pc boldFont">@Messages("lbl.status")</th>
-                    <th scope="col" class="small-text width10pc boldFont">@Messages("lbl.record")</th>
-                </tr>
-                @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
-                <tr>
-                    <td class="small-text">@ControllerUtils.isJobSeekerAllowance(employment)</td>
-                    <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
-                    <td class="small-text">@ControllerUtils.getEndDate(employment)</td>
-                    <td class="small-text">@ControllerUtils.getEmploymentStatus(employment)</td>
-                    <td class="small-text">
-                        @if(ControllerUtils.hasEmploymentDetails(employment)) {
-                        <a id=@{s"view-employment-${index}"} href="/tax-history/single-record@employment.employmentURI"
-                           data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.employments") :@Messages("lbl.ga.label.view-record")'
-                        >@Messages("employmenthistory.view")
-                            <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
-                        } else {
-                        <span id=@{s"view-employment-${index}"} >@Messages("lbl.none")</span>
-                        }
-                    </td>
-                </tr>
-                }
-                </tbody>
-            </table>
-            } else {
-            <h2 class="heading-medium">@Messages("employmenthistory.employment.records")</h2>
-            <p class="grey" id="no-benefits">@Messages("employmenthistory.no.employments")</p>
+                    @employmentTable
+                </div>
+                <div class ="grid-layout__column grid-layout__column--1-3">
+                    <p>total</p>
+                </div>
+            </div>
             }
-                </div>
-                    <div class ="grid-layout__column grid-layout__column--1-3">
-                        <p>total</p>
-                    </div>
-                </div>
 
             @if(employments.exists(_.receivingOccupationalPension)) {
             <h2 id = "Pensions"class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
             <p class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions")</p>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-            <table id="pension-table" class="small-text">
-                <tbody>
-                <tr>
-                    <th scope="col" class="small-text width30pc boldFont">@Messages("lbl.provider")</th>
-                    <th scope="col" class="small-text width25pc boldFont">@Messages("lbl.date.start")</th>
-                    <th scope="col" class="small-text width25pc boldFont">@Messages("lbl.date.end")</th>
-                    <th scope="col" class="small-text width20pc boldFont">@Messages("lbl.record")</th>
-                </tr>
-                @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
-                <tr>
-                    <td class="small-text">@employment.employerName</td>
-                    <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
-                    <td class="small-text">@ControllerUtils.getEndDate(employment)</td>
-                    <td class="small-text"><a href="/tax-history/single-record@employment.employmentURI"
-                                              data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.pensions") :@Messages("lbl.ga.label.view-record")'
-                                              id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view")
-                        <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
-                    </td>
-                </tr>
-                }
-                </tbody>
-            </table>
+                    @pensionTable
             } else {
             <h2 class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
             <p id="no-pensions" class="grey">@Messages("employmenthistory.no.pensions")</p>
@@ -185,42 +134,11 @@
         </li>
 
         @if(!isCurrentYear) {<li id="tabContent2" data-tab-content="2" class="tab-content" role="tabpanel" aria-labelledby="tab2">
+        <h2 id = "Allowances" class="heading-medium blue-underline">@Messages("employmenthistory.allowance.heading")</h2>
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
             <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-            <h2 id = "Allowances" class="heading-medium blue-underline">@Messages("employmenthistory.allowance.heading")</h2>
             @if(allowances.nonEmpty) {
-            <p>@Messages("employmenthistory.allowance.description")</p>
-            <table id="allowanceTable" >
-                <thead>
-                <tr>
-                    <th>@Messages("lbl.allowance")</th>
-                    <th class="numeric">@Messages("lbl.amount")</th>
-                </tr>
-                </thead>
-                <tbody>
-                @allowances.map { allowance =>
-                @if(allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag) {
-                <tr>
-                    <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")
-                        <p>
-                            <details>
-                                <summary class="summary" role="button">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
-                        <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
-                        <p class="panel-indent panel-border-narrow">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
-                        </details>
-                        </p>
-                    </td>
-                    <td class="numeric" valign="top">@Currency(allowance.amount)</td>
-                </tr>
-                } else {
-                <tr>
-                    <td>@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-                    <td class="numeric">@Currency(allowance.amount)</td>
-                </tr>
-                }
-                }
-                </tbody>
-            </table>
+            @allowanceTable
             } else {
             <p id="no-allowances" class="grey">@Messages("employmenthistory.allowance.no-allowances")</p>
             }
@@ -231,41 +149,10 @@
 
         @if(taxAccount.nonEmpty && !isCurrentYear) {<li id="tabContent3" data-tab-content="3" class="tab-content" role="tabpanel" aria-labelledby="tab3">
 
+        <h2 id = "UnderpaidTaxAndDebts" class="heading-medium blue-underline">@Messages("employmenthistory.tax-account.header")</h2>
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
             <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-        <h2 id = "UnderpaidTaxAndDebts" class="heading-medium blue-underline">@Messages("employmenthistory.tax-account.header")</h2>
-        <table id="taxAccountTable">
-            <thead>
-            <tr>
-                <th scope="col" class="width75pc">@Messages("lbl.details")</th>
-                <th scope="col" class="numeric width25pc">@Messages("lbl.amount")</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>@Messages("employmenthistory.tax-account.underpayment-amount.title",
-                    s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")</td>
-                <td class="numeric">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0), 2)</td>
-            </tr>
-
-            <tr>
-                <td>@Messages("employmenthistory.tax-account.potential-underpayment.title",
-                    s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")</td>
-                <td class="numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
-            </tr>
-
-            <tr>
-                <td>
-                    @Messages("employmenthistory.tax-account.outstanding.debt.title",
-                    s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")
-                    <br>
-                    <p class = "grey-and-small">@Messages("employmenthistory.tax-account.outstanding.debt.text")</p>
-                </td>
-                <td class="numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
-
-            </tr>
-            </tbody>
-        </table>
+                @taxAccountTable
             </div>
             <div class ="grid-layout__column grid-layout__column--1-3"></div>
         </div>
@@ -273,4 +160,134 @@
 }
     </ul>
 </div>
+}
+
+@employmentTable ={
+        <table id="employment-table">
+            <tbody>
+            <tr>
+                <th scope="col" class="small-text width30pc boldFont">@Messages("lbl.employer")</th>
+                <th scope="col" class="small-text width22p5pc boldFont">@Messages("lbl.date.start")</th>
+                <th scope="col" class="small-text width22p5pc boldFont">@Messages("lbl.date.end")</th>
+                <th scope="col" class="small-text width15pc boldFont">@Messages("lbl.status")</th>
+                <th scope="col" class="small-text width10pc boldFont">@Messages("lbl.record")</th>
+            </tr>
+            @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+            <tr>
+                <td class="small-text">@ControllerUtils.isJobSeekerAllowance(employment)</td>
+                <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
+                <td class="small-text">@ControllerUtils.getEndDate(employment)</td>
+                <td class="small-text">@ControllerUtils.getEmploymentStatus(employment)</td>
+                <td class="small-text">
+                    @if(ControllerUtils.hasEmploymentDetails(employment)) {
+                    <a id=@{s"view-employment-${index}"} href="/tax-history/single-record@employment.employmentURI"
+                       data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.employments") :@Messages("lbl.ga.label.view-record")'
+                    >@Messages("employmenthistory.view")
+                        <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
+                    } else {
+                    <span id=@{s"view-employment-${index}"} >@Messages("lbl.none")</span>
+                    }
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+        } else {
+        <h2 class="heading-medium">@Messages("employmenthistory.employment.records")</h2>
+        <p class="grey" id="no-benefits">@Messages("employmenthistory.no.employments")</p>
+        }
+
+@pensionTable ={
+        <table id="pension-table" class="small-text">
+            <tbody>
+            <tr>
+                <th scope="col" class="small-text width30pc boldFont">@Messages("lbl.provider")</th>
+                <th scope="col" class="small-text width25pc boldFont">@Messages("lbl.date.start")</th>
+                <th scope="col" class="small-text width25pc boldFont">@Messages("lbl.date.end")</th>
+                <th scope="col" class="small-text width20pc boldFont">@Messages("lbl.record")</th>
+            </tr>
+            @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+            <tr>
+                <td class="small-text">@employment.employerName</td>
+                <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
+                <td class="small-text">@ControllerUtils.getEndDate(employment)</td>
+                <td class="small-text"><a href="/tax-history/single-record@employment.employmentURI"
+                                          data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.pensions") :@Messages("lbl.ga.label.view-record")'
+                                          id=@{s"view-pension-${index}"}>@Messages("employmenthistory.view")
+                    <span class="visuallyhidden">@Messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span></a>
+                </td>
+            </tr>
+            }
+            </tbody>
+        </table>
+}
+
+@allowanceTable ={
+<p>@Messages("employmenthistory.allowance.description")</p>
+<table id="allowanceTable" >
+    <thead>
+    <tr>
+        <th>@Messages("lbl.allowance")</th>
+        <th class="numeric">@Messages("lbl.amount")</th>
+    </tr>
+    </thead>
+    <tbody>
+    @allowances.map { allowance =>
+    @if(allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag) {
+    <tr>
+        <td class="small-text">@Messages(s"employmenthistory.al.${allowance.iabdType}")
+            <p>
+                <details>
+                    <summary class="summary" role="button">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
+            <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
+            <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
+            </details>
+            </p>
+        </td>
+        <td class="numeric small-text" valign="top">@Currency(allowance.amount)</td>
+    </tr>
+    } else {
+    <tr>
+        <td class="small-text">@Messages(s"employmenthistory.al.${allowance.iabdType}")</td>
+        <td class="numeric small-text">@Currency(allowance.amount)</td>
+    </tr>
+    }
+    }
+    </tbody>
+</table>
+}
+
+@taxAccountTable={
+<table id="taxAccountTable">
+    <thead>
+    <tr>
+        <th scope="col" class="width75pc">@Messages("lbl.details")</th>
+        <th scope="col" class="numeric width25pc">@Messages("lbl.amount")</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td class="small-text">@Messages("employmenthistory.tax-account.underpayment-amount.title",
+            s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")</td>
+        <td class="numeric small-text">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0), 2)</td>
+    </tr>
+
+    <tr>
+        <td class="small-text">@Messages("employmenthistory.tax-account.potential-underpayment.title",
+            s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")</td>
+        <td class="numeric small-text">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
+    </tr>
+
+    <tr>
+        <td class="small-text">
+            @Messages("employmenthistory.tax-account.outstanding.debt.title",
+            s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")
+            <br>
+            <p class = "grey-and-small">@Messages("employmenthistory.tax-account.outstanding.debt.text")</p>
+        </td>
+        <td class="numeric small-text">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
+
+    </tr>
+    </tbody>
+</table>
 }
