@@ -69,7 +69,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, None, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions.private")).hasText mustBe true
       employments.foreach(emp => {
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
         doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate)).hasText mustBe true

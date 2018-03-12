@@ -91,7 +91,7 @@ table tr.border-none td {
 }
 
 .small-text {
-  font-size: 16px !important;
+  font-size: 0.9em !important;
 }
 
 .uppercase-only {
@@ -220,6 +220,18 @@ color : #6f777b;
   visibility: hidden;
 }
 
+.blue-underline {
+ border-bottom: 5px solid #005EA5;
+}
+
+.blue-underline-thin{
+ border-bottom: 1px solid #005EA5;
+}
+
+.margin-top-and-bottom{
+  margin-top: 1.5em;
+  margin-bottom: 1em;
+}
 .employment-summary {
   background: #f8f8f8;
   padding: 1.25em 1.25em 0.25em 1.25em;
