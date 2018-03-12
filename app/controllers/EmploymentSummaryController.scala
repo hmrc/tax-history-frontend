@@ -120,8 +120,15 @@ class EmploymentSummaryController @Inject()(
   private def getEmploymentsFromResponse(empResponse: HttpResponse) =
     empResponse.json.as[List[Employment]]
 
-  private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) =
-    patResponse.json.as[List[PayAndTax]]
+  private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) = {
+    patResponse.status match {
+      case OK => patResponse.json.as[List[PayAndTax]]
+      case status =>
+        Logger.info(s"All Pay An Tax Status: $status")
+        List.empty
+    }
+  }
+
 
   private def getStatePensionsFromResponse(statePensionResponse: HttpResponse) = {
     statePensionResponse.status match {
