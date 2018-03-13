@@ -51,6 +51,12 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
 
+    "Show nino when no name is present" in new ViewFixture {
+
+      val view = views.html.taxhistory.select_tax_year(validForm, List.empty, None, nino)
+      doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"${nino}"))
+    }
+
     "show correct content on the page" in new ViewFixture {
       val options = List("2016" -> "value", "2015" -> "value1")
 
