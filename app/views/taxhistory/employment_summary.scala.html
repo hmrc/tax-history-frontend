@@ -121,16 +121,14 @@
                 </div>
             </div>
 
-
-            @if(employments.exists(_.receivingOccupationalPension)) {
             <h2 id = "Pensions"class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
+            @if(employments.exists(_.receivingOccupationalPension)) {
             <p class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions")</p>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
                     @pensionTable
                 </div>
             } else {
-            <h2 class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
                 <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                     <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
                         <p id="no-pensions" class="grey">@Messages("employmenthistory.no.pensions")</p>
