@@ -81,7 +81,7 @@ class EmploymentSummaryController @Inject()(
             taxAccountResponse <- taxAccountFuture
             statePensionResponse <- statePensionFuture
             allPayAndTaxResponse <- allPayAndTaxFuture
-            incomeTotals <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse))
+            incomeTotals <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse).toList)
           } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals)).map {
             dataResponse =>
               Ok(views.html.taxhistory.employment_summary(
@@ -122,9 +122,9 @@ class EmploymentSummaryController @Inject()(
 
   private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) = {
     patResponse.status match {
-      case OK => patResponse.json.as[List[PayAndTax]]
+      case OK => patResponse.json.as[Map[String, PayAndTax]]
       case status =>
-        Logger.info(s"All Pay An Tax Status: $status")
+        Logger.info(s"All Pay And Tax Status: $status")
         List.empty
     }
   }
@@ -139,18 +139,18 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[PayAndTax]): Future[Option[TotalIncome]] = {
+  private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[(String, PayAndTax)]): Future[Option[TotalIncome]] = {
     {
       val (pensions, employments) = allPayAndTax.partition { pat =>
-        val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId == pat.payAndTaxId)
+        val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId.toString == pat._1)
         matchedRecord.fold(false){_.receivingOccupationalPension}
       }
 
       Future successful Some(TotalIncome(
-        employmentTaxablePayTotal = employments.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-        pensionTaxablePayTotal = pensions.map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-        employmentTaxTotal = employments.map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
-        pensionTaxTotal = pensions.map(_.taxTotal.getOrElse(BigDecimal(0))).sum
+        employmentTaxablePayTotal = employments.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+        pensionTaxablePayTotal = pensions.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+        employmentTaxTotal = employments.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
+        pensionTaxTotal = pensions.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum
       ))
     }.recoverWith {
       case e =>
