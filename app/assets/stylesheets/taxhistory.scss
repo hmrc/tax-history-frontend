@@ -232,7 +232,20 @@ color : #6f777b;
   margin-top: 1.5em;
   margin-bottom: 1em;
 }
+
 .employment-summary {
   background: #f8f8f8;
   padding: 1.25em 1.25em 0.25em 1.25em;
+}
+
+.total-summary-big {
+    font-weight: 700;
+    font-size: 48px;
+    color: #2e8aca;
+}
+
+.total-summary-small {
+    font-weight: 700;
+    font-size: 30px;
+    color: #2e8aca;
 }

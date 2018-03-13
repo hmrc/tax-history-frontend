@@ -26,6 +26,7 @@ import utils.TestUtil
 trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil {
 
   lazy val nino: String = randomNino.toString
+  lazy val fakeRequestWithNino = FakeRequest().withSession("USER_NINO" -> nino)
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.sessionId -> "SessionId",

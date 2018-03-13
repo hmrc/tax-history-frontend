@@ -20,14 +20,15 @@
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 
-@import model.api.{TaxAccount, StatePension}
+@import model.api.{TaxAccount, StatePension, TotalIncome}
 @(nino: String,
     taxYear: Int,
     employments: List[Employment],
     allowances: List[Allowance],
     person: Option[Person],
     taxAccount: Option[TaxAccount],
-    statePension: Option[StatePension])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+    statePension: Option[StatePension],
+    incomeTotals: Option[TotalIncome])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @getName=@{
     person.fold(nino) {
@@ -100,7 +101,15 @@
                     @employmentTable
                 </div>
                 <div class ="grid-layout__column grid-layout__column--1-3">
-                    <p>total</p>
+                    @if(incomeTotals.nonEmpty){
+                    <span class="boldFont">@Messages("employemnthistory.employment.total.income")</span>
+                    <br>
+                    <span class="total-summary-big" id="employmentIncome">@Currency(incomeTotals.get.employmentTaxablePayTotal)</span>
+                    <br>
+                    <span class="boldFont small-text">@Messages("employemnthistory.employment.total.income.tax")</span>
+                    <br>
+                    <span class="total-summary-small" id="employmentIncomeTax">@Currency(incomeTotals.get.employmentTaxTotal)</span>
+                    }
                 </div>
             </div>
             }
@@ -117,7 +126,15 @@
             }
             </div>
             <div class ="grid-layout__column grid-layout__column--1-3">
-                <p>total</p>
+                @if(incomeTotals.nonEmpty){
+                <span class="boldFont">@Messages("employemnthistory.employment.total.income")</span>
+                <br>
+                <span class="total-summary-big" id="pensionIncome">@Currency(incomeTotals.get.pensionTaxablePayTotal)</span>
+                <br>
+                <span class="boldFont small-text">@Messages("employmenthistory.pension.total.income")</span>
+                <br>
+                <span class="total-summary-small" id="pensionIncomeTax">@Currency(incomeTotals.get.pensionTaxTotal)</span>
+                }
             </div>
             </div>
 
