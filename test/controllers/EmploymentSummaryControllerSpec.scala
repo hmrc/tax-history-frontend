@@ -71,35 +71,39 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
 
   val statePension = StatePension(100, "test")
 
-  val payAndTaxFixedUUID = List(
-    PayAndTax(
-      payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-      taxablePayTotal = Some(4896.80),
-      taxTotal = Some(979.36),
-      studentLoan = None,
-      paymentDate = Some(new LocalDate("2016-02-20")),
-      earlierYearUpdates = List.empty),
-    PayAndTax(
-      payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
-      taxablePayTotal = Some(4896.80),
-      taxTotal = Some(979.36),
-      studentLoan = None,
-      paymentDate = Some(new LocalDate("2016-02-20")),
-      earlierYearUpdates = List.empty))
+  val payAndTaxFixedUUID = Map(
+    "01318d7c-bcd9-47e2-8c38-551e7ccdfae3" ->
+      PayAndTax(
+        payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+        taxablePayTotal = Some(4896.80),
+        taxTotal = Some(979.36),
+        studentLoan = None,
+        paymentDate = Some(new LocalDate("2016-02-20")),
+        earlierYearUpdates = List.empty),
+    "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
+      PayAndTax(
+        payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
+        taxablePayTotal = Some(4896.80),
+        taxTotal = Some(979.36),
+        studentLoan = None,
+        paymentDate = Some(new LocalDate("2016-02-20")),
+        earlierYearUpdates = List.empty))
 
-  val payAndTaxRandomUUID = List(
-    PayAndTax(
-      taxablePayTotal = Some(4896.80),
-      taxTotal = Some(979.36),
-      studentLoan = None,
-      paymentDate = Some(new LocalDate("2016-02-20")),
-      earlierYearUpdates = List.empty),
-    PayAndTax(
-      taxablePayTotal = Some(4896.80),
-      taxTotal = Some(979.36),
-      studentLoan = None,
-      paymentDate = Some(new LocalDate("2016-02-20")),
-      earlierYearUpdates = List.empty))
+  val payAndTaxRandomUUID = Map(
+    UUID.randomUUID().toString ->
+      PayAndTax(
+        taxablePayTotal = Some(4896.80),
+        taxTotal = Some(979.36),
+        studentLoan = None,
+        paymentDate = Some(new LocalDate("2016-02-20")),
+        earlierYearUpdates = List.empty),
+    UUID.randomUUID().toString ->
+      PayAndTax(
+        taxablePayTotal = Some(4896.80),
+        taxTotal = Some(979.36),
+        studentLoan = None,
+        paymentDate = Some(new LocalDate("2016-02-20")),
+        earlierYearUpdates = List.empty))
 
   trait HappyPathSetup {
 
