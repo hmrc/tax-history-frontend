@@ -84,16 +84,16 @@ trait Constants {
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
-  val totalIncome =TotalIncome(
+  val totalIncome = TotalIncome(
     employmentTaxablePayTotal = BigDecimal(100),
-    pensionTaxablePayTotal=BigDecimal(200),
-    employmentTaxTotal=BigDecimal(300),
-    pensionTaxTotal=BigDecimal(400)
+    pensionTaxablePayTotal = BigDecimal(200),
+    employmentTaxTotal = BigDecimal(300),
+    pensionTaxTotal = BigDecimal(400)
   )
 
   val employments = List(emp1, emp2, emp3, emp4)
-  val employmentWithPensions =List(emp1,emp2,pension)
-  val employmentsNoPensions = List(emp2,emp3,emp4)
+  val employmentWithPensions = List(emp1, emp2, pension)
+  val employmentsNoPensions = List(emp2, emp3, emp4)
   val employmentWithPensionOnly = List(pension)
 
   val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
@@ -107,7 +107,7 @@ trait Constants {
     amount = BigDecimal(32.00))
 
   val allowances = List(allowance1, allowance2, allowance3)
-  val allowancesNoEYA = List(allowance1,allowance2)
+  val allowancesNoEYA = List(allowance1, allowance2)
 
   val oDR = "101.01"
   val uA = "202.00"
@@ -217,7 +217,6 @@ trait DetailConstants {
     startDate = LocalDate.parse("2016-01-21"),
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
-
 
 
 }

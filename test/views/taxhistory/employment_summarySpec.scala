@@ -196,10 +196,10 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
   "Show correct total amounts " in new ViewFixture {
     val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome))
-    doc.getElementById("pensionIncome").text() shouldBe ("£200")
-    doc.getElementById("employmentIncomeTax").text() shouldBe ("£300")
-    doc.getElementById("employmentIncome").text() shouldBe ("£100")
-    doc.getElementById("pensionIncomeTax").text() shouldBe ("£400")
+    doc.getElementById("pensionIncome").text() shouldBe s"£${totalIncome.pensionTaxablePayTotal.toString()}"
+    doc.getElementById("employmentIncomeTax").text() shouldBe s"£${totalIncome.employmentTaxTotal.toString()}"
+    doc.getElementById("employmentIncome").text() shouldBe s"£${totalIncome.employmentTaxablePayTotal.toString()}"
+    doc.getElementById("pensionIncomeTax").text() shouldBe s"£${totalIncome.pensionTaxTotal.toString()}"
   }
 
 }
