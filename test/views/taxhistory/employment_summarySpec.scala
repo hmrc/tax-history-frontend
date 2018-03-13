@@ -114,11 +114,20 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     }
   }
 
-  "Show state pensions when they have them" in new ViewFixture {
+  "Show state pensions when they have them with text cy-x" in new ViewFixture {
     val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100, "test")), None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy-x", "£100.00")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy", "£100.00")).hasText mustBe false
+  }
+
+  "Show state pensions when they have them with text for cy" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, taxAccount, Some(StatePension(100, "test")), None)
+
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy", "£100.00")).hasText mustBe true
+    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy-x", "£100.00")).hasText mustBe false
   }
 
   "Don't show state pensions when they don't have them" in new ViewFixture {
