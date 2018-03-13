@@ -19,6 +19,7 @@ package views.taxhistory
 import java.util.UUID
 
 import model.api._
+import models.taxhistory.Person
 import org.joda.time.LocalDate
 
 trait Constants {
@@ -218,5 +219,5 @@ trait DetailConstants {
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
-
+  val person = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 }
