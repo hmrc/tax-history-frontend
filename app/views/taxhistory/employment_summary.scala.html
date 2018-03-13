@@ -99,6 +99,10 @@
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
                     @employmentTable
+                } else {
+                <h2 class="heading-medium">@Messages("employmenthistory.employment.records")</h2>
+                <p class="grey" id="no-benefits">@Messages("employmenthistory.no.employments")</p>
+            }
                 </div>
                 <div class ="grid-layout__column grid-layout__column--1-3">
                     @if(incomeTotals.nonEmpty){
@@ -112,7 +116,7 @@
                     }
                 </div>
             </div>
-            }
+
 
             @if(employments.exists(_.receivingOccupationalPension)) {
             <h2 id = "Pensions"class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions.private")</h2>
@@ -209,9 +213,6 @@
             }
             </tbody>
         </table>
-        } else {
-        <h2 class="heading-medium">@Messages("employmenthistory.employment.records")</h2>
-        <p class="grey" id="no-benefits">@Messages("employmenthistory.no.employments")</p>
         }
 
 @pensionTable ={
