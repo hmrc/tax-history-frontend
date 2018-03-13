@@ -421,10 +421,4 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       status(result) shouldBe SEE_OTHER
     }
   }
-
-  "buildIncomeTotals" should {
-    "calculate the totals correctly" in new HappyPathSetup {
-      buildIncomeTotals()
-    }
-  }
 }
