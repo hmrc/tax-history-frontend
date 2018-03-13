@@ -47,7 +47,7 @@
     <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
         <div class="page-header" >
           <h1 class="no-bottom-margin heading-xlarge">@Messages("employmenthistory.header", getName)</h1>
-          <p class="grey no-bottom-margin">@nino</p>
+            @if(nino!=getName){<p class="grey no-bottom-margin">@nino</p>}
           <p id="taxYearRange" class="pre-heading-small boldFont">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
         </div>
 
