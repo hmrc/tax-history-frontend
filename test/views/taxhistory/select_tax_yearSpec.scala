@@ -47,6 +47,7 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
       doc.title mustBe Messages("employmenthistory.select.tax.year.title")
       doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"${name.get}"))
       doc.getElementById("header").text() must include(Messages("employmenthistory.select.tax.year.h1"))
+      doc.getElementsByClass("pre-heading medium-text").size() shouldBe 1
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
@@ -55,6 +56,7 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
 
       val view = views.html.taxhistory.select_tax_year(validForm, List.empty, None, nino)
       doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"${nino}"))
+      doc.getElementsByClass("pre-heading medium-text").size() shouldBe 0
     }
 
     "show correct content on the page" in new ViewFixture {

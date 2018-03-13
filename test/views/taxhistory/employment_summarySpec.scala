@@ -93,7 +93,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     }
 
     "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, None, None)
+      val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, person, taxAccount, None, None)
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
@@ -111,6 +111,13 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.text")).hasText mustBe true
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
+
+      doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
+    }
+
+    "Show nino when no name is present" in new ViewFixture {
+
+      val view = views.html.taxhistory.employment_summary(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)
     }
   }
 
