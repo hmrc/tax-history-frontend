@@ -41,17 +41,17 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, None, None, None)
+      val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, person, None, None, None)
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
+      doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
       doc.getElementsByClass("pre-heading-small boldFont").html must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
         (currentTaxYear + 1).toString))
 
       val viewDetailsElements: Element = doc.getElementById("view-employment-0")
       viewDetailsElements.html must include(Messages("employmenthistory.view") +
-        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-2") + "</span>")
+        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-2") + "</span>")
 
       val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
       viewDetailsElementsNoRecord.html must include(Messages("lbl.none"))
@@ -59,10 +59,15 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
       viewPensionElements.html must include(Messages("employmenthistory.view") +
-        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", nino, "employer-1") + "</span>")
+        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-1") + "</span>")
 
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
+    }
+    "Show nino when no name is present" in new ViewFixture {
+      val view = views.html.taxhistory.employment_summary(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
+      doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 0
     }
 
     "have correct employment content" in new ViewFixture {
@@ -112,12 +117,6 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
 
-      doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
-    }
-
-    "Show nino when no name is present" in new ViewFixture {
-
-      val view = views.html.taxhistory.employment_summary(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)
     }
   }
 
