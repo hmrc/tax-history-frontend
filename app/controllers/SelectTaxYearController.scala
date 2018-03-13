@@ -65,7 +65,7 @@ class SelectTaxYearController @Inject()(
         case OK => {
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
 
-          httpStatus(select_tax_year(form, taxYears, clientName.getOrElse(nino.value)))
+          httpStatus(select_tax_year(form, taxYears, clientName, nino.toString))
         }
         case status => handleHttpFailureResponse(status, nino)
       }
