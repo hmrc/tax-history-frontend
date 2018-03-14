@@ -147,8 +147,7 @@ TaxYear.current.currentYear == taxYear
                 <summary class="summary" role="button">@Messages("employmenthistory.eyu.button")</summary>
 
                 <div class ="panel-indent">
-                    <p>@Messages("employmenthistory.eyu.caveat.1", employment.startDate.toString("d MMMM yyyy"))</p>
-                    <p>@Messages("employmenthistory.eyu.caveat.2")</p>
+                    <p>@Messages("employmenthistory.eyu.caveat", employment.employerName)</p>
 
                     <table id="eyu-table" class="no-bottom-margin">
                         <thead>
