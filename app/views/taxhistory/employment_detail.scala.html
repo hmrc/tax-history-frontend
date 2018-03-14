@@ -74,7 +74,11 @@ TaxYear.current.currentYear == taxYear
 }
 
 @employmentDetails() = {
-    <h2 class="heading-small">@Messages("employmenthistory.employment.details.caption")</h2>
+    <h2 class="heading-small">
+    @if(employment.receivingOccupationalPension) {
+        @Messages("employmenthistory.employment.details.caption.pension")
+    } else {
+        @Messages("employmenthistory.employment.details.caption.employment") }</h2>
     <dl id="employment-data">
     @if(!employment.receivingJobSeekersAllowance) {
         <dt class="small-text boldFont">@Messages("lbl.paye.reference")</dt>
