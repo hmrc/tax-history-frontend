@@ -97,8 +97,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, actualOrForecast = true, None)
 
-      doc.getElementById("EYUs").child(1).child(0).text shouldEqual Messages("employmenthistory.eyu.caveat.1", (employment.startDate.toString("d MMMM yyyy")))
-      doc.getElementById("EYUs").child(1).child(1).text() shouldEqual Messages("employmenthistory.eyu.caveat.2")
+      doc.getElementById("EYUs").child(1).child(0).text shouldEqual Messages("employmenthistory.eyu.caveat", employment.employerName)
 
       val eyuRow0: Element = doc.select("#eyu-table tbody tr").get(0)
       val eyuRow1: Element = doc.select("#eyu-table tbody tr").get(1)
