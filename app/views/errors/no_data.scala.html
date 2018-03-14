@@ -15,13 +15,21 @@
  *@
 
 @import config.AppConfig
-
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import models.taxhistory.Person
+@(person:Person,
+nino:String,
+taxYears: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainContent = {
     <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
-    <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.no.data.header")</h1>
+    <h1 class="no-bottom-margin heading-xlarge">@Messages("employmenthistory.header", person.getName.getOrElse(nino))</h1>
+    @if(person.getName.nonEmpty){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}
+    <p id="taxYearRange" class="pre-heading-small boldFont">@Messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString)</p>
+    <br>
+    <span class="grey" id="error-heading">@Messages("employmenthistory.no.data.header")</span>
+    <br>
     <p>@Messages("employmenthistory.no.data.text")</p>
+
     <ul class="list list-bullet">
         <li><a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url"
         id="selectTaxYear">@Messages("employmenthistory.select.different.taxyear.link.lower")</a></li>

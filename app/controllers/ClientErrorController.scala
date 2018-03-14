@@ -54,9 +54,14 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
       Future.successful(Ok(deceased()))
   }
 
-  def getNoData: Action[AnyContent] = Action.async {
+  def getNoData(taxYear:Int): Action[AnyContent] = Action.async {
     implicit request => {
-      Future.successful(Ok(no_data()))
+      getNinoFromSession(request).fold(redirectToSelectClientPage) {
+        nino => retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap{
+            case Left(status) => redirectToClientErrorPage(status)
+            case Right(person) => Future.successful(Ok(no_data(person,nino.toString,taxYear)))
+        }
+      }
     }
   }
 

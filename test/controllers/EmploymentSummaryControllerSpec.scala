@@ -414,7 +414,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     "redirect to no data available page when no employments found" in new NoEmployments {
       val result = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result) shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(taxYear).url)
     }
 
   }

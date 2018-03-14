@@ -12,7 +12,7 @@ GET   /not-authorised                                     @controllers.ClientErr
 GET   /no-agent-services-account                          @controllers.ClientErrorController.getNoAgentServicesAccountPage()
 GET   /no-data-available                                  @controllers.ClientErrorController.getMciRestricted()
 GET   /data-unavailable                                   @controllers.ClientErrorController.getDeceased()
-GET   /no-data                                            @controllers.ClientErrorController.getNoData()
+GET   /no-data/:taxYears                                  @controllers.ClientErrorController.getNoData(taxYears:Int)
 GET   /service-unavailable-technical                      @controllers.ClientErrorController.getTechnicalError()
 
 GET   /select-tax-year                                    @controllers.SelectTaxYearController.getSelectTaxYearPage()
