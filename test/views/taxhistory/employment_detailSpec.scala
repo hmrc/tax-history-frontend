@@ -45,7 +45,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
   "employment_detail view" should {
 
-    "have correct title, heading and GA pageview event" in new ViewFixture {
+    "have correct title, headings and GA pageview event for an employment" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, actualOrForecast = true, None)
@@ -55,6 +55,22 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       doc.select("h1").text() shouldBe "employer-1"
       doc.select("script").toString contains
         "ga('send', 'pageview', { 'anonymizeIp': true })" shouldBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe false
+      doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe true
+    }
+
+    "have correct title, headings and GA pageview event for a pension" in new ViewFixture {
+
+      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+        employment.copy(receivingOccupationalPension = true), List.empty, clientName, actualOrForecast = true, None)
+
+      val title = Messages("employmenthistory.employment.details.title")
+      doc.title shouldBe title
+      doc.select("h1").text() shouldBe "employer-1"
+      doc.select("script").toString contains
+        "ga('send', 'pageview', { 'anonymizeIp': true })" shouldBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe false
     }
 
     "have correct employment details" in new ViewFixture {
