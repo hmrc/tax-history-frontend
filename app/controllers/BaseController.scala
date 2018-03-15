@@ -107,12 +107,15 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino)
+  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino, taxYears: Option[Int] = None)
                                                       (implicit request: Request[_]): Result = {
     logger.info(s"HttpFailure status is $status")
     status match {
       case NOT_FOUND =>
-        Redirect(controllers.routes.ClientErrorController.getNoData())
+        taxYears match {
+          case Some(taxYears) => Redirect(controllers.routes.ClientErrorController.getNoData(taxYears))
+          case None => Redirect(controllers.routes.ClientErrorController.getTechnicalError())
+        }
       case UNAUTHORIZED =>
         Redirect(controllers.routes.ClientErrorController.getNotAuthorised())
       case _ =>

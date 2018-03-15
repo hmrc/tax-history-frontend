@@ -106,7 +106,7 @@ class ClientErrorControllerSpec extends ControllerSpec {
     }
 
     "get No Data Available page" in new HappyPathSetup {
-      val result = controller.getNoData().apply(FakeRequest())
+      val result = controller.getNoData(2017).apply(fakeRequestWithNino)
       status(result) shouldBe OK
       val body = bodyOf(await(result))
       body should include(Messages("employmenthistory.no.data.title"))

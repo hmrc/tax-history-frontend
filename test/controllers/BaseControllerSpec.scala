@@ -161,9 +161,9 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   "show not found error page when 404 returned from connector" in new HappyPathSetup {
 
-    val result: Result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino),Some(2017))(fakeRequest.withSession("USER_NINO" -> nino))
     status(result) shouldBe Status.SEE_OTHER
-    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData().url)
+    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(2017).url)
   }
 
   "show not authorised error page when 401 returned from connector" in new HappyPathSetup {

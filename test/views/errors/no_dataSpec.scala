@@ -16,6 +16,7 @@
 
 package views.errors
 
+import models.taxhistory.Person
 import play.api.i18n.Messages
 import support.GuiceAppSpec
 import views.{Fixture, TestAppConfig}
@@ -29,14 +30,16 @@ class no_dataSpec extends GuiceAppSpec with TestAppConfig {
   "no data available view" must {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
-
-      val view = views.html.errors.no_data()
+      val person = Person(Some("first name"), Some("second name"), deceased = Some(false))
+      val nino = "QQ12345C"
+      val view = views.html.errors.no_data(person,nino, 2017)
 
       val title = Messages("employmenthistory.no.data.title")
       doc.title mustBe title
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
-      doc.select("h1").text() mustBe Messages("employmenthistory.no.data.header")
+      doc.select("h1").text() mustBe Messages("employmenthistory.header", person.getName.getOrElse(nino))
+      doc.getElementById("clientNino").text mustBe nino
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text mustBe Messages("employmenthistory.no.data.text")
       doc.getElementById("selectClient").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("selectTaxYear").attr("href") mustBe "/tax-history/select-tax-year"

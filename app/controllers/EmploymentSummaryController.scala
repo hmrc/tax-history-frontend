@@ -94,7 +94,7 @@ class EmploymentSummaryController @Inject()(
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                 incomeTotals = dataResponse._4))
           }
-        case status => Future.successful(handleHttpFailureResponse(status, ninoField))
+        case status => Future.successful(handleHttpFailureResponse(status, ninoField,Some(taxYear)))
       }
     }
   }
