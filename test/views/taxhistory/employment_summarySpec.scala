@@ -198,14 +198,14 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
     doc.getElementById("nav-bar").child(0).attr("href") shouldBe "fakeurl"
 
-    doc.getElementById("nav-bar").child(3).text shouldBe Messages("employemntHistory.employment.summary.sidebar.income.and.tax")
+    doc.getElementById("nav-bar").child(3).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.and.tax")
 
-    doc.getElementById("nav-bar").child(4).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.client")
+    doc.getElementById("nav-bar").child(4).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.client")
     doc.getElementById("nav-bar").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
 
-    doc.getElementById("nav-bar").child(7).text shouldBe Messages("employemntHistory.employment.summary.sidebar.income.record", nino.toString)
+    doc.getElementById("nav-bar").child(7).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.record", nino.toString)
 
-    doc.getElementById("nav-bar").child(8).text shouldBe Messages("employemntHistory.employment.summary.sidebar.change.tax.year")
+    doc.getElementById("nav-bar").child(8).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.tax.year")
     doc.getElementById("nav-bar").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
   }
 
@@ -215,6 +215,11 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     doc.getElementById("employmentIncomeTax").text() shouldBe s"£${totalIncome.employmentTaxTotal.toString()}"
     doc.getElementById("employmentIncome").text() shouldBe s"£${totalIncome.employmentTaxablePayTotal.toString()}"
     doc.getElementById("pensionIncomeTax").text() shouldBe s"£${totalIncome.pensionTaxTotal.toString()}"
+  }
+
+  "Show error message when total amounts are zero" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
+    doc.getElementById("employmentIncomeEmpty").text() shouldBe Messages("employmenthistory.employment.table.error.no-values")
   }
 
 }

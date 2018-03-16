@@ -90,6 +90,7 @@
                     <h2 id = "EmploymentDetails" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.employments")</h2>
                     <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                     <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
+                        <p>@Messages("employmenthistory.employment.table.text")</p>
                         @employmentTable
                     </div>
                     } else {
@@ -102,13 +103,15 @@
 
                 <div class ="grid-layout__column grid-layout__column--1-3">
                     @if(incomeTotals.nonEmpty){
-                    <span class="boldFont">@Messages("employemnthistory.employment.total.income")</span>
+                    <span class="boldFont">@Messages("employmenthistory.employment.total.income")</span>
                     <br>
                     <span class="total-summary-big" id="employmentIncome">@Currency(incomeTotals.get.employmentTaxablePayTotal)</span>
                     <br>
-                    <span class="boldFont small-text">@Messages("employemnthistory.employment.total.income.tax")</span>
+                    <span class="boldFont small-text">@Messages("employmenthistory.employment.total.income.tax")</span>
                     <br>
                     <span class="total-summary-small" id="employmentIncomeTax">@Currency(incomeTotals.get.employmentTaxTotal)</span>
+                    } else {
+                        <span class="grey" id="employmentIncomeEmpty">@Messages("employmenthistory.employment.table.error.no-values")</span>
                     }
                 </div>
             </div>
@@ -132,7 +135,7 @@
                 <br>
                 <span class="total-summary-big" id="pensionIncome">@Currency(incomeTotals.get.pensionTaxablePayTotal)</span>
                 <br>
-                <span class="boldFont small-text">@Messages("employemnthistory.employment.total.income.tax")</span>
+                <span class="boldFont small-text">@Messages("employmenthistory.employment.total.income.tax")</span>
                 <br>
                 <span class="total-summary-small" id="pensionIncomeTax">@Currency(incomeTotals.get.pensionTaxTotal)</span>
                 }
@@ -316,9 +319,9 @@
 @sidebar()={
     <a href="@appConfig.agentAccountHomePage">@Messages("employmenthistory.select.client.sidebar.agent-services-home")</a>
     <br><br>
-    <h2 class="heading-small no-bottom-margin">@Messages("employemntHistory.employment.summary.sidebar.income.and.tax")</h2>
-    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employemntHistory.employment.summary.sidebar.change.client")</a>
+    <h2 class="heading-small no-bottom-margin">@Messages("employmenthistory.employment.summary.sidebar.income.and.tax")</h2>
+    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employmenthistory.employment.summary.sidebar.change.client")</a>
     <br><br>
-    <h2 class="heading-small no-bottom-margin">@Messages("employemntHistory.employment.summary.sidebar.income.record",getName)</h2>
-    <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">@Messages("employemntHistory.employment.summary.sidebar.change.tax.year")</a>
+    <h2 class="heading-small no-bottom-margin">@Messages("employmenthistory.employment.summary.sidebar.income.record",getName)</h2>
+    <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url">@Messages("employmenthistory.employment.summary.sidebar.change.tax.year")</a>
 }
