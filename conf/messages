@@ -130,13 +130,17 @@ employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 ################################ Tax Codes ####################################################
 tax.code.heading=Tax code breakdown
 tax.code.subheading=Latest tax code issued
-tax.code.caveat=The source amount only appears if it differs from the allowance or deduction.
+tax.code.caveat=Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so that the amount is repaid over the course of the year.
 tax.code.allowance=Allowance
 tax.code.deduction=Deduction
+tax.code.allowances=Allowances
+tax.code.deductions=Deductions
 tax.code.allowance.type=Allowance type
 tax.code.deduction.type=Deduction type
-tax.code.source.amount=Source amount
+tax.code.source.amount=Amount owed
 tax.code.no.deductions=There are no deductions.
+tax.code.total.allowances=Total allowances
+tax.code.total.deductions=Total deductions
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
