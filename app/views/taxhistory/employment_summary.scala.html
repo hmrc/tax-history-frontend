@@ -67,7 +67,7 @@
     </div>
     <div class ="grid-layout__column grid-layout__column--1-3">
         <section class="section subsection section--blue-top" id="nav-bar">
-            <a href="@appConfig.agentAccountHomePage" id="">@Messages("employmenthistory.select.client.sidebar.agent-services-home")</a>
+            <a href="@appConfig.agentAccountHomePage">@Messages("employmenthistory.select.client.sidebar.agent-services-home")</a>
             <br><br>
             <h2 class="heading-small no-bottom-margin">@Messages("employemntHistory.employment.summary.sidebar.income.and.tax")</h2>
             <a href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employemntHistory.employment.summary.sidebar.change.client")</a>
@@ -91,7 +91,7 @@
         </li>}
     </ul>
     <ul>
-        <li id="tabContent1" data-tab-content="1" class="tab-content" role="tabpanel" aria-labelledby="tab1">
+        <li id="tabContent1" data-tab-content="1" class="tab-content"  aria-labelledby="tab1">
                     @if(employments.exists(!_.receivingOccupationalPension)){
                     <h2 id = "EmploymentDetails" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.employments")</h2>
                     <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
@@ -119,7 +119,7 @@
                 </div>
             </div>
 
-            <h2 id = "Pensions"class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions")</h2>
+            <h2 id = "Pensions" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions")</h2>
             @if(employments.exists(_.receivingOccupationalPension)) {
             <p class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions.private")</p>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
@@ -161,7 +161,7 @@
 
         </li>
 
-        @if(!isCurrentYear) {<li id="tabContent2" data-tab-content="2" class="tab-content" role="tabpanel" aria-labelledby="tab2">
+        @if(!isCurrentYear) {<li id="tabContent2" data-tab-content="2" class="tab-content"  aria-labelledby="tab2">
         <h2 id = "Allowances" class="heading-medium blue-underline">@Messages("employmenthistory.allowance.heading")</h2>
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
             <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
@@ -175,7 +175,7 @@
         </div>
         </li>}
 
-        @if(taxAccount.nonEmpty && !isCurrentYear) {<li id="tabContent3" data-tab-content="3" class="tab-content" role="tabpanel" aria-labelledby="tab3">
+        @if(taxAccount.nonEmpty && !isCurrentYear) {<li id="tabContent3" data-tab-content="3" class="tab-content"  aria-labelledby="tab3">
 
         <h2 id = "UnderpaidTaxAndDebts" class="heading-medium blue-underline">@Messages("employmenthistory.tax-account.header")</h2>
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
@@ -261,15 +261,14 @@
     @if(allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag) {
     <tr>
         <td class="small-text">@Messages(s"employmenthistory.al.${allowance.iabdType}")
-            <p>
-                <details>
-                    <summary class="summary" role="button">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
-            <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
-            <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
+            <details>
+                <summary class="summary">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
+                <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
+                <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
             </details>
-            </p>
+
         </td>
-        <td class="numeric small-text" valign="top">@Currency(allowance.amount)</td>
+        <td class="numeric small-text align-top">@Currency(allowance.amount)</td>
     </tr>
     } else {
     <tr>
