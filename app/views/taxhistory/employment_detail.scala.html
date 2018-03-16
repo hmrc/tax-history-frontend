@@ -226,15 +226,12 @@ TaxYear.current.currentYear == taxYear
         }@{
             ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
         }</h1>
-
-        <p>@Messages("tax.code.caveat")</p>
-
+        <h2 class="heading-medium no-top-margin">@Messages("tax.code.allowances")</h2>
         <table class="allowance-table" id="tc-allowance-table">
             <thead>
                 <tr>
-                    <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
-                    <th scope = "col" class = "width30pc numeric boldFont">@Messages("tax.code.source.amount") </th>
-                    <th scope = "col" class = "numeric boldFont">@Messages("tax.code.allowance") </th>
+                    <th scope = "col" class = "boldFont">@Messages("tax.code.allowance.type")</th>
+                    <th scope = "col" class = "width20pc numeric boldFont">@Messages("tax.code.allowance") </th>
                 </tr>
             </thead>
             <tbody>
@@ -244,16 +241,21 @@ TaxYear.current.currentYear == taxYear
                         ControllerUtils.sentenceCase(iSAllowance.npsDescription)
                     }</td>
                     <td class="numeric">@{
-                        Currency.fromOptionBD(ControllerUtils.displaySource(iSAllowance.sourceAmount, iSAllowance.amount))
-                    }</td>
-                    <td class="numeric">@{
                         Currency(iSAllowance.amount)
                     }</td>
                 </tr>
             }
+            <tr>
+                <td class="boldFont">@Messages("tax.code.total.allowances")</td>
+                <td class="numeric thick-top-bottom" id="AllowanceTotal">@{
+                    Currency(incomeSource.get.allowances.map(_.amount).sum)
+                }</td>
+            </tr>
             </tbody>
         </table>
         @if(incomeSource.get.deductions.nonEmpty) {
+            <h2 class="heading-medium no-top-margin">@Messages("tax.code.deductions")</h2>
+            <p>@Messages("tax.code.caveat")</p>
             <table class = "deductions-table" id="tc-deduction-table">
                 <thead>
                     <tr>
@@ -276,6 +278,11 @@ TaxYear.current.currentYear == taxYear
                         }</td>
                     </tr>
                 }
+                <td class="boldFont">@Messages("tax.code.total.deductions")</td>
+                <td></td>
+                <td class="numeric thick-top-bottom" id="DeductionTotal">@{
+                    Currency(incomeSource.get.deductions.map(_.amount).sum)
+                    }</td>
                 </tbody>
             </table>
         } else {

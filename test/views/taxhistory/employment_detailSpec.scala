@@ -17,10 +17,11 @@
 package views.taxhistory
 
 import controllers.routes
-import model.api.{IncomeSource, TaDeduction}
+import model.api.{IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
@@ -39,8 +40,10 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     val clientName: String = person.getName.getOrElse(nino)
     val incomeSourceNoDeductions: Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
-    val deductions: List[TaDeduction] = List(TaDeduction(1, "test", 1.0, Some(1.0)))
+    val deductions: List[TaDeduction] = List(TaDeduction(1, "test", 1.0, Some(1.0)), TaDeduction(1, "test", 1.0, Some(1.0)))
+    val allowances : List[TaAllowance] = List(TaAllowance(1, "test", 1.0, Some(1.0)),TaAllowance(1, "test", 1.0, Some(1.0)))
     val incomeSourceWithDeductions: Option[IncomeSource] = Some(IncomeSource(1, 1, None, deductions, List.empty, "", None, 1, ""))
+    val incomeSourceWithdeductionsAndAllowances: Option[IncomeSource] = Some(IncomeSource(1, 1, None, deductions, allowances, "", None, 1, ""))
   }
 
   "employment_detail view" should {
@@ -216,7 +219,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
           ""
         })).hasText shouldBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText shouldBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText shouldBe true
 
         doc.getElementsByClass("allowance-table").size() shouldBe 1
         doc.getElementsByClass("deductions-table").size() shouldBe 0
@@ -307,5 +309,12 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       doc.getElementById("nav-bar").child(5).text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
       doc.getElementById("nav-bar").child(5).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
     }
+  }
+
+  "totals for allowance and deduction have the correct values" in new ViewFixture {
+    val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      employment, List.empty, clientName, actualOrForecast = true, incomeSourceWithdeductionsAndAllowances)
+    doc.getElementById("DeductionTotal").text shouldBe "£2"
+    doc.getElementById("AllowanceTotal").text shouldBe "£2"
   }
 }
