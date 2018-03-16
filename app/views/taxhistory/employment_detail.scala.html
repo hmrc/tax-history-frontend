@@ -132,7 +132,7 @@ TaxYear.current.currentYear == taxYear
                 <tr>
                     <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
                     <td>@Currency(payAndTax.get.studentLoan.get)</td>
-            <tr>
+                </tr>
             }
         </table>
     } else {
@@ -221,7 +221,7 @@ TaxYear.current.currentYear == taxYear
 
         <h2 class = "heading-small">@Messages("tax.code.subheading")</h2>
 
-        <h1 class="no-top-margin"id="tax-code">@{
+        <h1 class="no-top-margin" id="tax-code">@{
             incomeSource.get.taxCode
         }@{
             ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
@@ -230,13 +230,13 @@ TaxYear.current.currentYear == taxYear
         <p>@Messages("tax.code.caveat")</p>
 
         <table class="allowance-table" id="tc-allowance-table">
-            <thread>
+            <thead>
                 <tr>
                     <th scope = "col" class = "width50pc boldFont">@Messages("tax.code.allowance.type")</th>
                     <th scope = "col" class = "width30pc numeric boldFont">@Messages("tax.code.source.amount") </th>
                     <th scope = "col" class = "numeric boldFont">@Messages("tax.code.allowance") </th>
                 </tr>
-            </thread>
+            </thead>
             <tbody>
             @incomeSource.get.allowances.map { iSAllowance =>
                 <tr>
@@ -249,19 +249,19 @@ TaxYear.current.currentYear == taxYear
                     <td class="numeric">@{
                         Currency(iSAllowance.amount)
                     }</td>
-            <tr>
+                </tr>
             }
             </tbody>
         </table>
         @if(incomeSource.get.deductions.nonEmpty) {
             <table class = "deductions-table" id="tc-deduction-table">
-                <thread>
+                <thead>
                     <tr>
                         <th scope = "col" class = "width50pc boldFont" >@Messages("tax.code.deduction.type")</th>
                         <th scope = "col" class = "width30pc numeric boldFont">@Messages("tax.code.source.amount") </th>
                         <th scope = "col" class = "numeric boldFont">@Messages("tax.code.deduction") </th>
                     </tr>
-                </thread>
+                </thead>
                 <tbody>
                 @incomeSource.get.deductions.map { iSDeductions =>
                     <tr>
@@ -274,7 +274,7 @@ TaxYear.current.currentYear == taxYear
                         <td class="numeric" >@{
                             Currency(iSDeductions.amount)
                         }</td>
-                <tr>
+                    </tr>
                 }
                 </tbody>
             </table>
