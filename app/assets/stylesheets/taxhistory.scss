@@ -90,6 +90,24 @@ table tr.border-none td {
   }
 }
 
+.deskContent {
+  display: block;
+}
+
+.phoneContent {
+  display: none;
+}
+
+@media all and (max-width: 959px) {
+  .deskContent {display:block;}
+  .phoneContent {display:none;}
+}
+
+@media all and (max-width: 640px) {
+  .deskContent {display:none;}
+  .phoneContent {display:block;}
+}
+
 .small-text {
   font-size: 0.9em !important;
 }
