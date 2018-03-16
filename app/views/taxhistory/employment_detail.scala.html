@@ -114,7 +114,7 @@ TaxYear.current.currentYear == taxYear
         <table id="pay-and-tax-table" class="small-bottom-margin">
             <tr>
                 <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
-                <td>
+                <td class="numeric">
                 @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined) {
                     @Currency(payAndTax.get.taxablePayTotal.get)
                 } else {
@@ -124,7 +124,7 @@ TaxYear.current.currentYear == taxYear
             </tr>
             <tr>
                 <th scope="row" class="width50pc boldFont" >@Messages("lbl.income.tax")</th>
-                <td>
+                <td class="numeric">
                 @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined) {
                     @Currency(payAndTax.get.taxTotal.get)
                 } else {
@@ -135,7 +135,7 @@ TaxYear.current.currentYear == taxYear
             @if(payAndTax.isDefined && payAndTax.get.studentLoan.isDefined) {
                 <tr>
                     <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
-                    <td>@Currency(payAndTax.get.studentLoan.get)</td>
+                    <td class="numeric">@Currency(payAndTax.get.studentLoan.get)</td>
                 </tr>
             }
         </table>
