@@ -261,8 +261,9 @@
     @if(allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag) {
     <tr>
         <td class="small-text">@Messages(s"employmenthistory.al.${allowance.iabdType}")
+
             <details>
-                <summary class="summary">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
+                <summary class="summary smaller-top-margin">@Messages("employmenthistory.allowances.eya.summary.header")</summary>
                 <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail1")</p>
                 <p class="panel-indent panel-border-narrow small-text">@Messages("employmenthistory.allowances.eya.summary.detail2")</p>
             </details>
