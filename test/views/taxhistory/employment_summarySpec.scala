@@ -46,7 +46,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
       doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
-      doc.getElementsByClass("pre-heading-small boldFont").html must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
+      doc.getElementsByClass("pre-heading-small boldFont no-top-margin").html must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
         (currentTaxYear + 1).toString))
 
       val viewDetailsElements: Element = doc.getElementById("view-employment-0")
@@ -197,18 +197,18 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   "Show correct heading and links for nav bar" in new ViewFixture {
     val view = views.html.taxhistory.employment_summary(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None, None)
 
-    doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
-    doc.getElementById("nav-bar").child(0).attr("href") shouldBe "fakeurl"
+    doc.getElementById("nav-bar-desktop").child(0).text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
+    doc.getElementById("nav-bar-desktop").child(0).attr("href") shouldBe "fakeurl"
 
-    doc.getElementById("nav-bar").child(3).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.and.tax")
+    doc.getElementById("nav-bar-desktop").child(3).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.and.tax")
 
-    doc.getElementById("nav-bar").child(4).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.client")
-    doc.getElementById("nav-bar").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
+    doc.getElementById("nav-bar-desktop").child(4).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.client")
+    doc.getElementById("nav-bar-desktop").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
 
-    doc.getElementById("nav-bar").child(7).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.record", nino.toString)
+    doc.getElementById("nav-bar-desktop").child(7).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.record", nino.toString)
 
-    doc.getElementById("nav-bar").child(8).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.tax.year")
-    doc.getElementById("nav-bar").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
+    doc.getElementById("nav-bar-desktop").child(8).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.tax.year")
+    doc.getElementById("nav-bar-desktop").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
   }
 
   "Show correct total amounts " in new ViewFixture {

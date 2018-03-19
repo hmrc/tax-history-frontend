@@ -48,7 +48,7 @@
         <div class="page-header" >
           <h1 class="no-bottom-margin heading-xlarge">@Messages("employmenthistory.header", getName)</h1>
             @if(nino!=getName){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}
-          <p id="taxYearRange" class="pre-heading-small boldFont">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</p>
+          <h2 id="taxYearRange" class="pre-heading-small boldFont no-top-margin">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</h2>
         </div>
 
         <div class="panel-indent panel-border-wide">
@@ -118,7 +118,7 @@
 
             <h2 id = "Pensions" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions")</h2>
             @if(employments.exists(_.receivingOccupationalPension)) {
-            <p class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions.private")</p>
+            <h2 class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions.private")</h2>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
                     @pensionTable
