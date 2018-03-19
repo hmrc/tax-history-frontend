@@ -47,7 +47,7 @@ TaxYear.current.currentYear == taxYear
     </header>
 
     <section class="section subsection section--blue-top employment-summary phoneContent" id="details-bar-mobile">
-        <div class="no-top-margin">@employmentDetails()</div>
+        <div class="no-top-margin"  id="employment-data-mobile">@employmentDetails()</div>
     </section>
 
     @payments()
@@ -62,7 +62,7 @@ TaxYear.current.currentYear == taxYear
     </div>
     <div class ="grid-layout__column grid-layout__column--1-3">
         <section class="section subsection section--blue-top employment-summary deskContent" id="details-bar-desktop">
-            <div class="no-top-margin">@employmentDetails()</div>
+            <div class="no-top-margin" id="employment-data-desktop">@employmentDetails()</div>
         </section>
         <hr>
         <nav id="nav-bar">
@@ -83,7 +83,7 @@ TaxYear.current.currentYear == taxYear
         @Messages("employmenthistory.employment.details.caption.pension")
     } else {
         @Messages("employmenthistory.employment.details.caption.employment") }</h2>
-    <dl id="employment-data">
+    <dl>
     @if(!employment.receivingJobSeekersAllowance) {
         <dt class="small-text boldFont">@Messages("lbl.paye.reference")</dt>
         <dd class="small-text small-margin-bottom">@employment.payeReference</dd>
