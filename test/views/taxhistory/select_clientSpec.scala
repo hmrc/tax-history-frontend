@@ -99,7 +99,7 @@ class select_clientSpec extends GuiceAppSpec with UnitSpec with TestUtil with Te
 
     "display sidebar with correct link(s)" in new ViewFixture {
       val view = views.html.taxhistory.select_client(validForm)
-      val agentServicesHomeLink: Element = doc.body.getElementById("nav-bar").child(0)
+      val agentServicesHomeLink: Element = doc.body.getElementById("nav-bar-desktop").child(0)
       agentServicesHomeLink.text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
       agentServicesHomeLink.attr("href") shouldBe "fakeurl"
     }
