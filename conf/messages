@@ -193,9 +193,9 @@ employmenthistory.tax-account.outstanding.debt.text=Debts may relate to Self Ass
 ################################ Error Pages ###########################################################
 employmenthistory.not.authorised.title=You are not authorised to view this income record - GOV.UK
 employmenthistory.not.authorised.header=Record not found
-employmenthistory.not.authorised.text=You might not have access to this record, or it might be an invalid National Insurance number.
-employmenthistory.not.authorised.select.client.link.text=re-enter National Insurance number
-employmenthistory.not.authorised.invite.client.link.text=invite a new client to share their income record with you
+employmenthistory.not.authorised.text=You might not have access to this record, or this might be an invalid National Insurance number.
+employmenthistory.not.authorised.select.client.link.text=enter another client’s National Insurance number
+employmenthistory.not.authorised.invite.client.link.text=invite a client to share their income record with you
 employmenthistory.mci.restricted.header=You do not have access to this client''s income record
 employmenthistory.mci.restricted.text=For further information, contact HMRC on:
 employmenthistory.mci.restricted.telephone=telephone 0300 200 3300
