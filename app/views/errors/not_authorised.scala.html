@@ -15,13 +15,14 @@
  *@
 
 @import config.AppConfig
-
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@import uk.gov.hmrc.domain.Nino
+@(nino:Option[Nino])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
-    <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.not.authorised.header")</h1>
-    <p>@Messages("employmenthistory.no.data.text")</p>
+    <p class="grey no-bottom-margin small-top-margin" id="clientNino">@{nino.getOrElse("")}</p>
+    <h1 class="heading-xlarge no-top-margin" id="error-heading">@Messages("employmenthistory.not.authorised.header")</h1>
+    <p>@Messages("employmenthistory.not.authorised.text")</p>
     <ul class = "list-bullet">
         <li><a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
                 id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a></li>
