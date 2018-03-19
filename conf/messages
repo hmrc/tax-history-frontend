@@ -124,7 +124,7 @@ employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
 ################################ Tax Codes ####################################################
 tax.code.heading=Tax code breakdown
 tax.code.subheading=Latest tax code issued
-tax.code.caveat=Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so that the amount is repaid over the course of the year.
+tax.code.caveat=Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so that the correct amount is repaid over the course of the year.
 tax.code.allowance=Allowance
 tax.code.deduction=Deduction
 tax.code.allowances=Allowances
