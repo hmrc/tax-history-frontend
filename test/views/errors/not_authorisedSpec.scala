@@ -15,22 +15,24 @@
  */
 
 package views.errors
-
+import uk.gov.hmrc.domain.Nino
 import play.api.i18n.Messages
 import support.GuiceAppSpec
+import utils.TestUtil
 import views.{Fixture, TestAppConfig}
 
 class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
 
-  trait ViewFixture extends Fixture {
+  trait ViewFixture extends Fixture with TestUtil {
     implicit val requestWithToken = addToken(request)
+    val nino = randomNino
   }
 
   "not authorised view" must {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
 
-      val view = views.html.errors.not_authorised()
+      val view = views.html.errors.not_authorised(Some(nino))
 
       val title = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
