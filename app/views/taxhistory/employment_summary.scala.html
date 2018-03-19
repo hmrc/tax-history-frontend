@@ -80,7 +80,7 @@
         @if(!isCurrentYear) {<li id="tab2" data-tab-link="2" role="tab" aria-selected="false" aria-controls="tabContent2" tabindex="0">
             <a href="#" class="tabs-nav__tab">@Messages("employmenthistory.employment.summary.tab.2")</a>
         </li>}
-        @if(taxAccount.nonEmpty && !isCurrentYear) {<li id="tab3" data-tab-link="3" role="tab" aria-selected="false" aria-controls="tabContent3" tabindex="0">
+        @if(!isCurrentYear) {<li id="tab3" data-tab-link="3" role="tab" aria-selected="false" aria-controls="tabContent3" tabindex="0">
             <a href="#" class="tabs-nav__tab">@Messages("employmenthistory.employment.summary.tab.3")</a>
         </li>}
     </ul>
@@ -172,14 +172,17 @@
         </div>
         </li>}
 
-        @if(taxAccount.nonEmpty && !isCurrentYear) {<li id="tabContent3" data-tab-content="3" class="tab-content"  aria-labelledby="tab3">
-
+        @if(!isCurrentYear) {
+        <li id="tabContent3" data-tab-content="3" class="tab-content"  aria-labelledby="tab3">
         <h2 id = "UnderpaidTaxAndDebts" class="heading-medium blue-underline">@Messages("employmenthistory.tax-account.header")</h2>
+        <p>@Messages("employmenthistory.tax-account.text")</p>
         <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
-            <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
+            @if(taxAccount.nonEmpty) {
+                <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
                 @taxAccountTable
-            </div>
-            <div class ="grid-layout__column grid-layout__column--1-3"></div>
+                </div>
+                <div class ="grid-layout__column grid-layout__column--1-3"></div>
+            }
         </div>
         </li>
 }
