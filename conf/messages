@@ -83,6 +83,7 @@ employmenthistory.employment.total.income=Total employment and taxable benefits 
 employmenthistory.employment.total.income.tax=Total income tax
 employmenthistory.employment.table.text=The employment record shows time in employment, taxable benefits, and any gap where no record is held by HMRC.
 employmenthistory.employment.table.error.no-values=Total employment and taxable benefits income is not currently available.
+employmenthistory.pension.table.error.no-values=Total private pension income is not currently available.
 employmenthistory.pension.total.income=Total private pension income
 
 ################################## Company Benefits & Allowances ##################################
