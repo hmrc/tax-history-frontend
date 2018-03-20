@@ -179,8 +179,8 @@ TaxYear.current.currentYear == taxYear
 }
 
 @companyBenefitsInfo() = {
+    <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
     @if(companyBenefits.nonEmpty && !employment.receivingOccupationalPension) {
-        <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
         <div>
             <p>
             @if(actualOrForecast) {
@@ -213,7 +213,6 @@ TaxYear.current.currentYear == taxYear
         </table>
     }
     @if(!isCurrentYear && companyBenefits.isEmpty){
-        <h2 class="heading-medium" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
         <p id="no-benefits"class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
     }
 }
