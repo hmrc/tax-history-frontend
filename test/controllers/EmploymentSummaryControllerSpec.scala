@@ -361,6 +361,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       val result = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result) shouldBe OK
       bodyOf(await(result)) should include(Messages("employmenthistory.title"))
+      bodyOf(await(result)) should include(Messages("employmenthistory.employment.table.error.no-values"))
+      bodyOf(await(result)) should include(Messages("employmenthistory.pension.table.error.no-values"))
     }
 
     "return 200 when pay and tax records do not match employment records" in new NonMatchingPayAndTax {

@@ -94,7 +94,7 @@ class EmploymentSummaryController @Inject()(
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                 incomeTotals = dataResponse._4))
           }
-        case status => Future.successful(handleHttpFailureResponse(status, ninoField,Some(taxYear)))
+        case status => Future.successful(handleHttpFailureResponse(status, ninoField, Some(taxYear)))
       }
     }
   }
@@ -141,21 +141,25 @@ class EmploymentSummaryController @Inject()(
 
   private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[(String, PayAndTax)]): Future[Option[TotalIncome]] = {
     {
-      val (pensions, employments) = allPayAndTax.partition { pat =>
-        val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId.toString == pat._1)
-        matchedRecord.fold(false){_.receivingOccupationalPension}
-      }
+      if(allPayAndTax.nonEmpty) {
+        val (pensions, employments) = allPayAndTax.partition { pat =>
+          val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId.toString == pat._1)
+          matchedRecord.fold(false) {_.receivingOccupationalPension}
+        }
 
-      Future successful Some(TotalIncome(
-        employmentTaxablePayTotal = employments.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-        pensionTaxablePayTotal = pensions.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-        employmentTaxTotal = employments.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
-        pensionTaxTotal = pensions.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum
-      ))
-    }.recoverWith {
+        Future successful Some(TotalIncome(
+          employmentTaxablePayTotal = employments.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+          pensionTaxablePayTotal = pensions.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
+          employmentTaxTotal = employments.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
+          pensionTaxTotal = pensions.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum
+        ))
+      } else {
+        Future successful None
+      }
+    } recover {
       case e =>
         logger.warn(s"buildIncomeTotals failed with ${e.getMessage}")
-        Future successful None
+        None
     }
   }
 }
