@@ -179,44 +179,45 @@ TaxYear.current.currentYear == taxYear
 }
 
 @companyBenefitsInfo() = {
-    <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
-    @if(companyBenefits.nonEmpty && !employment.receivingOccupationalPension) {
-        <div>
-            <p>
-            @if(actualOrForecast) {
-                @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
-                    employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
-            } else {
-                @Messages("employmenthistory.company.benefit.caveat.estimate", clientNameOrNino,
-                    employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
-            }
-            </p>
-        </div>
+    @if(!isCurrentYear){
+        <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
+        @if(companyBenefits.nonEmpty && !employment.receivingOccupationalPension) {
+            <div>
+                <p>
+                @if(actualOrForecast) {
+                    @Messages("employmenthistory.company.benefit.caveat.actual", clientNameOrNino,
+                        employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
+                } else {
+                    @Messages("employmenthistory.company.benefit.caveat.estimate", clientNameOrNino,
+                        employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
+                }
+                </p>
+            </div>
 
-        <table id="cb-table">
-            <thead>
-                <tr>
-                    <th scope="col" class="width60pc">@Messages("employmenthistory.employment.details.benefit")</th>
-                    <th scope="col" class="width25pc">@if(appConfig.companyBenefitsFlag) { @Messages("lbl.source") }</th>
-                    <th scope="col" class="numeric">@Messages("lbl.amount")</th>
-                </tr>
-            </thead>
-            <tbody>
-            @companyBenefits.map { cb =>
-                <tr>
-                    <td>@Messages(s"employmenthistory.cb.${cb.iabdType}")</td>
-                    <td>@if(appConfig.companyBenefitsFlag) { @ControllerUtils.benefitSource(cb.source) }</td>
-                    <td class="numeric">@Currency(cb.amount)</td>
-                </tr>
-            }
-            </tbody>
-        </table>
-    }
-    @if(!isCurrentYear && companyBenefits.isEmpty){
-        <p id="no-benefits"class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
+            <table id="cb-table">
+                <thead>
+                    <tr>
+                        <th scope="col" class="width60pc">@Messages("employmenthistory.employment.details.benefit")</th>
+                        <th scope="col" class="width25pc">@if(appConfig.companyBenefitsFlag) { @Messages("lbl.source") }</th>
+                        <th scope="col" class="numeric">@Messages("lbl.amount")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @companyBenefits.map { cb =>
+                    <tr>
+                        <td>@Messages(s"employmenthistory.cb.${cb.iabdType}")</td>
+                        <td>@if(appConfig.companyBenefitsFlag) { @ControllerUtils.benefitSource(cb.source) }</td>
+                        <td class="numeric">@Currency(cb.amount)</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        }
+        @if(!isCurrentYear && companyBenefits.isEmpty){
+            <p id="no-benefits"class="grey">@Messages("employmenthistory.employment.details.no.benefits",employment.employerName)</p>
+        }
     }
 }
-
 @taxCodeBreakdown() = {
     @if(incomeSource.isDefined) {
 
