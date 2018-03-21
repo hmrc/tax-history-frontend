@@ -224,9 +224,16 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
     doc.getElementById("employmentIncomeEmpty").text() shouldBe Messages("employmenthistory.employment.table.error.no-values")
   }
-  "show underpaid tax and debts tab in current year minus 1" in new ViewFixture {
+
+  "Show underpaid tax and debts tab in current year minus 1" in new ViewFixture {
     val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 2
+  }
+
+  "Show underpaid tax and debts tab in current year minus 1 with error text when there is no data" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, None, None, None)
+    doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 1
+    doc.getElementById("no-tax-account").text() shouldBe Messages("employmenthistory.tax-account.empty.text")
   }
 
   "Not show underpaid tax and debts tab in current year" in new ViewFixture {
