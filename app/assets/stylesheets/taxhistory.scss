@@ -106,6 +106,10 @@ table tr.border-none td {
   display: none;
 }
 
+.sidebar-padding-right {
+  padding-right: 40px;
+}
+
 @media all and (max-width: 959px) {
   .deskContent {display:block;}
   .phoneContent {display:none;}
@@ -114,6 +118,7 @@ table tr.border-none td {
 @media all and (max-width: 640px) {
   .deskContent {display:none;}
   .phoneContent {display:block;}
+  .sidebar-padding-right {padding-right: 0px;}
 }
 
 .small-text {
@@ -240,10 +245,6 @@ color : #6f777b;
 
 .alignRight {
   text-align: right;
-}
-
-.sidebar-padding-right {
-  padding-right: 40px;
 }
 
 .hidden {
