@@ -47,7 +47,7 @@
     <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
         <div class="page-header" >
           <h1 class="no-bottom-margin heading-xlarge">@Messages("employmenthistory.header", getName)</h1>
-            @*// AFID-462 - temporarily disabled due to security issue*@
+            @*AFID-462 - temporarily disabled due to security issue*@
             @*if(nino!=getName){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}*@
           <h2 id="taxYearRange" class="pre-heading-small boldFont no-top-margin">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</h2>
         </div>

@@ -23,7 +23,7 @@ taxYears: Int)(implicit request: Request[_], messages: Messages, appConfig: AppC
 @mainContent = {
     <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
     <h1 class="no-bottom-margin heading-xlarge">@Messages("employmenthistory.header", person.getName.getOrElse(nino))</h1>
-    @*// AFID-462 - temporarily disabled due to security issue*@
+    @*AFID-462 - temporarily disabled due to security issue*@
     @*if(person.getName.nonEmpty){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}*@
     <p id="taxYearRange" class="pre-heading-small boldFont">@Messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString)</p>
     <p class="grey" id="error-heading">@Messages("employmenthistory.no.data.header")</p>
