@@ -35,6 +35,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     val nino: String = TestUtil.randomNino.toString()
     val currentTaxYear: Int = TaxYear.current.currentYear
     val cyMinus1: Int = TaxYear.current.previous.currentYear
+    val cyMinus2:Int = TaxYear.current.previous.currentYear - 1
     val person = Some(Person(Some("James"), Some("Dean"), Some(false)))
   }
 
@@ -223,5 +224,20 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
     doc.getElementById("employmentIncomeEmpty").text() shouldBe Messages("employmenthistory.employment.table.error.no-values")
   }
+  "show underpaid tax and debts tab in current year minus 1" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
+    doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 2
+  }
+
+  "Not show underpaid tax and debts tab in current year" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employmentWithPensions, List.empty, None, None, None, None)
+    doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 0
+  }
+
+  "Not show underpaid tax and debts tab for current year minus 2 or earlier" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None)
+    doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 1
+  }
+
 
 }
