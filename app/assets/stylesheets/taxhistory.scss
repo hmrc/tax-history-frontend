@@ -110,6 +110,7 @@ table tr.border-none td {
   padding-right: 40px;
 }
 
+
 @media all and (max-width: 959px) {
   .deskContent {display:block;}
   .phoneContent {display:none;}
@@ -119,6 +120,7 @@ table tr.border-none td {
   .deskContent {display:none;}
   .phoneContent {display:block;}
   .sidebar-padding-right {padding-right: 0px;}
+  .blue-top {border-top: 5px solid #005EA5;}
 }
 
 .small-text {
