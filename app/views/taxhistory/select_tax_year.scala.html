@@ -48,7 +48,8 @@ nino:String)(implicit request: Request[_], messages: Messages, appConfig: AppCon
 
         <div class="page-header">
                 <span class="pre-heading" id ="pre-header">@Messages("employmenthistory.display.client.name",s"${clientName.getOrElse(nino)}")</span>
-                @if(clientName.nonEmpty){<span class="pre-heading medium-text" id="clientNino">@nino</span>}
+                @*// AFID-462 - temporarily disabled due to security issue*@
+                @*if(clientName.nonEmpty){<span class="pre-heading medium-text" id="clientNino">@nino</span>}*@
                 <h1 class="heading-xlarge no-bottom-margin" id ="header">@Messages("employmenthistory.select.tax.year.h1")</h1>
         </div>
           @helpers.form(routes.SelectTaxYearController.submitSelectTaxYearPage()) {

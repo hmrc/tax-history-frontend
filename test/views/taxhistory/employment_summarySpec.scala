@@ -46,7 +46,8 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
       val title = Messages("employmenthistory.title")
       doc.title mustBe title
-      doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
+      // AFID-462 - temporarily disabled due to security issue
+      //doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
       doc.getElementsByClass("pre-heading-small boldFont no-top-margin").html must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
         (currentTaxYear + 1).toString))
 
