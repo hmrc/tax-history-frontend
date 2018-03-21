@@ -39,7 +39,8 @@ class no_dataSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.header", person.getName.getOrElse(nino))
-      doc.getElementById("clientNino").text mustBe nino
+      // AFID-462 - temporarily disabled due to security issue
+      //doc.getElementById("clientNino").text mustBe nino
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text mustBe Messages("employmenthistory.no.data.text")
       doc.getElementById("selectClient").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("selectTaxYear").attr("href") mustBe "/tax-history/select-tax-year"
