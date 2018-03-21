@@ -22,7 +22,13 @@ case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 
   override def toString: String = {
     val formatter = java.text.NumberFormat.getCurrencyInstance(Locale.UK)
-    formatter.setMinimumFractionDigits(minDecimalPlaces)
+
+    if (value % 1 != 0){
+      formatter.setMinimumFractionDigits(2)
+    }else{
+      formatter.setMinimumFractionDigits(minDecimalPlaces)
+    }
+
     if (value.signum >= 0) {
       formatter.format(value)
     }else{
