@@ -80,7 +80,8 @@
         @if(!isCurrentYear) {<li id="tab2" data-tab-link="2" role="tab" aria-selected="false" aria-controls="tabContent2" tabindex="0">
             <a href="#" class="tabs-nav__tab">@Messages("employmenthistory.employment.summary.tab.2")</a>
         </li>}
-        @if(!isCurrentYear && taxAccount.nonEmpty) {<li id="tab3" data-tab-link="3" role="tab" aria-selected="false" aria-controls="tabContent3" tabindex="0">
+        @if(taxYear == TaxYear.current.previous.currentYear) {
+            <li id="tab3" data-tab-link="3" role="tab" aria-selected="false" aria-controls="tabContent3" tabindex="0">
             <a href="#" class="tabs-nav__tab">@Messages("employmenthistory.employment.summary.tab.3")</a>
         </li>}
     </ul>
