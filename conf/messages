@@ -191,6 +191,7 @@ employmenthistory.tax-account.potential-underpayment.title=Estimated underpaid t
 employmenthistory.tax-account.outstanding.debt.title=Other outstanding debt included in your client''s tax code for tax year {0} to {1}, carried over from previous tax years.
 employmenthistory.tax-account.outstanding.debt.text=Debts may relate to Self Assessment, tax credits or National Insurance class 2.
 employmenthistory.tax-account.text=Underpaid taxes and debts are only displayed in the last completed tax year. They are not shown in any other year.
+employmenthistory.tax-account.empty.text=Your client has no underpaid tax or debts.
 
 ################################ Error Pages ###########################################################
 employmenthistory.not.authorised.title=You are not authorised to view this income record - GOV.UK
