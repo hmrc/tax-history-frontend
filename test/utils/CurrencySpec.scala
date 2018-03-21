@@ -68,5 +68,9 @@ class CurrencySpec extends PlaySpec {
     "format -ve with the - prefix when using withPositive" in {
       Currency.withPositive(BigDecimal(-100.55)) must be ("-£100.55")
     }
+
+    "add extra 0 when there is 1 number after the decimal point" in {
+      Currency(BigDecimal(101.1)).toString must be ("£101.10")
+    }
   }
 }
