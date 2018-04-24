@@ -18,3 +18,4 @@ GET   /service-unavailable-technical                      @controllers.ClientErr
 GET   /select-tax-year                                    @controllers.SelectTaxYearController.getSelectTaxYearPage()
 POST  /select-tax-year                                    @controllers.SelectTaxYearController.submitSelectTaxYearPage()
 
+POST  /fast-track                                         @controllers.FastTrackController.createFastTrack
