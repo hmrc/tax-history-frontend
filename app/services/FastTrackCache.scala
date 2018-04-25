@@ -14,15 +14,21 @@
  * limitations under the License.
  */
 
-package models.taxhistory
-import play.api.libs.json.Json
-import uk.gov.hmrc.agentmtdidentifiers.model.Arn
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HttpResponse
+package services
 
-case class FastTrackInvitation(service: String, clientIdentifierType: String, clientIdentifier: String)
+import javax.inject.{Inject, Singleton}
 
-object FastTrackInvitation {
-  implicit val format = Json.format[FastTrackInvitation]
-  implicit val httpResponse = HttpResponse
+import models.taxhistory.FastTrackInvitation
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.http.cache.client.{CacheMap, SessionCache}
+
+import scala.concurrent.{ExecutionContext, Future}
+
+@Singleton
+class FastTrackCache @Inject()(sessionCache: SessionCache) {
+
+  val id = "fast-track-aggregate-input"
+  def save(fastTrackInvitation: FastTrackInvitation)(implicit hc: HeaderCarrier, ec: ExecutionContext): Future[CacheMap] = {
+    sessionCache.cache(id, fastTrackInvitation)
+  }
 }

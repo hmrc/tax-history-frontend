@@ -19,12 +19,12 @@ package controllers
 import javax.inject.{Inject, Singleton}
 
 import config.{AppConfig, FrontendAuthConnector}
-import play.api.{Configuration, Environment}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
 import form.FastTrackForm.fastTrackForm
 import models.taxhistory.FastTrackInvitation
-import uk.gov.hmrc.http.Upstream4xxResponse
+import play.api.i18n.MessagesApi
+import play.api.mvc.{Action, AnyContent}
+import play.api.{Configuration, Environment}
+import services.FastTrackCache
 import uk.gov.hmrc.play.bootstrap.controller.ActionWithMdc
 
 import scala.concurrent.Future
@@ -33,6 +33,7 @@ import scala.concurrent.Future
 class FastTrackController @Inject()(override val authConnector: FrontendAuthConnector,
                                     override val config: Configuration,
                                     override val env: Environment,
+                                    cache: FastTrackCache,
                                     implicit val messagesApi: MessagesApi,
                                     implicit val appConfig: AppConfig) extends BaseController {
 
@@ -40,22 +41,17 @@ class FastTrackController @Inject()(override val authConnector: FrontendAuthConn
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  val startFastTrack: Action[AnyContent] = ActionWithMdc {
-    Redirect(routes.FastTrackController.createFastTrack())
-  }
-
   val createFastTrack: Action[AnyContent] = Action.async {implicit request =>
     getNinoFromSession(request) match {
       case Some(nino) =>
-        fastTrackForm.fill(FastTrackInvitation("PERSONAL-INCOME-RECORD", "ni", nino.value)).fold(
+        fastTrackForm.fill(FastTrackInvitation("HMRC-NI", "ni", nino.value)).fold(
           _ => Future successful Redirect(routes.SelectClientController.getSelectClientPage()),
-          validFormData => Future successful Redirect(s"${appConfig.agentInvitation}fast-track")
-            .addingToSession("service" -> validFormData.service,
-              "clientIdentifierType" -> validFormData.clientIdentifierType,
-              "clientIdentifier" -> validFormData.clientIdentifier)
+          validFormData =>
+            cache.save(validFormData).map { _ =>
+            Redirect(s"${appConfig.agentInvitation}fast-track")
+          }
         )
       case _ => Future successful Redirect(routes.SelectClientController.getSelectClientPage())
     }
   }
-
 }
