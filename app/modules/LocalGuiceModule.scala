@@ -16,27 +16,21 @@
 
 package modules
 
-import java.net.URL
-import javax.inject.{Inject, Provider, Singleton}
+import javax.inject.Provider
 
 import com.google.inject.AbstractModule
-import com.google.inject.name.{Named, Names}
+import com.google.inject.name.Names
 import config.{AppConfig, WSHttpT}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.http.cache.client.SessionCache
 import uk.gov.hmrc.play.config.ServicesConfig
 
 class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule with ServicesConfig {
   override def configure() = {
 
     bind(classOf[String]).annotatedWith(Names.named("contactFormServiceIdentifier")).toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
-    bind(classOf[SessionCache]).to(classOf[InvitationsSessionCache])
     bind(classOf[HttpGet]).to(classOf[WSHttpT])
     bind(classOf[HttpPost]).to(classOf[WSHttpT])
-
-    bindBaseUrl("cachable.session-cache")
-    bindServiceProperty("cachable.session-cache.domain")
 
 
     bind(classOf[AppConfig]).toProvider(new Provider[AppConfig] {
@@ -72,22 +66,6 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
     //bind(classOf[HeadersFilter]).to(classOf[HeadersFilter])
   }
 
-  private def bindBaseUrl(serviceName: String) =
-    bind(classOf[URL]).annotatedWith(Names.named(s"$serviceName-baseUrl")).toProvider(new BaseUrlProvider(serviceName))
-
-
-  private class BaseUrlProvider(serviceName: String) extends Provider[URL] {
-    override lazy val get = new URL(baseUrl(serviceName))
-  }
-
-  private def bindServiceProperty(propertyName: String) =
-    bind(classOf[String]).annotatedWith(Names.named(s"$propertyName")).toProvider(new ServicePropertyProvider(propertyName))
-
-  private class ServicePropertyProvider(propertyName: String) extends Provider[String] {
-    override lazy val get = getConfString(propertyName, throw new RuntimeException(s"No configuration value found for '$propertyName'"))
-  }
-
-
   private case class ConfigStringProvider(propertyName: String, default: Option[String] = None) extends Provider[String] {
     lazy val get =
       configuration.getString(propertyName).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$propertyName'"))
@@ -95,13 +73,4 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
 
   override val runModeConfiguration: Configuration = configuration
   override protected def mode = environment.mode
-}
-
-@Singleton
-class InvitationsSessionCache @Inject()(val http: HttpGet with HttpPut with HttpDelete,
-                                        @Named("cachable.session-cache-baseUrl") val baseUrl: URL,
-                                        @Named("cachable.session-cache.domain") val domain: String
-                                       ) extends SessionCache {
-  override lazy val defaultSource = "agent-invitations-frontend"
-  override lazy val baseUri = baseUrl.toExternalForm
 }

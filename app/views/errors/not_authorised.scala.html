@@ -30,22 +30,19 @@
         <li><a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
                 id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a></li>
 
-        <li><a href="@appConfig.agentInvitation"
-               id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</a></li>
-
+      <li>
       @form(
-        action = routes.FastTrackController.createFastTrack
+        action = Call("POST", s"${appConfig.agentInvitation}fast-track")
       ){
-        <div class="form-group">
           <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
           <input type="hidden" name="clientIdentifierType" id="clientIdentifierType" value="ni">
           <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">
-        </div>
 
         <div class="form-group">
           <button class="button" type="submit" id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</button>
         </div>
       }
+      </li>
 
     </ul>
 }

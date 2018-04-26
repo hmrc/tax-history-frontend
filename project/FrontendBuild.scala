@@ -18,7 +18,6 @@ object FrontendBuild extends Build with MicroService {
     "uk.gov.hmrc" %% "url-builder" % "2.1.0",
     "uk.gov.hmrc" %% "auth-client" % "2.6.0",
     "uk.gov.hmrc" %% "agent-mtd-identifiers" % "0.10.0",
-    "uk.gov.hmrc" %% "http-caching-client" % "7.1.0",
     "uk.gov.hmrc" %% "tax-year" % "0.4.0"
   )
 
