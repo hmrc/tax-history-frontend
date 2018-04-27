@@ -24,5 +24,4 @@ case class FastTrackInvitation(service: String, clientIdentifierType: String, cl
 
 object FastTrackInvitation {
   implicit val format = Json.format[FastTrackInvitation]
-  implicit val httpResponse = HttpResponse
 }

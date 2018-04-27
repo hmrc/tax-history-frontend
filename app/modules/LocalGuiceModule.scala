@@ -25,13 +25,10 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http._
 import uk.gov.hmrc.play.config.ServicesConfig
 
-class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule with ServicesConfig {
+class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
   override def configure() = {
 
     bind(classOf[String]).annotatedWith(Names.named("contactFormServiceIdentifier")).toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
-    bind(classOf[HttpGet]).to(classOf[WSHttpT])
-    bind(classOf[HttpPost]).to(classOf[WSHttpT])
-
 
     bind(classOf[AppConfig]).toProvider(new Provider[AppConfig] {
       def getConfStringOrThrow(key: String, default: Option[String] = None): String =
@@ -70,7 +67,4 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
     lazy val get =
       configuration.getString(propertyName).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$propertyName'"))
   }
-
-  override val runModeConfiguration: Configuration = configuration
-  override protected def mode = environment.mode
 }
