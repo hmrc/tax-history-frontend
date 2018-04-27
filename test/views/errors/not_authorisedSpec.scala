@@ -15,6 +15,7 @@
  */
 
 package views.errors
+import form.FastTrackForm
 import uk.gov.hmrc.domain.Nino
 import play.api.i18n.Messages
 import support.GuiceAppSpec
@@ -32,7 +33,7 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
 
-      val view = views.html.errors.not_authorised(Some(nino), fastTrackForm = ???)
+      val view = views.html.errors.not_authorised(Some(nino), FastTrackForm.fastTrackForm)
 
       val title = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
