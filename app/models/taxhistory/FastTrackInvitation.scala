@@ -16,11 +16,8 @@
 
 package models.taxhistory
 import play.api.libs.json.Json
-import uk.gov.hmrc.agentmtdidentifiers.model.Arn
-import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HttpResponse
 
-case class FastTrackInvitation(service: String, clientIdentifierType: String, clientIdentifier: String)
+case class FastTrackInvitation(service: String, clientIdentifier: String)
 
 object FastTrackInvitation {
   implicit val format = Json.format[FastTrackInvitation]

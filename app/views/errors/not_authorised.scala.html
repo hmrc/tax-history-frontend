@@ -35,8 +35,7 @@
         action = Call("POST", s"${appConfig.agentInvitation}fast-track")
       ){
           <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
-          <input type="hidden" name="clientIdentifierType" id="clientIdentifierType" value="ni">
-          <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">
+          <input type="hidden" name="clientId" id="clientId" value="@nino.getOrElse("")">
 
         <div class="form-group">
           <button class="button" type="submit" id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</button>

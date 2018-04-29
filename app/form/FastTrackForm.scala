@@ -19,14 +19,12 @@ package form
 import models.taxhistory.FastTrackInvitation
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
-import uk.gov.hmrc.domain.Nino
 
 object FastTrackForm {
   val fastTrackForm: Form[FastTrackInvitation] = {
     Form(mapping(
       "service" -> text,
-      "clientIdentifierType" -> text,
-      "clientIdentifier" -> text
+      "clientId" -> text
     )(FastTrackInvitation.apply)(FastTrackInvitation.unapply))
   }
 }
