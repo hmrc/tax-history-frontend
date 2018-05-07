@@ -52,6 +52,7 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         val betaFeedbackUrl = getConfStringOrThrow("betaFeedbackUrl")
         val betaFeedbackUnauthenticatedUrl = getConfStringOrThrow("betaFeedbackUnauthenticatedUrl")
         val agentInvitation = getConfStringOrThrow("external-url.agent-invitation.url")
+        val agentInvitationFastTrack = getConfStringOrThrow("external-url.agent-invitation.fast-track-url")
         val studentLoanFlag = getConfBooleanOrThrow("featureFlags.studentLoanFlag")
         val companyBenefitsFlag = getConfBooleanOrThrow("featureFlags.companyBenefitsFlag")
         val eyaWhatsThisFlag = getConfBooleanOrThrow("featureFlags.eyaWhatsThisFlag")

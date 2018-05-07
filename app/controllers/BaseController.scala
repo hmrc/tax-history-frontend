@@ -100,7 +100,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
                                                (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     getNinoFromSession(request) match {
       case Some(nino) =>
-        authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("NI", nino.toString) and AuthProviderAgents)(eventualResult(nino))
+        authorisedAgent(AgentEnrolmentForPAYE and AuthProviderAgents)(eventualResult(nino))
       case None =>
         logger.info("No nino supplied")
         Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
