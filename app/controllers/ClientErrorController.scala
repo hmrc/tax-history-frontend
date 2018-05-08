@@ -17,7 +17,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.CitizenDetailsConnector
 import play.api.i18n.MessagesApi

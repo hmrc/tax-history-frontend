@@ -16,14 +16,13 @@
 
 package modules
 
-import javax.inject.Provider
 
+import javax.inject.Provider
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import config.{AppConfig, WSHttpT}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http._
-import uk.gov.hmrc.play.config.ServicesConfig
 
 class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
   override def configure() = {
@@ -35,7 +34,6 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         configuration.getString(key).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$key'"))
       def getConfBooleanOrThrow(key: String): Boolean =
         configuration.getBoolean(key).getOrElse(throw new RuntimeException(s"No configuration value found for '$key'"))
-
 
       def get: AppConfig = new AppConfig {
         val contactHost = getConfStringOrThrow("contact-frontend.host", default = Some(""))
