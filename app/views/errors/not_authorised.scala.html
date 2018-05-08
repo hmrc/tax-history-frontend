@@ -14,6 +14,7 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.play.views.html.helpers._
 @import config.AppConfig
 @import uk.gov.hmrc.domain.Nino
 @(nino:Option[Nino])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -28,8 +29,19 @@
         <li><a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
                 id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a></li>
 
-        <li><a href="@appConfig.agentInvitation"
-               id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</a></li>
+      <li>
+      @form(
+        action = Call("POST", s"${appConfig.agentInvitationFastTrack}")
+      ){
+          <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
+          <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">
+
+        <div class="form-group">
+          <button class="button--link-style" type="submit" id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</button>
+        </div>
+      }
+      </li>
+
     </ul>
 }
 

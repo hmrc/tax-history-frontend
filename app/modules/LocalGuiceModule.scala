@@ -16,12 +16,14 @@
 
 package modules
 
-import com.google.inject.{AbstractModule, Provider}
+import javax.inject.Provider
+
+import com.google.inject.AbstractModule
 import com.google.inject.name.Names
-import config.AppConfig
+import config.{AppConfig, WSHttpT}
 import play.api.{Configuration, Environment}
-import play.api.Play._
-import uk.gov.hmrc.play.bootstrap.filters.frontend.HeadersFilter
+import uk.gov.hmrc.http._
+import uk.gov.hmrc.play.config.ServicesConfig
 
 class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
   override def configure() = {
@@ -50,6 +52,7 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         val betaFeedbackUrl = getConfStringOrThrow("betaFeedbackUrl")
         val betaFeedbackUnauthenticatedUrl = getConfStringOrThrow("betaFeedbackUnauthenticatedUrl")
         val agentInvitation = getConfStringOrThrow("external-url.agent-invitation.url")
+        val agentInvitationFastTrack = getConfStringOrThrow("external-url.agent-invitation.fast-track-url")
         val studentLoanFlag = getConfBooleanOrThrow("featureFlags.studentLoanFlag")
         val companyBenefitsFlag = getConfBooleanOrThrow("featureFlags.companyBenefitsFlag")
         val eyaWhatsThisFlag = getConfBooleanOrThrow("featureFlags.eyaWhatsThisFlag")

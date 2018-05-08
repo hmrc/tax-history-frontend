@@ -30,6 +30,7 @@ trait AppConfig {
   val agentAccountHomePage: String
   val agentSubscriptionStart: String
   val agentInvitation: String
+  val agentInvitationFastTrack: String
   val studentLoanFlag: Boolean
   val companyBenefitsFlag: Boolean
   val eyaWhatsThisFlag: Boolean
