@@ -18,7 +18,12 @@
 @import config.AppConfig
 @import uk.gov.hmrc.domain.Nino
 @import models.taxhistory.FastTrackInvitation
+@import support.CallOps._
+
 @(nino:Option[Nino], fastTrackForm: Form[FastTrackInvitation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@postToInvitations = @{addParamsToUrl((s"${appConfig.agentInvitation}fast-track"),
+    "continue" -> Some(controllers.routes.SelectClientController.getSelectClientPage().url))}
 
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
@@ -32,7 +37,7 @@
 
       <li>
       @form(
-        action = Call("POST", s"${appConfig.agentInvitation}fast-track")
+        action = Call("POST", postToInvitations)
       ){
           <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
           <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">

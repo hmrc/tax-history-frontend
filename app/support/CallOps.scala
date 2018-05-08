@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package config
+package support
 
-trait AppConfig {
-  val analyticsToken: String
-  val analyticsHost: String
-  val reportAProblemPartialUrl: String
-  val reportAProblemNonJSUrl: String
-  val loginUrl: String
-  val logoutUrl: String
-  val loginContinue:String
-  val serviceSignOut:String
-  val betaFeedbackUrl: String
-  val betaFeedbackUnauthenticatedUrl: String
-  val agentAccountHomePage: String
-  val agentSubscriptionStart: String
-  val agentInvitation: String
-  val studentLoanFlag: Boolean
-  val companyBenefitsFlag: Boolean
-  val eyaWhatsThisFlag: Boolean
-  val domainWhiteList: Set[String]
+import java.net.URLEncoder
+
+import play.api.mvc.Call
+
+object CallOps {
+
+  def addParamsToUrl(url: String, params: (String, Option[String])*): String = {
+    val query = params collect { case (k, Some(v)) => s"$k=${URLEncoder.encode(v, "UTF-8")}" } mkString "&"
+    if (query.isEmpty) {
+      url
+    } else if (url.endsWith("?") || url.endsWith("&")) {
+      url + query
+    } else {
+      val join = if (url.contains("?")) "&" else "?"
+      url + join + query
+    }
+  }
 }
-
