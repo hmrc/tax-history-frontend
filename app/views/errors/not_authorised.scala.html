@@ -17,10 +17,9 @@
 @import uk.gov.hmrc.play.views.html.helpers._
 @import config.AppConfig
 @import uk.gov.hmrc.domain.Nino
-@import models.taxhistory.FastTrackInvitation
 @import support.CallOps._
 
-@(nino:Option[Nino], fastTrackForm: Form[FastTrackInvitation])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(nino:Option[Nino])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @postToInvitations = @{addParamsToUrl(s"${appConfig.agentInvitationFastTrack}",
     "continue" -> Some(controllers.routes.SelectClientController.getSelectClientPage().url))}

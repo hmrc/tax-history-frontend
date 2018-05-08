@@ -23,7 +23,6 @@ import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import play.api.{Configuration, Environment}
 import views.html.errors._
-import form.FastTrackForm.fastTrackForm
 
 import scala.concurrent.Future
 
@@ -41,7 +40,7 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>
       getNinoFromSession(request).fold(redirectToSelectClientPage){
-        _ => Future successful Ok(not_authorised(getNinoFromSession(request), fastTrackForm))
+        _ => Future successful Ok(not_authorised(getNinoFromSession(request)))
       }
   }
 
