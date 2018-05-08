@@ -16,7 +16,6 @@
 
 package modules
 
-import java.net.URL
 
 import javax.inject.Provider
 import com.google.inject.AbstractModule
@@ -24,10 +23,6 @@ import com.google.inject.name.Names
 import config.{AppConfig, WSHttpT}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.http._
-import java.util.Collections.emptyList
-import uk.gov.hmrc.play.config.ServicesConfig
-
-import scala.collection.JavaConversions._
 
 class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
   override def configure() = {
@@ -55,10 +50,10 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         val betaFeedbackUrl = getConfStringOrThrow("betaFeedbackUrl")
         val betaFeedbackUnauthenticatedUrl = getConfStringOrThrow("betaFeedbackUnauthenticatedUrl")
         val agentInvitation = getConfStringOrThrow("external-url.agent-invitation.url")
+        val agentInvitationFastTrack = getConfStringOrThrow("external-url.agent-invitation.fast-track-url")
         val studentLoanFlag = getConfBooleanOrThrow("featureFlags.studentLoanFlag")
         val companyBenefitsFlag = getConfBooleanOrThrow("featureFlags.companyBenefitsFlag")
         val eyaWhatsThisFlag = getConfBooleanOrThrow("featureFlags.eyaWhatsThisFlag")
-        val domainWhiteList = configuration.getStringList("continueUrl.domainWhiteList").getOrElse(emptyList()).toSet
       }
     })
 
