@@ -22,7 +22,7 @@
 @(nino:Option[Nino])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @postToInvitations = @{addParamsToUrl(s"${appConfig.agentInvitationFastTrack}",
-    "continue" -> Some(controllers.routes.SelectClientController.getSelectClientPage().url))}
+    "continue" -> Some(s"${appConfig.taxHistoryFrontendBaseUrl}${controllers.routes.SelectClientController.getSelectClientPage().url}"))}
 
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
