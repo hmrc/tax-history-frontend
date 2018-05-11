@@ -46,7 +46,7 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
       doc.getElementById("service").`val` mustBe "PERSONAL-INCOME-RECORD"
       doc.getElementById("clientIdentifier").`val` mustBe s"$nino"
-      doc.getElementsByTag("form").attr("action") mustBe "fakeurl?continue=%2Ftax-history%2Fselect-client"
+      doc.getElementsByTag("form").attr("action") mustBe "fakeurl?continue=fakeurl%2Ftax-history%2Fselect-client"
     }
   }
 
