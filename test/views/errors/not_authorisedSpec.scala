@@ -32,7 +32,7 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
 
-      val view = views.html.errors.not_authorised(Some(nino))
+      val view = views.html.errors.not_authorised(Some(nino), false)
 
       val title = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
@@ -46,7 +46,7 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
         "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
       doc.getElementById("service").`val` mustBe "PERSONAL-INCOME-RECORD"
       doc.getElementById("clientIdentifier").`val` mustBe s"$nino"
-      doc.getElementsByTag("form").attr("action") mustBe "fakeurl?continue=fakeurl%2Ftax-history%2Fselect-client"
+      doc.getElementsByTag("form").attr("action") mustBe "fakeurl?continue=%2Ftax-history%2Fselect-client"
     }
   }
 

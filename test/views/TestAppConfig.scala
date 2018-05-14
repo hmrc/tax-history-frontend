@@ -37,6 +37,5 @@ trait TestAppConfig {
     val studentLoanFlag: Boolean = true
     val companyBenefitsFlag: Boolean = true
     val eyaWhatsThisFlag: Boolean = true
-    val taxHistoryFrontendBaseUrl: String = "fakeurl"
   }
 }
