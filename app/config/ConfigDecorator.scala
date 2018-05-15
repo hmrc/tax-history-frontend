@@ -29,6 +29,5 @@ class ConfigDecorator @Inject()(val runModeConfiguration: Configuration, val env
   val mode: Mode = environment.mode
 
   lazy val companyAuthHost = runModeConfiguration.getString(s"external-url.company-auth.host").getOrElse("")
-  lazy val taxHistoryFrontendHost = runModeConfiguration.getString(s"external-url.tax-history-frontend.host").getOrElse("")
   lazy val gg_web_context = runModeConfiguration.getString(s"external-url.gg.web-context").getOrElse("gg")
 }
