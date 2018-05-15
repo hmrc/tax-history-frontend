@@ -21,7 +21,7 @@ import org.scalatest.{Matchers, WordSpec}
 class CallOpsSpec extends WordSpec with Matchers {
 
   "addParamsToUrl" should {
-    val url = "http://localhost:1/"
+    val url = "http://localhost:9996/tax-history/select-client"
 
     "return same url when no params provided and " when {
       "no query exists" in {
