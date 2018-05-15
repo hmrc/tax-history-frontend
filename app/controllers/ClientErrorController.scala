@@ -17,11 +17,12 @@
 package controllers
 
 import javax.inject.Inject
+
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.CitizenDetailsConnector
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import play.api.{Configuration, Environment}
+import play.api.{Configuration, Environment, Mode}
 import views.html.errors._
 
 import scala.concurrent.Future
@@ -37,10 +38,12 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
+  val isDevEnv = if (env.mode.equals(Mode.Test)) false else config.getString("run.mode").forall(Mode.Dev.toString.equals)
+
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>
       getNinoFromSession(request).fold(redirectToSelectClientPage){
-        _ => Future successful Ok(not_authorised(getNinoFromSession(request)))
+        _ => Future successful Ok(not_authorised(getNinoFromSession(request), isDevEnv))
       }
   }
 

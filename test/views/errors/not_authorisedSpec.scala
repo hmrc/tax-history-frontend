@@ -32,7 +32,7 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
 
-      val view = views.html.errors.not_authorised(Some(nino))
+      val view = views.html.errors.not_authorised(Some(nino), false)
 
       val title = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
