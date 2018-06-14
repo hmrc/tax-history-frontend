@@ -17,12 +17,12 @@
 package controllers
 
 import javax.inject.Inject
-
 import config.{AppConfig, FrontendAuthConnector}
 import form.SelectClientForm.selectClientForm
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.play.bootstrap.controller.ActionWithMdc
 import views.html.taxhistory.select_client
 
 import scala.concurrent.Future
@@ -43,6 +43,10 @@ class SelectClientController @Inject()(
   @Deprecated
   def getLegacySelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     redirectToSelectClientPage
+  }
+
+  val root =  ActionWithMdc {
+    Redirect(routes.SelectClientController.getSelectClientPage())
   }
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
