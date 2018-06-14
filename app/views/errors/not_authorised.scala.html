@@ -28,28 +28,32 @@
 
 @mainContent = {
     <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
-    <p class="grey no-bottom-margin small-top-margin" id="clientNino">@{nino.getOrElse("")}</p>
-    <h1 class="heading-xlarge no-top-margin" id="error-heading">@Messages("employmenthistory.not.authorised.header")</h1>
-    <p>@Messages("employmenthistory.not.authorised.text")</p>
-    <p>@Messages("employmenthistory.no.data.text")</p>
-    <ul class = "list-bullet">
-        <li><a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
-                id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a></li>
 
-      <li>
+    <h1 class="heading-xlarge" style="margin-bottom: 30px;" id="error-heading">
+        @Messages("employmenthistory.not.authorised.header")
+    </h1>
+    <p>@Messages("employmenthistory.not.authorised.text1", nino.getOrElse(""))</p>
+    <p>@Messages("employmenthistory.not.authorised.text2")</p>
+    <p>@Messages("employmenthistory.not.authorised.text3")</p>
+
       @form(
         action = Call("POST", postToInvitations)
       ){
           <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
           <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">
+          <input type="hidden" name="clientIdentifierType" id="clientIdentifierType" value="ni">
 
         <div class="form-group">
-          <button class="button--link-style" type="submit" id="inviteClient">@Messages("employmenthistory.not.authorised.invite.client.link.text")</button>
+          <button class="button" type="submit" id="inviteClient">
+            @Messages("employmenthistory.not.authorised.invite.client.link.text")
+          </button>
         </div>
       }
-      </li>
 
-    </ul>
+    <p>
+        <a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
+        id="selectClient">@Messages("employmenthistory.not.authorised.select.client.link.text")</a>
+    </p>
 }
 
 @views.html.main_template(title = Messages("employmenthistory.not.authorised.title")) {

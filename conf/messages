@@ -195,10 +195,12 @@ employmenthistory.tax-account.empty.text=Your client has no underpaid tax or deb
 
 ################################ Error Pages ###########################################################
 employmenthistory.not.authorised.title=You are not authorised to view this income record - GOV.UK
-employmenthistory.not.authorised.header=Record not found
-employmenthistory.not.authorised.text=You might not have access to this record, or this might be an invalid National Insurance number.
-employmenthistory.not.authorised.select.client.link.text=enter another client''s National Insurance number
-employmenthistory.not.authorised.invite.client.link.text=invite a client to share their income record with you
+employmenthistory.not.authorised.header=There is a problem
+employmenthistory.not.authorised.text1=You are not authorised to view the income record for National Insurance number {0}.
+employmenthistory.not.authorised.text2=You need to ask this client to share their income record with you.
+employmenthistory.not.authorised.text3=You will be able to view their income record once they have accepted your request.
+employmenthistory.not.authorised.select.client.link.text=Enter another National Insurance number
+employmenthistory.not.authorised.invite.client.link.text=Request authorisation
 employmenthistory.mci.restricted.header=You do not have access to this client''s income record
 employmenthistory.mci.restricted.text=For further information, contact HMRC on:
 employmenthistory.mci.restricted.telephone=telephone 0300 200 3300
@@ -211,7 +213,6 @@ employmenthistory.deceased.title=You cannot access their data - GOV.UK
 employmenthistory.deceased.select.client.link.text=Enter another client''s National Insurance number
 employmenthistory.no.data.title=This client’s income record contains no data - GOV.UK
 employmenthistory.no.data.header=The client’s income record contains no data for this tax year
-employmenthistory.no.data.text=You can:
 employmenthistory.no.data.select.client.link.text=enter another client''s National Insurance number
 employmenthistory.technical.error.title=Service unavailable - GOV.UK
 employmenthistory.technical.error.header=Service unavailable
