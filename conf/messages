@@ -194,7 +194,7 @@ employmenthistory.tax-account.text=Underpaid taxes and debts are only displayed 
 employmenthistory.tax-account.empty.text=Your client has no underpaid tax or debts.
 
 ################################ Error Pages ###########################################################
-employmenthistory.not.authorised.title=You are not authorised to view this income record - GOV.UK
+employmenthistory.not.authorised.title=There is a problem - View client income and tax records - GOV.UK
 employmenthistory.not.authorised.header=There is a problem
 employmenthistory.not.authorised.text1=You are not authorised to view the income record for National Insurance number {0}.
 employmenthistory.not.authorised.text2=You need to ask this client to share their income record with you.
