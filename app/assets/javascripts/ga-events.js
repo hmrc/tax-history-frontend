@@ -3,9 +3,6 @@ $(function() {
     // dont track any elements with data-ga-event="false"
     var exclude = '[data-ga-event="false"]';
 
-    // stageprompt data attr
-    var stageprompt = 'data-journey-click';
-
     // is it a button, error, or link?
     function cat(_this){
     	if($(_this).hasClass('button')){
@@ -35,27 +32,37 @@ $(function() {
 
     // links
     $('a:not('+exclude+')').each(function(){
-        $(this).attr(stageprompt, ''+cat(this)+':'+title+':'+$(this).text()+'')
+        $(this).click(function(e){
+            ga('send', 'event', cat(this), title, $(this).text())
+        });
     });
 
     // submit buttons
     $('button, input[type="submit"]').not(''+exclude+'').each(function(){
-        $(this).attr(stageprompt, 'button-submit:'+title+':'+$(this).text()+'')
+        $(this).click(function(e){
+            ga('send', 'event', 'button-submit', title, $(this).text())
+        });
     });
 
     // details summary
     $('details summary:not('+exclude+')').each(function(){
-        $(this).attr(stageprompt, 'disclosure-click-'+disclosureOpenClose(this)+':'+title+':'+$(this).text()+'')
+        $(this).click(function(e){
+    		ga('send', 'event', 'disclosure-click-'+disclosureOpenClose(this), title, $(this).text())
+    	});
     })
 
     // radio onclick
     $('fieldset:not('+exclude+') input:radio').each(function(){
-        $(this).attr(stageprompt, 'radio-click:'+title+':'+$(this).closest('fieldset').find('legend').text()+ " - " +$(this).val())
+        $(this).click(function(e){
+     		ga('send', 'event', 'radio-click', title, $(this).closest('fieldset').find('legend').text() + " - " + $(this).val())
+     	});
     });
 
     // checkbox onclick
     $('fieldset:not('+exclude+') input:checkbox').each(function(){
-        $(this).attr(stageprompt, 'checkbox-click:'+title+':'+$(this).closest('fieldset').find('legend').text()+ " - " +$(this).val())
+        $(this).click(function(e){
+     		ga('send', 'event', 'checkbox-click', title, $(this).closest('fieldset').find('legend').text() + " - " + $(this).val())
+     	});
     });
 
     // on form submit
