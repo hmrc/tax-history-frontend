@@ -60,7 +60,7 @@ $(function() {
 
     // checkbox onclick
     $('fieldset:not('+exclude+') input:checkbox').each(function(){
-        $('body').on('click', $(this), function(e) {
+        $(this).click(function(e){
      		ga('send', 'event', 'checkbox-click', title, $(this).closest('fieldset').find('legend').text() + " - " + $(this).val())
      	});
     });
