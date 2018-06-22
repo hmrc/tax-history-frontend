@@ -40,7 +40,7 @@ $(function() {
     // submit buttons
     $('button, input[type="submit"]').not(''+exclude+'').each(function(){
         $(this).click(function(e){
-            ga('send', 'event', 'button-submit', title, $(this).text())
+            ga('send', 'event', 'button-click', title, $(this).text())
         });
     });
 
