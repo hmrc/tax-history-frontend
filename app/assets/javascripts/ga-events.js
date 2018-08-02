@@ -4,24 +4,29 @@ $(function() {
         // dont track any elements with data-ga-event="false"
         var exclude = '[data-ga-event="false"]';
 
+        // strips out any text form elements with .visuallyhidden
+        function striptext(element){
+            return element.clone().children('.visuallyhidden').remove().end().text();
+        }
+
         // is it a button, error, or link?
         function cat(_this){
-        	if($(_this).hasClass('button')){
-        		return 'button-click'
-        	}else if($(_this)[0].hasAttribute("data-focuses") ){
-        		return 'link-click-error'
-        	}else{
-        		return 'link-click'
-        	}
+            if($(_this).hasClass('button')){
+                return 'button-click'
+            }else if($(_this)[0].hasAttribute("data-focuses") ){
+                return 'link-click-error'
+            }else{
+                return 'link-click'
+            }
         }
 
         // open or close state
         function disclosureOpenClose(_this){
-        	if($(_this).closest('details').attr('open')){
-        		return 'close'
-        	}else{
-        		return 'open'
-        	}
+            if($(_this).closest('details').attr('open')){
+                return 'close'
+            }else{
+                return 'open'
+            }
         }
 
         // only take the first part of titles
@@ -34,48 +39,48 @@ $(function() {
         // links
         $('a:not('+exclude+')').each(function(){
             $(this).click(function(e){
-                ga('send', 'event', cat(this), title, $(this).text())
+                ga('send', 'event', cat(this), title, striptext($(this)))
             });
         });
 
         // submit buttons
         $('button, input[type="submit"]').not(''+exclude+'').each(function(){
             $(this).click(function(e){
-                ga('send', 'event', 'button-click', title, $(this).text())
+                ga('send', 'event', 'button-click', title, striptext($(this)))
             });
         });
 
         // details summary
-        $('details summary:not('+exclude+')').each(function(){
+        $('details summary .summary:not('+exclude+')').each(function(){
             $(this).click(function(e){
-        		ga('send', 'event', 'disclosure-click-'+disclosureOpenClose(this), title, $(this).text())
-        	});
+                ga('send', 'event', 'disclosure-click-'+disclosureOpenClose(this), title, striptext($(this)))
+            });
         })
 
         // on form submit
         $('form').submit(function(){
 
-        	// selected radio on submit
-        	$('fieldset:not('+exclude+') input:radio:checked').each(function(){
-         		ga('send', 'event', 'radio-selected', title, $(this).closest('fieldset').attr('id') + " - " + $(this).val())
-        	});
+            // selected radio on submit
+            $('fieldset:not('+exclude+') input:radio:checked').each(function(){
+                 ga('send', 'event', 'radio-selected', title, $(this).closest('fieldset').attr('id') + " - " + $(this).val())
+            });
 
-        	// selected checkbox on submit
-        	var getName;
+            // selected checkbox on submit
+            var getName;
 
-        	$('fieldset:not('+exclude+')').each(function(){
-        		var allVals = [];
+            $('fieldset:not('+exclude+')').each(function(){
+                var allVals = [];
 
-        		getName = $(this).find('input:checkbox:first').attr('name')
+                getName = $(this).find('input:checkbox:first').attr('name')
 
-        		$('[name="' + getName + '"]:checked').each(function(){
-        			allVals.push($(this).val());
-        		});
+                $('[name="' + getName + '"]:checked').each(function(){
+                    allVals.push($(this).val());
+                });
 
-        		if(getName){
-        			ga('send', 'event', 'checkbox-selected', title, $('[name="' + getName + '"]').closest('fieldset').attr('id') + " - " + allVals)
-        		}
-        	});
+                if(getName){
+                    ga('send', 'event', 'checkbox-selected', title, $('[name="' + getName + '"]').closest('fieldset').attr('id') + " - " + allVals)
+                }
+            });
         });
     }
 });
