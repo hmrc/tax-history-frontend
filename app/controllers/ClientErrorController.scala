@@ -17,12 +17,11 @@
 package controllers
 
 import javax.inject.Inject
-
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.CitizenDetailsConnector
 import play.api.i18n.MessagesApi
 import play.api.mvc.{Action, AnyContent}
-import play.api.{Configuration, Environment, Mode}
+import play.api.{Configuration, Environment, Logger, Mode}
 import views.html.errors._
 
 import scala.concurrent.Future
@@ -43,7 +42,13 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>
       getNinoFromSession(request).fold(redirectToSelectClientPage){
-        _ => Future successful Ok(not_authorised(getNinoFromSession(request), isDevEnv))
+        _ => request.getQueryString("issue") match {
+          case Some(issue) =>
+            Logger(getClass).error(s"Form Error: ${issue}")
+            throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
+        case None =>
+          Future successful Ok(not_authorised(getNinoFromSession(request), isDevEnv))
+        }
       }
   }
 
