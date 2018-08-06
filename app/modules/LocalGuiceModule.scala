@@ -35,6 +35,13 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
       def getConfBooleanOrThrow(key: String): Boolean =
         configuration.getBoolean(key).getOrElse(throw new RuntimeException(s"No configuration value found for '$key'"))
 
+      bind(classOf[String]).annotatedWith(Names.named("appName")).toProvider(new PropertyProvider("appName"))
+
+      private class PropertyProvider(confKey: String) extends Provider[String] {
+        override lazy val get = configuration.getString(confKey)
+          .getOrElse(throw new IllegalStateException(s"No value found for configuration property $confKey"))
+      }
+
       def get: AppConfig = new AppConfig {
         val contactHost = getConfStringOrThrow("contact-frontend.host", default = Some(""))
         val serviceSignOut = getConfStringOrThrow("service-signout.url")
