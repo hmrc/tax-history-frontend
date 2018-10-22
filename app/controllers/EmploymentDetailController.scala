@@ -68,31 +68,45 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
       }
   }
 
+
+
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
                           (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[PayAndTax]] = {
-    {
-      taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId) map { payAndTaxResponse =>
-        val result = payAndTaxResponse.json.as[PayAndTax]
-        if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
+    taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
+      payAndTaxResponse.status match {
+        case NOT_FOUND => None
+        case _ => {
+          val result = payAndTaxResponse.json.as[PayAndTax]
+          if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
+        }
       }
-    }.recoverWith {
-      case e =>
-        logger.warn(s"getPayAndTaxDetails failed with ${e.getMessage}")
-        Future.successful(None)
-    }
+    }.recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
   }
 
   private def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)
                                 (implicit hc: HeaderCarrier, request: Request[_]): Future[List[CompanyBenefit]] = {
-    {
-      taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId) map { cbResponse =>
-        cbResponse.json.as[List[CompanyBenefit]]
+    taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId).map { cbResponse =>
+      cbResponse.status match {
+        case NOT_FOUND => List.empty
+        case _ => cbResponse.json.as[List[CompanyBenefit]]
       }
-    }.recoverWith {
-      case e =>
-        logger.warn(s"getCompanyBenefits failed with ${e.getMessage}")
-        Future.successful(List.empty)
-    }
+    }.recoverWith(recoverWithEmptyDefault("getCompanyBenefits", List.empty))
+  }
+
+  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
+                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[IncomeSource]] = {
+    taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId).map { iSResponse =>
+      iSResponse.status match {
+        case NOT_FOUND => None
+        case _ => Some(iSResponse.json.as[IncomeSource])
+      }
+    }.recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
+  }
+
+  private def recoverWithEmptyDefault[U](connectorMethodName: String, emptyValue: U): PartialFunction[Throwable, Future[U]] = {
+    case e =>
+      logger.warn(s"Failed to call connector method $connectorMethodName", e)
+      Future.successful(emptyValue)
   }
 
   private def getActualOrEstimateFlag(companyBenefits: List[CompanyBenefit]): Boolean = {
@@ -106,23 +120,6 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
       || cb.source.contains(Assessed_P11D)
       || cb.source.contains(P11D_P9D))
 
-  }
-
-  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
-                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[IncomeSource]] = {
-    {
-      taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId) map { iSResponse =>
-        if (iSResponse.body.isEmpty) {
-          None
-        } else {
-          Some(iSResponse.json.as[IncomeSource])
-        }
-      }
-    }.recoverWith {
-      case e =>
-        logger.warn(s"getIncomeSource failed with ${e.getMessage}")
-        Future.successful(None)
-    }
   }
 
   private def loadEmploymentDetailsPage(empResponse: HttpResponse,
