@@ -71,7 +71,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         worksNumber = "00191048716"
       )
 
-      val IncomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
+      val incomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
@@ -90,7 +90,8 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(person)))))
 
       when(c.taxHistoryConnector.getIncomeSource(any(),any(),any())(any())).
-        thenReturn(Future.successful((HttpResponse(Status.OK, None))))
+        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(incomeSource)))))
+
       c
     }
   }
@@ -103,13 +104,13 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
 
     }
 
-    "load select client page when there is no nino in session" in new HappyPathSetup {
+    "redirect to /select-client page when there is no nino in session" in new HappyPathSetup {
       val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest)
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
     }
 
-    "show technical error page when status is other than 200, 401, 404" in new HappyPathSetup {
+    "redirect to /client-income-record/:year when employment is not found (getEmployment returns 404)" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
           None)))
@@ -118,7 +119,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2014).url)
     }
 
-    "show technical error page when getEmploymentDetails returns status other than 200, 401, 404" in new HappyPathSetup {
+    "show employment details page even if getPayAndTaxDetails returns 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getPayAndTaxDetails(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
           None)))
@@ -127,7 +128,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
       contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
     }
 
-    "show technical error page when getCompanyBenefits returns status other than 200, 401, 404" in new HappyPathSetup {
+    "show employment details page even if getCompanyBenefits returns 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getCompanyBenefits(any(), any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
           None)))
@@ -135,6 +136,25 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         "USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
+    }
+
+    "show employment details page even if getIncomeSource returns 404" in new HappyPathSetup {
+      when(controller.taxHistoryConnector.getIncomeSource(any(), any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
+          None)))
+      val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession(
+        "USER_NINO" -> nino))
+      status(result) shouldBe Status.OK
+      contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
+    }
+
+    "show technical error page when getEmployment returns a status other than 200, 401, 404" in new HappyPathSetup {
+      when(controller.taxHistoryConnector.getEmployment(any(), any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
+          None)))
+      val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
   }
 }
