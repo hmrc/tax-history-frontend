@@ -27,11 +27,9 @@ import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
 import uk.gov.hmrc.auth.core._
@@ -76,7 +74,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       PayAndTax(
         payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         taxablePayTotal = Some(4896.80),
+        taxablePayTotalIncludingEYU = Some(12.34),
         taxTotal = Some(979.36),
+        taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty),
@@ -84,7 +84,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       PayAndTax(
         payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
         taxablePayTotal = Some(4896.80),
+        taxablePayTotalIncludingEYU = Some(90.12),
         taxTotal = Some(979.36),
+        taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty))
@@ -93,14 +95,18 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     UUID.randomUUID().toString ->
       PayAndTax(
         taxablePayTotal = Some(4896.80),
+        taxablePayTotalIncludingEYU = Some(12.34),
         taxTotal = Some(979.36),
+        taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty),
     UUID.randomUUID().toString ->
       PayAndTax(
         taxablePayTotal = Some(4896.80),
+        taxablePayTotalIncludingEYU = Some(90.12),
         taxTotal = Some(979.36),
+        taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty))
@@ -425,6 +431,70 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     "redirect to gg and clear session data" in new HappyPathSetup {
       val result: Future[Result] = controller.logout()(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe SEE_OTHER
+    }
+  }
+
+  "buildIncomeTotals" should {
+    val empl1 = employment.copy(employmentId = UUID.randomUUID(), receivingOccupationalPension = false)
+    val empl2 = employment.copy(employmentId = UUID.randomUUID(), receivingOccupationalPension = false)
+    val payAndTax1 = PayAndTax(
+      payAndTaxId = empl1.employmentId,
+      taxablePayTotal = Some(1),
+      taxablePayTotalIncludingEYU = Some(100),
+      taxTotal = Some(1000),
+      taxTotalIncludingEYU = Some(10000),
+      studentLoan = None,
+      paymentDate = None,
+      earlierYearUpdates = Nil)
+    val payAndTax2 = PayAndTax(
+      payAndTaxId = empl2.employmentId,
+      taxablePayTotal = Some(2),
+      taxablePayTotalIncludingEYU = Some(200),
+      taxTotal = Some(2000),
+      taxTotalIncludingEYU = Some(20000),
+      studentLoan = None,
+      paymentDate = None,
+      earlierYearUpdates = Nil)
+
+    "return Taxable Pay Totals and Tax Totals that are sums of all employment's Totals including Earlier Year Updates" in {
+      val ctrlr = injected[EmploymentSummaryController]
+      val totalIncome = await(ctrlr.buildIncomeTotals(
+        List(empl1, empl2),
+        List(empl1.employmentId.toString -> payAndTax1, empl2.employmentId.toString -> payAndTax2)
+      ))
+
+      val expectedTaxablePayTotal = payAndTax1.taxablePayTotalIncludingEYU.get + payAndTax2.taxablePayTotalIncludingEYU.get
+      val expectedTaxTotal = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
+      totalIncome shouldBe Some(
+        TotalIncome(
+          employmentTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
+          employmentTaxTotalIncludingEYU = expectedTaxTotal,
+          pensionTaxablePayTotalIncludingEYU = BigDecimal(0),
+          pensionTaxTotalIncludingEYU = BigDecimal(0)
+        )
+      )
+    }
+    "return Taxable Pay Totals and Tax Totals that are sums of all pensions's Totals including Earlier Year Updates" in {
+      val ctrlr = injected[EmploymentSummaryController]
+      val totalIncome = await(ctrlr.buildIncomeTotals(
+        List(empl1.copy(receivingOccupationalPension = true), empl2.copy(receivingOccupationalPension = true)),
+        List(empl1.employmentId.toString -> payAndTax1, empl2.employmentId.toString -> payAndTax2)
+      ))
+
+      val expectedTaxablePayTotal = payAndTax1.taxablePayTotalIncludingEYU.get + payAndTax2.taxablePayTotalIncludingEYU.get
+      val expectedTaxTotal = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
+      totalIncome shouldBe Some(
+        TotalIncome(
+          employmentTaxablePayTotalIncludingEYU = BigDecimal(0),
+          employmentTaxTotalIncludingEYU = BigDecimal(0),
+          pensionTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
+          pensionTaxTotalIncludingEYU = expectedTaxTotal
+        )
+      )
+    }
+    "return None if there's no employments and no PayAndTax details" in {
+      val ctrlr = injected[EmploymentSummaryController]
+      await(ctrlr.buildIncomeTotals(Nil, Nil)) shouldBe None
     }
   }
 }

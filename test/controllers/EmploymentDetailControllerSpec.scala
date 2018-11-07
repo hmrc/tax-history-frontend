@@ -53,7 +53,9 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
 
       val payAndTax = PayAndTax(
         taxablePayTotal = Some(4896.80),
+        taxablePayTotalIncludingEYU = Some(4896.80),
         taxTotal = Some(979.36),
+        taxTotalIncludingEYU = Some(979.36),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty

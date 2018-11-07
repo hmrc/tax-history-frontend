@@ -44,7 +44,9 @@ class PayAndTaxSpec extends TestUtil with UnitSpec {
   lazy val payAndTaxNoEyu = PayAndTax(
     payAndTaxId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
     taxablePayTotal = Some(BigDecimal(76543.21)),
+    taxablePayTotalIncludingEYU = Some(BigDecimal(76543.21)),
     taxTotal = Some(BigDecimal(6666.66)),
+    taxTotalIncludingEYU = Some(BigDecimal(6666.66)),
     studentLoan = None,
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = Nil)
@@ -55,7 +57,9 @@ class PayAndTaxSpec extends TestUtil with UnitSpec {
     "generate employmentId when none is supplied" in {
       val payAndTax = PayAndTax(
         taxablePayTotal = Some(BigDecimal(1212.12)),
+        taxablePayTotalIncludingEYU = Some(BigDecimal(1212.12)),
         taxTotal = Some(BigDecimal(34.34)),
+        taxTotalIncludingEYU = Some(BigDecimal(34.34)),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = Nil)
