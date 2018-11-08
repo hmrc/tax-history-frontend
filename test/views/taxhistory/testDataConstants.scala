@@ -86,10 +86,10 @@ trait Constants {
     worksNumber = "00191048716")
 
   val totalIncome = TotalIncome(
-    employmentTaxablePayTotal = BigDecimal(100),
-    pensionTaxablePayTotal = BigDecimal(200),
-    employmentTaxTotal = BigDecimal(300),
-    pensionTaxTotal = BigDecimal(400)
+    employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
+    pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
+    employmentTaxTotalIncludingEYU = BigDecimal(300),
+    pensionTaxTotalIncludingEYU = BigDecimal(400)
   )
 
   val employments = List(emp1, emp2, emp3, emp4)
@@ -134,7 +134,9 @@ trait DetailConstants {
 
   val payAndTax = PayAndTax(
     taxablePayTotal = Some(4896.80),
+    taxablePayTotalIncludingEYU = Some(4906.80),
     taxTotal = Some(979.36),
+    taxTotalIncludingEYU = Some(1007.34),
     studentLoan = Some(101.00),
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = eyuList
@@ -142,7 +144,9 @@ trait DetailConstants {
 
   val payAndTaxNoTotal = PayAndTax(
     taxablePayTotal = None,
+    taxablePayTotalIncludingEYU = None,
     taxTotal = None,
+    taxTotalIncludingEYU = None,
     studentLoan = Some(101.00),
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = List.empty
@@ -150,7 +154,9 @@ trait DetailConstants {
 
   val payAndTaxNoStudentLoan = PayAndTax(
     taxablePayTotal = Some(4896.80),
+    taxablePayTotalIncludingEYU = Some(4906.80),
     taxTotal = Some(979.36),
+    taxTotalIncludingEYU = Some(1007.34),
     studentLoan = None,
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = eyuList)

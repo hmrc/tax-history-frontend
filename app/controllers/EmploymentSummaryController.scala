@@ -17,7 +17,6 @@
 package controllers
 
 import javax.inject.Inject
-
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
@@ -28,6 +27,7 @@ import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
+import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
@@ -139,7 +139,7 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[(String, PayAndTax)]): Future[Option[TotalIncome]] = {
+  private[controllers] def buildIncomeTotals(allEmployments: List[Employment], allPayAndTax: List[(String, PayAndTax)]): Future[Option[TotalIncome]] = {
     {
       if(allPayAndTax.nonEmpty) {
         val (pensions, employments) = allPayAndTax.partition { pat =>
@@ -147,11 +147,17 @@ class EmploymentSummaryController @Inject()(
           matchedRecord.fold(false) {_.receivingOccupationalPension}
         }
 
+        def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal = payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))
+        def pickTaxTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal = payAndTax.taxTotalIncludingEYU.getOrElse(BigDecimal(0))
+
+        val employmentsPayAndTax: Seq[PayAndTax] = employments.map(_._2)
+        val pensionsPayAndTax: Seq[PayAndTax] = pensions.map(_._2)
+
         Future successful Some(TotalIncome(
-          employmentTaxablePayTotal = employments.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-          pensionTaxablePayTotal = pensions.map(_._2).map(_.taxablePayTotal.getOrElse(BigDecimal(0))).sum,
-          employmentTaxTotal = employments.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum,
-          pensionTaxTotal = pensions.map(_._2).map(_.taxTotal.getOrElse(BigDecimal(0))).sum
+          employmentTaxablePayTotalIncludingEYU = employmentsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
+          pensionTaxablePayTotalIncludingEYU = pensionsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
+          employmentTaxTotalIncludingEYU = employmentsPayAndTax.map(pickTaxTotalIncludingEYU).sum,
+          pensionTaxTotalIncludingEYU = pensionsPayAndTax.map(pickTaxTotalIncludingEYU).sum
         ))
       } else {
         Future successful None

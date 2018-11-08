@@ -90,8 +90,8 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       payeReference.text should include(employment.payeReference)
       startDate.text should include(employment.startDate.toString("d MMMM yyyy"))
       endDate.text should include(employment.endDate.get.toString("d MMMM yyyy"))
-      taxablePay.text should include("£4,896.8")
-      incomeTax.text should include("£979.36")
+      taxablePay.text should include("£4,906.80")
+      incomeTax.text should include("£1,007.34")
     }
 
     "not have payroll ID and status for a pension" in new ViewFixture {
@@ -107,8 +107,8 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       doc.getElementsContainingText(ControllerUtils.getEmploymentStatus(employment)).hasText shouldBe false
       startDate.text should include(employment.startDate.toString("d MMMM yyyy"))
       endDate.text should include(employment.endDate.get.toString("d MMMM yyyy"))
-      taxablePay.text should include("£4,896.8")
-      incomeTax.text should include("£979.36")
+      taxablePay.text should include("£4,906.80")
+      incomeTax.text should include("£1,007.34")
     }
 
     "have correct Earlier Year Update details" in new ViewFixture {

@@ -91,7 +91,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(companyBenefits))))))
 
-      val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "TaxableExpenseBenefit"))
+      val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "c9923a63-4208-4e03-926d-7c7c88adc7ee"))
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Seq(companyBenefits))
@@ -107,7 +107,9 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
       lazy val payAndTaxWithEyu = PayAndTax(
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
         taxablePayTotal = Some(BigDecimal(1234567.89)),
+        taxablePayTotalIncludingEYU = Some(BigDecimal(2345678.90)),
         taxTotal = Some(BigDecimal(2222.22)),
+        taxTotalIncludingEYU = Some(BigDecimal(3333.33)),
         studentLoan = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = eyuList)
@@ -115,7 +117,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTaxWithEyu)))))
 
-      val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "TaxableExpenseBenefit"))
+      val result = await(connector.getPayAndTaxDetails(Nino(nino), 2014, "12341234"))
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(payAndTaxWithEyu)
@@ -128,7 +130,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
 
-      val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "TaxableExpenseBenefit"))
+      val result = await(connector.getEmployment(Nino(nino), 2014, "12341234"))
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(employment)
@@ -151,7 +153,9 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
 
       val payAndTax = PayAndTax(
         taxablePayTotal = Some(4896.80),
+        taxablePayTotalIncludingEYU = Some(BigDecimal(3785.70)),
         taxTotal = Some(979.36),
+        taxTotalIncludingEYU = Some(BigDecimal(868.25)),
         studentLoan = Some(101.00),
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty)

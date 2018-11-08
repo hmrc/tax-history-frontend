@@ -23,7 +23,9 @@ import play.api.libs.json.Json
 
 case class PayAndTax(payAndTaxId:UUID = UUID.randomUUID(),
                      taxablePayTotal: Option[BigDecimal],
+                     taxablePayTotalIncludingEYU: Option[BigDecimal],
                      taxTotal: Option[BigDecimal],
+                     taxTotalIncludingEYU: Option[BigDecimal],
                      studentLoan: Option[BigDecimal],
                      paymentDate: Option[LocalDate],
                      earlierYearUpdates: List[EarlierYearUpdate])

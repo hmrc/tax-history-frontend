@@ -21,7 +21,7 @@
 @import config.AppConfig
 
 @(taxYear: Int,
-        payAndTax: Option[PayAndTax],
+        payAndTaxOpt: Option[PayAndTax],
         employment: Employment,
         companyBenefits: List[CompanyBenefit],
         clientNameOrNino: String, actualOrForecast: Boolean,
@@ -111,42 +111,37 @@ TaxYear.current.currentYear == taxYear
         <h2 id="Payments" class="heading-medium no-top-margin">@Messages("employmenthistory.pay.and.tax.heading")</h2>
     </div>
 
-    @if(payAndTax.isDefined){
-        <table id="pay-and-tax-table" class="small-bottom-margin">
-            <tr>
-                <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
-                <td class="numeric">
-                @if(payAndTax.isDefined && payAndTax.get.taxablePayTotal.isDefined) {
-                    @Currency(payAndTax.get.taxablePayTotal.get)
-                } else {
-                    @Messages("employmenthistory.nopaydata")
-                }
-                </td>
-            </tr>
-            <tr>
-                <th scope="row" class="width50pc boldFont" >@Messages("lbl.income.tax")</th>
-                <td class="numeric">
-                @if(payAndTax.isDefined && payAndTax.get.taxTotal.isDefined) {
-                    @Currency(payAndTax.get.taxTotal.get)
-                } else {
-                    @Messages("employmenthistory.nopaydata")
-                }
-                </td>
-            </tr>
-            @if(payAndTax.isDefined && payAndTax.get.studentLoan.isDefined) {
+    @payAndTaxOpt match {
+        case Some(payAndTax) => {
+            <table id="pay-and-tax-table" class="small-bottom-margin">
                 <tr>
-                    <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
-                    <td class="numeric">@Currency(payAndTax.get.studentLoan.get)</td>
+                    <th scope="row" class="width50pc boldFont" >@Messages("lbl.taxable.income")</th>
+                    <td class="numeric">
+                    @payAndTax.taxablePayTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
+                    </td>
                 </tr>
-            }
-        </table>
-    } else {
-        <p id="no-payments" class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,employment.startDate.toString("d MMMM yyyy"))</p>
+                <tr>
+                    <th scope="row" class="width50pc boldFont" >@Messages("lbl.income.tax")</th>
+                    <td class="numeric">
+                    @payAndTax.taxTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
+                    </td>
+                </tr>
+                @for(studentLoan <- payAndTax.studentLoan) {
+                    <tr>
+                        <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
+                        <td class="numeric">@Currency(studentLoan)</td>
+                    </tr>
+                }
+            </table>
+        }
+        case None => {
+            <p id="no-payments" class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,employment.startDate.toString("d MMMM yyyy"))</p>
+        }
     }
 }
 
 @earlierYearUpdates() = {
-    @payAndTax.map { payAndTax =>
+    @payAndTaxOpt.map { payAndTax =>
         @if(payAndTax.earlierYearUpdates.nonEmpty) {
             <details id ="EYUs">
                 <summary class="summary" role="button">@Messages("employmenthistory.eyu.button")</summary>

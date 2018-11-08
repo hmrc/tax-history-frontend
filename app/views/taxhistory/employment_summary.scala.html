@@ -104,16 +104,19 @@
                     }
 
                 <div class ="grid-layout__column grid-layout__column--1-3">
-                    @if(incomeTotals.nonEmpty){
-                    <span class="boldFont">@Messages("employmenthistory.employment.total.income")</span>
-                    <br>
-                    <span class="total-summary-big" id="employmentIncome">@Currency(incomeTotals.get.employmentTaxablePayTotal)</span>
-                    <br>
-                    <span class="boldFont small-text">@Messages("employmenthistory.employment.total.income.tax")</span>
-                    <br>
-                    <span class="total-summary-small" id="employmentIncomeTax">@Currency(incomeTotals.get.employmentTaxTotal)</span>
-                    } else {
-                        <span class="grey" id="employmentIncomeEmpty">@Messages("employmenthistory.employment.table.error.no-values")</span>
+                    @incomeTotals match {
+                        case Some(incomeTotals) => {
+                            <span class="boldFont">@Messages("employmenthistory.employment.total.income")</span>
+                            <br>
+                            <span class="total-summary-big" id="employmentIncome">@Currency(incomeTotals.employmentTaxablePayTotalIncludingEYU)</span>
+                            <br>
+                            <span class="boldFont small-text">@Messages("employmenthistory.employment.total.income.tax")</span>
+                            <br>
+                            <span class="total-summary-small" id="employmentIncomeTax">@Currency(incomeTotals.employmentTaxTotalIncludingEYU)</span>
+                        }
+                        case None => {
+                            <span class="grey" id="employmentIncomeEmpty">@Messages("employmenthistory.employment.table.error.no-values")</span>
+                        }
                     }
                 </div>
             </div>
@@ -132,16 +135,19 @@
                     </div>
             }
             <div class ="grid-layout__column grid-layout__column--1-3">
-                @if(incomeTotals.nonEmpty){
-                <span class="boldFont">@Messages("employmenthistory.pension.total.income")</span>
-                <br>
-                <span class="total-summary-big" id="pensionIncome">@Currency(incomeTotals.get.pensionTaxablePayTotal)</span>
-                <br>
-                <span class="boldFont small-text">@Messages("employmenthistory.employment.total.income.tax")</span>
-                <br>
-                <span class="total-summary-small" id="pensionIncomeTax">@Currency(incomeTotals.get.pensionTaxTotal)</span>
-                } else {
-                    <span class="grey" id="pensionIncomeEmpty">@Messages("employmenthistory.pension.table.error.no-values")</span>
+                @incomeTotals match {
+                    case Some(incomeTotals) => {
+                        <span class="boldFont">@Messages("employmenthistory.pension.total.income")</span>
+                        <br>
+                        <span class="total-summary-big" id="pensionIncome">@Currency(incomeTotals.pensionTaxablePayTotalIncludingEYU)</span>
+                        <br>
+                        <span class="boldFont small-text">@Messages("employmenthistory.employment.total.income.tax")</span>
+                        <br>
+                        <span class="total-summary-small" id="pensionIncomeTax">@Currency(incomeTotals.pensionTaxTotalIncludingEYU)</span>
+                    }
+                    case None => {
+                        <span class="grey" id="pensionIncomeEmpty">@Messages("employmenthistory.pension.table.error.no-values")</span>
+                    }
                 }
             </div>
             </div>
