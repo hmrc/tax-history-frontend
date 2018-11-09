@@ -18,6 +18,7 @@ package views.taxhistory
 
 import java.util.UUID
 
+import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import model.api._
 import models.taxhistory.Person
 import org.joda.time.LocalDate
@@ -36,6 +37,7 @@ trait Constants {
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     receivingOccupationalPension = true,
+    employmentPaymentType = Some(OccupationalPension),
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716"
   )
@@ -48,6 +50,7 @@ trait Constants {
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
@@ -59,6 +62,7 @@ trait Constants {
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Ceased,
     worksNumber = "00191048716")
 
@@ -70,6 +74,7 @@ trait Constants {
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
@@ -82,6 +87,7 @@ trait Constants {
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     receivingOccupationalPension = true,
+    employmentPaymentType = Some(OccupationalPension),
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
@@ -202,6 +208,7 @@ trait DetailConstants {
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
@@ -214,6 +221,7 @@ trait DetailConstants {
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     receivingJobSeekersAllowance = true,
+    employmentPaymentType = Some(JobseekersAllowance),
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
@@ -222,6 +230,7 @@ trait DetailConstants {
     payeReference = "paye-1",
     employerName = "employer-1",
     startDate = LocalDate.parse("2016-01-21"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 

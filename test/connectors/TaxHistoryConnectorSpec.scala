@@ -19,8 +19,8 @@ package connectors
 import java.util.UUID
 
 import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
+import model.api.EmploymentPaymentType.JobseekersAllowance
 import model.api._
-import models.taxhistory.Employment
 import org.joda.time.LocalDate
 import org.mockito.Matchers._
 import org.mockito.Mockito._
@@ -29,11 +29,12 @@ import play.api.Application
 import play.api.http.Status
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.Json
+import play.api.libs.json.{JsArray, Json}
 import support.BaseSpec
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HttpResponse
 import utils.TestUtil
+import views.taxhistory.Constants
 
 import scala.concurrent.Future
 
@@ -55,18 +56,29 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
     }
   }
 
+  private val employment = Employment(
+    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+    payeReference = "paye-1",
+    employerName = "employer-1",
+    startDate = LocalDate.parse("2016-01-21"),
+    endDate = Some(LocalDate.parse("2017-01-01")),
+    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = Some(JobseekersAllowance),
+    employmentStatus = EmploymentStatus.Live,
+    worksNumber = "00191048716")
+
   "TaxHistoryConnector" should {
 
     "fetch tax history" in new LocalSetup {
+      val employmentsJson = JsArray(Seq(Json.toJson(employment)))
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(Employment("12341234", "Test Employer Name",
-          startDate, None, Some(25000.0), Some(2000.0))))))))
+        Future.successful(HttpResponse(Status.OK,Some(employmentsJson))))
 
       val result = await(connector.getEmploymentsAndPensions(Nino(nino), 2017))
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Seq(Employment("12341234", "Test Employer Name", startDate, None, Some(25000.0), Some(2000.0))))
-
+      result.json shouldBe employmentsJson
     }
 
     "fetch allowance for tax history" in new LocalSetup {
@@ -124,16 +136,14 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
     }
 
     "fetch Employment from backend" in new LocalSetup {
-
-      val employment = Employment("12341234", "Test Employer Name",
-        startDate, None, Some(25000.0), Some(2000.0))
+      val employmentJson = Json.toJson(employment)
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(employment)))))
+        Future.successful(HttpResponse(Status.OK,Some(employmentJson))))
 
       val result = await(connector.getEmployment(Nino(nino), 2014, "12341234"))
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(employment)
+      result.json shouldBe employmentJson
     }
 
     "fetch Tax years from backend" in new LocalSetup {

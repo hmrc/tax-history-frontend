@@ -51,6 +51,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716"
   )

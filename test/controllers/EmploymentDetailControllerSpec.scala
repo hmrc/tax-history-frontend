@@ -69,6 +69,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         endDate = Some(LocalDate.parse("2017-01-01")),
         companyBenefitsURI = None,
         payAndTaxURI = None,
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716"
       )

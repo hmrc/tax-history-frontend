@@ -33,10 +33,13 @@ case class Employment(employmentId:UUID = UUID.randomUUID(),
                       employmentURI:Option[String] = None,
                       receivingOccupationalPension: Boolean = false,
                       receivingJobSeekersAllowance: Boolean = false,
+                      employmentPaymentType: Option[EmploymentPaymentType],
                       employmentStatus: EmploymentStatus,
                       worksNumber: String)
 
 object Employment {
+  import EmploymentPaymentType.format
+
   implicit val jsonReads :Reads[Employment]= (
     (JsPath \ "employmentId").read[UUID] and
       (JsPath \ "startDate").read[LocalDate] and
@@ -48,6 +51,7 @@ object Employment {
       (JsPath \ "employmentURI").readNullable[String] and
       (JsPath \ "receivingOccupationalPension").read[Boolean] and
       (JsPath \ "receivingJobSeekersAllowance").read[Boolean] and
+      (JsPath \ "employmentPaymentType").readNullable[EmploymentPaymentType] and
       JsPath.read[EmploymentStatus] and
       (JsPath \ "worksNumber").read[String]
     ) (Employment.apply _)
@@ -64,6 +68,7 @@ object Employment {
       (JsPath \ "employmentURI").writeNullable[String] and
       (JsPath \ "receivingOccupationalPension").write[Boolean] and
       (JsPath \ "receivingJobSeekersAllowance").write[Boolean] and
+      (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
     )(unlift(Employment.unapply))
