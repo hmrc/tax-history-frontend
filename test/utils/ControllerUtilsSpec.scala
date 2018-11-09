@@ -232,11 +232,11 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
   }
 
   "ControllerUtils - isJobSeekerAllowance" must {
-    "return the employers name if receivingJobSeekersAllowance is false" in {
+    "return the employers name if employmentPaymentType is not JobseekersAllowance" in {
       ControllerUtils.isJobSeekerAllowance(employment) shouldBe "employer-1"
     }
 
-    "return the term Jobseeker''s Allowance if receivingJobSeekersAllowance is true" in {
+    "return the term Jobseeker''s Allowance if employmentPaymentType is JobseekersAllowance" in {
       ControllerUtils.isJobSeekerAllowance(employmentWithJobseekers) shouldBe Messages("employmenthistory.job.seekers")
     }
   }

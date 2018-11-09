@@ -18,6 +18,7 @@ package model.api
 
 import java.util.UUID
 
+import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import org.joda.time.LocalDate
 import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.Reads._
@@ -31,11 +32,12 @@ case class Employment(employmentId:UUID = UUID.randomUUID(),
                       companyBenefitsURI:Option[String] = None,
                       payAndTaxURI:Option[String] = None,
                       employmentURI:Option[String] = None,
-                      receivingOccupationalPension: Boolean = false,
-                      receivingJobSeekersAllowance: Boolean = false,
                       employmentPaymentType: Option[EmploymentPaymentType],
                       employmentStatus: EmploymentStatus,
-                      worksNumber: String)
+                      worksNumber: String) {
+  def isJobseekersAllowance = employmentPaymentType.contains(JobseekersAllowance)
+  def isOccupationalPension = employmentPaymentType.contains(OccupationalPension)
+}
 
 object Employment {
   import EmploymentPaymentType.format
@@ -49,8 +51,6 @@ object Employment {
       (JsPath \ "companyBenefitsURI").readNullable[String] and
       (JsPath \ "payAndTaxURI").readNullable[String] and
       (JsPath \ "employmentURI").readNullable[String] and
-      (JsPath \ "receivingOccupationalPension").read[Boolean] and
-      (JsPath \ "receivingJobSeekersAllowance").read[Boolean] and
       (JsPath \ "employmentPaymentType").readNullable[EmploymentPaymentType] and
       JsPath.read[EmploymentStatus] and
       (JsPath \ "worksNumber").read[String]
@@ -66,8 +66,6 @@ object Employment {
       (JsPath \ "companyBenefitsURI").writeNullable[String] and
       (JsPath \ "payAndTaxURI").writeNullable[String] and
       (JsPath \ "employmentURI").writeNullable[String] and
-      (JsPath \ "receivingOccupationalPension").write[Boolean] and
-      (JsPath \ "receivingJobSeekersAllowance").write[Boolean] and
       (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
