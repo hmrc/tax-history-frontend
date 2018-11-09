@@ -145,7 +145,7 @@ class EmploymentSummaryController @Inject()(
       if(allPayAndTax.nonEmpty) {
         val (pensions, employments) = allPayAndTax.partition { pat =>
           val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId.toString == pat._1)
-          matchedRecord.fold(false) {_.employmentPaymentType.isOccupationalPension}
+          matchedRecord.exists(_.isOccupationalPension)
         }
 
         def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal = payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))
