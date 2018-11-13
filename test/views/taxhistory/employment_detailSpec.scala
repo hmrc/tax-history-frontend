@@ -17,6 +17,7 @@
 package views.taxhistory
 
 import controllers.routes
+import model.api.EmploymentPaymentType.OccupationalPension
 import model.api.{IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
@@ -65,7 +66,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "have correct title, headings and GA pageview event for a pension" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment.copy(receivingOccupationalPension = true), List.empty, clientName, actualOrForecast = true, None)
+        employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, actualOrForecast = true, None)
 
       val title = Messages("employmenthistory.employment.details.title")
       doc.title shouldBe title
@@ -96,7 +97,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "not have payroll ID and status for a pension" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment.copy(receivingOccupationalPension = true), List.empty, clientName, actualOrForecast = true, None)
+        employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, actualOrForecast = true, None)
       val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
       val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
       val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)

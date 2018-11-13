@@ -53,7 +53,7 @@ TaxYear.current.currentYear == taxYear
 
     @payments()
 
-    @if(!employment.receivingJobSeekersAllowance) {
+    @if(!employment.isJobseekersAllowance) {
         @earlierYearUpdates()
 
         @companyBenefitsInfo()
@@ -80,16 +80,16 @@ TaxYear.current.currentYear == taxYear
 
 @employmentDetails() = {
     <h2 class="heading-small">
-    @if(employment.receivingOccupationalPension) {
+    @if(employment.isOccupationalPension) {
         @Messages("employmenthistory.employment.details.caption.pension")
     } else {
         @Messages("employmenthistory.employment.details.caption.employment") }</h2>
     <dl>
-    @if(!employment.receivingJobSeekersAllowance) {
+    @if(!employment.isJobseekersAllowance) {
         <dt class="small-text boldFont">@Messages("lbl.paye.reference")</dt>
         <dd class="small-text small-margin-bottom">@employment.payeReference</dd>
     }
-    @if(!employment.receivingOccupationalPension && !employment.receivingJobSeekersAllowance) {
+    @if(!employment.isOccupationalPension && !employment.isJobseekersAllowance) {
         <dt class="small-text boldFont">@Messages("lbl.payroll.id")</dt>
         <dd class="small-text small-margin-bottom">@employment.worksNumber</dd>
     }
@@ -99,7 +99,7 @@ TaxYear.current.currentYear == taxYear
         <dt class="small-text boldFont">@Messages("lbl.date.end")</dt>
         <dd class="small-text small-margin-bottom">@ControllerUtils.getEndDate(employment)</dd>
 
-    @if(!employment.receivingOccupationalPension) {
+    @if(!employment.isOccupationalPension) {
         <dt class="small-text boldFont">@Messages("lbl.status")</dt>
         <dd class="small-text small-margin-bottom">@ControllerUtils.getEmploymentStatus(employment)</dd>
     }
@@ -175,7 +175,7 @@ TaxYear.current.currentYear == taxYear
 }
 
 @companyBenefitsInfo() = {
-    @if(!isCurrentYear && !employment.receivingOccupationalPension){
+    @if(!isCurrentYear && !employment.isOccupationalPension){
         <h2 class="heading-medium" id="CompanyBenefits" >@Messages("employmenthistory.employment.details.companybenefits")</h2>
         @if(companyBenefits.nonEmpty) {
             <div>

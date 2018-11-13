@@ -20,6 +20,7 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import model.api.EmploymentPaymentType.OccupationalPension
 import support.fixtures.PersonFixture
 import model.api._
 import models.taxhistory.Person
@@ -51,6 +52,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     endDate = Some(LocalDate.parse("2017-01-01")),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+    employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716"
   )
@@ -435,8 +437,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
   }
 
   "buildIncomeTotals" should {
-    val empl1 = employment.copy(employmentId = UUID.randomUUID(), receivingOccupationalPension = false)
-    val empl2 = employment.copy(employmentId = UUID.randomUUID(), receivingOccupationalPension = false)
+    val empl1 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
+    val empl2 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
     val payAndTax1 = PayAndTax(
       payAndTaxId = empl1.employmentId,
       taxablePayTotal = Some(1),
@@ -477,7 +479,10 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     "return Taxable Pay Totals and Tax Totals that are sums of all pensions's Totals including Earlier Year Updates" in {
       val ctrlr = injected[EmploymentSummaryController]
       val totalIncome = await(ctrlr.buildIncomeTotals(
-        List(empl1.copy(receivingOccupationalPension = true), empl2.copy(receivingOccupationalPension = true)),
+        List(
+          empl1.copy(employmentPaymentType = Some(OccupationalPension)),
+          empl2.copy(employmentPaymentType = Some(OccupationalPension))
+        ),
         List(empl1.employmentId.toString -> payAndTax1, empl2.employmentId.toString -> payAndTax2)
       ))
 

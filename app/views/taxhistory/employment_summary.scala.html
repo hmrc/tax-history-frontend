@@ -88,7 +88,7 @@
     </ul>
     <ul>
         <li id="tabContent1" data-tab-content="1" class="tab-content"  aria-labelledby="tab1">
-                    @if(employments.exists(!_.receivingOccupationalPension)){
+                    @if(employments.exists(!_.isOccupationalPension)){
                     <h2 id = "EmploymentDetails" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.employments")</h2>
                     <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                     <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
@@ -122,7 +122,7 @@
             </div>
 
             <h2 id = "Pensions" class="heading-medium blue-underline">@Messages("employmenthistory.table.header.pensions")</h2>
-            @if(employments.exists(_.receivingOccupationalPension)) {
+            @if(employments.exists(_.isOccupationalPension)) {
             <h2 class="heading-small blue-underline-thin margin-top-and-bottom">@Messages("employmenthistory.table.header.pensions.private")</h2>
             <div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
                 <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
@@ -215,7 +215,7 @@
                 <th scope="col" class="small-text width15pc boldFont">@Messages("lbl.status")</th>
                 <th scope="col" class="small-text width10pc boldFont">@Messages("lbl.record")</th>
             </tr>
-            @employments.filter(!_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+            @employments.filter(!_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
                 <td class="small-text">@ControllerUtils.isJobSeekerAllowance(employment)</td>
                 <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
@@ -246,7 +246,7 @@
                 <th scope="col" class="small-text width25pc boldFont">@Messages("lbl.date.end")</th>
                 <th scope="col" class="small-text width20pc boldFont">@Messages("lbl.record")</th>
             </tr>
-            @employments.filter(_.receivingOccupationalPension).zipWithIndex.map { case (employment, index) =>
+            @employments.filter(_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
                 <td class="small-text">@employment.employerName</td>
                 <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>

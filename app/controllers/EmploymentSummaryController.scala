@@ -19,6 +19,7 @@ package controllers
 import javax.inject.Inject
 import config.{AppConfig, FrontendAuthConnector}
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
@@ -144,7 +145,7 @@ class EmploymentSummaryController @Inject()(
       if(allPayAndTax.nonEmpty) {
         val (pensions, employments) = allPayAndTax.partition { pat =>
           val matchedRecord: Option[Employment] = allEmployments.find(_.employmentId.toString == pat._1)
-          matchedRecord.fold(false) {_.receivingOccupationalPension}
+          matchedRecord.exists(_.isOccupationalPension)
         }
 
         def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal = payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))

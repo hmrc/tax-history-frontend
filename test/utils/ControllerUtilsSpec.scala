@@ -35,6 +35,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = None,
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
@@ -50,6 +51,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(parsedEndDate),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
@@ -63,6 +65,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = None,
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
@@ -76,6 +79,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
@@ -89,6 +93,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
@@ -102,6 +107,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = None,
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
@@ -117,6 +123,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
         worksNumber = "00191048716")
 
@@ -130,6 +137,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
@@ -143,6 +151,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
@@ -158,6 +167,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employerName = "employer",
         startDate = LocalDate.parse("2016-01-21"),
         endDate = Some(LocalDate.parse("2016-02-01")),
+        employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
@@ -172,6 +182,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
           employerName = "employer",
           startDate = LocalDate.parse("2016-01-21"),
           endDate = Some(LocalDate.parse("2016-02-01")),
+          employmentPaymentType = None,
           employmentStatus = EmploymentStatus.Unknown,
           worksNumber = "00191048716")
 
@@ -221,11 +232,11 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
   }
 
   "ControllerUtils - isJobSeekerAllowance" must {
-    "return the employers name if receivingJobSeekersAllowance is false" in {
+    "return the employers name if employmentPaymentType is not JobseekersAllowance" in {
       ControllerUtils.isJobSeekerAllowance(employment) shouldBe "employer-1"
     }
 
-    "return the term Jobseeker''s Allowance if receivingJobSeekersAllowance is true" in {
+    "return the term Jobseeker''s Allowance if employmentPaymentType is JobseekersAllowance" in {
       ControllerUtils.isJobSeekerAllowance(employmentWithJobseekers) shouldBe Messages("employmenthistory.job.seekers")
     }
   }
