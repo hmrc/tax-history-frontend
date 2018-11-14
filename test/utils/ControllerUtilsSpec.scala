@@ -240,18 +240,4 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
       ControllerUtils.isJobSeekerAllowance(employmentWithJobseekers) shouldBe Messages("employmenthistory.job.seekers")
     }
   }
-
-  "ControllerUtils - benefitSource" must {
-    "return the term P11D if the source is 19,28, or 29" in {
-      ControllerUtils.benefitSource(Some(19)) shouldBe Messages("employmenthistory.cb.P11D")
-      ControllerUtils.benefitSource(Some(28)) shouldBe Messages("employmenthistory.cb.P11D")
-      ControllerUtils.benefitSource(Some(29)) shouldBe Messages("employmenthistory.cb.P11D")
-    }
-
-    "return the term forecast in every other case" in {
-      ControllerUtils.benefitSource(Some(13)) shouldBe Messages("employmenthistory.cb.forecast")
-      ControllerUtils.benefitSource(None) shouldBe Messages("employmenthistory.cb.forecast")
-    }
-  }
-
 }

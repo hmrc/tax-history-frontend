@@ -109,19 +109,6 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
       Future.successful(emptyValue)
   }
 
-  private def getActualOrEstimateFlag(companyBenefits: List[CompanyBenefit]): Boolean = {
-    val P9D = 3
-    val P11D = 21
-    val Assessed_P11D = 28
-    val P11D_P9D = 29
-
-    companyBenefits.exists(cb => cb.source.contains(P9D)
-      || cb.source.contains(P11D)
-      || cb.source.contains(Assessed_P11D)
-      || cb.source.contains(P11D_P9D))
-
-  }
-
   private def loadEmploymentDetailsPage(empResponse: HttpResponse,
                                         nino: Nino,
                                         taxYear: Int,
@@ -133,7 +120,7 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
       incomeSource <- getIncomeSource(nino, taxYear, employmentId)
     } yield Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax,
-      employment, companyBenefits, person.getName.getOrElse(nino.nino), getActualOrEstimateFlag(companyBenefits), incomeSource))
+      employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource))
   }
 
 }

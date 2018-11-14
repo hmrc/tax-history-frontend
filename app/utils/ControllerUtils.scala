@@ -68,15 +68,4 @@ object ControllerUtils {
     if (employment.isJobseekersAllowance) Messages("employmenthistory.job.seekers")
     else employment.employerName
   }
-
-  def benefitSource(source: Option[Int])(implicit messages: Messages): String ={
-    val P11D_ECS = Some(19)
-    val assessedP11D = Some(28)
-    val ammendedP110 = Some(29)
-
-    source match{
-      case P11D_ECS|`assessedP11D`|`ammendedP110` => Messages("employmenthistory.cb.P11D")
-      case _ => Messages("employmenthistory.cb.forecast")
-    }
-  }
 }

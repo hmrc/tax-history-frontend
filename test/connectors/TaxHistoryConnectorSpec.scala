@@ -98,7 +98,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
     }
 
     "fetch company benefits for Employment details" in new LocalSetup {
-      val companyBenefits = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00)
+      val companyBenefits = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
 
       when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(companyBenefits))))))

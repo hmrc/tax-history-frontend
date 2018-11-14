@@ -23,7 +23,8 @@ import play.api.libs.json.Json
 case class CompanyBenefit(companyBenefitId:UUID = UUID.randomUUID(),
                           iabdType: String,
                           amount: BigDecimal,
-                          source: Option[Int] = None)
+                          source: Option[Int] = None,
+                          isForecastBenefit: Boolean)
 
 object CompanyBenefit {
   implicit val formats = Json.format[CompanyBenefit]

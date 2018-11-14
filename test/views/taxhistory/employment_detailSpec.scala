@@ -18,7 +18,7 @@ package views.taxhistory
 
 import controllers.routes
 import model.api.EmploymentPaymentType.OccupationalPension
-import model.api.{IncomeSource, TaAllowance, TaDeduction}
+import model.api.{CompanyBenefit, IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
@@ -52,7 +52,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "have correct title, headings and GA pageview event for an employment" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment, List.empty, clientName, actualOrForecast = true, None)
+        employment, List.empty, clientName, None)
 
       val title = Messages("employmenthistory.employment.details.title")
       doc.title shouldBe title
@@ -66,7 +66,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "have correct title, headings and GA pageview event for a pension" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, actualOrForecast = true, None)
+        employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
 
       val title = Messages("employmenthistory.employment.details.title")
       doc.title shouldBe title
@@ -79,7 +79,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "have correct employment details" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment, List.empty, clientName, actualOrForecast = true, None)
+        employment, List.empty, clientName, None)
       val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
       val payrollId: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
       val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
@@ -97,7 +97,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "not have payroll ID and status for a pension" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, actualOrForecast = true, None)
+        employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
       val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
       val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
       val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
@@ -115,7 +115,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "have correct Earlier Year Update details" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment, List.empty, clientName, actualOrForecast = true, None)
+        employment, List.empty, clientName, None)
 
       doc.getElementById("EYUs").child(1).child(0).text shouldEqual Messages("employmenthistory.eyu.caveat", employment.employerName)
 
@@ -134,11 +134,9 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "have correct company benefits details" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment, completeCBList, clientName, actualOrForecast = true, None)
+        employment, completeCBList, clientName, None)
 
-      val caveat_actual = Messages("employmenthistory.company.benefit.caveat.actual",
-        clientName, employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
-      doc.getElementsContainingOwnText(caveat_actual).hasText shouldBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.company.benefit.caveat")).hasText shouldBe true
 
       completeCBList.foreach(cb => {
         doc.getElementsContainingOwnText(Messages(s"employmenthistory.cb.${cb.iabdType}")).hasText shouldBe true
@@ -148,21 +146,18 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "show current" when {
       "employment is ongoing" in new ViewFixture {
         val view = views.html.taxhistory.employment_detail(taxYear,
-          Some(payAndTax), employmentNoEndDate, completeCBList, clientName, actualOrForecast = false, None)
+          Some(payAndTax), employmentNoEndDate, completeCBList, clientName, None)
 
         doc.getElementsMatchingOwnText(Messages("lbl.employment.status.current")).hasText shouldBe true
 
-        val caveat_estimate = Messages("employmenthistory.company.benefit.caveat.estimate",
-          clientName, employment.employerName, formatDate(TaxYear(taxYear).starts), formatDate(TaxYear(taxYear).finishes))
-
-        doc.getElementsContainingOwnText(caveat_estimate).hasText shouldBe true
+        doc.getElementsContainingOwnText(Messages("employmenthistory.company.benefit.caveat")).hasText shouldBe true
       }
     }
 
     "show data not available" when {
       "input data missing for payAndTax.taxablePayTotal and payAndTax.taxTotal" in new ViewFixture {
         val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxNoTotal),
-          employment, List.empty, clientName, actualOrForecast = true, None)
+          employment, List.empty, clientName, None)
         val eyutable: Element = doc.getElementById("eyu-table")
         val cbTable: Element = doc.getElementById("cb-table")
         val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
@@ -177,7 +172,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       "employment details are for previous year" in new ViewFixture {
 
         val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-          employment, completeCBList, clientName, actualOrForecast = true, None)
+          employment, completeCBList, clientName, None)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading")).hasText shouldBe false
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText shouldBe false
@@ -194,7 +189,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       "employment details are for current year and there are deductions" in new ViewFixture {
 
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
-          employment, completeCBList, clientName, actualOrForecast = true, incomeSourceWithDeductions)
+          employment, completeCBList, clientName, incomeSourceWithDeductions)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading", {
           ""
@@ -214,7 +209,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       "employment details are for current year and there are no deductions" in new ViewFixture {
 
         val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
-          employment, completeCBList, clientName, actualOrForecast = true, incomeSourceNoDeductions)
+          employment, completeCBList, clientName, incomeSourceNoDeductions)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading", {
           ""
@@ -234,7 +229,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       "The employment is recievingJobseekersAllowance = true" in new ViewFixture {
 
         val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-          employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
+          employmentWithJobseekers, completeCBList, clientName, None)
 
         doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.eyu")).hasText shouldBe false
         doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.eyu.caveat")).hasText shouldBe false
@@ -257,10 +252,30 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       }
     }
 
+
+    "Show company benefit's P11D/forecast descriptor" when {
+      "the company benefit's payment is forecast" in new ViewFixture {
+        val companyBenefitForecast = completeCBList.head.copy(isForecastBenefit=true)
+        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List(companyBenefitForecast), clientName, None)
+
+        val cbTable: Element = doc.getElementById("cb-table")
+        cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.forecast")).hasText shouldBe true
+        cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.P11D")).hasText shouldBe false
+      }
+      "the company benefit's payment is not forecast" in new ViewFixture {
+        val companyBenefitActual = completeCBList.head.copy(isForecastBenefit=false)
+        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List(companyBenefitActual), clientName, None)
+
+        val cbTable: Element = doc.getElementById("cb-table")
+        cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.forecast")).hasText shouldBe false
+        cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.P11D")).hasText shouldBe true
+      }
+    }
+
     "Show student loans when data is available" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
+        employmentWithJobseekers, completeCBList, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe true
       doc.getElementsMatchingOwnText("£101").hasText shouldBe true
@@ -269,7 +284,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "Not show student loans when data is available" in new ViewFixture {
 
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxNoStudentLoan),
-        employmentWithJobseekers, completeCBList, clientName, actualOrForecast = true, None)
+        employmentWithJobseekers, completeCBList, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe false
     }
@@ -277,7 +292,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "Show alternate text when payAndTax is not defined" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(currentTaxYear, None,
-        employment, completeCBList, clientName, actualOrForecast = true, incomeSourceNoDeductions)
+        employment, completeCBList, clientName, incomeSourceNoDeductions)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.pay.and.tax",
         employment.employerName, employment.startDate.toString("d MMMM yyyy"))).hasText shouldBe true
@@ -286,14 +301,14 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "show alternate text when no company benefits are available" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment, List.empty, clientName, actualOrForecast = true, None)
+        employment, List.empty, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.employment.details.no.benefits", "employer-1")).hasText shouldBe true
     }
 
     "Show correct heading and links for nav bar" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-        employment, List.empty, clientName, actualOrForecast = true, None)
+        employment, List.empty, clientName, None)
 
       doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.sidebar.links.more-options")
 
@@ -314,7 +329,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
   "totals for allowance and deduction have the correct values" in new ViewFixture {
     val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
-      employment, List.empty, clientName, actualOrForecast = true, incomeSourceWithdeductionsAndAllowances)
+      employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
     doc.getElementById("DeductionTotal").text shouldBe "£2"
     doc.getElementById("AllowanceTotal").text shouldBe "£2"
   }
