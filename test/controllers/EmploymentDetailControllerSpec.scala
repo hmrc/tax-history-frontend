@@ -48,8 +48,10 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
 
       val c = injected[EmploymentDetailController]
       val cbUUID = UUID.randomUUID()
-      val companyBenefits = List(CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1)),
-        CompanyBenefit(cbUUID, "CarFuelBenefit", 1000))
+      val companyBenefits = List(
+        CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1), isForecastBenefit = true),
+        CompanyBenefit(cbUUID, "CarFuelBenefit", 1000, isForecastBenefit = true)
+      )
 
       val payAndTax = PayAndTax(
         taxablePayTotal = Some(4896.80),
