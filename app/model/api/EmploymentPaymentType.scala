@@ -19,16 +19,16 @@ package model.api
 import play.api.libs.json._
 
 sealed trait EmploymentPaymentType extends Product with Serializable {
-  val name: String = getClass.getSimpleName
+  val name: String
 }
 
 object EmploymentPaymentType {
-  case object OccupationalPension extends EmploymentPaymentType
-  case object JobseekersAllowance extends EmploymentPaymentType
-  case object IncapacityBenefit extends EmploymentPaymentType
-  case object EmploymentAndSupportAllowance extends EmploymentPaymentType
-  case object StatePensionLumpSum extends EmploymentPaymentType
-  case object Unknown extends EmploymentPaymentType
+  case object OccupationalPension extends EmploymentPaymentType { val name = "OccupationalPension" }
+  case object JobseekersAllowance extends EmploymentPaymentType { val name = "JobseekersAllowance" }
+  case object IncapacityBenefit extends EmploymentPaymentType { val name = "IncapacityBenefit" }
+  case object EmploymentAndSupportAllowance extends EmploymentPaymentType { val name = "EmploymentAndSupportAllowance" }
+  case object StatePensionLumpSum extends EmploymentPaymentType { val name = "StatePensionLumpSum" }
+  case object Unknown extends EmploymentPaymentType { val name = "Unknown" }
 
   def apply(name: String): EmploymentPaymentType = name.trim match {
     case OccupationalPension.name => OccupationalPension
