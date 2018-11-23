@@ -25,12 +25,40 @@ class EmploymentPaymentTypeSpec extends UnitSpec {
   "EmploymentPaymentType" must {
     import EmploymentPaymentType.format
 
-    "read and write json successfully" in {
-      format.reads(format.writes(JobseekersAllowance)) shouldBe JsSuccess(JobseekersAllowance)
-      format.reads(format.writes(OccupationalPension)) shouldBe JsSuccess(OccupationalPension)
-      format.reads(format.writes(IncapacityBenefit)) shouldBe JsSuccess(IncapacityBenefit)
-      format.reads(format.writes(EmploymentAndSupportAllowance)) shouldBe JsSuccess(EmploymentAndSupportAllowance)
-      format.reads(format.writes(StatePensionLumpSum)) shouldBe JsSuccess(StatePensionLumpSum)
+    "deserialising from json" when {
+      "deserialising from string 'JobseekersAllowance'" in {
+        format.reads(JsString("JobseekersAllowance")) shouldBe JsSuccess(JobseekersAllowance)
+      }
+      "deserialising from string 'OccupationalPension'" in {
+        format.reads(JsString("OccupationalPension")) shouldBe JsSuccess(OccupationalPension)
+      }
+      "deserialising from string 'IncapacityBenefit'" in {
+        format.reads(JsString("IncapacityBenefit")) shouldBe JsSuccess(IncapacityBenefit)
+      }
+      "deserialising from string 'EmploymentAndSupportAllowance'" in {
+        format.reads(JsString("EmploymentAndSupportAllowance")) shouldBe JsSuccess(EmploymentAndSupportAllowance)
+      }
+      "deserialising from string 'StatePensionLumpSum'" in {
+        format.reads(JsString("StatePensionLumpSum")) shouldBe JsSuccess(StatePensionLumpSum)
+      }
+    }
+
+    "serialising to json" when {
+      "serialising from JobseekersAllowance" in {
+        format.writes(JobseekersAllowance) shouldBe JsString("JobseekersAllowance")
+      }
+      "serialising from OccupationalPension" in {
+        format.writes(OccupationalPension) shouldBe JsString("OccupationalPension")
+      }
+      "serialising from IncapacityBenefit" in {
+        format.writes(IncapacityBenefit) shouldBe JsString("IncapacityBenefit")
+      }
+      "serialising from EmploymentAndSupportAllowance" in {
+        format.writes(EmploymentAndSupportAllowance) shouldBe JsString("EmploymentAndSupportAllowance")
+      }
+      "serialising from StatePensionLumpSum" in {
+        format.writes(StatePensionLumpSum) shouldBe JsString("StatePensionLumpSum")
+      }
     }
 
     "read unknown values successfully as Unknown" in {
