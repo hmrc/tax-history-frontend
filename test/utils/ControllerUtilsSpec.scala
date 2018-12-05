@@ -33,7 +33,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = None,
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
@@ -49,7 +49,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(parsedEndDate),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
@@ -63,7 +63,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = None,
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
@@ -77,7 +77,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
@@ -91,7 +91,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
@@ -105,7 +105,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = None,
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
@@ -115,13 +115,25 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
     }
   }
 
+  "ControllerUtils - getStartDate" must {
+    "return default message when there is no start date" in {
+      val employmentNoStart = employment.copy(startDate = None)
+      ControllerUtils.getStartDate(employmentNoStart) shouldBe Messages("lbl.start-date.missing")
+    }
+
+    "return formatted date when there is a start date" in {
+      val employmentNoStart = employment.copy(startDate = Some(LocalDate.parse("2016-02-01")))
+      ControllerUtils.getStartDate(employmentNoStart) shouldBe "1 February 2016"
+    }
+  }
+
   "ControllerUtils - getEmploymentStatus" must {
     "return default message when employment is Live" in {
       val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
@@ -135,7 +147,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
@@ -149,7 +161,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
@@ -165,7 +177,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
         employerName = "employer",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
@@ -180,7 +192,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
           employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
           payeReference = "paye",
           employerName = "employer",
-          startDate = LocalDate.parse("2016-01-21"),
+          startDate = Some(LocalDate.parse("2016-01-21")),
           endDate = Some(LocalDate.parse("2016-02-01")),
           employmentPaymentType = None,
           employmentStatus = EmploymentStatus.Unknown,

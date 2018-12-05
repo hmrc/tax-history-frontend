@@ -67,7 +67,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye-1",
         employerName = "employer-1",
-        startDate = LocalDate.parse("2016-01-21"),
+        startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2017-01-01")),
         companyBenefitsURI = None,
         payAndTaxURI = None,

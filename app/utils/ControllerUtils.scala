@@ -16,7 +16,6 @@
 
 package utils
 
-import model.api.EmploymentPaymentType.JobseekersAllowance
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
 
@@ -32,6 +31,11 @@ object ControllerUtils {
       case EmploymentStatus.Unknown => unknown
       case _                        => ceased
     }
+  }
+
+  def getStartDate(employment: Employment)(implicit messages: Messages): String = {
+    val missing = Messages("lbl.start-date.missing")
+    employment.startDate.map(startDate => DateHelper.formatDate(startDate)).getOrElse(missing)
   }
 
   def getEndDate(employment: Employment)(implicit messages: Messages): String = {
