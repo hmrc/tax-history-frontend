@@ -116,9 +116,9 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
   }
 
   "ControllerUtils - getStartDate" must {
-    "return default message when there is no start date" in {
+    "return empty string when there is no start date" in {
       val employmentNoStart = employment.copy(startDate = None)
-      ControllerUtils.getStartDate(employmentNoStart) shouldBe Messages("lbl.start-date.missing")
+      ControllerUtils.getStartDate(employmentNoStart) shouldBe ""
     }
 
     "return formatted date when there is a start date" in {

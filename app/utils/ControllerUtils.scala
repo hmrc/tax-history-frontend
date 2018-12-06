@@ -34,8 +34,7 @@ object ControllerUtils {
   }
 
   def getStartDate(employment: Employment)(implicit messages: Messages): String = {
-    val missing = Messages("lbl.start-date.missing")
-    employment.startDate.map(startDate => DateHelper.formatDate(startDate)).getOrElse(missing)
+    employment.startDate.map(startDate => DateHelper.formatDate(startDate)).getOrElse("")
   }
 
   def getEndDate(employment: Employment)(implicit messages: Messages): String = {

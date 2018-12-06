@@ -22,7 +22,6 @@ lbl.select.new.client=Select a new client
 global.link.signout=Sign out
 lbl.end-date.unknown=Unknown
 lbl.end-date.ongoing=Ongoing
-lbl.start-date.missing=
 lbl.no.data.available=No data available
 lbl.no.data.available.text=no data available
 lbl.continue=Continue
