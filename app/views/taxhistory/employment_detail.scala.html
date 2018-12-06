@@ -94,7 +94,7 @@ TaxYear.current.currentYear == taxYear
         <dd class="small-text small-margin-bottom">@employment.worksNumber</dd>
     }
         <dt class="small-text boldFont">@Messages("lbl.date.start")</dt>
-        <dd class="small-text small-margin-bottom">@employment.startDate.toString("d MMMM yyyy")</dd>
+        <dd class="small-text small-margin-bottom">@ControllerUtils.getStartDate(employment)</dd>
 
         <dt class="small-text boldFont">@Messages("lbl.date.end")</dt>
         <dd class="small-text small-margin-bottom">@ControllerUtils.getEndDate(employment)</dd>
@@ -135,7 +135,7 @@ TaxYear.current.currentYear == taxYear
             </table>
         }
         case None => {
-            <p id="no-payments" class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,employment.startDate.toString("d MMMM yyyy"))</p>
+            <p id="no-payments" class="grey">@Messages("employmenthistory.no.pay.and.tax",employment.employerName,ControllerUtils.getStartDate(employment))</p>
         }
     }
 }

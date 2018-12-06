@@ -89,7 +89,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
       payrollId.text should include(employment.worksNumber)
       payeReference.text should include(employment.payeReference)
-      startDate.text should include(employment.startDate.toString("d MMMM yyyy"))
+      startDate.text should include(employment.startDate.get.toString("d MMMM yyyy"))
       endDate.text should include(employment.endDate.get.toString("d MMMM yyyy"))
       taxablePay.text should include("£4,906.80")
       incomeTax.text should include("£1,007.34")
@@ -106,7 +106,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
       doc.getElementsContainingText(employment.worksNumber).hasText shouldBe false
       doc.getElementsContainingText(ControllerUtils.getEmploymentStatus(employment)).hasText shouldBe false
-      startDate.text should include(employment.startDate.toString("d MMMM yyyy"))
+      startDate.text should include(employment.startDate.get.toString("d MMMM yyyy"))
       endDate.text should include(employment.endDate.get.toString("d MMMM yyyy"))
       taxablePay.text should include("£4,906.80")
       incomeTax.text should include("£1,007.34")
@@ -295,7 +295,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         employment, completeCBList, clientName, incomeSourceNoDeductions)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.pay.and.tax",
-        employment.employerName, employment.startDate.toString("d MMMM yyyy"))).hasText shouldBe true
+        employment.employerName, employment.startDate.get.toString("d MMMM yyyy"))).hasText shouldBe true
 
     }
 

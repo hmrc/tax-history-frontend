@@ -25,7 +25,7 @@ import play.api.libs.json.Reads._
 import play.api.libs.json.{JsPath, Reads, Writes}
 
 case class Employment(employmentId:UUID = UUID.randomUUID(),
-                      startDate:LocalDate,
+                      startDate:Option[LocalDate],
                       endDate:Option[LocalDate] = None,
                       payeReference:String,
                       employerName:String,
@@ -44,7 +44,7 @@ object Employment {
 
   implicit val jsonReads :Reads[Employment]= (
     (JsPath \ "employmentId").read[UUID] and
-      (JsPath \ "startDate").read[LocalDate] and
+      (JsPath \ "startDate").readNullable[LocalDate] and
       (JsPath \ "endDate").readNullable[LocalDate] and
       (JsPath \ "payeReference").read[String] and
       (JsPath \ "employerName").read[String] and
@@ -59,7 +59,7 @@ object Employment {
 
   implicit val locationWrites: Writes[Employment] = (
     (JsPath \ "employmentId").write[UUID] and
-      (JsPath \ "startDate").write[LocalDate] and
+      (JsPath \ "startDate").writeNullable[LocalDate] and
       (JsPath \ "endDate").writeNullable[LocalDate] and
       (JsPath \ "payeReference").write[String] and
       (JsPath \ "employerName").write[String] and

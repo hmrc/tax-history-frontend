@@ -218,7 +218,7 @@
             @employments.filter(!_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
                 <td class="small-text">@ControllerUtils.isJobSeekerAllowance(employment)</td>
-                <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
+                <td class="small-text">@ControllerUtils.getStartDate(employment)</td>
                 <td class="small-text">@ControllerUtils.getEndDate(employment)</td>
                 <td class="small-text">@ControllerUtils.getEmploymentStatus(employment)</td>
                 <td class="small-text">
@@ -249,7 +249,7 @@
             @employments.filter(_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
             <tr>
                 <td class="small-text">@employment.employerName</td>
-                <td class="small-text">@DateHelper.formatDate(employment.startDate)</td>
+                <td class="small-text">@ControllerUtils.getStartDate(employment)</td>
                 <td class="small-text">@ControllerUtils.getEndDate(employment)</td>
                 <td class="small-text"><a href="/tax-history/single-record@employment.employmentURI"
                                           data-journey-click='@Messages("lbl.ga.link-click") :@Messages("lbl.ga.action.pensions") :@Messages("lbl.ga.label.view-record")'
