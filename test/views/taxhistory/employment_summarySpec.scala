@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -96,7 +96,6 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p1.text")) mustBe true
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p2.text")) mustBe true
-      caveatParagraphs.contains(Messages("employmenthistory.caveat.p3.text")) mustBe true
     }
 
     "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
