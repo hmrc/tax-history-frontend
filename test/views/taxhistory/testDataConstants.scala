@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 HM Revenue & Customs
+ * Copyright 2019 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -186,7 +186,6 @@ trait DetailConstants {
     CompanyBenefit(uuid, "ExpensesPay", 1000.00, isForecastBenefit=true),
     CompanyBenefit(uuid, "Mileage", 1000.00, isForecastBenefit=true),
     CompanyBenefit(uuid, "NonQualifyingRelocationExpense", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "NurseryPlaces", 1000.00, isForecastBenefit=true),
     CompanyBenefit(uuid, "OtherItems", 1000.00, isForecastBenefit=true),
     CompanyBenefit(uuid, "PaymentEmployeesBehalf", 1000.00, isForecastBenefit=true),
     CompanyBenefit(uuid, "PersonalIncidentExpenses", 1000.00, isForecastBenefit=true),
