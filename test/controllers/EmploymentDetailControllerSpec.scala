@@ -59,6 +59,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
         taxTotal = Some(979.36),
         taxTotalIncludingEYU = Some(979.36),
         studentLoan = None,
+        studentLoanIncludingEYU  = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty
       )

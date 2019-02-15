@@ -24,6 +24,7 @@ import play.api.libs.json.Json
 case class EarlierYearUpdate(earlierYearUpdateId:UUID = UUID.randomUUID(),
                              taxablePayEYU: BigDecimal,
                              taxEYU: BigDecimal,
+                             studentLoanEYU: Option[BigDecimal] = None,
                              receivedDate:LocalDate)
 
 object EarlierYearUpdate {

@@ -126,7 +126,7 @@ TaxYear.current.currentYear == taxYear
                     @payAndTax.taxTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
                     </td>
                 </tr>
-                @for(studentLoan <- payAndTax.studentLoan) {
+                @for(studentLoan <- payAndTax.studentLoanIncludingEYU) {
                     <tr>
                         <th scope="row" class ="width50pc boldFont"> @Messages("employmenthistory.student.loans")</th>
                         <td class="numeric">@Currency(studentLoan)</td>
@@ -148,26 +148,44 @@ TaxYear.current.currentYear == taxYear
 
                 <div class ="panel-indent">
                     <p>@Messages("employmenthistory.eyu.caveat", employment.employerName)</p>
-
-                    <table id="eyu-table" class="no-bottom-margin">
-                        <thead>
-                            <tr>
-                                <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.pay")</th>
-                                <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.tax")</th>
-                                <th scope="col" class="width40pc">@Messages("employmenthistory.eyu.date.received")</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        @payAndTax.earlierYearUpdates.map { cb =>
-                            <tr>
-
-                                <td>@Currency.withPositive(cb.taxablePayEYU)</td>
-                                <td>@Currency.withPositive(cb.taxEYU)</td>
-                                <td>@formatDate(cb.receivedDate)</td>
-                            </tr>
-                        }
-                        </tbody>
-                    </table>
+                    @if(payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.nonEmpty) {
+                        <table id="eyu-pay-or-tax-table" class="no-bottom-margin">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.pay")</th>
+                                    <th scope="col" class="width30pc">@Messages("employmenthistory.eyu.tax")</th>
+                                    <th scope="col" class="width40pc">@Messages("employmenthistory.eyu.date.received")</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map { cb =>
+                                <tr>
+                                    <td>@Currency.withPositive(cb.taxablePayEYU)</td>
+                                    <td>@Currency.withPositive(cb.taxEYU)</td>
+                                    <td>@formatDate(cb.receivedDate)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
+                    @if(payAndTax.earlierYearUpdatesWithStudentLoans.nonEmpty){
+                        <table id="eyu-student-loan-table" class="no-bottom-margin">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="width60pc">@Messages("employmenthistory.eyu.pay")</th>
+                                    <th scope="col" class="width40pc">@Messages("employmenthistory.eyu.date.received")</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @payAndTax.earlierYearUpdatesWithStudentLoans.map { cb =>
+                                <tr>
+                                    <td>@Currency.withPositive(cb.studentLoanEYU.getOrElse(BigDecimal(0.0)))</td>
+                                    <td>@formatDate(cb.receivedDate)</td>
+                                </tr>
+                            }
+                            </tbody>
+                        </table>
+                    }
                 </div>
             </details>
         }

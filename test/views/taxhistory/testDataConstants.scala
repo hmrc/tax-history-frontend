@@ -125,6 +125,7 @@ trait DetailConstants {
   val eyu1 = EarlierYearUpdate(
     taxablePayEYU = 0,
     taxEYU = 8.99,
+    studentLoanEYU = Some(10.0),
     receivedDate = LocalDate.parse("2016-01-21")
   )
 
@@ -142,6 +143,7 @@ trait DetailConstants {
     taxTotal = Some(979.36),
     taxTotalIncludingEYU = Some(1007.34),
     studentLoan = Some(101.00),
+    studentLoanIncludingEYU = Some(111.0),
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = eyuList
   )
@@ -152,6 +154,7 @@ trait DetailConstants {
     taxTotal = None,
     taxTotalIncludingEYU = None,
     studentLoan = Some(101.00),
+    studentLoanIncludingEYU = Some(101.0),
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = List.empty
   )
@@ -162,6 +165,7 @@ trait DetailConstants {
     taxTotal = Some(979.36),
     taxTotalIncludingEYU = Some(1007.34),
     studentLoan = None,
+    studentLoanIncludingEYU = None,
     paymentDate = Some(new LocalDate("2016-02-20")),
     earlierYearUpdates = eyuList)
 

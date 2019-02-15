@@ -119,16 +119,20 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
       doc.getElementById("EYUs").child(1).child(0).text shouldEqual Messages("employmenthistory.eyu.caveat", employment.employerName)
 
-      val eyuRow0: Element = doc.select("#eyu-table tbody tr").get(0)
-      val eyuRow1: Element = doc.select("#eyu-table tbody tr").get(1)
-      eyuRow0.text should include("21 January 2016")
-      eyuRow0.text should include("£0")
-      eyuRow0.text should include("£8.99")
+      val eyuPayOrTaxRow0: Element = doc.select("#eyu-pay-or-tax-table tbody tr").get(0)
+      val eyuPayOrTaxRow1: Element = doc.select("#eyu-pay-or-tax-table tbody tr").get(1)
+      eyuPayOrTaxRow0.text should include("21 January 2016")
+      eyuPayOrTaxRow0.text should include("£0")
+      eyuPayOrTaxRow0.text should include("£8.99")
 
-      eyuRow1.text should include("21 May 2016")
-      eyuRow1.text should include("£10")
-      eyuRow1.text should include("£18.99")
+      eyuPayOrTaxRow1.text should include("21 May 2016")
+      eyuPayOrTaxRow1.text should include("£10")
+      eyuPayOrTaxRow1.text should include("£18.99")
 
+      val eyuStudentLoanRow0:Element = doc.select("#eyu-student-loan-table tbody tr").get(0)
+
+      eyuStudentLoanRow0.text should include("21 January 2016")
+      eyuStudentLoanRow0.text should include("£10")
     }
 
     "have correct company benefits details" in new ViewFixture {
@@ -278,7 +282,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         employmentWithJobseekers, completeCBList, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe true
-      doc.getElementsMatchingOwnText("£101").hasText shouldBe true
+      doc.getElementsMatchingOwnText("£111").hasText shouldBe true
     }
 
     "Not show student loans when data is available" in new ViewFixture {
