@@ -123,6 +123,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
         taxTotal = Some(BigDecimal(2222.22)),
         taxTotalIncludingEYU = Some(BigDecimal(3333.33)),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = eyuList)
 
@@ -167,6 +168,7 @@ class TaxHistoryConnectorSpec extends BaseSpec with MockitoSugar with TestUtil {
         taxTotal = Some(979.36),
         taxTotalIncludingEYU = Some(BigDecimal(868.25)),
         studentLoan = Some(101.00),
+        studentLoanIncludingEYU = Some(101.00),
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty)
 

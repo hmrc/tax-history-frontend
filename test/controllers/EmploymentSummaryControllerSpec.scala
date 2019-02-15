@@ -80,6 +80,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotal = Some(979.36),
         taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty),
     "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
@@ -90,6 +91,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotal = Some(979.36),
         taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty))
 
@@ -101,6 +103,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotal = Some(979.36),
         taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty),
     UUID.randomUUID().toString ->
@@ -110,6 +113,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotal = Some(979.36),
         taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty))
 
@@ -446,6 +450,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       taxTotal = Some(1000),
       taxTotalIncludingEYU = Some(10000),
       studentLoan = None,
+      studentLoanIncludingEYU = None,
       paymentDate = None,
       earlierYearUpdates = Nil)
     val payAndTax2 = PayAndTax(
@@ -455,6 +460,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       taxTotal = Some(2000),
       taxTotalIncludingEYU = Some(20000),
       studentLoan = None,
+      studentLoanIncludingEYU = None,
       paymentDate = None,
       earlierYearUpdates = Nil)
 
