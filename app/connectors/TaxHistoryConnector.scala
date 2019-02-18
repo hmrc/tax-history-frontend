@@ -16,28 +16,23 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import java.net.URL
 
-import config.WSHttpT
-import play.api.{Configuration, Environment}
-import play.api.Mode.Mode
+import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
 import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
 
 import scala.concurrent.Future
 
 @Singleton
-class TaxHistoryConnector @Inject()(val environment: Environment, val runModeConfiguration: Configuration, val httpGet: WSHttpT) extends ServicesConfig {
-
-  protected def mode: Mode = environment.mode
+class TaxHistoryConnector @Inject()(@Named("tax-history-baseUrl") baseUrl: URL, httpGet: HttpGet) {
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     override def read(method: String, url: String, response: HttpResponse) = response
   }
 
-  private val taxHistoryUrl = s"${baseUrl("tax-history")}/tax-history"
+  private val taxHistoryUrl = new URL(baseUrl, "/tax-history")
 
   def getEmploymentsAndPensions(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpGet.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments")

@@ -16,26 +16,30 @@
 
 package controllers
 
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import play.api.Environment
 import play.api.http.Status
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
+import views.TestAppConfig
 
 import scala.concurrent.Future
 
-class SelectClientControllerSpec extends ControllerSpec {
+class SelectClientControllerSpec extends ControllerSpec with TestAppConfig {
 
   trait LocalSetup {
 
     lazy val controller = {
 
-      val c = injected[SelectClientController]
+      val c = new SelectClientController(mock[AuthConnector],
+        app.configuration, injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))

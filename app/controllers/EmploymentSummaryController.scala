@@ -16,26 +16,25 @@
 
 package controllers
 
-import javax.inject.Inject
-import config.{AppConfig, FrontendAuthConnector}
+import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import model.api.EmploymentPaymentType.OccupationalPension
+import javax.inject.Inject
 import model.api._
 import models.taxhistory.Person
 import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import scala.collection.immutable
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class EmploymentSummaryController @Inject()(
                                              val taxHistoryConnector: TaxHistoryConnector,
                                              val citizenDetailsConnector: CitizenDetailsConnector,
-                                             override val authConnector: FrontendAuthConnector,
+                                             override val authConnector: AuthConnector,
                                              override val config: Configuration,
                                              override val env: Environment,
                                              implicit val messagesApi: MessagesApi,

@@ -16,31 +16,35 @@
 
 package controllers
 
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import support.fixtures.PersonFixture
 import model.api.IndividualTaxYear
 import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import play.api.Environment
 import play.api.http.Status
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
+import views.TestAppConfig
 
 import scala.concurrent.Future
 
-class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture{
+class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with TestAppConfig {
 
   trait LocalSetup {
 
     lazy val controller = {
 
-      val c = injected[SelectTaxYearController]
+      val c = new SelectTaxYearController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        app.configuration, injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))

@@ -20,25 +20,28 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import support.fixtures.PersonFixture
 import model.api._
 import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers.any
 import org.mockito.Mockito.when
+import play.api.Environment
 import play.api.http.Status
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
 import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{AffinityGroup, Enrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
+import views.TestAppConfig
 
 import scala.concurrent.Future
 
-class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
+class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture with TestAppConfig {
 
   trait HappyPathSetup {
 
@@ -46,7 +49,9 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture {
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentDetailController = {
 
-      val c = injected[EmploymentDetailController]
+      val c = new EmploymentDetailController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        app.configuration, injected[Environment], injected[MessagesApi], appConfig)
+
       val cbUUID = UUID.randomUUID()
       val companyBenefits = List(
         CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1), isForecastBenefit = true),

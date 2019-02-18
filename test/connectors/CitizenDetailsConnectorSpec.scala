@@ -16,51 +16,44 @@
 
 package connectors
 
-import config.{ConfigDecorator, FrontendAuthConnector, WSHttpT}
-import support.fixtures.PersonFixture
-import org.mockito.Matchers.{eq => meq, _}
+import java.net.URL
+
+import org.mockito.Matchers._
 import org.mockito.Mockito._
-import play.api.Application
+import org.scalatest.mockito.MockitoSugar
 import play.api.http.Status
-import play.api.inject.bind
-import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.libs.json.Json
-import support.BaseSpec
+import support.fixtures.PersonFixture
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestUtil
 
 import scala.concurrent.Future
 
-class CitizenDetailsConnectorSpec extends BaseSpec with TestUtil with PersonFixture {
+class CitizenDetailsConnectorSpec extends UnitSpec with MockitoSugar with TestUtil with PersonFixture {
 
-  val http = mock[WSHttpT]
+  private implicit val hc = HeaderCarrier()
 
-  override implicit lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[FrontendAuthConnector].toInstance(mock[FrontendAuthConnector]))
-    .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
-    .overrides(bind[WSHttpT].toInstance(http))
-    .build()
+  val mockHttpClient: HttpClient = mock[HttpClient]
 
   val nino =randomNino.toString()
 
   trait LocalSetup {
-    lazy val connector = {
-      injected[CitizenDetailsConnector]
-    }
+    lazy val connector = new CitizenDetailsConnector(new URL("http://localhost"), mockHttpClient)
   }
 
   "CitizenDetailsConnector" should {
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(connector.httpGet.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any())(any(), any(), any())).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(person))))))
 
       val result = await(connector.getPersonDetails(Nino(nino)))
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Some(person))
-
     }
   }
 
