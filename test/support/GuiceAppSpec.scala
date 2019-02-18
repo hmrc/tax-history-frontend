@@ -16,7 +16,7 @@
 
 package support
 
-import config.{ConfigDecorator, FrontendAuthConnector}
+import config.ConfigDecorator
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
@@ -36,7 +36,6 @@ class GuiceAppSpec extends BaseSpec {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder().configure(additionalConfig)
     .bindings(bindModules:_*).in(Mode.Test)
-    .overrides(bind[FrontendAuthConnector].toInstance( mock[FrontendAuthConnector]))
     .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
     .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
     .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))

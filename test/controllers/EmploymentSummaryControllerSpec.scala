@@ -20,27 +20,30 @@ import java.util.UUID
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.EmploymentPaymentType.OccupationalPension
-import support.fixtures.PersonFixture
 import model.api._
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.mockito.Matchers
 import org.mockito.Matchers._
 import org.mockito.Mockito.when
-import play.api.i18n.Messages
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
+import play.api.{Configuration, Environment}
 import support.ControllerSpec
+import support.fixtures.PersonFixture
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import views.TestAppConfig
 
 import scala.concurrent.Future
 
-class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture {
+class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture with TestAppConfig {
 
   val startDate = new LocalDate("2016-01-21")
 
@@ -123,7 +126,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -149,7 +153,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -169,9 +174,11 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
+
     lazy val controller: EmploymentSummaryController = {
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -179,6 +186,10 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
       when(c.taxHistoryConnector.getAllowances(any(), any())(any()))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(Json.arr()))))
+      when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
+        thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
+      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
       when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
@@ -193,7 +204,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -203,6 +215,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
+      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
       when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
@@ -218,7 +232,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     lazy val controller: EmploymentSummaryController = {
 
       val person = Some(Person(Some("first name"), Some("second name"), deceased = Some(false)))
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -228,6 +243,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, None)))
+      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
       when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
@@ -243,7 +260,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     lazy val controller: EmploymentSummaryController = {
 
       val person = Some(Person(Some("first name"), Some("second name"), deceased = Some(false)))
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -253,6 +271,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
+      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+        thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
       when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
         thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(Json.toJson(payAndTaxFixedUUID)))))
       when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
@@ -266,7 +286,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -286,7 +307,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -308,7 +330,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
 
       val person = Some(Person(Some("James"), Some("Bond"), Some(true)))
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -323,7 +346,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
-      val c = injected[EmploymentSummaryController]
+      val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
+        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
 
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))

@@ -16,33 +16,28 @@
 
 package connectors
 
-import javax.inject.{Inject, Singleton}
+import java.net.URL
 
-import config.WSHttpT
-import play.api.{Configuration, Environment}
-import play.api.Mode.Mode
+import javax.inject.{Inject, Named, Singleton}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
-import uk.gov.hmrc.play.config.ServicesConfig
+import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 @Singleton
-class CitizenDetailsConnector @Inject()(val httpGet: WSHttpT, val runModeConfiguration: Configuration, val environment: Environment) extends ServicesConfig {
-
-  val mode: Mode = environment.mode
+class CitizenDetailsConnector @Inject()(@Named("citizen-details-baseUrl") baseUrl: URL, httpGet: HttpGet) {
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     override def read(method: String, url: String, response: HttpResponse) = response
   }
 
-  private def url(nino: String) = s"${baseUrl("citizen-details")}/citizen-details/$nino/designatory-details/basic"
+  private def url(nino: String) = new URL(baseUrl, s"/citizen-details/$nino/designatory-details/basic")
 
     /**
       * Gets the person details
       */
     def getPersonDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-      httpGet.GET[HttpResponse](url(nino.value))
+      httpGet.GET[HttpResponse](url(nino.value).toString)
     }
   }

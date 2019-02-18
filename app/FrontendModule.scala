@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package modules
+import java.net.URL
 
-
-import javax.inject.Provider
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
-import config.{AppConfig, WSHttpT}
+import config.AppConfig
+import javax.inject.Provider
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.http._
+import uk.gov.hmrc.http.{HttpGet, HttpPatch, HttpPost, HttpPut}
+import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient, HttpClient}
+import uk.gov.hmrc.play.config.ServicesConfig
 
-class LocalGuiceModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
+class FrontendModule(val environment: Environment, val configuration: Configuration) extends AbstractModule with ServicesConfig {
+
+  override val runModeConfiguration: Configuration = configuration
+  override protected def mode = environment.mode
+
+
   override def configure() = {
 
     bind(classOf[String]).annotatedWith(Names.named("contactFormServiceIdentifier")).toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
@@ -41,6 +47,16 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
         override lazy val get = configuration.getString(confKey)
           .getOrElse(throw new IllegalStateException(s"No value found for configuration property $confKey"))
       }
+
+      bind(classOf[HttpClient]).to(classOf[DefaultHttpClient])
+      bind(classOf[HttpPost]).to(classOf[DefaultHttpClient])
+      bind(classOf[HttpGet]).to(classOf[DefaultHttpClient])
+      bind(classOf[HttpPut]).to(classOf[DefaultHttpClient])
+      bind(classOf[HttpPatch]).to(classOf[DefaultHttpClient])
+
+      bindBaseUrl("auth")
+      bindBaseUrl("citizen-details")
+      bindBaseUrl("tax-history")
 
       def get: AppConfig = new AppConfig {
         val contactHost = getConfStringOrThrow("contact-frontend.host", default = Some(""))
@@ -73,4 +89,12 @@ class LocalGuiceModule(val environment: Environment, val configuration: Configur
     lazy val get =
       configuration.getString(propertyName).orElse(default).getOrElse(throw new RuntimeException(s"No configuration value found for '$propertyName'"))
   }
+
+  private def bindBaseUrl(serviceName: String) =
+    bind(classOf[URL]).annotatedWith(Names.named(s"$serviceName-baseUrl")).toProvider(new BaseUrlProvider(serviceName))
+
+  private class BaseUrlProvider(serviceName: String) extends Provider[URL] {
+    override lazy val get = new URL(baseUrl(serviceName))
+  }
+
 }

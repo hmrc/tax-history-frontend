@@ -16,17 +16,17 @@
 
 package controllers
 
-import javax.inject.Inject
-
-import config.{AppConfig, FrontendAuthConnector}
+import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
+import javax.inject.Inject
 import model.api.IndividualTaxYear
 import models.taxhistory.SelectTaxYear
 import play.api.data.Form
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Request, Result}
 import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
@@ -38,7 +38,7 @@ import scala.concurrent.Future
 class SelectTaxYearController @Inject()(
                                          val taxHistoryConnector: TaxHistoryConnector,
                                          val citizenDetailsConnector: CitizenDetailsConnector,
-                                         override val authConnector: FrontendAuthConnector,
+                                         override val authConnector: AuthConnector,
                                          override val config: Configuration,
                                          override val env: Environment,
                                          implicit val messagesApi: MessagesApi,

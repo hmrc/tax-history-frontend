@@ -16,9 +16,8 @@
 
 package controllers
 
+import config.AppConfig
 import javax.inject.Inject
-
-import config.{AppConfig, FrontendAuthConnector}
 import models.taxhistory.Person
 import org.mockito.Matchers
 import org.mockito.Matchers.any
@@ -46,7 +45,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait HappyPathSetup {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       c
@@ -56,7 +55,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait NoEnrolmentsSetup {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(Set()))))
       c
@@ -66,7 +65,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait NoEnrolmentsAndNotAnAgentSetup {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
       c
@@ -76,7 +75,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait NoEnrolmentsAndNoAffinityGroupSetup {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
       c
@@ -86,7 +85,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait failureOnRetrievalOfEnrolment {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.failed(new BadGatewayException("error")))
       c
@@ -96,7 +95,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait failureOnMissingBearerToken {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.failed(new MissingBearerToken))
       c
@@ -106,7 +105,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait failureInsufficientEnrolments {
 
     lazy val controller: Controller = {
-      val c = injected[Controller]
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
       when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
         Future.failed(new InsufficientEnrolments))
       c
@@ -237,7 +236,7 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   }
 }
 
-class Controller @Inject()(override val authConnector: FrontendAuthConnector,
+class Controller @Inject()(override val authConnector: AuthConnector,
                            override val config: Configuration,
                            override val env: Environment,
                            implicit val messagesApi: MessagesApi,
