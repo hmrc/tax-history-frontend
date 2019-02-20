@@ -43,7 +43,7 @@
             <header class="page-header">
                 <span id="ClientIncomeRecord" class="pre-heading pre-heading-small">@Messages("employmenthistory.display.client.name", s"$clientNameOrNino")</span>
                 <h1 class="heading-xlarge-no-bottom">@ControllerUtils.isJobSeekerAllowance(employment)</h1>
-                <h2 id="taxYearRange" class="pre-heading-small boldFont no-top-margin no-bottom-margin">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear + 1).toString)</h2>
+                <h2 id="taxYearRange" class="pre-heading-small boldFont no-top-margin">@Messages("employmenthistory.taxyear", taxYear.toString, (taxYear + 1).toString)</h2>
             </header>
 
             <section class="section subsection section--blue-top employment-summary phoneContent" id="details-bar-mobile">
@@ -140,8 +140,14 @@
 @earlierYearUpdates() = {
 @payAndTaxOpt.map { payAndTax =>
     @if(payAndTax.earlierYearUpdates.nonEmpty) {
-        <p>@Messages("employmenthistory.eyu.updates.part1") <span class="boldFont">@payAndTax.earlierYearUpdates.size</span>
-            @Messages("employmenthistory.eyu.updates.part2")</p>
+        @if(payAndTax.earlierYearUpdates.size > 1) {
+            <p>@Messages("employmenthistory.eyu.updates.part1") <span class="boldFont">@payAndTax.earlierYearUpdates.size</span>
+                @Messages("employmenthistory.eyu.updates.part2")</p>
+        }
+        @if(payAndTax.earlierYearUpdates.size == 1){
+            <p>@Messages("employmenthistory.eyu.updates.single.part1") <span class="boldFont">1</span>
+                @Messages("employmenthistory.eyu.updates.single.part2")</p>
+        }
         <details id ="EYUs">
             <summary class="summary" role="button">@Messages("employmenthistory.eyu.button")</summary>
 
@@ -171,7 +177,7 @@
                     <table id="eyu-student-loan-table" class="no-bottom-margin">
                         <thead>
                             <tr>
-                                <th scope="col" class="width60pc">@Messages("employmenthistory.eyu.pay")</th>
+                                <th scope="col" class="width60pc">@Messages("employmenthistory.eyu.studentloan")</th>
                                 <th scope="col" class="width40pc">@Messages("employmenthistory.eyu.date.received")</th>
                             </tr>
                         </thead>
