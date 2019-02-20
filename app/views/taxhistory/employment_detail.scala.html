@@ -32,7 +32,7 @@
 }
 
 @views.html.main_template(title = Messages("employmenthistory.employment.details.title"),
-    bodyClasses = None, mainclass= Some("full-width")
+    bodyClasses = None, mainClass = Some("full-width")
 ) {
 
     <a href="@controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
