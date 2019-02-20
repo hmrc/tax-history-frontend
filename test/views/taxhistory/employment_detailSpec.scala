@@ -166,7 +166,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         val cbTable: Element = doc.getElementById("cb-table")
         val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
         taxablePay.text should include(Messages("employmenthistory.nopaydata"))
-        doc.getElementsContainingOwnText(Messages("employmenthistory.eyu.date.received")).hasText shouldBe false
         val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
         doc.getElementsContainingOwnText(paymentGuidance).hasText shouldBe false
       }

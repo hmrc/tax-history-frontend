@@ -29,6 +29,10 @@
   margin-bottom: 15px;
 }
 
+.margin-bottom-30 {
+  margin-bottom: 30px;
+}
+
 table {
   margin-bottom: 2.5em;
 }
@@ -290,4 +294,8 @@ color : #6f777b;
 .thick-top-bottom{
  border-top: 4px solid black;
  border-bottom: 4px solid black;
+}
+
+.panel-indent {
+  border-left-width: 5px;
 }
