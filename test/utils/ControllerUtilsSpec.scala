@@ -58,7 +58,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
       ControllerUtils.getEndDate(emp) shouldBe DateTimeFormat.forPattern("d MMMM yyyy").print(parsedEndDate)
     }
 
-    "return error message when employment status is PotentiallyCeased" in {
+    "return default message when employment status is PotentiallyCeased" in {
       val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
@@ -69,7 +69,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentStatus = EmploymentStatus.PotentiallyCeased,
         worksNumber = "00191048716")
 
-      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
+      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.date.no-record")
     }
 
     "return formatted end date" in {
@@ -111,14 +111,14 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         employmentStatus = EmploymentStatus.Unknown,
         worksNumber = "00191048716")
 
-      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.unknown")
+      ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.date.no-record")
     }
   }
 
   "ControllerUtils - getStartDate" must {
-    "return empty string when there is no start date" in {
+    "return default message when there is no start date" in {
       val employmentNoStart = employment.copy(startDate = None)
-      ControllerUtils.getStartDate(employmentNoStart) shouldBe ""
+      ControllerUtils.getStartDate(employmentNoStart) shouldBe "No record"
     }
 
     "return formatted date when there is a start date" in {

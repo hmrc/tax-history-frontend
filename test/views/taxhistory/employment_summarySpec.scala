@@ -82,7 +82,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
         doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate.get)).hasText mustBe true
         if (emp.employmentStatus == EmploymentStatus.PotentiallyCeased) {
-          doc.getElementsMatchingOwnText(Messages("lbl.end-date.unknown")).hasText mustBe true
+          doc.getElementsMatchingOwnText(Messages("lbl.date.no-record")).hasText mustBe true
         } else {
           doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.end-date.ongoing"))
           (d => DateHelper.formatDate(d))).hasText mustBe true
