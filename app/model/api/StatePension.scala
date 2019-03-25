@@ -15,10 +15,30 @@
  */
 
 package model.api
-import play.api.libs.json.Json
 
-case class StatePension(grossAmount: BigDecimal, typeDescription: String)
+import org.joda.time.{LocalDate, Weeks}
+import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.time.TaxYear
+
+case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymentFrequency: Option[Int] = None, startDate: Option[LocalDate] = None) {
+
+  def getAmountReceivedTillDate(taxYear: Int): Option[BigDecimal] =
+    paymentFrequency match {
+      case Some(1) => //Weekly
+        if (TaxYear.current.currentYear == taxYear) {
+          startDate.flatMap { start =>
+            val noOfWeeksTillDate = Weeks.weeksBetween(start, LocalDate.now()).getWeeks
+            Some(noOfWeeksTillDate * weeklyAmount)
+          }
+        } else {
+          Some(grossAmount)
+        }
+      case _ => Some(grossAmount)
+    }
+
+  lazy val weeklyAmount: BigDecimal = grossAmount / 52
+}
 
 object StatePension {
-  implicit val formats = Json.format[StatePension]
+  implicit val formats: OFormat[StatePension] = Json.format[StatePension]
 }
