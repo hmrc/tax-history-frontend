@@ -19,12 +19,13 @@ package views.taxhistory
 import controllers.routes
 import model.api.{EmploymentStatus, StatePension}
 import models.taxhistory.Person
+import org.joda.time.LocalDate
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
-import utils.{DateHelper, TestUtil}
+import utils.DateHelper._
+import utils.{Currency, TestUtil}
 import views.{Fixture, TestAppConfig}
 
 class employment_summarySpec extends GuiceAppSpec with Constants with TestAppConfig {
@@ -80,12 +81,12 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
       employments.foreach(emp => {
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
-        doc.getElementsContainingOwnText(DateHelper.formatDate(emp.startDate.get)).hasText mustBe true
+        doc.getElementsContainingOwnText(formatDate(emp.startDate.get)).hasText mustBe true
         if (emp.employmentStatus == EmploymentStatus.PotentiallyCeased) {
           doc.getElementsMatchingOwnText(Messages("lbl.date.no-record")).hasText mustBe true
         } else {
           doc.getElementsMatchingOwnText(emp.endDate.fold(Messages("lbl.end-date.ongoing"))
-          (d => DateHelper.formatDate(d))).hasText mustBe true
+          (d => formatDate(d))).hasText mustBe true
         }
       })
 
@@ -123,20 +124,22 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
     }
   }
 
-  "Show state pensions when they have them with text cy-x" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100, "test")), None)
-
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy-x", "£100.00")).hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy", "£100.00")).hasText mustBe false
+  "Show state pensions when clients receiving them for the first time in the current year" in new ViewFixture {
+    val startDate = LocalDate.now().withYear(currentTaxYear)
+    val sp = StatePension(100, "test", Some(1), Some(startDate))
+    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None)
+    doc.getElementsContainingOwnText("State Pension").hasText mustBe true
+    val weeklyP1 = Messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", formatDate(startDate))
+    val weeklyP2 = Messages("employmenthistory.state.pensions.text.weekly.p2",  formatDate(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(currentTaxYear))}")
+    doc.getElementsContainingOwnText(weeklyP1).hasText mustBe true
+    doc.getElementsContainingOwnText(weeklyP2).hasText mustBe true
   }
 
-  "Show state pensions when they have them with text for cy" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, taxAccount, Some(StatePension(100, "test")), None)
+  "Show state pensions when clients receiving them yearly" in new ViewFixture {
+    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100, "test", Some(5))), None)
 
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy", "£100.00")).hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.cy-x", "£100.00")).hasText mustBe false
+    doc.getElementsContainingOwnText("State Pension").hasText mustBe true
+    doc.getElementsContainingOwnText("Your client's State Pension this tax year was £100.00").hasText mustBe true
   }
 
   "Don't show state pensions when they don't have them" in new ViewFixture {
