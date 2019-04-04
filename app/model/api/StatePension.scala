@@ -28,7 +28,8 @@ case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymen
         if (TaxYear.current.currentYear == taxYear) {
           startDate.flatMap { start =>
             val noOfWeeksTillDate = Weeks.weeksBetween(start, LocalDate.now()).getWeeks
-            Some(noOfWeeksTillDate * weeklyAmount)
+            val noOfPaymentsTillDate = noOfWeeksTillDate + 1 //noOfWeeksTillDate comes out as one less than the no of payments
+            Some(noOfPaymentsTillDate * weeklyAmount)
           }
         } else {
           Some(grossAmount)

@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
-import utils.TestUtil
+import utils.{Currency, TestUtil}
 import views.{Fixture, TestAppConfig}
 
 class employment_summarySpec extends GuiceAppSpec with Constants with TestAppConfig {
@@ -126,11 +126,13 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
   "Show state pensions when clients receiving them for the first time in the current year" in new ViewFixture {
     val startDate = LocalDate.now().withYear(currentTaxYear)
-    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, taxAccount, Some(StatePension(100, "test", Some(1), Some(startDate))), None)
-
+    val sp = StatePension(100, "test", Some(1), Some(startDate))
+    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None)
     doc.getElementsContainingOwnText("State Pension").hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", formatDate(startDate))).hasText mustBe true
-    doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text.weekly.p2",  formatDate(LocalDate.now()), "£100")).hasText mustBe true
+    val weeklyP1 = Messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", formatDate(startDate))
+    val weeklyP2 = Messages("employmenthistory.state.pensions.text.weekly.p2",  formatDate(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(currentTaxYear))}")
+    doc.getElementsContainingOwnText(weeklyP1).hasText mustBe true
+    doc.getElementsContainingOwnText(weeklyP2).hasText mustBe true
   }
 
   "Show state pensions when clients receiving them yearly" in new ViewFixture {
