@@ -21,12 +21,12 @@ lazy val scoverageSettings = {
 val compile = Seq(
   ws,
   "uk.gov.hmrc" %% "domain"                % "5.6.0-play-25",
-  "uk.gov.hmrc" %% "bootstrap-play-25"     % "4.16.0",
+  "uk.gov.hmrc" %% "bootstrap-play-25"     % "5.1.0",
   "uk.gov.hmrc" %% "govuk-template"        % "5.35.0-play-25",
-  "uk.gov.hmrc" %% "play-ui"               % "8.0.0-play-25",
+  "uk.gov.hmrc" %% "play-ui"               % "8.3.0-play-25",
   "uk.gov.hmrc" %% "play-partials"         % "6.9.0-play-25",
   "uk.gov.hmrc" %% "url-builder"           % "3.1.0",
-  "uk.gov.hmrc" %% "auth-client"           % "2.28.0-play-25",
+  "uk.gov.hmrc" %% "auth-client"           % "2.31.0-play-25",
   "uk.gov.hmrc" %% "agent-mtd-identifiers" % "0.15.0-play-25",
   "uk.gov.hmrc" %% "tax-year"              % "0.6.0"
 )
