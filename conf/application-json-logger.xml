@@ -5,9 +5,19 @@
         <encoder class="uk.gov.hmrc.play.logging.JsonEncoder"/>
     </appender>
 
-    <logger name="uk.gov" level="WARN"/>
+    <logger name="uk.gov" level="${logger.uk.gov:-INFO}"/>
 
-    <root level="WARN">
+    <logger name="application" level="${logger.application:-INFO}"/>
+
+    <logger name="com.ning.http.client" level="WARN"/>
+
+    <logger name="org.asynchttpclient.netty.channel.DefaultChannelPool" level="WARN"/>
+
+    <logger name="org.asynchttpclient.netty" level="WARN"/>
+
+    <logger name="play.core.netty" additivity="false" level="WARN"/>
+
+    <root level="${logger.application:-ERROR}">
         <appender-ref ref="STDOUT"/>
     </root>
 </configuration>
