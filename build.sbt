@@ -33,7 +33,7 @@ val compile = Seq(
 
 def test(scope: String = "test") = Seq(
   "uk.gov.hmrc"            %% "hmrctest"           % "3.9.0-play-25"     % scope,
-  "org.jsoup"              % "jsoup"               % "1.11.2"            % scope,
+  "org.jsoup"              % "jsoup"               % "1.11.3"            % scope,
   "com.typesafe.play"      %% "play-test"          % PlayVersion.current % scope,
   "org.mockito"            % "mockito-all"         % "2.0.2-beta"        % scope,
   "org.scalatestplus.play" %% "scalatestplus-play" % "2.0.1"             % scope
@@ -55,7 +55,7 @@ lazy val microservice =
     .settings(publishingSettings: _*)
     .settings(defaultSettings(): _*)
     .settings(
-      scalaVersion := "2.11.11",
+      scalaVersion := "2.11.12",
       libraryDependencies ++= appDependencies,
       retrieveManaged := true,
       evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false),
