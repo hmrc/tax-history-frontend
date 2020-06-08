@@ -19,6 +19,8 @@ package views
 import org.jsoup.Jsoup
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.Strings.TextHelpers
@@ -26,7 +28,7 @@ import views.Strings.TextHelpers
 import scala.collection.JavaConverters._
 
 trait Fixture extends MustMatchers {
-  implicit val request = FakeRequest()
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   def view: HtmlFormat.Appendable
   lazy val html = view.body

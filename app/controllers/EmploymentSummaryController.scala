@@ -21,15 +21,13 @@ import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import javax.inject.Inject
 import model.api._
 import models.taxhistory.Person
-import play.api.i18n.MessagesApi
 import play.api.mvc._
 import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentSummaryController @Inject()(
                                              val taxHistoryConnector: TaxHistoryConnector,
@@ -37,9 +35,9 @@ class EmploymentSummaryController @Inject()(
                                              override val authConnector: AuthConnector,
                                              override val config: Configuration,
                                              override val env: Environment,
-                                             implicit val messagesApi: MessagesApi,
+                                             val cc: MessagesControllerComponents,
                                              implicit val appConfig: AppConfig
-                                           ) extends BaseController {
+                                           )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut

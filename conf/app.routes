@@ -1,22 +1,22 @@
 # microservice specific routes
 
 # Map static resources from the /public folder to the /assets URL path
-GET   /                                                   @controllers.SelectClientController.root()
-GET   /agent/select-client                                @controllers.SelectClientController.getLegacySelectClientPage()
-GET   /select-client                                      @controllers.SelectClientController.getSelectClientPage()
-POST  /select-client                                      @controllers.SelectClientController.submitSelectClientPage()
-GET   /single-record/:taxYear/employments/:employmentId   @controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
-GET   /not-authorised                                     @controllers.ClientErrorController.getNotAuthorised()
-GET   /no-agent-services-account                          @controllers.ClientErrorController.getNoAgentServicesAccountPage()
-GET   /no-data-available                                  @controllers.ClientErrorController.getMciRestricted()
-GET   /data-unavailable                                   @controllers.ClientErrorController.getDeceased()
-GET   /no-data/:taxYears                                  @controllers.ClientErrorController.getNoData(taxYears:Int)
-GET   /service-unavailable-technical                      @controllers.ClientErrorController.getTechnicalError()
-GET   /client-income-record/:taxYear                      @controllers.EmploymentSummaryController.getTaxHistory(taxYear:Int)
-GET   /logout                                             @controllers.EmploymentSummaryController.logout()
+GET   /                                                   controllers.SelectClientController.root()
+GET   /agent/select-client                                controllers.SelectClientController.getLegacySelectClientPage()
+GET   /select-client                                      controllers.SelectClientController.getSelectClientPage()
+POST  /select-client                                      controllers.SelectClientController.submitSelectClientPage()
+GET   /single-record/:taxYear/employments/:employmentId   controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
+GET   /not-authorised                                     controllers.ClientErrorController.getNotAuthorised()
+GET   /no-agent-services-account                          controllers.ClientErrorController.getNoAgentServicesAccountPage()
+GET   /no-data-available                                  controllers.ClientErrorController.getMciRestricted()
+GET   /data-unavailable                                   controllers.ClientErrorController.getDeceased()
+GET   /no-data/:taxYears                                  controllers.ClientErrorController.getNoData(taxYears:Int)
+GET   /service-unavailable-technical                      controllers.ClientErrorController.getTechnicalError()
+GET   /client-income-record/:taxYear                      controllers.EmploymentSummaryController.getTaxHistory(taxYear:Int)
+GET   /logout                                             controllers.EmploymentSummaryController.logout()
 
 
-GET   /select-tax-year                                    @controllers.SelectTaxYearController.getSelectTaxYearPage()
-POST  /select-tax-year                                    @controllers.SelectTaxYearController.submitSelectTaxYearPage()
+GET   /select-tax-year                                    controllers.SelectTaxYearController.getSelectTaxYearPage()
+POST  /select-tax-year                                    controllers.SelectTaxYearController.submitSelectTaxYearPage()
 
-GET   /assets/*file                                       @controllers.Assets.at(path="/public", file)
+GET   /assets/*file                                       controllers.Assets.at(path="/public", file)

@@ -18,18 +18,14 @@ package views.errors
 
 import play.api.i18n.Messages
 import support.GuiceAppSpec
-import utils.TestUtil
 import views.{Fixture, TestAppConfig}
 
 class deceasedSpec extends GuiceAppSpec with TestAppConfig {
 
-  trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
-  }
 
   "Deceased view" must {
 
-    "have correct title, heading and GA page view" in new ViewFixture {
+    "have correct title, heading and GA page view" in new Fixture {
 
       val view = views.html.errors.deceased()
 

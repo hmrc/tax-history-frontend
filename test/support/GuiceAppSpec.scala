@@ -16,15 +16,12 @@
 
 package support
 
-import config.ConfigDecorator
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import play.api.i18n.MessagesApi
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
 import play.api.{Application, Mode}
-import play.filters.csrf.CSRF.Token
-import play.filters.csrf.{CSRFConfigProvider, CSRFFilter}
 
 class GuiceAppSpec extends BaseSpec {
 
@@ -36,24 +33,11 @@ class GuiceAppSpec extends BaseSpec {
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder().configure(additionalConfig)
     .bindings(bindModules:_*).in(Mode.Test)
-    .overrides(bind[ConfigDecorator].toInstance(mock[ConfigDecorator]))
     .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
     .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
     .build()
 
   implicit val messagesApi = app.injector.instanceOf[MessagesApi]
   implicit val messages = messagesApi.preferred(FakeRequest())
-
-
-  def addToken[T](fakeRequest: FakeRequest[T]) = {
-    val csrfConfig     = app.injector.instanceOf[CSRFConfigProvider].get
-    val csrfFilter     = app.injector.instanceOf[CSRFFilter]
-    val token          = csrfFilter.tokenProvider.generateToken
-
-    fakeRequest.copyFakeRequest(tags = fakeRequest.tags ++ Map(
-      Token.NameRequestTag  -> csrfConfig.tokenName,
-      Token.RequestTag      -> token
-    )).withHeaders((csrfConfig.headerName, token))
-  }
 
 }

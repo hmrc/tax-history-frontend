@@ -16,13 +16,11 @@
 
 package controllers
 
-import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import org.mockito.Matchers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.MockitoSugar
 import play.api.Environment
 import play.api.http.Status
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
@@ -34,14 +32,14 @@ import scala.concurrent.Future
 
 class SelectClientControllerSpec extends ControllerSpec with TestAppConfig {
 
-  trait LocalSetup {
+  trait LocalSetup extends MockitoSugar {
 
     lazy val controller = {
 
       val c = new SelectClientController(mock[AuthConnector],
-        app.configuration, injected[Environment], injected[MessagesApi], appConfig)
+        app.configuration, injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       c
     }

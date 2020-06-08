@@ -17,9 +17,10 @@
 package controllers
 
 import controllers.auth.AgentAuth
+import javax.inject.Inject
 import models.taxhistory.Person
 import play.api.i18n.I18nSupport
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.mvc._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.~
@@ -29,39 +30,40 @@ import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
 import utils.TaxHistoryLogger
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
-trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
+
+abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implicit ec: ExecutionContext)
+  extends AgentAuth(cc) with I18nSupport with TaxHistoryLogger {
 
   /**
-    * The URI to direct to for login.
-    */
+   * The URI to direct to for login.
+   */
   val loginContinue: String
 
   /**
-    * The URI to direct to for signout.
-    */
+   * The URI to direct to for signout.
+   */
   val serviceSignout: String
 
   lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 
-  lazy val logoutLink: Html =
+  def logoutLink(implicit request: Request[_]): Html =
     Link.toInternalPage(controllers.routes.EmploymentSummaryController.logout().url, Some("Sign out")).toHtml
 
   // todo : this needs to go with the rest of the session data
   val ninoSessionKey = "USER_NINO"
 
   def logout(): Action[AnyContent] = Action.async {
-    implicit request => {
       logger.info("Sign out of the service")
       Future.successful(Redirect(serviceSignout).withNewSession)
-    }
+
   }
 
   // todo : work out what eventualResult is for, and call it that.
   protected def authorisedAgent(predicate: Predicate)
                                (eventualResult: Future[Result])
-                               (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+                               (implicit hc: HeaderCarrier): Future[Result] = {
     logger.info("Start authorisation check")
     authorised(predicate)
       .retrieve(affinityGroupAllEnrolls) {
@@ -107,8 +109,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino, taxYears: Option[Int] = None)
-                                                      (implicit request: Request[_]): Result = {
+  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino, taxYears: Option[Int] = None): Result = {
     logger.info(s"HttpFailure status is $status")
     status match {
       case NOT_FOUND =>
@@ -123,8 +124,7 @@ trait BaseController extends I18nSupport with AgentAuth with TaxHistoryLogger {
     }
   }
 
-  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse: Future[HttpResponse])
-                            (implicit hc: HeaderCarrier, request: Request[_]): Future[Either[Int, Person]] = {
+  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse: Future[HttpResponse]):Future[Either[Int, Person]] = {
     {
       citizenDetailsResponse map {
         personResponse =>

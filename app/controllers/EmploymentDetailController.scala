@@ -22,24 +22,21 @@ import javax.inject.Inject
 import model.api.IncomeSource._
 import model.api._
 import models.taxhistory.Person
-import play.api.i18n.MessagesApi
-import play.api.mvc._
+import play.api.mvc.{MessagesControllerComponents, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryConnector,
                                            val citizenDetailsConnector: CitizenDetailsConnector,
                                            override val authConnector: AuthConnector,
                                            override val config: Configuration,
                                            override val env: Environment,
-                                           implicit val messagesApi: MessagesApi,
-                                           implicit val appConfig: AppConfig
-                                          ) extends BaseController {
+                                           val cc: MessagesControllerComponents
+                                          )(implicit val ec: ExecutionContext, val appConfig: AppConfig) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -71,7 +68,7 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
 
 
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
-                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[PayAndTax]] = {
+                          (implicit hc: HeaderCarrier): Future[Option[PayAndTax]] = {
     taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
       payAndTaxResponse.status match {
         case NOT_FOUND => None
@@ -84,7 +81,7 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
   }
 
   private def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)
-                                (implicit hc: HeaderCarrier, request: Request[_]): Future[List[CompanyBenefit]] = {
+                                (implicit hc: HeaderCarrier): Future[List[CompanyBenefit]] = {
     taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId).map { cbResponse =>
       cbResponse.status match {
         case NOT_FOUND => List.empty
@@ -94,7 +91,7 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
   }
 
   private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
-                             (implicit hc: HeaderCarrier, request: Request[_]): Future[Option[IncomeSource]] = {
+                             (implicit hc: HeaderCarrier): Future[Option[IncomeSource]] = {
     taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId).map { iSResponse =>
       iSResponse.status match {
         case NOT_FOUND => None

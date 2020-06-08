@@ -19,22 +19,20 @@ package controllers
 import config.AppConfig
 import form.SelectClientForm.selectClientForm
 import javax.inject.Inject
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
-import uk.gov.hmrc.play.bootstrap.controller.ActionWithMdc
 import views.html.taxhistory.select_client
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelectClientController @Inject()(
                                         override val authConnector: AuthConnector,
                                         override val config: Configuration,
                                         override val env: Environment,
-                                        implicit val messagesApi: MessagesApi,
+                                        val cc: MessagesControllerComponents,
                                         implicit val appConfig: AppConfig
-                                      ) extends BaseController {
+                                      )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -42,11 +40,11 @@ class SelectClientController @Inject()(
 
   //TODO Remove this as it is only included to support legacy url
   @Deprecated
-  def getLegacySelectClientPage: Action[AnyContent] = Action.async { implicit request =>
+  def getLegacySelectClientPage: Action[AnyContent] = Action.async {
     redirectToSelectClientPage
   }
 
-  val root =  ActionWithMdc {
+  val root = Action {
     Redirect(routes.SelectClientController.getSelectClientPage())
   }
 

@@ -18,19 +18,18 @@ package controllers
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import config.AppConfig
-import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import connectors.CitizenDetailsConnector
 import models.taxhistory.Person
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
-import play.api.{Configuration, Environment}
-import play.api.i18n.{Messages, MessagesApi}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.Environment
+import play.api.i18n.Messages
 import play.api.libs.json.Json
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments, InsufficientEnrolments}
+import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
 import views.TestAppConfig
 
@@ -38,19 +37,20 @@ import scala.concurrent.Future
 
 class ClientErrorControllerSpec extends ControllerSpec with TestAppConfig {
 
-  trait HappyPathSetup {
+  trait HappyPathSetup extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
 
     val person = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
-    lazy val controller: ClientErrorController = new ClientErrorController(mock[CitizenDetailsConnector], mock[AuthConnector],
-      app.configuration, injected[Environment], injected[MessagesApi], appConfig)
+    lazy val controller: ClientErrorController = new ClientErrorController(mock[CitizenDetailsConnector], injected[MessagesControllerComponents],
+      mock[AuthConnector],
+      app.configuration, injected[Environment], appConfig)(stubControllerComponents().executionContext)
 
-    when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
+    when(controller.citizenDetailsConnector.getPersonDetails(any)(any)).
       thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
-    when(controller.authConnector.authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+    when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
       Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
   }
 

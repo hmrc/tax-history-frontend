@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-import javax.inject.{Inject, Singleton}
 import com.google.inject.name.Named
 import config.AppConfig
+import javax.inject.{Inject, Singleton}
 import play.api.http.HeaderNames.CACHE_CONTROL
 import play.api.http.HttpErrorHandler
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.Results._
 import play.api.mvc.{RequestHeader, Result}
-import play.api.{Configuration, Environment, Logger, Mode}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
 import uk.gov.hmrc.auth.otac.OtacFailureThrowable
 import uk.gov.hmrc.http.{JsValidationException, NotFoundException}
@@ -35,21 +35,22 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject()(
-  val env: Environment,
-  val messagesApi: MessagesApi,
-  val auditConnector: AuditConnector,
-  @Named("appName") val appName: String)(
-  implicit val config: Configuration,
-  implicit val appConfig: AppConfig,
-  ec: ExecutionContext)
+                              val env: Environment,
+                              val auditConnector: AuditConnector,
+                              val messagesApi: MessagesApi,
+                              @Named("appName") val appName: String)(
+                              implicit val config: Configuration,
+                              val appConfig: AppConfig,
+                              ec: ExecutionContext)
     extends HttpErrorHandler with I18nSupport with AuthRedirects with ErrorAuditing {
 
   lazy val authenticationRedirect: String = config
-    .getString("authentication.login-callback.url")
+    .getOptional[String]("authentication.login-callback.url")
     .getOrElse(
       throw new IllegalStateException(s"No value found for configuration property: authentication.login-callback.url"))
 
   override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
+    implicit val messages: Messages = messagesApi.preferred(request)
     auditClientError(request, statusCode, message)
 
     val response = statusCode match {
@@ -65,13 +66,13 @@ class ErrorHandler @Inject()(
   }
 
   override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
+    implicit val messages: Messages = messagesApi.preferred(request)
+
     auditServerError(request, exception)
     val response = exception match {
       case _: NoActiveSession =>
-        val isDevEnv =
-          if (env.mode.equals(Mode.Test)) false else config.getString("run.mode").forall(Mode.Dev.toString.equals)
 
-        toGGLogin(if (isDevEnv) s"http://${request.host}${request.uri}" else s"$authenticationRedirect${request.uri}")
+        toGGLogin(if (appConfig.isDevEnv) s"http://${request.host}${request.uri}" else s"$authenticationRedirect${request.uri}")
       case _: InsufficientEnrolments =>
         Forbidden(
           error_template(

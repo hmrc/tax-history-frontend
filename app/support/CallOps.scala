@@ -18,8 +18,6 @@ package support
 
 import java.net.URLEncoder
 
-import play.api.mvc.Call
-
 object CallOps {
 
   def addParamsToUrl(url: String, params: (String, Option[String])*): String = {

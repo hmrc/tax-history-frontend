@@ -19,38 +19,37 @@ package controllers
 import config.AppConfig
 import connectors.CitizenDetailsConnector
 import javax.inject.{Inject, Singleton}
-import play.api.i18n.MessagesApi
-import play.api.mvc.{Action, AnyContent}
-import play.api.{Configuration, Environment, Logger, Mode}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.{Configuration, Environment, Logger}
 import uk.gov.hmrc.auth.core.AuthConnector
 import views.html.errors._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetailsConnector,
+                                      val cc: MessagesControllerComponents,
                                       override val authConnector: AuthConnector,
                                       override val config: Configuration,
                                       override val env: Environment,
-                                      implicit val messagesApi: MessagesApi,
-                                      implicit val appConfig: AppConfig) extends BaseController {
+                                      implicit val appConfig: AppConfig)(implicit ec: ExecutionContext) extends BaseController(cc) {
 
-  val loginContinue: String = appConfig.loginContinue
-  val serviceSignout: String = appConfig.serviceSignOut
-  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
+  lazy val loginContinue: String = appConfig.loginContinue
+  lazy val serviceSignout: String = appConfig.serviceSignOut
+  lazy val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  val isDevEnv = if (env.mode.equals(Mode.Test)) false else config.getString("run.mode").forall(Mode.Dev.toString.equals)
 
   def getNotAuthorised: Action[AnyContent] = Action.async {
     implicit request =>
-      getNinoFromSession(request).fold(redirectToSelectClientPage){
-        _ => request.getQueryString("issue") match {
-          case Some(issue) =>
-            Logger(getClass).error(s"Form Error: ${issue}")
-            throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
-        case None =>
-          Future successful Ok(not_authorised(getNinoFromSession(request), isDevEnv))
-        }
+      getNinoFromSession(request).fold(redirectToSelectClientPage) {
+        _ =>
+          request.getQueryString("issue") match {
+            case Some(issue) =>
+              Logger(getClass).error(s"Form Error: ${issue}")
+              throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
+            case None =>
+              Future successful Ok(not_authorised(getNinoFromSession(request), appConfig.isDevEnv))
+          }
       }
   }
 
@@ -64,13 +63,14 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
       Future.successful(Ok(deceased()))
   }
 
-  def getNoData(taxYear:Int): Action[AnyContent] = Action.async {
+  def getNoData(taxYear: Int): Action[AnyContent] = Action.async {
     implicit request => {
       getNinoFromSession(request).fold(redirectToSelectClientPage) {
-        nino => retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap{
+        nino =>
+          retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap {
             case Left(status) => redirectToClientErrorPage(status)
-            case Right(person) => Future.successful(Ok(no_data(person,nino.toString,taxYear)))
-        }
+            case Right(person) => Future.successful(Ok(no_data(person, nino.toString, taxYear)))
+          }
       }
     }
   }

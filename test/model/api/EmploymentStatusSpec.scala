@@ -17,8 +17,7 @@
 package model.api
 
 import model.api.EmploymentStatus.{Ceased, Live, PotentiallyCeased}
-import play.api.data.validation.ValidationError
-import play.api.libs.json.{JsError, JsPath, JsSuccess, Json}
+import play.api.libs.json._
 import uk.gov.hmrc.play.test.UnitSpec
 
 class EmploymentStatusSpec extends UnitSpec {
@@ -31,8 +30,8 @@ class EmploymentStatusSpec extends UnitSpec {
     }
 
     "throw error on invalid data" in {
-      EmploymentStatus.jsonReads.reads(Json.obj("employmentStatus" -> 10)) shouldBe JsError(List((JsPath  \"employmentStatus",
-        List(ValidationError(List("Invalid EmploymentStatus"))))))
+      EmploymentStatus.jsonReads.reads(Json.obj("employmentStatus" -> 10)) shouldBe JsError(List((JsPath \ "employmentStatus",
+        List(JsonValidationError(List("Invalid EmploymentStatus"))))))
     }
   }
 

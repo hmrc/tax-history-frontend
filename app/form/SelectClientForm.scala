@@ -20,7 +20,6 @@ import models.taxhistory.SelectClient
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.domain.Nino.isValid
 
 object SelectClientForm {
   val selectClientForm: Form[SelectClient] = {

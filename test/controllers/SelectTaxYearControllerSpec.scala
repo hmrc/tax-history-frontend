@@ -17,40 +17,37 @@
 package controllers
 
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import support.fixtures.PersonFixture
 import model.api.IndividualTaxYear
-import models.taxhistory.Person
-import org.mockito.Matchers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
 import play.api.Environment
 import play.api.http.Status
-import play.api.i18n.{Messages, MessagesApi}
+import play.api.i18n.Messages
 import play.api.libs.json.Json
+import play.api.mvc.MessagesControllerComponents
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.ControllerSpec
+import support.fixtures.PersonFixture
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
 import views.TestAppConfig
 
 import scala.concurrent.Future
-
 class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with TestAppConfig {
 
-  trait LocalSetup {
+  trait LocalSetup extends MockitoSugar with ArgumentMatchersSugar {
 
     lazy val controller = {
 
       val c = new SelectTaxYearController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, injected[Environment], injected[MessagesApi], appConfig)
+        app.configuration, injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
-      when(c.taxHistoryConnector.getTaxYears(any())(any())).thenReturn(Future.successful(HttpResponse(Status.OK,
+      when(c.taxHistoryConnector.getTaxYears(any)(any)).thenReturn(Future.successful(HttpResponse(Status.OK,
         Some(Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2","uri3")))))))
       c
     }
@@ -65,7 +62,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
     }
 
     "redirect to technical error page when getTaxYears reurn status internal server error" in new LocalSetup {
-      when(controller.taxHistoryConnector.getTaxYears(any())(any()))
+      when(controller.taxHistoryConnector.getTaxYears(any)(any))
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
       val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
 
@@ -74,7 +71,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
     }
 
     "return not found error page when citizen details returns locked status 423" in new LocalSetup {
-      when(controller.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(controller.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
       val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
@@ -108,7 +105,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
       val validSelectTaxYearForm = Seq(
         "selectTaxYear" -> ""
       )
-      when(controller.taxHistoryConnector.getTaxYears(any())(any()))
+      when(controller.taxHistoryConnector.getTaxYears(any)(any))
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
 
       val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
