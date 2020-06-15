@@ -18,13 +18,15 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainContent = {
-    <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@Messages("lbl.back")</a>
 
-    <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.technical.error.header")</h1>
-    <p> @Messages("employmenthistory.technical.error.message") </p>
+@mainContent = {
+
+    <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@{messages("lbl.back")}</a>
+
+    <h1 class="heading-xlarge" id="error-heading">@messages("employmenthistory.technical.error.header")</h1>
+    <p> @messages("employmenthistory.technical.error.message") </p>
 }
 
-@views.html.main_template(title = Messages("employmenthistory.technical.error.title")) {
+@views.html.main_template(title = messages("employmenthistory.technical.error.title")) {
     @mainContent
 }

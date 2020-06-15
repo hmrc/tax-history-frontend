@@ -16,10 +16,13 @@
 
 package views
 
+import java.net.URL
+
 import config.AppConfig
 
 trait TestAppConfig {
   implicit val appConfig: AppConfig = new AppConfig {
+    val isDevEnv: Boolean = true
     val analyticsToken: String = "faketoken"
     val analyticsHost: String = "fakehost"
     val reportAProblemPartialUrl: String = "fakeurl"
@@ -37,5 +40,8 @@ trait TestAppConfig {
     val studentLoanFlag: Boolean = true
     val companyBenefitsFlag: Boolean = true
     val eyaWhatsThisFlag: Boolean = true
+    val authBaseUrl: URL = new URL("http://localhost")
+    val citizenDetailsBaseUrl: URL = new URL("http://localhost")
+    val taxHistoryBaseUrl: URL = new URL("http://localhost")
   }
 }

@@ -34,7 +34,6 @@ package model.api
 
 import java.util.UUID
 
-import play.api.libs.json.Json
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestUtil
 

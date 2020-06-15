@@ -18,11 +18,9 @@ package views
 
 import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
-
 class error_templateSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
     val headingText = "error heading"
     val titleText = "error title"
     val messageText = "error message"
@@ -46,7 +44,6 @@ class error_templateSpec extends GuiceAppSpec with TestAppConfig {
 
     "include sidebar links" in new ViewFixture {
       val link = Link.toExternalPage(id=Some("sidebar-link"), url="http://www.google.com", value=Some("Back To Google")).toHtml
-      val employments = Seq()
       val view = views.html.error_template(titleText, headingText,messageText, Some(link))
 
       val sideBarLinks = doc.select("#sidebar-link")

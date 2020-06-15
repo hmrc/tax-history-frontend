@@ -16,20 +16,22 @@
 
 package controllers.auth
 
-import play.api.mvc.{AnyContent, Request, Result}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Request, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
-import uk.gov.hmrc.auth.core.retrieve.Retrievals._
+import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
 import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.controller.FrontendController
 
 import scala.concurrent.Future
 
-trait AgentAuth extends FrontendController with AuthorisedFunctions with AuthRedirects {
+trait AgentAuthTrait
+
+abstract class AgentAuth(cc: MessagesControllerComponents) extends FrontendController(cc) with AuthorisedFunctions with AuthRedirects {
 
   /**
-    * The url to redirect to.
-    */
+   * The url to redirect to.
+   */
   val agentSubscriptionStart: String
 
   def redirectToSubPage: Future[Result] = Future successful Redirect(agentSubscriptionStart)

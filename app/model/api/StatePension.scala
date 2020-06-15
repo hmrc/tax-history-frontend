@@ -19,6 +19,7 @@ package model.api
 import org.joda.time.{LocalDate, Weeks}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.time.TaxYear
+import utils.LocalDateFormat
 
 case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymentFrequency: Option[Int] = None, startDate: Option[LocalDate] = None) {
 
@@ -40,6 +41,6 @@ case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymen
   lazy val weeklyAmount: BigDecimal = grossAmount / 52
 }
 
-object StatePension {
+object StatePension extends LocalDateFormat {
   implicit val formats: OFormat[StatePension] = Json.format[StatePension]
 }

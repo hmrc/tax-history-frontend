@@ -20,8 +20,9 @@ import java.util.UUID
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
+import utils.LocalDateFormat
 
-case class PayAndTax(payAndTaxId:UUID = UUID.randomUUID(),
+case class PayAndTax(payAndTaxId: UUID = UUID.randomUUID(),
                      taxablePayTotal: Option[BigDecimal],
                      taxablePayTotalIncludingEYU: Option[BigDecimal],
                      taxTotal: Option[BigDecimal],
@@ -29,15 +30,15 @@ case class PayAndTax(payAndTaxId:UUID = UUID.randomUUID(),
                      studentLoan: Option[BigDecimal],
                      studentLoanIncludingEYU: Option[BigDecimal],
                      paymentDate: Option[LocalDate],
-                     earlierYearUpdates: List[EarlierYearUpdate]){
+                     earlierYearUpdates: List[EarlierYearUpdate]) {
 
   val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate] = earlierYearUpdates
     .filter(_.studentLoanEYU.isDefined)
   val earlierYearUpdatesWithNonZeroPayOrTax: List[EarlierYearUpdate] = earlierYearUpdates
-    .filter( x => x.taxablePayEYU != 0.00 || x.taxEYU != 0.00)
+    .filter(x => x.taxablePayEYU != 0.00 || x.taxEYU != 0.00)
 }
 
-object PayAndTax {
+object PayAndTax extends LocalDateFormat {
   implicit val formats = Json.format[PayAndTax]
 }
 

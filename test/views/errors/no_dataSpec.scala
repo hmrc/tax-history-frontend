@@ -23,13 +23,10 @@ import views.{Fixture, TestAppConfig}
 
 class no_dataSpec extends GuiceAppSpec with TestAppConfig {
 
-  trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
-  }
 
   "no data available view" must {
 
-    "have correct title, heading and GA page view event" in new ViewFixture {
+    "have correct title, heading and GA page view event" in new Fixture {
       val person = Person(Some("first name"), Some("second name"), deceased = Some(false))
       val nino = "QQ12345C"
       val view = views.html.errors.no_data(person,nino, 2017)

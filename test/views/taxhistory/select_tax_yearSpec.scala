@@ -31,7 +31,6 @@ import views.{Fixture, TestAppConfig}
 class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
     val postData: JsObject = Json.obj("selectTaxYear" -> "2016")
     val validForm: Form[SelectTaxYear] = selectTaxYearForm.bind(postData)
     val name = Some("Test Name")

@@ -24,7 +24,6 @@ import views.{Fixture, TestAppConfig}
 class mci_restrictedSpec extends GuiceAppSpec with TestAppConfig {
 
   trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
     val nino = TestUtil.randomNino.toString()
   }
 

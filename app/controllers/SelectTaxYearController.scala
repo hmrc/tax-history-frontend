@@ -23,8 +23,8 @@ import javax.inject.Inject
 import model.api.IndividualTaxYear
 import models.taxhistory.SelectTaxYear
 import play.api.data.Form
-import play.api.i18n.{Messages, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Request, Result}
+import play.api.i18n.Messages
+import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
@@ -33,7 +33,7 @@ import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper
 import views.html.taxhistory.select_tax_year
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelectTaxYearController @Inject()(
                                          val taxHistoryConnector: TaxHistoryConnector,
@@ -41,15 +41,15 @@ class SelectTaxYearController @Inject()(
                                          override val authConnector: AuthConnector,
                                          override val config: Configuration,
                                          override val env: Environment,
-                                         implicit val messagesApi: MessagesApi,
+                                         val cc: MessagesControllerComponents,
                                          implicit val appConfig: AppConfig
-                                       ) extends BaseController {
+                                       )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  private def getTaxYears(taxYearList: List[IndividualTaxYear]) = {
+  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[_]) = {
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",

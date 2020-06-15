@@ -18,22 +18,18 @@ package views.taxhistory
 
 import controllers.routes
 import model.api.EmploymentPaymentType.OccupationalPension
-import model.api.{CompanyBenefit, IncomeSource, TaAllowance, TaDeduction}
+import model.api.{IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
-import utils.DateHelper._
 import utils.{ControllerUtils, TestUtil}
 import views.{Fixture, TestAppConfig}
 
 class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestAppConfig {
 
   trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
-
     val currentTaxYear: Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2016
@@ -98,7 +94,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "not have payroll ID and status for a pension" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
-      val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
       val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
       val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
       val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
@@ -162,8 +157,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       "input data missing for payAndTax.taxablePayTotal and payAndTax.taxTotal" in new ViewFixture {
         val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxNoTotal),
           employment, List.empty, clientName, None)
-        val eyutable: Element = doc.getElementById("eyu-table")
-        val cbTable: Element = doc.getElementById("cb-table")
         val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
         taxablePay.text should include(Messages("employmenthistory.nopaydata"))
         val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))

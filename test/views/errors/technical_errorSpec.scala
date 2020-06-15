@@ -22,13 +22,10 @@ import views.{Fixture, TestAppConfig}
 
 class technical_errorSpec extends GuiceAppSpec with TestAppConfig {
 
-  trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
-  }
 
   "Technical Error view" must {
 
-    "have correct title, heading and GA page view event" in new ViewFixture {
+    "have correct title, heading and GA page view event" in new Fixture {
 
       val view = views.html.errors.technical_error()
 

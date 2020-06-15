@@ -18,13 +18,14 @@ package models.taxhistory
 
 import org.joda.time.LocalDate
 import play.api.libs.json.Json
+import utils.LocalDateFormat
 
 case class EarlierYearUpdate(
                               taxablePayEYU: BigDecimal,
                               taxEYU: BigDecimal,
-                              receivedDate:LocalDate
+                              receivedDate: LocalDate
                             )
 
-object EarlierYearUpdate {
-  implicit val format =  Json.format[EarlierYearUpdate]
+object EarlierYearUpdate extends LocalDateFormat {
+  implicit val format = Json.format[EarlierYearUpdate]
 }

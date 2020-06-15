@@ -16,7 +16,6 @@
 
 package model.api
 
-import play.api.data.validation.ValidationError
 import play.api.libs.json._
 
 sealed trait EmploymentStatus
@@ -39,7 +38,7 @@ object EmploymentStatus {
       case POTENTIALLYCEASED => Reads(_ => JsSuccess(PotentiallyCeased))
       case CEASED => Reads(_ => JsSuccess(Ceased))
       case UNKNOWN => Reads(_ => JsSuccess(Unknown))
-      case _ => Reads(_ => JsError(JsPath \ "employmentStatus", ValidationError("Invalid EmploymentStatus")))
+      case _ => Reads(_ => JsError(JsPath \ "employmentStatus", JsonValidationError("Invalid EmploymentStatus")))
     }
   }
 

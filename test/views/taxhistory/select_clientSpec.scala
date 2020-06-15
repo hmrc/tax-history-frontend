@@ -28,7 +28,6 @@ import views.{Fixture, TestAppConfig}
 class select_clientSpec extends GuiceAppSpec with UnitSpec with TestUtil with TestAppConfig {
 
   trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
     lazy val nino = randomNino.toString()
     val postData: JsObject = Json.obj("clientId" -> nino)
     val validForm: Form[SelectClient] = selectClientForm.bind(postData)

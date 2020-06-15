@@ -18,26 +18,27 @@ package connectors
 
 import java.net.URL
 
-import javax.inject.{Inject, Named, Singleton}
+import config.AppConfig
+import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpGet, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.http.HttpClient
 
-import scala.concurrent.ExecutionContext.Implicits.global
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class CitizenDetailsConnector @Inject()(@Named("citizen-details-baseUrl") baseUrl: URL, httpGet: HttpGet) {
+class CitizenDetailsConnector @Inject()(val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
     override def read(method: String, url: String, response: HttpResponse) = response
   }
 
-  private def url(nino: String) = new URL(baseUrl, s"/citizen-details/$nino/designatory-details/basic")
+  private def url(nino: String) = new URL(appConfig.citizenDetailsBaseUrl, s"/citizen-details/$nino/designatory-details/basic")
 
     /**
       * Gets the person details
       */
     def getPersonDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-      httpGet.GET[HttpResponse](url(nino.value).toString)
+      httpClient.GET[HttpResponse](url(nino.value).toString)
     }
   }

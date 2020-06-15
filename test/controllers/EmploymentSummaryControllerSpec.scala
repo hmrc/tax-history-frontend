@@ -25,12 +25,10 @@ import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
 import org.joda.time.LocalDate
-import org.mockito.Matchers
-import org.mockito.Matchers._
-import org.mockito.Mockito.when
-import play.api.i18n.{Messages, MessagesApi}
+import org.mockito.MockitoSugar
+import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.Result
+import play.api.mvc.{MessagesControllerComponents, Result}
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import support.ControllerSpec
@@ -120,57 +118,57 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty))
 
-  trait HappyPathSetup {
+  trait HappyPathSetup extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllowances(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NoEmployments {
+  trait NoEmployments extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllowances(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NoAllowances {
+  trait NoAllowances extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -178,54 +176,54 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any()))
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any()))
+      when(c.taxHistoryConnector.getAllowances(any, any)(any))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(Json.arr()))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NullAllowances {
+  trait NullAllowances extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllowances(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NoTaxAccount {
+  trait NoTaxAccount extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -233,27 +231,27 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
 
       val person = Some(Person(Some("first name"), Some("second name"), deceased = Some(false)))
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any()))
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any()))
+      when(c.taxHistoryConnector.getAllowances(any, any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, None)))
-      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxFixedUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NoPayAndTax {
+  trait NoPayAndTax extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -261,68 +259,68 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
 
       val person = Some(Person(Some("first name"), Some("second name"), deceased = Some(false)))
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any()))
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any()))
+      when(c.taxHistoryConnector.getAllowances(any, any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(NOT_FOUND, Some(Json.toJson(payAndTaxFixedUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any()))
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any))
         .thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NoCitizenDetails {
+  trait NoCitizenDetails extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllowances(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(NOT_FOUND, None)))
       c
     }
   }
 
-  trait LockedCitizenDetails {
+  trait LockedCitizenDetails extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllowances(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(LOCKED, None)))
       c
     }
   }
 
-  trait DeceasedCitizenDetails {
+  trait DeceasedCitizenDetails extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
@@ -331,37 +329,37 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       val person = Some(Person(Some("James"), Some("Bond"), Some(true)))
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
   }
 
-  trait NonMatchingPayAndTax {
+  trait NonMatchingPayAndTax extends MockitoSugar {
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
+        injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(c.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(employments)))))
-      when(c.taxHistoryConnector.getAllowances(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllowances(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(allowances)))))
       when(c.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier])).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(taxAccount)))))
-      when(c.taxHistoryConnector.getStatePension(any(), any())(any())).
+      when(c.taxHistoryConnector.getStatePension(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(statePension)))))
-      when(c.taxHistoryConnector.getAllPayAndTax(any(), any())(any())).
+      when(c.taxHistoryConnector.getAllPayAndTax(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(payAndTaxRandomUUID)))))
-      when(c.citizenDetailsConnector.getPersonDetails(any())(any())).
+      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
         thenReturn(Future.successful(HttpResponse(OK, Some(Json.toJson(person)))))
       c
     }
@@ -426,7 +424,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     }
 
     "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(controller.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(UNAUTHORIZED,
           Some(Json.toJson("{Message:Unauthorised}")))))
       val result: Future[Result] = controller.getTaxHistory(taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -435,7 +433,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     }
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
-      when(controller.taxHistoryConnector.getEmploymentsAndPensions(any(), any())(any())).
+      when(controller.taxHistoryConnector.getEmploymentsAndPensions(any, any)(any)).
         thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR,
           Some(Json.toJson("{Message:InternalServerError}")))))
       val result: Future[Result] = controller.getTaxHistory(taxYear)(fakeRequest.withSession("USER_NINO" -> nino))

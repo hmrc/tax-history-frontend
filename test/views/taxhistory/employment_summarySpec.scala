@@ -31,8 +31,6 @@ import views.{Fixture, TestAppConfig}
 class employment_summarySpec extends GuiceAppSpec with Constants with TestAppConfig {
 
   trait ViewFixture extends Fixture {
-    implicit val requestWithToken = addToken(request)
-
     val nino: String = TestUtil.randomNino.toString()
     val currentTaxYear: Int = TaxYear.current.currentYear
     val cyMinus1: Int = TaxYear.current.previous.currentYear

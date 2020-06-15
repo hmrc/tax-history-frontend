@@ -19,14 +19,10 @@ package controllers
 import config.AppConfig
 import javax.inject.Inject
 import models.taxhistory.Person
-import org.mockito.Matchers
-import org.mockito.Matchers.any
-import org.mockito.Mockito.when
+import org.mockito.MockitoSugar
 import play.api.http.Status
-import play.api.i18n.MessagesApi
 import play.api.libs.json.JsValue
-import play.api.mvc.{Result, Results}
-import play.api.test.FakeRequest
+import play.api.mvc.{MessagesControllerComponents, Result, Results}
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
 import support.ControllerSpec
@@ -35,6 +31,7 @@ import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HttpResponse}
+import uk.gov.hmrc.play.bootstrap.tools.Stubs.stubMessagesControllerComponents
 import views.TestAppConfig
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -42,71 +39,72 @@ import scala.concurrent.Future
 
 class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
-  trait HappyPathSetup {
+  trait HappyPathSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment],
+        injected[MessagesControllerComponents], appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       c
     }
   }
 
-  trait NoEnrolmentsSetup {
+  trait NoEnrolmentsSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(Set()))))
       c
     }
   }
 
-  trait NoEnrolmentsAndNotAnAgentSetup {
+  trait NoEnrolmentsAndNotAnAgentSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], stubMessagesControllerComponents(), appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
       c
     }
   }
 
-  trait NoEnrolmentsAndNoAffinityGroupSetup {
+  trait NoEnrolmentsAndNoAffinityGroupSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
       c
     }
   }
 
-  trait failureOnRetrievalOfEnrolment {
+  trait failureOnRetrievalOfEnrolment extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.failed(new BadGatewayException("error")))
       c
     }
   }
 
-  trait failureOnMissingBearerToken {
+  trait failureOnMissingBearerToken extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.failed(new MissingBearerToken))
       c
     }
   }
 
-  trait failureInsufficientEnrolments {
+  trait failureInsufficientEnrolments extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesApi], appConfig)
-      when(c.authConnector.authorise(any(), Matchers.any[Retrieval[~[Option[AffinityGroup], Enrolments]]]())(any(), any())).thenReturn(
+      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.failed(new InsufficientEnrolments))
       c
     }
@@ -160,19 +158,19 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   "show not found error page when 404 returned from connector" in new HappyPathSetup {
 
-    val result: Result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino),Some(2017))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino),Some(2017))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(2017).url)
   }
 
   "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
-    val result: Result = controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
   }
 
   "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
-    val result: Result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))(fakeRequest.withSession("USER_NINO" -> nino))
+    val result: Result = controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }
@@ -210,8 +208,6 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
   "retrieveCitizenDetails" when {
 
-    implicit val fakeRequest = FakeRequest("GET", "/")
-
     "The deceased flag is true" in new HappyPathSetup {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedTrue.json")
@@ -239,9 +235,9 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 class Controller @Inject()(override val authConnector: AuthConnector,
                            override val config: Configuration,
                            override val env: Environment,
-                           implicit val messagesApi: MessagesApi,
+                           val cc: MessagesControllerComponents,
                            implicit val appConfig: AppConfig
-                          ) extends BaseController {
+                          ) extends BaseController(cc) {
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
