@@ -9,6 +9,7 @@ val silencerVersion = "1.7.0"
 lazy val microservice =
   Project(appName, file("."))
     .configs(IntegrationTest)
+    .disablePlugins(JUnitXmlReportPlugin)
     .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
 
 defaultSettings()
