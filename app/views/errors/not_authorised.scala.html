@@ -19,13 +19,12 @@
 @import uk.gov.hmrc.domain.Nino
 @import support.CallOps._
 
-@(nino:Option[Nino], isDev: Boolean)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@(nino:Option[Nino])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @postToInvitations = @{
-  val baseUrl = if(isDev) s"http://${request.host}" else ""
   addParamsToUrl(s"${appConfig.agentInvitationFastTrack}",
-    "continue" -> Some(s"$baseUrl${controllers.routes.SelectClientController.getSelectClientPage().url}"),
-      "error" -> Some(s"$baseUrl${controllers.routes.ClientErrorController.getNotAuthorised().url}")
+    "continue" -> Some(s"${controllers.routes.SelectClientController.getSelectClientPage().url}"),
+      "error" -> Some(s"${controllers.routes.ClientErrorController.getNotAuthorised().url}")
   )
 }
 

@@ -17,14 +17,15 @@
 package config
 
 import java.net.URL
+
 import javax.inject.Inject
-import play.api.{Environment, Mode}
+import play.api.Environment
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
+
 import scala.util.Try
 
 
 trait AppConfig {
-  val isDevEnv: Boolean
   val authBaseUrl: URL
   val citizenDetailsBaseUrl: URL
   val taxHistoryBaseUrl: URL
@@ -48,10 +49,6 @@ trait AppConfig {
 }
 
 class DefaultAppConfig @Inject()(val servicesConfig: ServicesConfig, val environment: Environment) extends AppConfig {
-
-
-  lazy val isDevEnv = if (environment.mode.equals(Mode.Test)) false else servicesConfig.getString("run.mode").forall(Mode.Dev.toString.equals)
-
   lazy val authBaseUrl = new URL(servicesConfig.baseUrl("auth"))
   lazy val citizenDetailsBaseUrl = new URL(servicesConfig.baseUrl("citizen-details"))
   lazy val taxHistoryBaseUrl = new URL(servicesConfig.baseUrl("tax-history"))

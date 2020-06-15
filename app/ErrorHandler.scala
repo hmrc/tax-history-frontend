@@ -72,7 +72,7 @@ class ErrorHandler @Inject()(
     val response = exception match {
       case _: NoActiveSession =>
 
-        toGGLogin(if (appConfig.isDevEnv) s"http://${request.host}${request.uri}" else s"$authenticationRedirect${request.uri}")
+        toGGLogin(s"$authenticationRedirect${request.uri}")
       case _: InsufficientEnrolments =>
         Forbidden(
           error_template(
