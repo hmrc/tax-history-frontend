@@ -48,7 +48,7 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
               Logger(getClass).error(s"Form Error: ${issue}")
               throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
             case None =>
-              Future successful Ok(not_authorised(getNinoFromSession(request), appConfig.isDevEnv))
+              Future successful Ok(not_authorised(getNinoFromSession(request)))
           }
       }
   }

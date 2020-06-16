@@ -22,7 +22,6 @@ import config.AppConfig
 
 trait TestAppConfig {
   implicit val appConfig: AppConfig = new AppConfig {
-    val isDevEnv: Boolean = true
     val analyticsToken: String = "faketoken"
     val analyticsHost: String = "fakehost"
     val reportAProblemPartialUrl: String = "fakeurl"
