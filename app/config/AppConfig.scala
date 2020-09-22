@@ -46,6 +46,7 @@ trait AppConfig {
   val studentLoanFlag: Boolean
   val companyBenefitsFlag: Boolean
   val eyaWhatsThisFlag: Boolean
+  val googleTagManagerId: String
 }
 
 class DefaultAppConfig @Inject()(val servicesConfig: ServicesConfig, val environment: Environment) extends AppConfig {
@@ -70,5 +71,6 @@ class DefaultAppConfig @Inject()(val servicesConfig: ServicesConfig, val environ
   lazy val studentLoanFlag = servicesConfig.getBoolean("featureFlags.studentLoanFlag")
   lazy val companyBenefitsFlag = servicesConfig.getBoolean("featureFlags.companyBenefitsFlag")
   lazy val eyaWhatsThisFlag = servicesConfig.getBoolean("featureFlags.eyaWhatsThisFlag")
+  lazy val googleTagManagerId = servicesConfig.getString("google-tag-manager.id")
 
 }
