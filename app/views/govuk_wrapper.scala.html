@@ -1,5 +1,5 @@
 @*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@
   serviceInfoContent: Html = HtmlFormat.empty,
   scriptElem: Option[Html] = None,
   headerNavLink: Option[Html] = None,
-  analyticsAdditionalJs: Option[Html] = None)(implicit messages: Messages)
+  analyticsAdditionalJs: Option[Html] = None)(implicit request: Request[_], messages: Messages)
 
 @import layouts.{govuk_template => hmrcGovUkTemplate}
 @import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}

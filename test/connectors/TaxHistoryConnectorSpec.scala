@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -63,7 +63,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
 
     "fetch tax history" in new LocalSetup {
       val employmentsJson = JsArray(Seq(Json.toJson(employment)))
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(employmentsJson))))
 
       val result = await(connector.getEmploymentsAndPensions(Nino(nino), 2017))
@@ -78,7 +78,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
         iabdType = "allowanceType",
         amount = BigDecimal(12.00))
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(allowance))))))
 
       val result = await(connector.getAllowances(Nino(nino), 2017))
@@ -91,7 +91,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
     "fetch company benefits for Employment details" in new LocalSetup {
       val companyBenefits = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(companyBenefits))))))
 
       val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "c9923a63-4208-4e03-926d-7c7c88adc7ee"))
@@ -118,7 +118,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = eyuList)
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTaxWithEyu)))))
 
       val result = await(connector.getPayAndTaxDetails(Nino(nino), 2014, "12341234"))
@@ -129,7 +129,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
 
     "fetch Employment from backend" in new LocalSetup {
       val employmentJson = Json.toJson(employment)
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(employmentJson))))
 
       val result = await(connector.getEmployment(Nino(nino), 2014, "12341234"))
@@ -142,7 +142,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
 
       val taxYears = List(IndividualTaxYear(2015, "uri1","uri2","uri3"), IndividualTaxYear(2015, "uri1","uri2", "uri3"))
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(taxYears)))))
 
       val result = await(connector.getTaxYears(Nino(nino)))
@@ -163,7 +163,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty)
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTax)))))
 
       val result = await(connector.getPayAndTaxDetails(Nino(nino),2017,"testID"))

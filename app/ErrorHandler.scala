@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,21 +17,18 @@
 import com.google.inject.name.Named
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
-import play.api.http.HeaderNames.CACHE_CONTROL
-import play.api.http.HttpErrorHandler
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
-import play.api.mvc.Results._
-import play.api.mvc.{RequestHeader, Result}
-import play.api.{Configuration, Environment, Logger}
-import uk.gov.hmrc.auth.core.{InsufficientEnrolments, NoActiveSession}
-import uk.gov.hmrc.auth.otac.OtacFailureThrowable
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Request, RequestHeader}
+import play.api.{Configuration, Environment}
+import play.twirl.api.Html
 import uk.gov.hmrc.http.{JsValidationException, NotFoundException}
-import uk.gov.hmrc.play.HeaderCarrierConverter
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.{AuthRedirects, HttpAuditEvent}
+import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import uk.gov.hmrc.play.http.HeaderCarrierConverter
 import views.html.error_template
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 
 @Singleton
 class ErrorHandler @Inject()(
@@ -42,61 +39,15 @@ class ErrorHandler @Inject()(
                               implicit val config: Configuration,
                               val appConfig: AppConfig,
                               ec: ExecutionContext)
-    extends HttpErrorHandler with I18nSupport with AuthRedirects with ErrorAuditing {
+    extends FrontendErrorHandler with I18nSupport with AuthRedirects with ErrorAuditing {
 
   lazy val authenticationRedirect: String = config
     .getOptional[String]("authentication.login-callback.url")
     .getOrElse(
       throw new IllegalStateException(s"No value found for configuration property: authentication.login-callback.url"))
 
-  override def onClientError(request: RequestHeader, statusCode: Int, message: String): Future[Result] = {
-    implicit val messages: Messages = messagesApi.preferred(request)
-    auditClientError(request, statusCode, message)
-
-    val response = statusCode match {
-      case _ =>
-        Status(statusCode)(
-          error_template(
-            Messages(s"global.error.$statusCode.title"),
-            Messages(s"global.error.$statusCode.heading"),
-            Messages(s"global.error.$statusCode.message")))
-    }
-
-    Future.successful(response)
-  }
-
-  override def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
-    implicit val messages: Messages = messagesApi.preferred(request)
-
-    auditServerError(request, exception)
-    val response = exception match {
-      case _: NoActiveSession =>
-
-        toGGLogin(s"$authenticationRedirect${request.uri}")
-      case _: InsufficientEnrolments =>
-        Forbidden(
-          error_template(
-            Messages("global.error.403.title"),
-            Messages("global.error.403.heading"),
-            Messages("global.error.403.message"))).withHeaders(CACHE_CONTROL -> "no-cache")
-      case ex: OtacFailureThrowable =>
-        Logger(getClass).warn(s"There has been an Unauthorised Attempt: ${ex.getMessage}")
-        Forbidden(
-          error_template(
-            Messages("global.error.passcode.title"),
-            Messages("global.error.passcode.heading"),
-            Messages("global.error.passcode.message"))).withHeaders(CACHE_CONTROL -> "no-cache")
-      case ex =>
-        Logger(getClass).warn(s"There has been a failure", ex)
-        InternalServerError(
-          error_template(
-            Messages("global.error.500.title"),
-            Messages("global.error.500.heading"),
-            Messages("global.error.500.message"))).withHeaders(CACHE_CONTROL -> "no-cache")
-
-    }
-    Future.successful(response)
-  }
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
+    error_template(pageTitle, heading, message)
 }
 
 object EventTypes {
@@ -130,7 +81,7 @@ trait ErrorAuditing extends HttpAuditEvent {
     }
     auditConnector.sendEvent(
       dataEvent(eventType, transactionName, request, Map(TransactionFailureReason -> ex.getMessage))(
-        HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
+        HeaderCarrierConverter.fromRequestAndSession(request, request.session)))
   }
 
   def auditClientError(request: RequestHeader, statusCode: Int, message: String)(
@@ -140,11 +91,11 @@ trait ErrorAuditing extends HttpAuditEvent {
       case NOT_FOUND =>
         auditConnector.sendEvent(
           dataEvent(ResourceNotFound, notFoundError, request, Map(TransactionFailureReason -> message))(
-            HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
+            HeaderCarrierConverter.fromRequestAndSession(request, request.session)))
       case BAD_REQUEST =>
         auditConnector.sendEvent(
           dataEvent(ServerValidationError, badRequestError, request, Map(TransactionFailureReason -> message))(
-            HeaderCarrierConverter.fromHeadersAndSession(request.headers, Some(request.session))))
+            HeaderCarrierConverter.fromRequestAndSession(request, request.session)))
       case _ =>
     }
   }

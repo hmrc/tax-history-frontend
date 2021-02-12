@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@ class CitizenDetailsConnectorSpec extends UnitSpec with MockitoSugar with TestUt
   "CitizenDetailsConnector" should {
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(person))))))
 
       val result = await(connector.getPersonDetails(Nino(nino)))

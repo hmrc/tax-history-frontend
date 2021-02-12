@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -42,71 +42,91 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
   trait HappyPathSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment],
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment],
         injected[MessagesControllerComponents], appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      c
+      controller
     }
   }
 
   trait NoEnrolmentsSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(Set()))))
-      c
+      controller
     }
   }
 
   trait NoEnrolmentsAndNotAnAgentSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], stubMessagesControllerComponents(), appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], stubMessagesControllerComponents(), appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
-      c
+      controller
     }
   }
 
   trait NoEnrolmentsAndNoAffinityGroupSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
-      c
+      controller
     }
   }
 
   trait failureOnRetrievalOfEnrolment extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.failed(new BadGatewayException("error")))
-      c
+      controller
     }
   }
 
   trait failureOnMissingBearerToken extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.failed(new MissingBearerToken))
-      c
+      controller
+    }
+  }
+
+  trait failureOnAuthorisation extends MockitoSugar {
+
+    lazy val controller: Controller = {
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+        Future.failed(new SessionRecordNotFound))
+      controller
+    }
+  }
+
+  trait failureOnOtherException extends MockitoSugar {
+
+    lazy val controller: Controller = {
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+        Future.failed(new RuntimeException))
+      controller
     }
   }
 
   trait failureInsufficientEnrolments extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val c = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
+      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment], injected[MessagesControllerComponents], appConfig)
+      when(controller.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.failed(new InsufficientEnrolments))
-      c
+      controller
     }
   }
 
@@ -142,6 +162,20 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
 
 
     "redirect to gg when not logged in" in new failureOnMissingBearerToken {
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      await(result.header.headers.get("Location")).get should include("/gg/sign-in")
+    }
+
+    "redirect to gg logged in when session expired" in new failureOnAuthorisation  {
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
+        fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      await(result.header.headers.get("Location")).get should include("/gg/sign-in")
+    }
+
+    "redirect to gg logged in when Internal server error or other errors" in new failureOnOtherException  {
       val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
@@ -211,21 +245,21 @@ class BaseControllerSpec extends ControllerSpec with TestAppConfig {
     "The deceased flag is true" in new HappyPathSetup {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedTrue.json")
-      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val hr = HttpResponse(OK, Some(json), Map.empty, None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
     }
 
     "The deceased flag is false" in new HappyPathSetup with PersonFixture {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedFalse.json")
-      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val hr = HttpResponse(OK, Some(json), Map.empty, None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new HappyPathSetup {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedNoValue.json")
-      val hr = HttpResponse(OK, Some(json), Map.empty)
+      val hr = HttpResponse(OK, Some(json), Map.empty, None)
       val person = Person(Some("first name"), Some("second name"), None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person)
     }
