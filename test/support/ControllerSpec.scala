@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,9 +31,7 @@ trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with Mocki
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.sessionId -> "SessionId",
-    SessionKeys.token -> "Token",
-    SessionKeys.userId -> "/auth/oid/tuser",
-    SessionKeys.authToken -> ""
+    SessionKeys.authToken -> "Token",
   )
 
   lazy val newEnrolments = Set(
