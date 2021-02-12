@@ -23,13 +23,13 @@ TwirlKeys.templateImports += "play.twirl.api.HtmlFormat"
 libraryDependencies ++= Seq(
   ws,
   "uk.gov.hmrc"            %% "domain"                % "5.9.0-play-26",
-  "uk.gov.hmrc"            %% "bootstrap-play-26"     % "1.8.0",
-  "uk.gov.hmrc"            %% "govuk-template"        % "5.55.0-play-26",
-  "uk.gov.hmrc"            %% "play-ui"               % "8.10.0-play-26",
-  "uk.gov.hmrc"            %% "play-partials"         % "6.11.0-play-26",
+  "uk.gov.hmrc"            %% "bootstrap-play-26"     % "3.0.0",
+  "uk.gov.hmrc"            %% "govuk-template"        % "5.63.0-play-26",
+  "uk.gov.hmrc"            %% "play-ui"               % "8.21.0-play-26",
+  "uk.gov.hmrc"            %% "play-partials"         % "7.1.0-play-26",
   "uk.gov.hmrc"            %% "url-builder"           % "3.4.0-play-26",
   "uk.gov.hmrc"            %% "auth-client"           % "3.0.0-play-26",
-  "uk.gov.hmrc"            %% "agent-mtd-identifiers" % "0.17.0-play-26",
+  "uk.gov.hmrc"            %% "agent-mtd-identifiers" % "0.22.0-play-26",
   "uk.gov.hmrc"            %% "tax-year"              % "1.1.0",
   "com.typesafe.play"      %% "play-json-joda"        % "2.9.0",
   compilerPlugin("com.github.ghik" % "silencer-plugin"     % silencerVersion cross CrossVersion.full),
@@ -38,7 +38,7 @@ libraryDependencies ++= Seq(
 
 val testScope = "test, it"
 libraryDependencies ++= Seq(
-  "uk.gov.hmrc"            %% "bootstrap-play-26"     % "1.6.0"             % Test classifier "tests",
+  "uk.gov.hmrc"            %% "bootstrap-play-26"     % "1.16.0"            % Test classifier "tests",
   "uk.gov.hmrc"            %% "hmrctest"              % "3.9.0-play-26"     % testScope,
   "org.jsoup"              % "jsoup"                  % "1.13.1"            % testScope,
   "com.typesafe.play"      %% "play-test"             % PlayVersion.current % testScope,
@@ -46,7 +46,7 @@ libraryDependencies ++= Seq(
   "org.scalatestplus.play" %% "scalatestplus-play"    % "3.1.3"             % testScope
 )
 
-enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning,  SbtDistributablesPlugin,  SbtArtifactory)
+enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning,  SbtDistributablesPlugin)
 
 publishingSettings
 integrationTestSettings

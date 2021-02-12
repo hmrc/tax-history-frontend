@@ -1,5 +1,5 @@
 @*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@
  heading: String,
  message: String,
  sidebarLink: Option[Html]=None,
- gaEventId:Option[String]=None)(implicit messages: Messages, appConfig: AppConfig)
+ gaEventId:Option[String]=None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 
 @mainContent = {

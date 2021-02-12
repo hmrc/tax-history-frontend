@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 HM Revenue & Customs
+ * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import play.api.mvc._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.~
-import uk.gov.hmrc.auth.core.{InsufficientEnrolments, MissingBearerToken}
+import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
@@ -92,13 +92,16 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
       case m: MissingBearerToken =>
         logger.warn(s"MissingBearerToken:${m.getMessage}")
         Future.successful(ggSignInRedirect)
+      case a: AuthorisationException =>
+        logger.warn(s"AuthorisationException:${a.getMessage}")
+        Future.successful(ggSignInRedirect)
       case e =>
         logger.error(s"Exception thrown:${e.getMessage}")
         Future.successful(ggSignInRedirect)
     }
   }
 
-  protected[controllers] def authorisedForAgent(eventualResult: (Nino) => Future[Result])
+  protected[controllers] def authorisedForAgent(eventualResult: Nino => Future[Result])
                                                (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     getNinoFromSession(request) match {
       case Some(nino) =>
