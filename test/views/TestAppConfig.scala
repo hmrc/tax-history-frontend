@@ -42,6 +42,5 @@ trait TestAppConfig {
     val authBaseUrl: URL = new URL("http://localhost")
     val citizenDetailsBaseUrl: URL = new URL("http://localhost")
     val taxHistoryBaseUrl: URL = new URL("http://localhost")
-    val googleTagManagerId: String = "fakeurl"
   }
 }

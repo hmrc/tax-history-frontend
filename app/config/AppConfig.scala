@@ -29,8 +29,6 @@ trait AppConfig {
   val authBaseUrl: URL
   val citizenDetailsBaseUrl: URL
   val taxHistoryBaseUrl: URL
-  val analyticsToken: String
-  val analyticsHost: String
   val reportAProblemPartialUrl: String
   val reportAProblemNonJSUrl: String
   val loginUrl: String
@@ -46,7 +44,6 @@ trait AppConfig {
   val studentLoanFlag: Boolean
   val companyBenefitsFlag: Boolean
   val eyaWhatsThisFlag: Boolean
-  val googleTagManagerId: String
 }
 
 class DefaultAppConfig @Inject()(val servicesConfig: ServicesConfig, val environment: Environment) extends AppConfig {
@@ -55,8 +52,6 @@ class DefaultAppConfig @Inject()(val servicesConfig: ServicesConfig, val environ
   lazy val taxHistoryBaseUrl = new URL(servicesConfig.baseUrl("tax-history"))
   lazy val contactHost = Try(servicesConfig.getString("contact-frontend.host")).toOption.getOrElse("")
   lazy val serviceSignOut = servicesConfig.getString("service-signout.url")
-  lazy val analyticsToken = servicesConfig.getString("google-analytics.token")
-  lazy val analyticsHost = servicesConfig.getString("google-analytics.host")
   lazy val agentAccountHomePage = servicesConfig.getString("external-url.agent-account-home-page.url")
   lazy val agentSubscriptionStart = servicesConfig.getString("external-url.agent-subscription-start.url")
   lazy val reportAProblemPartialUrl = servicesConfig.getString("reportAProblemPartialUrl")
@@ -71,6 +66,6 @@ class DefaultAppConfig @Inject()(val servicesConfig: ServicesConfig, val environ
   lazy val studentLoanFlag = servicesConfig.getBoolean("featureFlags.studentLoanFlag")
   lazy val companyBenefitsFlag = servicesConfig.getBoolean("featureFlags.companyBenefitsFlag")
   lazy val eyaWhatsThisFlag = servicesConfig.getBoolean("featureFlags.eyaWhatsThisFlag")
-  lazy val googleTagManagerId = servicesConfig.getString("google-tag-manager.id")
-
+  lazy val trackingConsentUrl: String = servicesConfig.getString("tracking-consent-frontend.url")
+  lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
 }
