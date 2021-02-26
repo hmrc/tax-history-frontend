@@ -62,8 +62,6 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       viewPensionElements.html must include(Messages("employmenthistory.view") +
         " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-1") + "</span>")
 
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
     "Show nino when no name is present" in new ViewFixture {
       val view = views.html.taxhistory.employment_summary(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)

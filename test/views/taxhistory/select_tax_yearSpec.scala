@@ -48,8 +48,6 @@ class select_tax_yearSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementById("header").text() must include(Messages("employmenthistory.select.tax.year.h1"))
       // AFID-462 - temporarily disabled due to security issue
       //doc.getElementsByClass("pre-heading medium-text").size() shouldBe 1
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
 
     "Show nino when no name is present" in new ViewFixture {

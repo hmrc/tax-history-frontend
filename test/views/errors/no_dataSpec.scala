@@ -42,8 +42,6 @@ class no_dataSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementById("selectClient").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("selectTaxYear").attr("href") mustBe "/tax-history/select-tax-year"
 
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 

@@ -42,8 +42,6 @@ class mci_restrictedSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.textphone")).hasText mustBe true
       doc.select("h1").text() mustBe Messages("employmenthistory.mci.restricted.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 

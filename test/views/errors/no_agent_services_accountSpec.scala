@@ -27,7 +27,6 @@ class no_agent_services_accountSpec extends GuiceAppSpec with TestAppConfig {
     "have correct title, heading and GA page view event" in new Fixture {
       val view = views.html.errors.no_agent_services_account()
       doc.title mustBe Messages("employmenthistory.no.agent.services.account.title")
-      doc.select("script").toString contains "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
     }
   }
 
