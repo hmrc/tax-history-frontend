@@ -43,8 +43,6 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text3")) should not be empty
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.invite.client.link.text"))  should not be empty
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" mustBe true
       doc.getElementById("service").`val` mustBe "PERSONAL-INCOME-RECORD"
       doc.getElementById("clientIdentifier").`val` mustBe s"$nino"
       doc.getElementsByTag("form").attr("action") mustBe "fakeurl?continue=%2Ftax-history%2Fselect-client&error=%2Ftax-history%2Fnot-authorised"

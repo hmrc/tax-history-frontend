@@ -37,8 +37,6 @@ class error_templateSpec extends GuiceAppSpec with TestAppConfig {
       val foundMessage = doc.body().select("#error-message")
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
-      doc.select("script").toString contains
-      "ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: 'unauthorised'})" mustBe true
 
     }
 

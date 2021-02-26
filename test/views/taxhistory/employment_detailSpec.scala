@@ -53,8 +53,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       val title = Messages("employmenthistory.employment.details.title")
       doc.title shouldBe title
       doc.select("h1").text() shouldBe "employer-1"
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" shouldBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe false
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe true
     }
@@ -67,8 +65,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       val title = Messages("employmenthistory.employment.details.title")
       doc.title shouldBe title
       doc.select("h1").text() shouldBe "employer-1"
-      doc.select("script").toString contains
-        "ga('send', 'pageview', { 'anonymizeIp': true })" shouldBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe false
     }
