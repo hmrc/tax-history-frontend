@@ -60,7 +60,7 @@ evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScala
 
 ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
   ".*BuildInfo.*;prod.Routes;app.Routes;testOnlyDoNotUseInAppConf.Routes;controllers.ExampleController;controllers.testonly.TestOnlyController"
-ScoverageKeys.coverageMinimum := 70.00
+ScoverageKeys.coverageMinimum := 86.00
 ScoverageKeys.coverageFailOnMinimum := true
 ScoverageKeys.coverageHighlighting := true
 

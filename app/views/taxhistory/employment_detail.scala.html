@@ -66,14 +66,20 @@
                 <div class="no-top-margin" id="employment-data-desktop">@employmentDetails()</div>
             </section>
             <hr class="deskContent">
-            <nav id="nav-bar">
-                <h2 class="heading-small no-bottom-margin">@Messages("employmenthistory.sidebar.links.more-options")</h2>
-                <a href="@appConfig.agentAccountHomePage" class="small-text">@Messages("employmenthistory.sidebar.links.agent-services-home")</a>
-                <h3 class="heading-small no-bottom-margin">@Messages("employmenthistory.sidebar.links.income-and-tax")</h3>
-                <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="small-text">@Messages("employmenthistory.sidebar.links.change-client")</a>
-                <h4 class="heading-small no-bottom-margin">@Messages("employmenthistory.sidebar.links.income-records", clientNameOrNino)</h4>
-                <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="small-text">@Messages("employmenthistory.sidebar.links.change-tax-year")</a>
-            </nav>
+            <ul id="nav-bar">
+                <li>
+                    <h2 class="heading-small no-bottom-margin">@Messages("employmenthistory.sidebar.links.more-options")</h2>
+                    <a href="@appConfig.agentAccountHomePage" class="small-text">@Messages("employmenthistory.sidebar.links.agent-services-home")</a>
+                </li>
+                <li>
+                    <h3 class="heading-small no-bottom-margin">@Messages("employmenthistory.sidebar.links.income-and-tax")</h3>
+                    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="small-text">@Messages("employmenthistory.sidebar.links.change-client")</a>
+                </li>
+                <li>
+                    <h4 class="heading-small no-bottom-margin">@Messages("employmenthistory.sidebar.links.income-records", clientNameOrNino)</h4>
+                    <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="small-text">@Messages("employmenthistory.sidebar.links.change-tax-year")</a>
+                </li>
+            </ul>
         </div>
     </div>
 }

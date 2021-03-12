@@ -285,7 +285,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe false
     }
 
-
     "Show alternate text when payAndTax is not defined" in new ViewFixture {
       val view = views.html.taxhistory.employment_detail(currentTaxYear, None,
         employment, completeCBList, clientName, incomeSourceNoDeductions)
@@ -306,20 +305,22 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
       val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
 
-      doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.sidebar.links.more-options")
+      val linkList = doc.getElementById("nav-bar")
 
-      doc.getElementById("nav-bar").child(1).text shouldBe Messages("employmenthistory.sidebar.links.agent-services-home")
-      doc.getElementById("nav-bar").child(1).attr("href") shouldBe "fakeurl"
+      val firstLink = linkList.child(0)
+      firstLink.child(0).text shouldBe Messages("employmenthistory.sidebar.links.more-options")
+      firstLink.child(1).text shouldBe Messages("employmenthistory.sidebar.links.agent-services-home")
+      firstLink.child(1).attr("href") shouldBe "fakeurl"
 
-      doc.getElementById("nav-bar").child(2).text shouldBe Messages("employmenthistory.sidebar.links.income-and-tax")
+      val secondLink = linkList.child(1)
+      secondLink.child(0).text shouldBe Messages("employmenthistory.sidebar.links.income-and-tax")
+      secondLink.child(1).text shouldBe Messages("employmenthistory.sidebar.links.change-client")
+      secondLink.child(1).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
 
-      doc.getElementById("nav-bar").child(3).text shouldBe Messages("employmenthistory.sidebar.links.change-client")
-      doc.getElementById("nav-bar").child(3).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
-
-      doc.getElementById("nav-bar").child(4).text shouldBe Messages("employmenthistory.sidebar.links.income-records", clientName)
-
-      doc.getElementById("nav-bar").child(5).text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
-      doc.getElementById("nav-bar").child(5).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
+      val thirdLink = linkList.child(2)
+      thirdLink.child(0).text shouldBe Messages("employmenthistory.sidebar.links.income-records", clientName)
+      thirdLink.child(1).text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
+      thirdLink.child(1).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
     }
   }
 
