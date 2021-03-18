@@ -1,4 +1,7 @@
 ################################### Generic Labels ################################################
+service.name = View client income and tax records
+error.summary.title = There is a problem
+
 lbl.organisation.name=Organisation name
 lbl.payroll.id=Payroll ID
 lbl.paye.reference=PAYE reference
@@ -30,13 +33,11 @@ lbl.employer=Employer
 lbl.provider=Provider
 lbl.details=Details
 
-################################## Google Analytics ##############################################
-lbl.ga.link-click=link - click
-lbl.ga.action.employments=Employments
-lbl.ga.action.pensions=Pensions
-lbl.ga.label.view-record=View Record
-lbl.ga.error-field=error - field
-lbl.ga.action.enter-nino=Enter a clients NINO
+# BETA Banner
+# ----------------------------------------------------------
+feedback.before = This is a new service - your
+feedback.link = feedback
+feedback.after = will help us to improve it.
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}

@@ -18,9 +18,9 @@ package model.api
 
 import model.api.EmploymentPaymentType._
 import play.api.libs.json._
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 
-class EmploymentPaymentTypeSpec extends UnitSpec {
+class EmploymentPaymentTypeSpec extends BaseSpec {
 
   "EmploymentPaymentType" must {
     import EmploymentPaymentType.format

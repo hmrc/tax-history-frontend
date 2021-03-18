@@ -16,21 +16,35 @@
 
 package support
 
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import config.AppConfig
+import org.scalatest._
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatestplus.mockito.MockitoSugar
-import org.scalatest.{BeforeAndAfterEach, Suite}
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import play.api.Environment
+import play.api.mvc.MessagesControllerComponents
+import play.api.test.Injecting
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.test.UnitSpec
 
+import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
 
-trait BaseSpec extends UnitSpec with GuiceOneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach { this: Suite =>
+trait BaseSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach with Injecting { this: Suite =>
 
-  implicit val hc = HeaderCarrier()
+  implicit val hc: HeaderCarrier = HeaderCarrier()
 
   def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
-  def injected[T](implicit evidence: ClassTag[T]) = app.injector.instanceOf[T]
+  def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
 
+  lazy val messagesControllerComponents: MessagesControllerComponents = injected[MessagesControllerComponents]
+  lazy val environment: Environment = injected[Environment]
+
+  implicit val appConfig: AppConfig = injected[AppConfig]
+  implicit val ec: ExecutionContext = injected[ExecutionContext]
+
+  implicit val actorSystem: ActorSystem = ActorSystem("test")
+  implicit val materializer: ActorMaterializer = ActorMaterializer()
 
 }

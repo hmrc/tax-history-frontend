@@ -16,6 +16,10 @@
 
 @import config.AppConfig
 
+@this(
+    govukWrapper: views.html.govuk_wrapper,
+    p: helpers.p)
+
 @(pageTitle: String,
  heading: String,
  message: String,
@@ -24,23 +28,13 @@
 
 
 @mainContent = {
-  <h1 class="heading-xlarge" id="error-heading">@heading</h1>
+  <h1 class="govuk-heading-xl" id="error-heading">@heading</h1>
   @if(message){
-    <p id="error-message">@message</p>
+    @p(content = Html(message), id = Some("error-message"))
   }
 }
 
-@analyticsAdditionalJs = {
-    @gaEventId.fold(HtmlFormat.empty){ eventId =>
-        ga('send', { hitType: 'event', eventCategory: 'content - view', eventAction: 'TaxHistory', eventLabel: '@eventId'});
-    }
-}
-
-@views.html.main_template(title = pageTitle,
-                          bodyClasses = None,
-                          sidebarLinks =None,
-                          contentHeader = None,
-                          analyticsAdditionalJs = Some(analyticsAdditionalJs)){
+@govukWrapper(title = pageTitle) {
     @mainContent
     @sidebarLink.map{link=>@link}
 }

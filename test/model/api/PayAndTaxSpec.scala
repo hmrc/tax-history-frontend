@@ -35,12 +35,12 @@ package model.api
 import java.util.UUID
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 import utils.TestUtil
 
-class PayAndTaxSpec extends TestUtil with UnitSpec {
+class PayAndTaxSpec extends TestUtil with BaseSpec {
 
-  lazy val payAndTaxNoEyu = PayAndTax(
+  lazy val payAndTaxNoEyu: PayAndTax = PayAndTax(
     payAndTaxId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
     taxablePayTotal = Some(BigDecimal(76543.21)),
     taxablePayTotalIncludingEYU = Some(BigDecimal(76543.21)),

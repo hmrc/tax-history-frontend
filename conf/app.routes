@@ -1,5 +1,8 @@
 # microservice specific routes
+->    /govuk-frontend                                     govuk.Routes
+->    /hmrc-frontend                                      hmrcfrontend.Routes
 
+GET   /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)
 # Map static resources from the /public folder to the /assets URL path
 GET   /                                                   controllers.SelectClientController.root()
 GET   /agent/select-client                                controllers.SelectClientController.getLegacySelectClientPage()
@@ -18,5 +21,3 @@ GET   /logout                                             controllers.Employment
 
 GET   /select-tax-year                                    controllers.SelectTaxYearController.getSelectTaxYearPage()
 POST  /select-tax-year                                    controllers.SelectTaxYearController.submitSelectTaxYearPage()
-
-GET   /assets/*file                                       controllers.Assets.at(path="/public", file)

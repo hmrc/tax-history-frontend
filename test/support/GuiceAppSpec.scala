@@ -17,27 +17,22 @@
 package support
 
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-import play.api.i18n.MessagesApi
+import play.api.Application
+import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.{GuiceApplicationBuilder, GuiceableModule}
 import play.api.test.FakeRequest
-import play.api.{Application, Mode}
 
 class GuiceAppSpec extends BaseSpec {
 
   protected val bindModules: Seq[GuiceableModule] = Seq()
-  private val additionalConfig = Map(
-    "google-analytics.host" -> "host",
-    "google-analytics.token" -> "aToken")
 
-
-  implicit override lazy val app: Application = new GuiceApplicationBuilder().configure(additionalConfig)
-    .bindings(bindModules:_*).in(Mode.Test)
+  implicit override lazy val app: Application = new GuiceApplicationBuilder()
     .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
     .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
     .build()
 
-  implicit val messagesApi = app.injector.instanceOf[MessagesApi]
-  implicit val messages = messagesApi.preferred(FakeRequest())
+   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+   implicit val messages: Messages = messagesApi.preferred(FakeRequest())
 
 }

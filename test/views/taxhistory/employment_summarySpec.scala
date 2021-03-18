@@ -22,37 +22,40 @@ import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
 import utils.{Currency, TestUtil}
-import views.{Fixture, TestAppConfig}
+import views.Fixture
+import views.html.taxhistory.employment_summary
 
-class employment_summarySpec extends GuiceAppSpec with Constants with TestAppConfig {
+class employment_summarySpec extends GuiceAppSpec with Constants {
 
   trait ViewFixture extends Fixture {
     val nino: String = TestUtil.randomNino.toString()
     val currentTaxYear: Int = TaxYear.current.currentYear
     val cyMinus1: Int = TaxYear.current.previous.currentYear
     val cyMinus2:Int = TaxYear.current.previous.currentYear - 1
-    val person = Some(Person(Some("James"), Some("Dean"), Some(false)))
+    val person: Option[Person] = Some(Person(Some("James"), Some("Dean"), Some(false)))
   }
 
   "employment_summary view" must {
 
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, person, None, None, None)
 
-      val title = Messages("employmenthistory.title")
+      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None)
+
+      val title: String = Messages("employmenthistory.title")
       doc.title mustBe title
       // AFID-462 - temporarily disabled due to security issue
       //doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
-      doc.getElementsByClass("pre-heading-small boldFont no-top-margin").html must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
+      doc.getElementById("taxYearRange").text must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
         (currentTaxYear + 1).toString))
 
-      val viewDetailsElements: Element = doc.getElementById("view-employment-0")
+      val viewDetailsElements: Element = doc.getElementById("view-link-employment-0")
       viewDetailsElements.html must include(Messages("employmenthistory.view") +
-        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-2") + "</span>")
+        " <span class=\"govuk-visually-hidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-2") + "</span>")
 
       val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
       viewDetailsElementsNoRecord.html must include(Messages("lbl.none"))
@@ -60,18 +63,18 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
       viewPensionElements.html must include(Messages("employmenthistory.view") +
-        " <span class=\"visuallyhidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-1") + "</span>")
+        " <span class=\"govuk-visually-hidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-1") + "</span>")
 
     }
     "Show nino when no name is present" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)
+      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)
       doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
       doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 0
     }
 
     "have correct employment content" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, None, None, None)
+      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, None, None, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.employments")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
@@ -89,14 +92,14 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       allowances.foreach(al => {
         doc.getElementsContainingOwnText(Messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
       })
-      val caveatParagraphs: String = doc.select(".panel-border-wide p").text
+      val caveatParagraphs: String = doc.getElementsByClass("govuk-inset-text").text
 
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p1.text")) mustBe true
       caveatParagraphs.contains(Messages("employmenthistory.caveat.p2.text")) mustBe true
     }
 
     "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
-      val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, person, taxAccount, None, None)
+      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, person, taxAccount, None, None)
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
@@ -105,11 +108,11 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.title",
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
 
-      doc.getElementsContainingOwnText(uA.toString).hasText mustBe true
+      doc.getElementsContainingOwnText(uA).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.title",
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
-      doc.getElementsContainingOwnText(aPC.toString).hasText mustBe true
+      doc.getElementsContainingOwnText(aPC).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.text")).hasText mustBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.header")).hasText mustBe true
@@ -121,32 +124,32 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "Show state pensions when clients receiving them for the first time in the current year" in new ViewFixture {
-    val startDate = LocalDate.now().withYear(currentTaxYear)
-    val sp = StatePension(100, "test", Some(1), Some(startDate))
-    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None)
+    val startDate: LocalDate = LocalDate.now().withYear(currentTaxYear)
+    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate))
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None)
     doc.getElementsContainingOwnText("State Pension").hasText mustBe true
-    val weeklyP1 = Messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", formatDate(startDate))
-    val weeklyP2 = Messages("employmenthistory.state.pensions.text.weekly.p2",  formatDate(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(currentTaxYear))}")
+    val weeklyP1: String = Messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", formatDate(startDate))
+    val weeklyP2: String = Messages("employmenthistory.state.pensions.text.weekly.p2",  formatDate(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(currentTaxYear))}")
     doc.getElementsContainingOwnText(weeklyP1).hasText mustBe true
     doc.getElementsContainingOwnText(weeklyP2).hasText mustBe true
   }
 
   "Show state pensions when clients receiving them yearly" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100, "test", Some(5))), None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, Some(StatePension(100, "test", Some(5))), None)
 
     doc.getElementsContainingOwnText("State Pension").hasText mustBe true
     doc.getElementsContainingOwnText("Your client's State Pension this tax year was £100.00").hasText mustBe true
   }
 
   "Don't show state pensions when they don't have them" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, None, None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions")).hasText mustBe false
     doc.getElementsContainingOwnText(Messages("employmenthistory.state.pensions.text", "£100.00")).hasText mustBe false
   }
 
   "Show allowances when they exist" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, allowances, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, None, None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe true
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.description")).hasText mustBe true
@@ -154,7 +157,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "Show no allowances notice when they do not exist" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employments, List.empty, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, List.empty, None, taxAccount, None, None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe true
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.description")).hasText mustBe false
@@ -162,7 +165,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "Don't show allowances for current year" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employments, List.empty, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, List.empty, None, taxAccount, None, None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.heading")).hasText mustBe false
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowance.description")).hasText mustBe false
@@ -170,14 +173,14 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "show alternative text instead of employments table when they are no employment records only pensions" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, 2016, employmentWithPensionOnly, allowances, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, 2016, employmentWithPensionOnly, allowances, None, taxAccount, None, None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.records")).hasText mustBe true
     doc.getElementsContainingOwnText(Messages("employmenthistory.no.employments")).hasText mustBe true
   }
 
   "show alternative text instead of pensions table when they are no pensions records" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None, None)
 
     doc.getElementsContainingOwnText(Messages("employmenthistory.table.header.pensions")).hasText mustBe true
     doc.getElementsContainingOwnText(Messages("employmenthistory.no.pensions")).hasText mustBe true
@@ -185,34 +188,33 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
 
 
   "Show the what's this link when the allowance is an early year adjustment" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowances, None, taxAccount, None,  None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, 2016, employments, allowances, None, taxAccount, None,  None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowances.eya.summary.header")).hasText mustBe true
   }
 
   "Don't show the what's this link when there is no early year adjustment" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, 2016, employments, allowancesNoEYA, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, 2016, employments, allowancesNoEYA, None, taxAccount, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowances.eya.summary.header")).hasText mustBe false
   }
 
   "Show correct heading and links for nav bar" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None, None)
 
-    doc.getElementById("nav-bar-desktop").child(0).text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
-    doc.getElementById("nav-bar-desktop").child(0).attr("href") shouldBe "fakeurl"
+    doc.getElementById("nav-bar").child(0).select("div").text shouldBe Messages("employmenthistory.sidebar.links.more-options")
+    doc.getElementById("nav-bar").child(0).select("a").text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
+    doc.getElementById("nav-bar").child(0).select("a").attr("href") shouldBe appConfig.agentAccountHomePage
 
-    doc.getElementById("nav-bar-desktop").child(3).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.and.tax")
+    doc.getElementById("nav-bar").child(1).select("div").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")
+    doc.getElementById("nav-bar").child(1).select("a").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.change.client")
+    doc.getElementById("nav-bar").child(1).select("a").attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
 
-    doc.getElementById("nav-bar-desktop").child(4).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.client")
-    doc.getElementById("nav-bar-desktop").child(4).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
-
-    doc.getElementById("nav-bar-desktop").child(7).text shouldBe Messages("employmenthistory.employment.summary.sidebar.income.record", nino.toString)
-
-    doc.getElementById("nav-bar-desktop").child(8).text shouldBe Messages("employmenthistory.employment.summary.sidebar.change.tax.year")
-    doc.getElementById("nav-bar-desktop").child(8).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
+    doc.getElementById("nav-bar").child(2).select("div").text shouldBe Messages("employmenthistory.sidebar.links.income-records", nino)
+    doc.getElementById("nav-bar").child(2).select("a").text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
+    doc.getElementById("nav-bar").child(2).select("a").attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
   }
 
   "Show correct total amounts " in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome))
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome))
     doc.getElementById("pensionIncome").text() shouldBe s"£${totalIncome.pensionTaxablePayTotalIncludingEYU.toString()}"
     doc.getElementById("employmentIncomeTax").text() shouldBe s"£${totalIncome.employmentTaxTotalIncludingEYU.toString()}"
     doc.getElementById("employmentIncome").text() shouldBe s"£${totalIncome.employmentTaxablePayTotalIncludingEYU.toString()}"
@@ -220,30 +222,29 @@ class employment_summarySpec extends GuiceAppSpec with Constants with TestAppCon
   }
 
   "Show error message when total amounts are zero" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
     doc.getElementById("employmentIncomeEmpty").text() shouldBe Messages("employmenthistory.employment.table.error.no-values")
   }
 
   "Show underpaid tax and debts tab in current year minus 1" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 2
   }
 
   "Show underpaid tax and debts tab in current year minus 1 with error text when there is no data" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus1, employmentWithPensions, List.empty, None, None, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, None, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 2
     doc.getElementById("no-tax-account").text() shouldBe Messages("employmenthistory.tax-account.empty.text")
   }
 
   "Not show underpaid tax and debts tab in current year" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, currentTaxYear, employmentWithPensions, List.empty, None, None, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employmentWithPensions, List.empty, None, None, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 0
   }
 
   "Not show underpaid tax and debts tab for current year minus 2 or earlier" in new ViewFixture {
-    val view = views.html.taxhistory.employment_summary(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None)
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 1
   }
-
 
 }

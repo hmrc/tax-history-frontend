@@ -18,9 +18,9 @@ package model.api
 
 import model.api.EmploymentStatus.{Ceased, Live, PotentiallyCeased}
 import play.api.libs.json._
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 
-class EmploymentStatusSpec extends UnitSpec {
+class EmploymentStatusSpec extends BaseSpec {
 
   "EmploymentStatus" must {
     "read and write json successfully" in {

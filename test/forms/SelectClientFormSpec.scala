@@ -23,7 +23,8 @@ import support.BaseSpec
 import utils.TestUtil
 class SelectClientFormSpec extends BaseSpec with TestUtil{
 
-  lazy val nino =randomNino.toString()
+  lazy val nino: String =randomNino.toString()
+  private val maxChar: Int = 100
 
   "SelectClientForm" must {
 
@@ -32,7 +33,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
         "clientId" -> nino
       )
 
-      val validatedForm = selectClientForm.bind(postData)
+      val validatedForm = selectClientForm.bind(postData, maxChar)
       val errors = validatedForm.errors
       errors shouldBe empty
     }
@@ -42,7 +43,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
         "clientId" -> ""
       )
 
-      val validatedForm = selectClientForm.bind(postData)
+      val validatedForm = selectClientForm.bind(postData, maxChar)
       validatedForm.errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.empty")))
     }
 
@@ -51,7 +52,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
         "clientId" -> "123456"
       )
 
-      val validatedForm = selectClientForm.bind(postData)
+      val validatedForm = selectClientForm.bind(postData, maxChar)
       val errors = validatedForm.errors
       errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
@@ -61,7 +62,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
         "clientId" -> "1234567890"
       )
 
-      val validatedForm = selectClientForm.bind(postData)
+      val validatedForm = selectClientForm.bind(postData, maxChar)
       val errors = validatedForm.errors
       errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
@@ -71,7 +72,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
         "clientId" -> "1234XXXXA"
       )
 
-      val validatedForm = selectClientForm.bind(postData)
+      val validatedForm = selectClientForm.bind(postData, maxChar)
       validatedForm.errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
   }

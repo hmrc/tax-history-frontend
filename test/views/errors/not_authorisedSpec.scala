@@ -17,23 +17,26 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
+import uk.gov.hmrc.domain.Nino
 import utils.TestUtil
-import views.{Fixture, TestAppConfig}
+import views.Fixture
+import views.html.errors.not_authorised
 
-class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
+class not_authorisedSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture with TestUtil {
-    val nino = randomNino
+    val nino: Nino = randomNino
   }
 
   "not authorised view" must {
 
     "have correct title, heading and GA page view event" in new ViewFixture {
 
-      val view = views.html.errors.not_authorised(Some(nino))
+      val view: HtmlFormat.Appendable = inject[not_authorised].apply(Some(nino))
 
-      val title = Messages("employmenthistory.not.authorised.title")
+      val title: String = Messages("employmenthistory.not.authorised.title")
       doc.title mustBe title
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
@@ -45,7 +48,7 @@ class not_authorisedSpec extends GuiceAppSpec with TestAppConfig {
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.invite.client.link.text"))  should not be empty
       doc.getElementById("service").`val` mustBe "PERSONAL-INCOME-RECORD"
       doc.getElementById("clientIdentifier").`val` mustBe s"$nino"
-      doc.getElementsByTag("form").attr("action") mustBe "fakeurl?continue=%2Ftax-history%2Fselect-client&error=%2Ftax-history%2Fnot-authorised"
+      doc.getElementsByTag("form").attr("action") mustBe s"${appConfig.agentInvitationFastTrack}?continue=%2Ftax-history%2Fselect-client&error=%2Ftax-history%2Fnot-authorised"
     }
   }
 

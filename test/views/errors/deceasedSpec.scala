@@ -17,19 +17,21 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.{Fixture, TestAppConfig}
+import views.Fixture
+import views.html.errors.deceased
 
-class deceasedSpec extends GuiceAppSpec with TestAppConfig {
+class deceasedSpec extends GuiceAppSpec {
 
 
   "Deceased view" must {
 
-    "have correct title, heading and GA page view" in new Fixture {
+    "have correct title and heading page view" in new Fixture {
 
-      val view = views.html.errors.deceased()
+      val view: HtmlFormat.Appendable = inject[deceased].apply
 
-      val title = Messages("employmenthistory.deceased.title")
+      val title: String = Messages("employmenthistory.deceased.title")
       doc.title mustBe title
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")

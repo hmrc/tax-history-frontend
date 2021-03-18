@@ -17,27 +17,26 @@
 package controllers
 
 import org.mockito.MockitoSugar
-import play.api.Environment
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.ControllerSpec
+import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
-import views.TestAppConfig
+import views.html.taxhistory.select_client
 
 import scala.concurrent.Future
 
-class SelectClientControllerSpec extends ControllerSpec with TestAppConfig {
+class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
   trait LocalSetup extends MockitoSugar {
 
-    lazy val controller = {
+    lazy val controller: SelectClientController = {
 
       val c = new SelectClientController(mock[AuthConnector],
-        app.configuration, injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
+        app.configuration, environment, messagesControllerComponents, appConfig, injected[select_client])(stubControllerComponents().executionContext)
 
       when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
@@ -48,7 +47,7 @@ class SelectClientControllerSpec extends ControllerSpec with TestAppConfig {
   "SelectClientController" must {
 
     "load select client page" in new LocalSetup {
-      val result  = controller.getSelectClientPage()(fakeRequest)
+      val result: Future[Result] = controller.getSelectClientPage()(fakeRequest)
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.select.client.title"))
     }
@@ -78,6 +77,3 @@ class SelectClientControllerSpec extends ControllerSpec with TestAppConfig {
   }
 
 }
-
-
-

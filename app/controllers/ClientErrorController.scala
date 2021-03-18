@@ -27,12 +27,20 @@ import views.html.errors._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetailsConnector,
-                                      val cc: MessagesControllerComponents,
-                                      override val authConnector: AuthConnector,
-                                      override val config: Configuration,
-                                      override val env: Environment,
-                                      implicit val appConfig: AppConfig)(implicit ec: ExecutionContext) extends BaseController(cc) {
+class ClientErrorController @Inject()(
+   val citizenDetailsConnector: CitizenDetailsConnector,
+   val cc: MessagesControllerComponents,
+   override val authConnector: AuthConnector,
+   override val config: Configuration,
+   override val env: Environment,
+   implicit val appConfig: AppConfig,
+   notAuthorised: not_authorised,
+   mciRestricted: mci_restricted,
+   deceased: deceased,
+   noData: no_data,
+   technicalError: technical_error,
+   noAgentServicesAccount: no_agent_services_account
+)(implicit ec: ExecutionContext) extends BaseController(cc) {
 
   lazy val loginContinue: String = appConfig.loginContinue
   lazy val serviceSignout: String = appConfig.serviceSignOut
@@ -45,17 +53,17 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
         _ =>
           request.getQueryString("issue") match {
             case Some(issue) =>
-              Logger(getClass).error(s"Form Error: ${issue}")
+              Logger(getClass).error(s"Form Error: $issue")
               throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
             case None =>
-              Future successful Ok(not_authorised(getNinoFromSession(request)))
+              Future successful Ok(notAuthorised(getNinoFromSession(request)))
           }
       }
   }
 
   def getMciRestricted: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(mci_restricted()))
+      Future.successful(Ok(mciRestricted()))
   }
 
   def getDeceased: Action[AnyContent] = Action.async {
@@ -69,7 +77,7 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
         nino =>
           retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap {
             case Left(status) => redirectToClientErrorPage(status)
-            case Right(person) => Future.successful(Ok(no_data(person, nino.toString, taxYear)))
+            case Right(person) => Future.successful(Ok(noData(person, nino.toString, taxYear)))
           }
       }
     }
@@ -77,12 +85,12 @@ class ClientErrorController @Inject()(val citizenDetailsConnector: CitizenDetail
 
   def getTechnicalError: Action[AnyContent] = Action.async {
     implicit request =>
-      Future.successful(Ok(views.html.errors.technical_error()))
+      Future.successful(Ok(technicalError()))
   }
 
   def getNoAgentServicesAccountPage: Action[AnyContent] = Action.async {
     implicit request =>
-      Future successful Ok(no_agent_services_account())
+      Future successful Ok(noAgentServicesAccount())
   }
 
 }

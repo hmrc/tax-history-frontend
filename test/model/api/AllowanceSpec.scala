@@ -34,14 +34,12 @@ package model.api
 
 import java.util.UUID
 
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 import utils.TestUtil
 
-class AllowanceSpec extends TestUtil with UnitSpec {
+class AllowanceSpec extends TestUtil with BaseSpec {
 
-
-
-  lazy val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  lazy val allowance1: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "allowanceType",
     amount = BigDecimal(12.00))
 

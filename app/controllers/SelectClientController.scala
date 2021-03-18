@@ -22,17 +22,17 @@ import javax.inject.Inject
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
-import views.html.taxhistory.select_client
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelectClientController @Inject()(
-                                        override val authConnector: AuthConnector,
-                                        override val config: Configuration,
-                                        override val env: Environment,
-                                        val cc: MessagesControllerComponents,
-                                        implicit val appConfig: AppConfig
-                                      )(implicit val ec: ExecutionContext) extends BaseController(cc) {
+   override val authConnector: AuthConnector,
+   override val config: Configuration,
+   override val env: Environment,
+   val cc: MessagesControllerComponents,
+   implicit val appConfig: AppConfig,
+   selectClient: views.html.taxhistory.select_client
+)(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -44,19 +44,19 @@ class SelectClientController @Inject()(
     redirectToSelectClientPage
   }
 
-  val root = Action {
+  val root: Action[AnyContent] = Action {
     Redirect(routes.SelectClientController.getSelectClientPage())
   }
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedAgent(AuthProviderAgents) {
-      Future.successful(Ok(select_client(selectClientForm)))
+      Future.successful(Ok(selectClient(selectClientForm)))
     }
   }
 
   def submitSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     selectClientForm.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(select_client(formWithErrors))),
+      formWithErrors => Future.successful(BadRequest(selectClient(formWithErrors))),
       validFormData =>
         authorisedAgent(AuthProviderAgents) {
           Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())

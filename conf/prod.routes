@@ -1,7 +1,6 @@
+# Add all the application routes to the app.routes file
+->         /tax-history                                 app.Routes
+->         /                                            health.Routes
 
-->          /tax-history                            app.Routes
-->          /                                       health.Routes
-->          /template                               template.Routes
-
-GET         /admin/metrics                          com.kenshoo.play.metrics.MetricsController.metrics
+GET        /admin/metrics                               @com.kenshoo.play.metrics.MetricsController.metrics
 

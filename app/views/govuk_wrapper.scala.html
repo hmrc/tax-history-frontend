@@ -14,107 +14,72 @@
  * limitations under the License.
  *@
 
-@(appConfig: config.AppConfig,
-  title: String,
-  mainClass: Option[String] = None,
-  mainDataAttributes: Option[Html] = None,
-  bodyClasses: Option[String] = None,
-  sidebar: Html = HtmlFormat.empty,
-  contentHeader: Option[Html] = None,
-  mainContent: Html = HtmlFormat.empty,
-  serviceInfoContent: Html = HtmlFormat.empty,
-  scriptElem: Option[Html] = None,
-  headerNavLink: Option[Html] = None,
-  analyticsAdditionalJs: Option[Html] = None)(implicit request: Request[_], messages: Messages)
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
 
-@import layouts.{govuk_template => hmrcGovUkTemplate}
-@import uk.gov.hmrc.play.views.html.{layouts => uiLayouts}
-@import uk.gov.hmrc.play.views.html.{helpers => uiHelpers}
+@this(
+    govukTemplate: GovukTemplate,
+    govukBackLink: GovukBackLink,
+    govukPhaseBanner: GovukPhaseBanner,
+    hmrcHead: HmrcHead,
+    hmrcStandardHeader: HmrcStandardHeader,
+    hmrcStandardFooter: HmrcStandardFooter,
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+)
 
-@linkElement = {
-  <link rel="stylesheet" href='@routes.Assets.at("stylesheets/taxhistory.css")' />
+@(title: String, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None, backLink: Option[String]= None)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
-}
-
-@scriptElement = {
-    <script src="@controllers.routes.Assets.at("javascripts/scripts.js")" type="text/javascript"></script>
-    <script src="@controllers.routes.Assets.at("javascripts/ga-events.js")" type="text/javascript"></script>
-}
-
-@head = {
-
-    @uiLayouts.headWithTrackingConsent(
-    linkElem = Some(linkElement),
-    headScripts = None)
+@head ={
     <meta name="format-detection" content="telephone=no" />
+    <link rel="stylesheet" media="all" href='@routes.Assets.versioned("stylesheets/taxhistory.css")' type="text/css"/>
 }
 
-@headerNavLinks = {
-<li><a id="logOut" href="@routes.EmploymentSummaryController.logout">@Messages("global.link.signout")</a></li>
+@scripts = {
+    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
+    <script>window.GOVUKFrontend.initAll();</script>
 }
 
-@insideHeader = {
-
-    @uiLayouts.header_nav(
-      navTitle = Some(Messages("lbl.service.title")),
-      navTitleLink = None,
-      showBetaLink = false,
-      navLinks = Some(headerNavLinks))
+@feedbackBanner = {
+    @messages("feedback.before")
+    <a class='govuk-link' href='@{appConfig.betaFeedbackUrl}'>@messages("feedback.link")</a>
+    @messages("feedback.after")
 }
 
-@afterHeader = {}
+@beforeContentBlock = {
 
-@gaCalls(analyticsHost: String, token: String) = {
-ga('create', '@token', '@analyticsHost');
-@analyticsAdditionalJs
-}
-
-@bodyEnd = {
-    @uiLayouts.footer(
-      analyticsToken = None,
-      analyticsHost = "",
-      ssoUrl = None,
-      scriptElem = Some(scriptElement),
-      gaCalls = None)
-}
-
-@footerTop = {}
-@footerLinks = {}
-
-@betaBanner = {
-    @uiLayouts.betaBanner(
-        userLoggedIn = true,
-        betaFeedbackUrl = appConfig.betaFeedbackUrl,
-        betaFeedbackUnauthenticatedUrl = appConfig.betaFeedbackUnauthenticatedUrl,
-        showFeedbackLinkInBetaBanner = true
+    @govukPhaseBanner(PhaseBanner(
+        tag = Some(Tag(content = Text("beta"))),
+        content = HtmlContent(feedbackBanner)
+        )
     )
+    @backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
+
 }
-
-
-@serviceInfo = {
-    @uiLayouts.serviceInfo(
-      betaBanner = betaBanner,
-      includeGridWrapper = false,
-      serviceInfoContent = Some(serviceInfoContent))
-}
-
-@mainContentHeader = {
-    @if(contentHeader.isDefined) {
-        @uiLayouts.main_content_header(contentHeader = contentHeader.get)
-    }
-}
-
-@getHelpForm = @{uiHelpers.reportAProblemLink(appConfig.reportAProblemPartialUrl, appConfig.reportAProblemNonJSUrl)}
 
 @content = {
-    @uiLayouts.main_content(
-      article = mainContent,
-      mainClass = mainClass,
-      mainDataAttributes = mainDataAttributes,
-      mainContentHeader = mainContentHeader,
-      serviceInfo = serviceInfo,
-      getHelpForm = getHelpForm,
-      sidebar = sidebar)
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-full">
+            @mainContent
+        </div>
+    </div>
+
+    <div class="govuk-!-font-size-19">
+        @hmrcReportTechnicalIssueHelper()
+    </div>
 }
 
-@hmrcGovUkTemplate(Some(title), bodyClasses)(head, bodyEnd, insideHeader, afterHeader, footerTop, Some(uiLayouts.footer_links()), true)(content)
+
+@govukTemplate(
+    pageTitle = Some(title),
+    headBlock = Some(hmrcHead(Some(head))),
+    headerBlock = hmrcStandardHeader(
+        serviceName = Some(messages("service.name")),
+        signOutUrl = Some(routes.EmploymentSummaryController.logout.url),
+        userResearchBanner = if(researchBannerUrl.isDefined) Some(UserResearchBanner(url = researchBannerUrl.get)) else None,
+        serviceUrl = None
+        ),
+    beforeContentBlock = Some(beforeContentBlock),
+    footerBlock = hmrcStandardFooter(),
+    mainClasses = Some("govuk-main-wrapper--auto-spacing"),
+    bodyEndBlock = Some(scripts)
+)(content)
+

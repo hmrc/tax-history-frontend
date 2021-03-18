@@ -16,7 +16,6 @@
 
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
-import config.{AppConfig, DefaultAppConfig}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient, HttpClient}
 
@@ -26,7 +25,6 @@ class FrontendModule (val environment: Environment, val configuration: Configura
 
     bind(classOf[String]).annotatedWith(Names.named("contactFormServiceIdentifier")).toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
     bind(classOf[HttpClient]).to(classOf[DefaultHttpClient])
-    bind(classOf[AppConfig]).to(classOf[DefaultAppConfig]).asEagerSingleton()
 
     //These library components must be bound in this way, or using providers
     //bind(classOf[HeadersFilter]).to(classOf[HeadersFilter])

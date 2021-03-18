@@ -16,17 +16,15 @@
 
 @import config.AppConfig
 
+@this(
+    govukWrapper: views.html.govuk_wrapper,
+    p: helpers.p
+)
+
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@govukWrapper(title = messages("employmenthistory.technical.error.title"), backLink = Some(appConfig.agentAccountHomePage)) {
 
-@mainContent = {
-
-    <a href="@appConfig.agentAccountHomePage" class="link-back" id="back-link">@{messages("lbl.back")}</a>
-
-    <h1 class="heading-xlarge" id="error-heading">@messages("employmenthistory.technical.error.header")</h1>
-    <p> @messages("employmenthistory.technical.error.message") </p>
-}
-
-@views.html.main_template(title = messages("employmenthistory.technical.error.title")) {
-    @mainContent
+    <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.technical.error.header")</h1>
+    @p{@messages("employmenthistory.technical.error.message")}
 }

@@ -34,13 +34,13 @@ package model.api
 
 import java.util.UUID
 
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 import utils.TestUtil
 
-class CompanyBenefitSpec extends TestUtil with UnitSpec {
+class CompanyBenefitSpec extends TestUtil with BaseSpec {
 
 
-  lazy val companyBenefit = CompanyBenefit(companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  lazy val companyBenefit: CompanyBenefit = CompanyBenefit(companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "companyBenefitType",
     amount = BigDecimal(12.00),
     source = Some(3),

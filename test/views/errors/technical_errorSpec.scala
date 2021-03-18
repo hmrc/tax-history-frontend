@@ -17,19 +17,21 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.{Fixture, TestAppConfig}
+import views.Fixture
+import views.html.errors.technical_error
 
-class technical_errorSpec extends GuiceAppSpec with TestAppConfig {
+class technical_errorSpec extends GuiceAppSpec {
 
 
   "Technical Error view" must {
 
     "have correct title, heading and GA page view event" in new Fixture {
 
-      val view = views.html.errors.technical_error()
+      val view: HtmlFormat.Appendable = inject[technical_error].apply
 
-      val title = Messages("employmenthistory.technical.error.title")
+      val title: String = Messages("employmenthistory.technical.error.title")
       doc.title mustBe title
       doc.getElementById("back-link").attr("href").contains(appConfig.agentAccountHomePage) mustBe true
       doc.getElementById("back-link").text mustBe Messages("lbl.back")

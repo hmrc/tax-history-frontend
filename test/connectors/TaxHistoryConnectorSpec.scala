@@ -21,29 +21,24 @@ import java.util.UUID
 import model.api.EmploymentPaymentType.JobseekersAllowance
 import model.api._
 import org.joda.time.LocalDate
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.mockito.ArgumentMatchersSugar
+import org.mockito.Mockito._
+import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
-import play.api.libs.json.{JsArray, Json}
+import play.api.libs.json.{JsArray, JsValue, Json}
+import support.BaseSpec
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.http.{HttpClient, HttpResponse}
 import utils.TestUtil
-import views.TestAppConfig
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil with TestAppConfig {
+class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
 
-  private implicit val hc = HeaderCarrier()
-
-  val startDate = new LocalDate("2016-01-21")
-
-  val mockHttpClient: HttpClient = mock[HttpClient]
+  private val mockHttpClient: HttpClient = mock[HttpClient]
 
   trait LocalSetup extends ArgumentMatchersSugar {
-    lazy val nino =randomNino.toString()
+    lazy val nino: String =randomNino.toString()
     lazy val connector = new TaxHistoryConnector(appConfig, mockHttpClient)
   }
 
@@ -62,11 +57,11 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
   "TaxHistoryConnector" should {
 
     "fetch tax history" in new LocalSetup {
-      val employmentsJson = JsArray(Seq(Json.toJson(employment)))
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(employmentsJson))))
+      val employmentsJson: JsArray = JsArray(Seq(Json.toJson(employment)))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = employmentsJson, Map.empty)))
 
-      val result = await(connector.getEmploymentsAndPensions(Nino(nino), 2017))
+      val result: HttpResponse = connector.getEmploymentsAndPensions(Nino(nino), 2017).futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe employmentsJson
@@ -74,14 +69,14 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
 
     "fetch allowance for tax history" in new LocalSetup {
 
-      val allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+      val allowance: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
         iabdType = "allowanceType",
         amount = BigDecimal(12.00))
 
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(allowance))))))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = Json.toJson(Seq(allowance)), Map.empty)))
 
-      val result = await(connector.getAllowances(Nino(nino), 2017))
+      val result: HttpResponse = connector.getAllowances(Nino(nino), 2017).futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Seq(allowance))
@@ -89,12 +84,12 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
     }
 
     "fetch company benefits for Employment details" in new LocalSetup {
-      val companyBenefits = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
+      val companyBenefits: CompanyBenefit = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
 
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Seq(companyBenefits))))))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = Json.toJson(Seq(companyBenefits)), Map.empty)))
 
-      val result = await(connector.getCompanyBenefits(Nino(nino), 2014, "c9923a63-4208-4e03-926d-7c7c88adc7ee"))
+      val result: HttpResponse = connector.getCompanyBenefits(Nino(nino), 2014, "c9923a63-4208-4e03-926d-7c7c88adc7ee").futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Seq(companyBenefits))
@@ -107,7 +102,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
         taxEYU = BigDecimal(67.89),
         receivedDate = new LocalDate("2015-05-29")))
 
-      lazy val payAndTaxWithEyu = PayAndTax(
+      lazy val payAndTaxWithEyu: PayAndTax = PayAndTax(
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
         taxablePayTotal = Some(BigDecimal(1234567.89)),
         taxablePayTotalIncludingEYU = Some(BigDecimal(2345678.90)),
@@ -118,21 +113,21 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = eyuList)
 
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTaxWithEyu)))))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = Json.toJson(payAndTaxWithEyu), Map.empty)))
 
-      val result = await(connector.getPayAndTaxDetails(Nino(nino), 2014, "12341234"))
+      val result: HttpResponse = connector.getPayAndTaxDetails(Nino(nino), 2014, "12341234").futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(payAndTaxWithEyu)
     }
 
     "fetch Employment from backend" in new LocalSetup {
-      val employmentJson = Json.toJson(employment)
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(employmentJson))))
+      val employmentJson: JsValue = Json.toJson(employment)
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = employmentJson, Map.empty)))
 
-      val result = await(connector.getEmployment(Nino(nino), 2014, "12341234"))
+      val result: HttpResponse = connector.getEmployment(Nino(nino), 2014, "12341234").futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe employmentJson
@@ -142,10 +137,10 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
 
       val taxYears = List(IndividualTaxYear(2015, "uri1","uri2","uri3"), IndividualTaxYear(2015, "uri1","uri2", "uri3"))
 
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(taxYears)))))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = Json.toJson(taxYears), Map.empty)))
 
-      val result = await(connector.getTaxYears(Nino(nino)))
+      val result: HttpResponse = connector.getTaxYears(Nino(nino)).futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(taxYears)
@@ -153,7 +148,7 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
 
     "fetch payAndTax data from backend" in new LocalSetup {
 
-      val payAndTax = PayAndTax(
+      val payAndTax: PayAndTax = PayAndTax(
         taxablePayTotal = Some(4896.80),
         taxablePayTotalIncludingEYU = Some(BigDecimal(3785.70)),
         taxTotal = Some(979.36),
@@ -163,10 +158,10 @@ class TaxHistoryConnectorSpec extends UnitSpec with MockitoSugar with TestUtil w
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty)
 
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(payAndTax)))))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = Json.toJson(payAndTax), Map.empty)))
 
-      val result = await(connector.getPayAndTaxDetails(Nino(nino),2017,"testID"))
+      val result: HttpResponse = connector.getPayAndTaxDetails(Nino(nino),2017,"testID").futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(payAndTax)
