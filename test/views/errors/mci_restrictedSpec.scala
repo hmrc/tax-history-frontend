@@ -17,23 +17,25 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import utils.TestUtil
-import views.{Fixture, TestAppConfig}
+import views.Fixture
+import views.html.errors.mci_restricted
 
-class mci_restrictedSpec extends GuiceAppSpec with TestAppConfig {
+class mci_restrictedSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture {
-    val nino = TestUtil.randomNino.toString()
+    val nino: String = TestUtil.randomNino.toString()
   }
 
   "MCI restricted view" must {
 
-    "have correct title, heading and GA page view event" in new ViewFixture {
+    "have correct title and heading page view event" in new ViewFixture {
 
-      val view = views.html.errors.mci_restricted()
+      val view: HtmlFormat.Appendable = inject[mci_restricted].apply
 
-      val title = Messages("employmenthistory.mci.restricted.title")
+      val title: String = Messages("employmenthistory.mci.restricted.title")
       doc.title mustBe title
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")

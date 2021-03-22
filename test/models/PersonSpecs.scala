@@ -18,9 +18,9 @@ package models
 
 import models.taxhistory.Person
 import play.api.libs.json.{JsSuccess, Json}
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 
-class PersonSpecs  extends UnitSpec{
+class PersonSpecs extends BaseSpec {
 
   "GetName from Person Model" should {
     "unable to retrieve name when Person is not populated" in {

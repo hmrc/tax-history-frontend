@@ -35,12 +35,12 @@ package model.api
 import java.util.UUID
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 import utils.TestUtil
 
-class EmploymentSpec extends TestUtil with UnitSpec {
+class EmploymentSpec extends TestUtil with BaseSpec {
 
-  lazy val employment1 = Employment(
+  lazy val employment1: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",

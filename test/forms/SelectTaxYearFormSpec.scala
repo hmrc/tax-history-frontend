@@ -24,6 +24,8 @@ import utils.TestUtil
 
 class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
 
+  private val maxChar: Int = 100
+
   "SelectTaxYear" must {
 
     "return no errors with valid data" in {
@@ -31,7 +33,7 @@ class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
         "selectTaxYear" -> "2016"
       )
 
-      val validatedForm = selectTaxYearForm.bind(postData)
+      val validatedForm = selectTaxYearForm.bind(postData, maxChar)
       val errors = validatedForm.errors
       errors shouldBe empty
     }
@@ -41,7 +43,7 @@ class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
         "selectTaxYear" -> ""
       )
 
-      val validatedForm = selectTaxYearForm.bind(postData)
+      val validatedForm = selectTaxYearForm.bind(postData, maxChar)
       validatedForm.errors shouldBe List(FormError("selectTaxYear", List("employmenthistory.select.tax.year.error.linktext")))
     }
   }

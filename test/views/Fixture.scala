@@ -17,6 +17,7 @@
 package views
 
 import org.jsoup.Jsoup
+import org.jsoup.nodes.{Document, Element}
 import org.scalatest.MustMatchers
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Request}
@@ -31,12 +32,12 @@ trait Fixture extends MustMatchers {
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   def view: HtmlFormat.Appendable
-  lazy val html = view.body
-  lazy val doc = Jsoup.parse(html)
-  lazy val form = doc.getElementsByTag("form").first()
-  lazy val heading = doc.getElementsByTag("h1").first()
-  lazy val subHeading = doc.getElementsByClass("heading-secondary").first()
-  lazy val errorSummary = doc.getElementsByClass("amls-error-summary").first()
+  lazy val html: String = view.body
+  lazy val doc: Document = Jsoup.parse(html)
+  lazy val form: Element = doc.getElementsByTag("form").first()
+  lazy val heading: Element = doc.getElementsByTag("h1").first()
+  lazy val subHeading: Element = doc.getElementsByClass("heading-secondary").first()
+  lazy val errorSummary: Element = doc.getElementsByClass("amls-error-summary").first()
 
   def validateParagraphizedContent(messageKey: String)(implicit messages: Messages): Unit = {
     for(p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala) {

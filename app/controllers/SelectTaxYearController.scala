@@ -16,6 +16,8 @@
 
 package controllers
 
+import java.time.format.DateTimeFormatter
+
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
@@ -30,31 +32,32 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
-import utils.DateHelper
-import views.html.taxhistory.select_tax_year
 
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelectTaxYearController @Inject()(
-                                         val taxHistoryConnector: TaxHistoryConnector,
-                                         val citizenDetailsConnector: CitizenDetailsConnector,
-                                         override val authConnector: AuthConnector,
-                                         override val config: Configuration,
-                                         override val env: Environment,
-                                         val cc: MessagesControllerComponents,
-                                         implicit val appConfig: AppConfig
-                                       )(implicit val ec: ExecutionContext) extends BaseController(cc) {
+   val taxHistoryConnector: TaxHistoryConnector,
+   val citizenDetailsConnector: CitizenDetailsConnector,
+   override val authConnector: AuthConnector,
+   override val config: Configuration,
+   override val env: Environment,
+   val cc: MessagesControllerComponents,
+   implicit val appConfig: AppConfig,
+   selectTaxYear: views.html.taxhistory.select_tax_year
+ )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[_]) = {
+  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[_]): List[(String, String)] = {
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          DateHelper.formatDate(TaxYear(taxYear.year).starts),
-          DateHelper.formatDate(TaxYear(taxYear.year).finishes))
+          /*DateHelper.formatDate(TaxYear(taxYear.year).starts),
+          DateHelper.formatDate(TaxYear(taxYear.year).finishes))*/
+        TaxYear(taxYear.year).starts.format(DateTimeFormatter.ofPattern("d MMMM yyyy")),
+        TaxYear(taxYear.year).finishes.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))
     }
   }
 
@@ -62,13 +65,13 @@ class SelectTaxYearController @Inject()(
                                         (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       taxYearResponse.status match {
-        case OK => {
+        case OK =>
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-          httpStatus(select_tax_year(form, taxYears, clientName, nino.toString))
-        }
-        case status => {
+          httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))
+
+        case status =>
           handleHttpFailureResponse(status, nino)
-        }
+
       }
     }
   }

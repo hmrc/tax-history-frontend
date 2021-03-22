@@ -18,22 +18,24 @@ package views.taxhistory
 
 import controllers.routes
 import model.api.EmploymentPaymentType.OccupationalPension
-import model.api.{IncomeSource, TaAllowance, TaDeduction}
+import model.api.{CompanyBenefit, IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllerUtils, TestUtil}
-import views.{Fixture, TestAppConfig}
+import views.Fixture
+import views.html.taxhistory.employment_detail
 
-class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestAppConfig {
+class employment_detailSpec extends GuiceAppSpec with DetailConstants {
 
   trait ViewFixture extends Fixture {
     val currentTaxYear: Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2016
-    val person = Person(Some("James"), Some("Dean"), Some(false))
+    val person: Person = Person(Some("James"), Some("Dean"), Some(false))
     val clientName: String = person.getName.getOrElse(nino)
     val incomeSourceNoDeductions: Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
@@ -45,39 +47,39 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
   "employment_detail view" should {
 
-    "have correct title, headings and GA pageview event for an employment" in new ViewFixture {
+    "have correct title and headings for an employment" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
 
-      val title = Messages("employmenthistory.employment.details.title")
-      doc.title shouldBe title
-      doc.select("h1").text() shouldBe "employer-1"
+      doc.title shouldBe Messages("employmenthistory.employment.details.title")
+      doc.getElementById("ClientIncomeRecord").text() shouldBe s"$clientName's income records"
+      doc.select("h1").text() shouldBe employment.employerName
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe false
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe true
     }
 
-    "have correct title, headings and GA pageview event for a pension" in new ViewFixture {
+    "have correct title and headings for a pension" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
 
-      val title = Messages("employmenthistory.employment.details.title")
-      doc.title shouldBe title
-      doc.select("h1").text() shouldBe "employer-1"
+      doc.title shouldBe Messages("employmenthistory.employment.details.title")
+      doc.getElementById("ClientIncomeRecord").text() shouldBe s"$clientName's income records"
+      doc.select("h1").text() shouldBe employment.employerName
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe false
     }
 
     "have correct employment details" in new ViewFixture {
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
       val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
-      val payrollId: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
-      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
-      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(7)
-      val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
-      val incomeTax: Element = doc.select("#pay-and-tax-table tbody tr").get(1)
+      val payrollId: Element = doc.getElementById("employment-data-desktop").child(1).child(2)
+      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
+      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(4)
+      val taxablePay: Element = doc.getElementById("pay-and-tax-table").child(0).child(0)
+      val incomeTax: Element = doc.getElementById("pay-and-tax-table").child(0).child(1)
 
       payrollId.text should include(employment.worksNumber)
       payeReference.text should include(employment.payeReference)
@@ -88,12 +90,12 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     }
 
     "not have payroll ID and status for a pension" in new ViewFixture {
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
-      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
-      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
-      val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
-      val incomeTax: Element = doc.select("#pay-and-tax-table tbody tr").get(1)
+      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
+      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(2)
+      val taxablePay: Element = doc.getElementById("pay-and-tax-table").child(0).child(0)
+      val incomeTax: Element = doc.getElementById("pay-and-tax-table").child(0).child(1)
 
       doc.getElementsContainingText(employment.worksNumber).hasText shouldBe false
       doc.getElementsContainingText(ControllerUtils.getEmploymentStatus(employment)).hasText shouldBe false
@@ -105,7 +107,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "have correct Earlier Year Update details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
 
       doc.getElementById("EYUs").child(1).child(0).text shouldEqual Messages("employmenthistory.eyu.caveat", employment.employerName)
@@ -128,7 +130,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "have correct company benefits details" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, completeCBList, clientName, None)
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.company.benefit.caveat")).hasText shouldBe true
@@ -140,7 +142,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "show current" when {
       "employment is ongoing" in new ViewFixture {
-        val view = views.html.taxhistory.employment_detail(taxYear,
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear,
           Some(payAndTax), employmentNoEndDate, completeCBList, clientName, None)
 
         doc.getElementsMatchingOwnText(Messages("lbl.employment.status.current")).hasText shouldBe true
@@ -151,11 +153,11 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "show data not available" when {
       "input data missing for payAndTax.taxablePayTotal and payAndTax.taxTotal" in new ViewFixture {
-        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxNoTotal),
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTaxNoTotal),
           employment, List.empty, clientName, None)
-        val taxablePay: Element = doc.select("#pay-and-tax-table tbody tr").get(0)
+        val taxablePay: Element = doc.getElementById("pay-and-tax-table").child(0).child(1)
         taxablePay.text should include(Messages("employmenthistory.nopaydata"))
-        val paymentGuidance = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
+        val paymentGuidance: String = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
         doc.getElementsContainingOwnText(paymentGuidance).hasText shouldBe false
       }
     }
@@ -163,7 +165,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "not show tax code breakdown " when {
       "employment details are for previous year" in new ViewFixture {
 
-        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
           employment, completeCBList, clientName, None)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading")).hasText shouldBe false
@@ -180,7 +182,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "Show tax code breakdown with deductions " when {
       "employment details are for current year and there are deductions" in new ViewFixture {
 
-        val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(currentTaxYear, Some(payAndTax),
           employment, completeCBList, clientName, incomeSourceWithDeductions)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading", {
@@ -188,10 +190,6 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
         })).hasText shouldBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText shouldBe true
         doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText shouldBe true
-
-        doc.getElementsByClass("allowance-table").size() shouldBe 1
-        doc.getElementsByClass("deductions-table").size() shouldBe 1
-
         doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText shouldBe false
 
       }
@@ -200,17 +198,13 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "Show tax code breakdown without deductions and show no deductions text " when {
       "employment details are for current year and there are no deductions" in new ViewFixture {
 
-        val view = views.html.taxhistory.employment_detail(currentTaxYear, Some(payAndTax),
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(currentTaxYear, Some(payAndTax),
           employment, completeCBList, clientName, incomeSourceNoDeductions)
 
         doc.getElementsContainingOwnText(Messages("tax.code.heading", {
           ""
         })).hasText shouldBe true
         doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText shouldBe true
-
-        doc.getElementsByClass("allowance-table").size() shouldBe 1
-        doc.getElementsByClass("deductions-table").size() shouldBe 0
-
         doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText shouldBe true
 
 
@@ -220,7 +214,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
     "Not Show tax code, paye Refrence, payroll id, early year updates, or company benefits" when {
       "The employment is recievingJobseekersAllowance = true" in new ViewFixture {
 
-        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
           employmentWithJobseekers, completeCBList, clientName, None)
 
         doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.eyu")).hasText shouldBe false
@@ -247,16 +241,16 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "Show company benefit's P11D/forecast descriptor" when {
       "the company benefit's payment is forecast" in new ViewFixture {
-        val companyBenefitForecast = completeCBList.head.copy(isForecastBenefit=true)
-        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List(companyBenefitForecast), clientName, None)
+        val companyBenefitForecast: CompanyBenefit = completeCBList.head.copy(isForecastBenefit=true)
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax), employment, List(companyBenefitForecast), clientName, None)
 
         val cbTable: Element = doc.getElementById("cb-table")
         cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.forecast")).hasText shouldBe true
         cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.P11D")).hasText shouldBe false
       }
       "the company benefit's payment is not forecast" in new ViewFixture {
-        val companyBenefitActual = completeCBList.head.copy(isForecastBenefit=false)
-        val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax), employment, List(companyBenefitActual), clientName, None)
+        val companyBenefitActual: CompanyBenefit = completeCBList.head.copy(isForecastBenefit=false)
+        val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax), employment, List(companyBenefitActual), clientName, None)
 
         val cbTable: Element = doc.getElementById("cb-table")
         cbTable.getElementsContainingOwnText(Messages("employmenthistory.cb.forecast")).hasText shouldBe false
@@ -266,7 +260,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "Show student loans when data is available" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employmentWithJobseekers, completeCBList, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe true
@@ -275,7 +269,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
     "Not show student loans when data is available" in new ViewFixture {
 
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTaxNoStudentLoan),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTaxNoStudentLoan),
         employmentWithJobseekers, completeCBList, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe false
@@ -283,44 +277,41 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants with TestA
 
 
     "Show alternate text when payAndTax is not defined" in new ViewFixture {
-      val view = views.html.taxhistory.employment_detail(currentTaxYear, None,
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(currentTaxYear, None,
         employment, completeCBList, clientName, incomeSourceNoDeductions)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.pay.and.tax",
-        employment.employerName, employment.startDate.get.toString("d MMMM yyyy"))).hasText shouldBe true
+        employment.employerName, employment.startDate.get.toString("d MMMM yyyy"))).hasText shouldBe false
 
     }
 
     "show alternate text when no company benefits are available" in new ViewFixture {
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.employment.details.no.benefits", "employer-1")).hasText shouldBe true
     }
 
     "Show correct heading and links for nav bar" in new ViewFixture {
-      val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
 
-      doc.getElementById("nav-bar").child(0).text shouldBe Messages("employmenthistory.sidebar.links.more-options")
+      doc.getElementById("nav-bar").child(0).select("div").text shouldBe Messages("employmenthistory.sidebar.links.more-options")
+      doc.getElementById("nav-bar").child(0).select("a").text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
+      doc.getElementById("nav-bar").child(0).select("a").attr("href") shouldBe appConfig.agentAccountHomePage
 
-      doc.getElementById("nav-bar").child(1).text shouldBe Messages("employmenthistory.sidebar.links.agent-services-home")
-      doc.getElementById("nav-bar").child(1).attr("href") shouldBe "fakeurl"
+      doc.getElementById("nav-bar").child(1).select("div").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")
+      doc.getElementById("nav-bar").child(1).select("a").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.change.client")
+      doc.getElementById("nav-bar").child(1).select("a").attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
 
-      doc.getElementById("nav-bar").child(2).text shouldBe Messages("employmenthistory.sidebar.links.income-and-tax")
-
-      doc.getElementById("nav-bar").child(3).text shouldBe Messages("employmenthistory.sidebar.links.change-client")
-      doc.getElementById("nav-bar").child(3).attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
-
-      doc.getElementById("nav-bar").child(4).text shouldBe Messages("employmenthistory.sidebar.links.income-records", clientName)
-
-      doc.getElementById("nav-bar").child(5).text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
-      doc.getElementById("nav-bar").child(5).attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
+      doc.getElementById("nav-bar").child(2).select("div").text shouldBe Messages("employmenthistory.sidebar.links.income-records", clientName)
+      doc.getElementById("nav-bar").child(2).select("a").text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
+      doc.getElementById("nav-bar").child(2).select("a").attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
     }
   }
 
   "totals for allowance and deduction have the correct values" in new ViewFixture {
-    val view = views.html.taxhistory.employment_detail(taxYear, Some(payAndTax),
+    val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
       employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
     doc.getElementById("DeductionTotal").text shouldBe "£2"
     doc.getElementById("AllowanceTotal").text shouldBe "£2"

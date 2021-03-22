@@ -16,83 +16,69 @@
 
 @import controllers.routes
 @import models.taxhistory.SelectClient
-@import views.html.helpers.input
-@import uk.gov.hmrc.play.views.html.helpers
 @import config.AppConfig
+
+@this(
+    govukWrapper: views.html.govuk_wrapper,
+    formHelper: FormWithCSRF,
+    errorSummary: helpers.errorSummary,
+    govukButton : GovukButton,
+    govukInput : GovukInput,
+    link: helpers.link
+)
 
 @(sCForm: Form[SelectClient])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.main_template(title = Messages("employmenthistory.select.client.title"),
-                          bodyClasses = None,
-                          sidebarLinks = None,
-                          mainClass = Some("full-width")) {
-<a href="@appConfig.agentAccountHomePage" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
-<div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
-<div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-    @helpers.form(routes.SelectClientController.submitSelectClientPage()){
-        @if(sCForm.hasErrors) {
-            <script>
-                    function gaEvent() {
-                        ga('send', 'event', {
-                            'eventCategory': '@Messages("lbl.ga.error-field")',
-                            'eventAction': '@Messages("lbl.ga.action.enter-nino")',
-                            'eventLabel': '@sCForm.errors.head.messages.map(x => Messages(x))'
-                        });
-                    }
-                    if (document.readyState !== 'loading') gaEvent();
-                    // modern browsers
-                    else if (document.addEventListener) document.addEventListener('DOMContentLoaded', gaEvent);
-                    // IE <= 8
-                    else document.attachEvent('onreadystatechange', function(){
-                            if (document.readyState ==='complete') gaEvent();
-                        });
-            </script>
-            <div class="error-summary error-summary--show"
-                 id="error-summary-display"
-                 role="alert"
-                 aria-labelledby="error-summary-heading"
-                 tabindex="-1">
-                <h2 id="error-summary-heading" class="h3-heading">@sCForm.errors.head.messages.map(x => Messages(s"$x.title"))</h2>
-                <ul class="js-error-summary-messages">
+@govukWrapper(title = messages("employmenthistory.select.client.title"), backLink = Some(appConfig.agentAccountHomePage)) {
+
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            @formHelper(routes.SelectClientController.submitSelectClientPage()){
+
+                @errorSummary(sCForm.errors)
+
+                @govukInput(Input(
+                    id = "clientId",
+                    name = "clientId",
+                    classes = "govuk-input govuk-input--width-10",
+                    label = Label(
+                        content = Text(messages("employmenthistory.select.client.heading", Seq())),
+                        isPageHeading = true,
+                        classes = "govuk-label--xl"
+                    ),
+                    hint = Some(Hint(
+                        content = Text(messages("employmenthistory.select.client.nino.hint"))
+                    )),
+                    value = sCForm("clientId").value,
+                    errorMessage = if(sCForm("clientId").hasErrors){
+                        Some(ErrorMessage(
+                            attributes = Map("data-journey-click" -> s"search-page:error:clientId"),
+                            content = Text(messages(sCForm("clientId").errors.head.message))
+                        ))
+                    } else { None },
+                    attributes = Map("maxlength" -> "9")
+                ))
+
+                @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
+
+            }
+        </div>
+
+        <div class="govuk-grid-column-one-third">
+            <section class="section subsection section--blue-top">
+                <ul class="govuk-list" id="nav-bar">
                     <li>
-                        <a class="error-font" href="#@sCForm.errors.head.key" id="@{sCForm.errors.head.key}-error-summary" data-focuses="@sCForm.errors.head.key">
-                            @sCForm.errors.head.messages.map(x => Messages(x))
-                        </a>
+                        <p class="govuk-body"><div class="govuk-!-font-weight-bold">@Messages("employmenthistory.sidebar.links.more-options")</div>
+                            @link(
+                                appConfig.agentAccountHomePage,
+                                messages("employmenthistory.select.client.sidebar.agent-services-home"),
+                                classes = "govuk-link govuk-body"
+                            )
+                        </p>
                     </li>
                 </ul>
-            </div>
-        }
-    <div class="page-header">
-    <h1 class="heading-xlarge" id= "title">@Messages("employmenthistory.select.client.heading")</h1>
+            </section>
+        </div>
     </div>
 
-    <fieldset class="form-field-group">
-        @input(sCForm("clientId"),
-        '_label -> Messages("employmenthistory.select.client.clients.nino"),
-        '_labelClass -> "flash-error",
-        '_labelTextClass -> "visuallyhidden",
-        '_maxlength -> "9",
-        '_inputClass -> "form-control form-control--block uppercase-only",
-        '_inputHint -> Messages("employmenthistory.select.client.nino.hint"),
-        '_legend -> Html(Messages("employmenthistory.select.client.heading")),
-        '_legendClass -> "hidden"
-        )
-    </fieldset>
-    <div class="form-field">
-        <button class="button" id="continueButton" type="submit">
-            @Messages("employmenthistory.select.client.continue")
-        </button>
-    </div>
-    }
-</div>
-<div class ="grid-layout__column grid-layout__column--1-3">
-    <section class="section subsection section--blue-top deskContent" id="nav-bar-desktop">
-        <a href="@appConfig.agentAccountHomePage">@Messages("employmenthistory.select.client.sidebar.agent-services-home")</a>
-    </section>
-</div>
-</div>
-    <br>
-    <section class="section subsection section--blue-top phoneContent" id="nav-bar-mobile">
-        <a href="@appConfig.agentAccountHomePage">@Messages("employmenthistory.select.client.sidebar.agent-services-home")</a>
-    </section>
 }

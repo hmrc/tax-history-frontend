@@ -1,70 +1,54 @@
-import play.core.PlayVersion
+import sbt.Keys.{evictionWarningOptions, resolvers}
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, integrationTestSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
+import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "tax-history-frontend"
 val silencerVersion = "1.7.0"
 
-lazy val microservice =
-  Project(appName, file("."))
-    .configs(IntegrationTest)
-    .disablePlugins(JUnitXmlReportPlugin)
-    .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+lazy val microservice =  Project(appName, file("."))
+  .enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning,  SbtDistributablesPlugin)
+  .disablePlugins(JUnitXmlReportPlugin)
+  .configs(IntegrationTest)
+  .settings(integrationTestSettings(): _*)
+  .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
+  .settings(
+    majorVersion := 3,
+    scalaSettings,
+    scalaVersion := "2.12.12",
+    libraryDependencies ++= AppDependencies(),
+    name := appName,
+    PlayKeys.playDefaultPort := 9996,
+    publishingSettings,
+    defaultSettings(),
+    retrieveManaged := true,
+    resolvers ++= Seq(
+      Resolver.bintrayRepo("hmrc", "releases"),
+      Resolver.jcenterRepo
+    ),
+    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
+      ".*BuildInfo.*;.*helpers.*;.*Routes.*;controllers.ExampleController;controllers.testonly.TestOnlyController",
+    ScoverageKeys.coverageMinimum := 90.00,
+    ScoverageKeys.coverageFailOnMinimum := true,
+    ScoverageKeys.coverageHighlighting := true
+  )
+  .settings(TwirlKeys.templateImports ++= Seq(
+    "play.twirl.api.HtmlFormat",
+    "uk.gov.hmrc.govukfrontend.views.html.components._",
+    "uk.gov.hmrc.govukfrontend.views.html.helpers._",
+    "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+    "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+    ),
+    scalacOptions ++= Seq(
+      "-P:silencer:pathFilters=target/.*",
+      s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
+    ),
+    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+  )
 
-defaultSettings()
-scalaSettings
-majorVersion := 3
-scalaVersion := "2.12.11"
-PlayKeys.playDefaultPort := 9996
 
-TwirlKeys.templateImports += "play.twirl.api.HtmlFormat"
 
-libraryDependencies ++= Seq(
-  ws,
-  "uk.gov.hmrc"            %% "domain"                % "5.9.0-play-26",
-  "uk.gov.hmrc"            %% "bootstrap-play-26"     % "3.0.0",
-  "uk.gov.hmrc"            %% "govuk-template"        % "5.63.0-play-26",
-  "uk.gov.hmrc"            %% "play-ui"               % "8.21.0-play-26",
-  "uk.gov.hmrc"            %% "play-partials"         % "7.1.0-play-26",
-  "uk.gov.hmrc"            %% "url-builder"           % "3.4.0-play-26",
-  "uk.gov.hmrc"            %% "auth-client"           % "3.0.0-play-26",
-  "uk.gov.hmrc"            %% "agent-mtd-identifiers" % "0.22.0-play-26",
-  "uk.gov.hmrc"            %% "tax-year"              % "1.1.0",
-  "com.typesafe.play"      %% "play-json-joda"        % "2.9.0",
-  compilerPlugin("com.github.ghik" % "silencer-plugin"     % silencerVersion cross CrossVersion.full),
-  "com.github.ghik"        % "silencer-lib"           % silencerVersion % Provided cross CrossVersion.full
-)
 
-val testScope = "test, it"
-libraryDependencies ++= Seq(
-  "uk.gov.hmrc"            %% "bootstrap-play-26"     % "1.16.0"            % Test classifier "tests",
-  "uk.gov.hmrc"            %% "hmrctest"              % "3.9.0-play-26"     % testScope,
-  "org.jsoup"              % "jsoup"                  % "1.13.1"            % testScope,
-  "com.typesafe.play"      %% "play-test"             % PlayVersion.current % testScope,
-  "org.mockito"            %% "mockito-scala"         % "1.14.4"            % testScope,
-  "org.scalatestplus.play" %% "scalatestplus-play"    % "3.1.3"             % testScope
-)
 
-enablePlugins(play.sbt.PlayScala, SbtAutoBuildPlugin, SbtGitVersioning,  SbtDistributablesPlugin)
 
-publishingSettings
-integrationTestSettings
-retrieveManaged := true
-resolvers ++= Seq(
-  Resolver.bintrayRepo("hmrc", "releases"),
-  Resolver.jcenterRepo
-)
-
-evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
-
-ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
-  ".*BuildInfo.*;prod.Routes;app.Routes;testOnlyDoNotUseInAppConf.Routes;controllers.ExampleController;controllers.testonly.TestOnlyController"
-ScoverageKeys.coverageMinimum := 70.00
-ScoverageKeys.coverageFailOnMinimum := true
-ScoverageKeys.coverageHighlighting := true
-
-scalacOptions ++= Seq(
-  "-P:silencer:pathFilters=target/.*",
-  s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
-)

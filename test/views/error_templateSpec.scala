@@ -16,9 +16,13 @@
 
 package views
 
+import org.jsoup.nodes.Element
+import org.jsoup.select.Elements
+import play.twirl.api.{Html, HtmlFormat}
 import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
-class error_templateSpec extends GuiceAppSpec with TestAppConfig {
+import views.html.error_template
+class error_templateSpec extends GuiceAppSpec {
 
   trait ViewFixture extends Fixture {
     val headingText = "error heading"
@@ -28,25 +32,24 @@ class error_templateSpec extends GuiceAppSpec with TestAppConfig {
 
   "error_template view" must {
     "have correct title and heading" in new ViewFixture {
-      val view = views.html.error_template(titleText, headingText,messageText,gaEventId = Some("unauthorised"))
-
+      val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText,messageText,gaEventId = Some("unauthorised"))
       doc.title must be(titleText)
-      val foundHeading = doc.body().select("#error-heading")
+      val foundHeading: Elements = doc.body().select("#error-heading")
       foundHeading.size mustBe 1
       foundHeading.get(0).text() mustBe headingText
-      val foundMessage = doc.body().select("#error-message")
+      val foundMessage: Elements = doc.body().select("#error-message")
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
 
     }
 
     "include sidebar links" in new ViewFixture {
-      val link = Link.toExternalPage(id=Some("sidebar-link"), url="http://www.google.com", value=Some("Back To Google")).toHtml
-      val view = views.html.error_template(titleText, headingText,messageText, Some(link))
+      val link: Html = Link.toExternalPage(id=Some("sidebar-link"), url="http://www.google.com", value=Some("Back To Google")).toHtml
+      val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText,messageText, Some(link))
 
-      val sideBarLinks = doc.select("#sidebar-link")
+      val sideBarLinks: Elements = doc.select("#sidebar-link")
       sideBarLinks.size mustBe 1
-      val sideBarLink = sideBarLinks.get(0)
+      val sideBarLink: Element = sideBarLinks.get(0)
       sideBarLink.text must include("Back To Google")
     }
   }

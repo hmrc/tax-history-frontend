@@ -28,7 +28,7 @@ trait Constants {
   val startDate = new LocalDate("2016-01-21")
   val endDate = new LocalDate("2016-11-01")
 
-  val emp1 = Employment(
+  val emp1: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -41,7 +41,7 @@ trait Constants {
     worksNumber = "00191048716"
   )
 
-  val emp2 = Employment(
+  val emp2: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-2",
     employerName = "employer-2",
@@ -53,7 +53,7 @@ trait Constants {
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
-  val emp3 = Employment(
+  val emp3: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-2",
     employerName = "employer-2",
@@ -65,7 +65,7 @@ trait Constants {
     employmentStatus = EmploymentStatus.Ceased,
     worksNumber = "00191048716")
 
-  val emp4 = Employment(
+  val emp4: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-3",
     employerName = "employer-3",
@@ -77,7 +77,7 @@ trait Constants {
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
-  val pension = Employment(
+  val pension: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-3",
     employerName = "employer-3",
@@ -89,7 +89,7 @@ trait Constants {
     employmentStatus = EmploymentStatus.Unknown,
     worksNumber = "00191048716")
 
-  val totalIncome = TotalIncome(
+  val totalIncome: TotalIncome = TotalIncome(
     employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
     pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
     employmentTaxTotalIncludingEYU = BigDecimal(300),
@@ -101,13 +101,13 @@ trait Constants {
   val employmentsNoPensions = List(emp2, emp3, emp4)
   val employmentWithPensionOnly = List(pension)
 
-  val allowance1 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance1: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "FlatRateJobExpenses",
     amount = BigDecimal(12.00))
-  val allowance2 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance2: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "ProfessionalSubscriptions",
     amount = BigDecimal(22.00))
-  val allowance3 = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance3: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "EarlierYearsAdjustment",
     amount = BigDecimal(32.00))
 
@@ -117,19 +117,19 @@ trait Constants {
   val oDR = "101.01"
   val uA = "202.00"
   val aPC = "301.01"
-  val taxAccount = Some(TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC))))
+  val taxAccount: Option[TaxAccount] = Some(TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC))))
 }
 
 trait DetailConstants {
 
-  val eyu1 = EarlierYearUpdate(
+  val eyu1: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 0,
     taxEYU = 8.99,
     studentLoanEYU = Some(10.0),
     receivedDate = LocalDate.parse("2016-01-21")
   )
 
-  val eyu2 = EarlierYearUpdate(
+  val eyu2: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 10,
     taxEYU = 18.99,
     receivedDate = LocalDate.parse("2016-05-21")
@@ -137,7 +137,7 @@ trait DetailConstants {
 
   val eyuList = List(eyu1, eyu2)
 
-  val payAndTax = PayAndTax(
+  val payAndTax: PayAndTax = PayAndTax(
     taxablePayTotal = Some(4896.80),
     taxablePayTotalIncludingEYU = Some(4906.80),
     taxTotal = Some(979.36),
@@ -148,7 +148,7 @@ trait DetailConstants {
     earlierYearUpdates = eyuList
   )
 
-  val payAndTaxNoTotal = PayAndTax(
+  val payAndTaxNoTotal: PayAndTax = PayAndTax(
     taxablePayTotal = None,
     taxablePayTotalIncludingEYU = None,
     taxTotal = None,
@@ -159,7 +159,7 @@ trait DetailConstants {
     earlierYearUpdates = List.empty
   )
 
-  val payAndTaxNoStudentLoan = PayAndTax(
+  val payAndTaxNoStudentLoan: PayAndTax = PayAndTax(
     taxablePayTotal = Some(4896.80),
     taxablePayTotalIncludingEYU = Some(4906.80),
     taxTotal = Some(979.36),
@@ -201,9 +201,9 @@ trait DetailConstants {
     CompanyBenefit(uuid, "NonCashBenefit", 1000.00, isForecastBenefit=true)
   )
 
-  val employment = Employment(
+  val employment : Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
+    payeReference = "Payroll ID",
     employerName = "employer-1",
     startDate = Some(LocalDate.parse("2016-01-21")),
     endDate = Some(LocalDate.parse("2017-01-01")),
@@ -213,7 +213,7 @@ trait DetailConstants {
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
-  val employmentWithJobseekers = Employment(
+  val employmentWithJobseekers: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -225,7 +225,7 @@ trait DetailConstants {
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
-  val employmentNoEndDate = Employment(
+  val employmentNoEndDate: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -234,5 +234,5 @@ trait DetailConstants {
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")
 
-  val person = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
+  val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 }

@@ -35,14 +35,14 @@ package model.api
 import java.util.UUID
 
 import org.joda.time.LocalDate
-import uk.gov.hmrc.play.test.UnitSpec
+import support.BaseSpec
 import utils.TestUtil
 
-class EarlierYearUpdateSpec extends TestUtil with UnitSpec {
+class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
 
 
 
-  lazy val earlierYearUpdate1 =  EarlierYearUpdate(
+  lazy val earlierYearUpdate1: EarlierYearUpdate =  EarlierYearUpdate(
     earlierYearUpdateId = UUID.fromString("cf1886e7-ae56-4ec2-84a6-926d64ace287"),
     taxablePayEYU = BigDecimal(6543.21),
     taxEYU = BigDecimal(123.45),

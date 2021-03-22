@@ -1,4 +1,4 @@
-/*
+@*
  * Copyright 2021 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,24 +12,16 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- */
+ *@
 
-package utils
+@this()
 
-import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.domain.{Generator, Nino}
+@(
+    link: String,
+    messageKey: String,
+    id: Option[String] = None,
+    classes: String = "govuk-link",
+    isExternal: Boolean = false
+)(implicit messages: Messages)
 
-import scala.io.Source
-import scala.util.Random
-
-object TestUtil extends TestUtil
-
-trait TestUtil {
-
-  def loadFile(path:String): JsValue = {
-    val jsonString = Source.fromURL(getClass.getResource(path)).mkString
-    Json.parse(jsonString)
-  }
-
-  def randomNino: Nino = Nino(new Generator(new Random()).nextNino.value.replaceFirst("MA", "AA"))
-}
+<a href="@link" class="@classes" @id.map(x => s"id=$x") @if(isExternal) { target="_blank" }>@messages(messageKey)@if(isExternal)(" " + messages("site.opensInNewWindowOrTab"))</a>

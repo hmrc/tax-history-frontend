@@ -17,26 +17,22 @@
 package connectors
 
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
 import play.api.libs.json.Json
+import support.BaseSpec
 import support.fixtures.PersonFixture
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
-import uk.gov.hmrc.play.test.UnitSpec
+import uk.gov.hmrc.http.{HttpClient, HttpResponse}
 import utils.TestUtil
-import views.TestAppConfig
 
 import scala.concurrent.Future
-import scala.concurrent.ExecutionContext.Implicits.global
 
-class CitizenDetailsConnectorSpec extends UnitSpec with MockitoSugar with TestUtil with PersonFixture with TestAppConfig {
-
-  private implicit val hc = HeaderCarrier()
+class CitizenDetailsConnectorSpec extends TestUtil with PersonFixture with BaseSpec with ScalaFutures {
 
   val mockHttpClient: HttpClient = mock[HttpClient]
 
-  val nino =randomNino.toString()
+  val nino: String =randomNino.toString()
 
   trait LocalSetup extends MockitoSugar with ArgumentMatchersSugar {
     lazy val connector = new CitizenDetailsConnector(appConfig, mockHttpClient)
@@ -45,10 +41,10 @@ class CitizenDetailsConnectorSpec extends UnitSpec with MockitoSugar with TestUt
   "CitizenDetailsConnector" should {
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
-        Future.successful(HttpResponse(Status.OK,Some(Json.toJson(Some(person))))))
+      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+        Future.successful(HttpResponse(Status.OK, json = Json.toJson(person), Map.empty)))
 
-      val result = await(connector.getPersonDetails(Nino(nino)))
+      val result: HttpResponse = connector.getPersonDetails(Nino(nino)).futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Some(person))

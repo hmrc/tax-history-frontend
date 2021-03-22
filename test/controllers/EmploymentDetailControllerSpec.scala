@@ -18,37 +18,32 @@ package controllers
 
 import java.util.UUID
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
 import org.joda.time.LocalDate
 import org.scalatestplus.mockito.MockitoSugar
-import play.api.Environment
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.{MessagesControllerComponents, Result}
+import play.api.mvc.Result
 import play.api.test.Helpers._
-import support.ControllerSpec
 import support.fixtures.PersonFixture
+import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
-import views.TestAppConfig
+import views.html.taxhistory.employment_detail
 
 import scala.concurrent.Future
 
-class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture with TestAppConfig {
+class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture with BaseSpec {
 
   trait HappyPathSetup extends MockitoSugar {
 
-    implicit val actorSystem: ActorSystem = ActorSystem("test")
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
     lazy val controller: EmploymentDetailController = {
 
       val c = new EmploymentDetailController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, injected[Environment], injected[MessagesControllerComponents])(stubControllerComponents().executionContext, appConfig)
+        app.configuration, environment, messagesControllerComponents, injected[employment_detail])(stubControllerComponents().executionContext, appConfig)
 
       val cbUUID = UUID.randomUUID()
       val companyBenefits = List(
@@ -82,24 +77,23 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
       val incomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
-
       when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
 
       when(c.taxHistoryConnector.getPayAndTaxDetails(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(payAndTax)))))
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTax), Map.empty)))
 
       when(c.taxHistoryConnector.getEmployment(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(employment)))))
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employment), Map.empty)))
 
       when(c.taxHistoryConnector.getCompanyBenefits(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(companyBenefits)))))
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(companyBenefits), Map.empty)))
 
       when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(person)))))
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
       when(c.taxHistoryConnector.getIncomeSource(any,any,any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.OK, Some(Json.toJson(incomeSource)))))
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
 
       c
     }
@@ -121,8 +115,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
     "redirect to /client-income-record/:year when employment is not found (getEmployment returns 404)" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmployment(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
-          None)))
+        thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
       val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2014).url)
@@ -130,8 +123,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
     "show employment details page even if getPayAndTaxDetails returns 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getPayAndTaxDetails(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
-          None)))
+        thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
       val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
@@ -139,8 +131,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
     "show employment details page even if getCompanyBenefits returns 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getCompanyBenefits(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
-          None)))
+        thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
       val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession(
         "USER_NINO" -> nino))
       status(result) shouldBe Status.OK
@@ -149,8 +140,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
     "show employment details page even if getIncomeSource returns 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getIncomeSource(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.NOT_FOUND,
-          None)))
+        thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
       val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession(
         "USER_NINO" -> nino))
       status(result) shouldBe Status.OK
@@ -159,8 +149,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
     "show technical error page when getEmployment returns a status other than 200, 401, 404" in new HappyPathSetup {
       when(controller.taxHistoryConnector.getEmployment(any, any, any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR,
-          None)))
+        thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
       val result: Future[Result] = controller.getEmploymentDetails(UUID.randomUUID().toString, 2014)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)

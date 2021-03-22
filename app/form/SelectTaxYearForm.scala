@@ -27,4 +27,5 @@ object SelectTaxYearForm {
         .verifying("employmenthistory.select.tax.year.error.linktext", _.exists(_.nonEmpty))
     )(SelectTaxYear.apply)(SelectTaxYear.unapply))
   }
+
 }

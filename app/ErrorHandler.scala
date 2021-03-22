@@ -24,22 +24,20 @@ import play.twirl.api.Html
 import uk.gov.hmrc.http.{JsValidationException, NotFoundException}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.{AuthRedirects, HttpAuditEvent}
-import uk.gov.hmrc.play.bootstrap.http.FrontendErrorHandler
+import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
-import views.html.error_template
 
 import scala.concurrent.ExecutionContext
 
 @Singleton
 class ErrorHandler @Inject()(
-                              val env: Environment,
-                              val auditConnector: AuditConnector,
-                              val messagesApi: MessagesApi,
-                              @Named("appName") val appName: String)(
-                              implicit val config: Configuration,
-                              val appConfig: AppConfig,
-                              ec: ExecutionContext)
-    extends FrontendErrorHandler with I18nSupport with AuthRedirects with ErrorAuditing {
+   val env: Environment,
+   val auditConnector: AuditConnector,
+   val messagesApi: MessagesApi,
+   errorTemplate: views.html.error_template,
+   @Named("appName") val appName: String
+)(implicit val config: Configuration, val appConfig: AppConfig)
+  extends FrontendErrorHandler with I18nSupport with AuthRedirects with ErrorAuditing {
 
   lazy val authenticationRedirect: String = config
     .getOptional[String]("authentication.login-callback.url")
@@ -47,7 +45,7 @@ class ErrorHandler @Inject()(
       throw new IllegalStateException(s"No value found for configuration property: authentication.login-callback.url"))
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-    error_template(pageTitle, heading, message)
+  errorTemplate(pageTitle, heading, message)
 }
 
 object EventTypes {

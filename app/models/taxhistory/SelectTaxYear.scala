@@ -17,9 +17,25 @@
 package models.taxhistory
 
 import play.api.libs.json.Json
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
 case class SelectTaxYear(taxYear: Option[String])
 
 object SelectTaxYear {
+
   implicit val format = Json.format[SelectTaxYear]
+
+  def options(taxYears: List[(String, String)]): Seq[RadioItem] = {
+
+    taxYears.map {
+      case (value, label) =>
+        RadioItem(
+          value = Some(value),
+          content = Text(label),
+          checked = false,
+          id = Some(s"selectTaxYear-$value")
+        )
+    }
+  }
 }

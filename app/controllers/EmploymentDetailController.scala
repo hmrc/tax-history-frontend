@@ -30,13 +30,15 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryConnector,
-                                           val citizenDetailsConnector: CitizenDetailsConnector,
-                                           override val authConnector: AuthConnector,
-                                           override val config: Configuration,
-                                           override val env: Environment,
-                                           val cc: MessagesControllerComponents
-                                          )(implicit val ec: ExecutionContext, val appConfig: AppConfig) extends BaseController(cc) {
+class EmploymentDetailController @Inject()(
+   val taxHistoryConnector: TaxHistoryConnector,
+   val citizenDetailsConnector: CitizenDetailsConnector,
+   override val authConnector: AuthConnector,
+   override val config: Configuration,
+   override val env: Environment,
+   val cc: MessagesControllerComponents,
+   employmentDetail: views.html.taxhistory.employment_detail
+  )(implicit val ec: ExecutionContext, val appConfig: AppConfig) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -72,10 +74,10 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
     taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
       payAndTaxResponse.status match {
         case NOT_FOUND => None
-        case _ => {
+        case _ =>
           val result = payAndTaxResponse.json.as[PayAndTax]
           if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
-        }
+
       }
     }.recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
   }
@@ -116,7 +118,7 @@ class EmploymentDetailController @Inject()(val taxHistoryConnector: TaxHistoryCo
       payAndTax <- getPayAndTax(nino, taxYear, employmentId)
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
       incomeSource <- getIncomeSource(nino, taxYear, employmentId)
-    } yield Ok(views.html.taxhistory.employment_detail(taxYear, payAndTax,
+    } yield Ok(employmentDetail(taxYear, payAndTax,
       employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource))
   }
 

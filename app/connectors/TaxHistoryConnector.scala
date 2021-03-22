@@ -21,8 +21,7 @@ import java.net.URL
 import config.AppConfig
 import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpReads, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.http.HttpClient
+import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -30,7 +29,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class TaxHistoryConnector @Inject()(val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
   implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse) = response
+    override def read(method: String, url: String, response: HttpResponse): HttpResponse = response
   }
 
   private val taxHistoryUrl = new URL(appConfig.taxHistoryBaseUrl, "/tax-history")

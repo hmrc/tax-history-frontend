@@ -27,7 +27,7 @@ import utils.TestUtil
 trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar with ArgumentMatchersSugar {
 
   lazy val nino: String = randomNino.toString
-  lazy val fakeRequestWithNino = FakeRequest().withSession("USER_NINO" -> nino)
+  lazy val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("USER_NINO" -> nino)
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.sessionId -> "SessionId",

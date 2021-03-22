@@ -22,7 +22,7 @@ import javax.inject.Inject
 import model.api._
 import models.taxhistory.Person
 import play.api.mvc._
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
@@ -30,14 +30,15 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentSummaryController @Inject()(
-                                             val taxHistoryConnector: TaxHistoryConnector,
-                                             val citizenDetailsConnector: CitizenDetailsConnector,
-                                             override val authConnector: AuthConnector,
-                                             override val config: Configuration,
-                                             override val env: Environment,
-                                             val cc: MessagesControllerComponents,
-                                             implicit val appConfig: AppConfig
-                                           )(implicit val ec: ExecutionContext) extends BaseController(cc) {
+   val taxHistoryConnector: TaxHistoryConnector,
+   val citizenDetailsConnector: CitizenDetailsConnector,
+   override val authConnector: AuthConnector,
+   override val config: Configuration,
+   override val env: Environment,
+   val cc: MessagesControllerComponents,
+   implicit val appConfig: AppConfig,
+   employmentSummary: views.html.taxhistory.employment_summary
+ )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -82,7 +83,7 @@ class EmploymentSummaryController @Inject()(
             incomeTotals <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse).toList)
           } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals)).map {
             dataResponse =>
-              Ok(views.html.taxhistory.employment_summary(
+              Ok(employmentSummary(
                 ninoField.nino,
                 taxYear,
                 employments,
@@ -101,7 +102,7 @@ class EmploymentSummaryController @Inject()(
     taxAccountResponse.status match {
       case OK => taxAccountResponse.json.asOpt[TaxAccount]
       case status =>
-        Logger.info(s"Tax Account Status: $status")
+        logger.info(s"Tax Account Status: $status")
         None
     }
   }
@@ -110,7 +111,7 @@ class EmploymentSummaryController @Inject()(
     allowancesResponse.status match {
       case OK => allowancesResponse.json.as[List[Allowance]]
       case status =>
-        Logger.info(s"Allowance Status: $status")
+        logger.info(s"Allowance Status: $status")
         List.empty
     }
   }
@@ -122,7 +123,7 @@ class EmploymentSummaryController @Inject()(
     patResponse.status match {
       case OK => patResponse.json.as[Map[String, PayAndTax]]
       case status =>
-        Logger.info(s"All Pay And Tax Status: $status")
+        logger.info(s"All Pay And Tax Status: $status")
         List.empty
     }
   }
@@ -132,7 +133,7 @@ class EmploymentSummaryController @Inject()(
     statePensionResponse.status match {
       case OK => statePensionResponse.json.asOpt[StatePension]
       case status =>
-        Logger.info(s"State Pension Status: $status")
+        logger.info(s"State Pension Status: $status")
         None
     }
   }

@@ -16,26 +16,42 @@
 
 @import config.AppConfig
 @import models.taxhistory.Person
-@(person:Person,
-nino:String,
-taxYears: Int)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainContent = {
-    <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
-    <h1 class="no-bottom-margin heading-xlarge">@Messages("employmenthistory.header", person.getName.getOrElse(nino))</h1>
+@this(
+    govukWrapper: views.html.govuk_wrapper,
+    link: helpers.link,
+    p: helpers.p
+)
+
+@(person:Person,
+  nino:String,
+  taxYears: Int
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+
+@govukWrapper(title = messages("employmenthistory.no.data.title"), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
+
+    <h1 class="govuk-heading-xl no-bottom-margin">@messages("employmenthistory.header", person.getName.getOrElse(nino))</h1>
+
     @*AFID-462 - temporarily disabled due to security issue*@
     @*if(person.getName.nonEmpty){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}*@
-    <p id="taxYearRange" class="pre-heading-small boldFont">@Messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString)</p>
-    <p class="grey" id="error-heading">@Messages("employmenthistory.no.data.header")</p>
-    <p>@Messages("employmenthistory.no.data.text")</p>
-    <ul class="list list-bullet">
-        <li><a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url"
-        id="selectTaxYear">@Messages("employmenthistory.select.different.taxyear.link.lower")</a></li>
-        <li><a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
-        id="selectClient">@Messages("employmenthistory.no.data.select.client.link.text")</a></li>
-    </ul>
-}
 
-@views.html.main_template(title = Messages("employmenthistory.no.data.title")) {
-    @mainContent
+    @p(Html(messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString)), "govuk-heading-m", Some("taxYearRange"))
+    @p(Html(messages("employmenthistory.no.data.header")), "govuk-caption-m", Some("pre-header"))
+
+    @p{@messages("employmenthistory.no.data.text")}
+
+    <ul class="govuk-list govuk-list--bullet">
+        <li>
+            @link(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url,
+                  messages("employmenthistory.select.different.taxyear.link.lower"),
+                  Some("selectTaxYear")
+            )
+        </li>
+        <li>
+            @link(controllers.routes.SelectClientController.getSelectClientPage().url,
+                  messages("employmenthistory.no.data.select.client.link.text"),
+                  Some("selectClient")
+            )
+        </li>
+    </ul>
 }

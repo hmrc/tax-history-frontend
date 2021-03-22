@@ -16,16 +16,24 @@
 
 @import config.AppConfig
 
+@this(
+    govukWrapper: views.html.govuk_wrapper,
+    link: helpers.link,
+    p: helpers.p
+)
+
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@mainContent = {
-    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back" id="back-link">@Messages("lbl.back")</a>
-    <h1 class="heading-xlarge" id="error-heading">@Messages("employmenthistory.deceased.header")</h1>
-    <p>@Messages("employmenthistory.deceased.text")</p>
-    <a href="@controllers.routes.SelectClientController.getSelectClientPage().url"
-    id="selectClient">@Messages("employmenthistory.deceased.select.client.link.text")</a>
-}
+@govukWrapper(title = messages("employmenthistory.deceased.title"), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 
-@views.html.main_template(title = Messages("employmenthistory.deceased.title")) {
-    @mainContent
+    <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.deceased.header")</h1>
+
+    @p{@messages("employmenthistory.deceased.text")}
+
+    <p class="govuk-body">
+        @link(controllers.routes.SelectClientController.getSelectClientPage().url,
+              messages("employmenthistory.deceased.select.client.link.text"),
+              Some("selectClient")
+        )
+    </p>
 }

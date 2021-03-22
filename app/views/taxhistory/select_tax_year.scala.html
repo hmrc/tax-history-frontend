@@ -15,66 +15,88 @@
  *@
 
 @import models.taxhistory.SelectTaxYear
-@import uk.gov.hmrc.play.views.html.helpers
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.AppConfig
+@import models.taxhistory.SelectTaxYear
+
+@this(
+    govukWrapper: views.html.govuk_wrapper,
+    formHelper: FormWithCSRF,
+    govukRadios : GovukRadios,
+    govukBackLink : GovukBackLink,
+    govukButton : GovukButton,
+    errorSummary: helpers.errorSummary,
+    link: helpers.link
+)
 
 @(form: Form[SelectTaxYear],
-taxYears:List[(String, String)],
-clientName:Option[String],
-nino:String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  taxYears:List[(String, String)],
+  clientName:Option[String],
+  nino:String
+)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@views.html.main_template(title = Messages("employmenthistory.select.tax.year.title"),mainClass = Some("full-width")){
+@govukWrapper(title = messages("employmenthistory.select.tax.year.title"), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 
-<a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="link-back no-bottom-margin" id="back-link">@Messages("lbl.back")</a>
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
 
-<div class = "grid-layout grid-layout--no-gutter grid-layout--stacked">
-    <div class = "grid-layout__column grid-layout__column--2-3 sidebar-padding-right">
-        @if(form.hasErrors) {
-            <div class="flash error-summary error-summary--show"
-                 id="error-summary-display"
-                 role="alert"
-                 aria-labelledby="error-summary-heading"
-                 tabindex="-1">
-                <h2 id="error-summary-heading" class="h3-heading">@Messages("employmenthistory.select.tax.year.error.heading")</h2>
-                <ul class="js-error-summary-messages">
+            <div class="page-header">
+                    <span class="govuk-caption-xl" id ="pre-header">@messages("employmenthistory.display.client.name",s"${clientName.getOrElse(nino)}")</span>
+                    @*AFID-462 - temporarily disabled due to security issue*@
+                    @*if(clientName.nonEmpty){<span class="pre-heading medium-text" id="clientNino">@nino</span>}*@
+            </div>
+
+              @formHelper(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
+
+                    @errorSummary(form.errors)
+
+                    @govukRadios(Radios(
+                        fieldset = Some(Fieldset(
+                            legend = Some(Legend(
+                                content = Text(messages("employmenthistory.select.tax.year.h1")),
+                                classes = "govuk-fieldset__legend--xl",
+                                isPageHeading = true
+                            ))
+                        )),
+                        hint = None,
+                        name = "selectTaxYear",
+                        errorMessage = if(form("selectTaxYear").hasErrors){
+                            Some(ErrorMessage(
+                                content = Text(messages("employmenthistory.select.tax.year.error.message"))
+                            ))
+                        } else { None },
+                        items = SelectTaxYear.options(taxYears)
+                    ))
+
+                @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
+
+              }
+
+        </div>
+        <div class="govuk-grid-column-one-third">
+            <section class="section subsection section--blue-top">
+                <ul class="govuk-list" id="nav-bar">
                     <li>
-                        <a class="error-font" href="#@form.errors.head.key" id="@{form.errors.head.key}-error-summary" data-focuses="@form.errors.head.key">
-                            @form.errors.head.messages.map(x => Messages(x))
-                        </a>
+                        <p class="govuk-body"><div class="govuk-!-font-weight-bold">@Messages("employmenthistory.sidebar.links.more-options")</div>
+                            @link(
+                                appConfig.agentAccountHomePage,
+                                messages("employmenthistory.employment.summary.sidebar.agent-services-home"),
+                                classes = "govuk-link govuk-body"
+                            )
+                        </p>
+                    </li>
+                    <li>
+                        <p class="govuk-body"><div class="govuk-!-font-weight-bold">@messages("employemntHistory.select.tax.year.sidebar.income.and.tax")</div>
+                            @link(
+                            controllers.routes.SelectClientController.getSelectClientPage().url,
+                            messages("employemntHistory.select.tax.year.sidebar.change.client"),
+                            classes = "govuk-link govuk-body"
+                            )
+                        </p>
                     </li>
                 </ul>
-            </div>
-        }
 
-        <div class="page-header">
-                <span class="pre-heading" id ="pre-header">@Messages("employmenthistory.display.client.name",s"${clientName.getOrElse(nino)}")</span>
-                @*AFID-462 - temporarily disabled due to security issue*@
-                @*if(clientName.nonEmpty){<span class="pre-heading medium-text" id="clientNino">@nino</span>}*@
-                <h1 class="heading-xlarge no-bottom-margin" id ="header">@Messages("employmenthistory.select.tax.year.h1")</h1>
+            </section>
         </div>
-          @helpers.form(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
-              @helpers.input_radio_group(form("selectTaxYear"),
-              taxYears,
-              'label -> Messages("employmenthistory.select.tax.year.error.message"),
-              '_labelClass -> "block-label",
-              '_id -> "selectTaxYear",
-              '_groupClass -> "subsection margin-bottom--small",
-              '_fieldsetAttributes -> "id=selectTaxYear",
-              'hint -> Messages("employmenthistory.select.tax.year.error.message"),
-              '_legend -> Html(Messages("employmenthistory.select.tax.year.error.message")),
-              '_legendClass -> "hidden"
-        )
-              <button id="continueButton" type="submit" class="button">@Messages("lbl.continue")</button>
-          }
-
     </div>
-    <div class ="grid-layout__column grid-layout__column--1-3">
-        <section class="section subsection section--blue-top" id="nav-bar">
-            <a href="@appConfig.agentAccountHomePage">@Messages("employmenthistory.employment.summary.sidebar.agent-services-home")</a>
-            <br><br>
-            <h2 class="heading-small no-bottom-margin">@Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")</h2>
-            <a href="@controllers.routes.SelectClientController.getSelectClientPage().url">@Messages("employemntHistory.select.tax.year.sidebar.change.client")</a>
-        </section>
-    </div>
-</div>
 }

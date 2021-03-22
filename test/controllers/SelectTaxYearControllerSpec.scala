@@ -19,36 +19,35 @@ package controllers
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.IndividualTaxYear
 import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
-import play.api.Environment
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.MessagesControllerComponents
+import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.ControllerSpec
 import support.fixtures.PersonFixture
+import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.http.HttpResponse
-import views.TestAppConfig
+import views.html.taxhistory.select_tax_year
 
 import scala.concurrent.Future
-class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with TestAppConfig {
+class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with BaseSpec {
 
   trait LocalSetup extends MockitoSugar with ArgumentMatchersSugar {
 
-    lazy val controller = {
+    lazy val controller: SelectTaxYearController = {
 
       val c = new SelectTaxYearController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, injected[Environment], injected[MessagesControllerComponents], appConfig)(stubControllerComponents().executionContext)
+        app.configuration, environment, messagesControllerComponents, appConfig, injected[select_tax_year])(stubControllerComponents().executionContext)
 
       when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
         Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.OK,Some(Json.toJson(person)))))
-      when(c.taxHistoryConnector.getTaxYears(any)(any)).thenReturn(Future.successful(HttpResponse(Status.OK,
-        Some(Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2","uri3")))))))
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
+      when(c.taxHistoryConnector.getTaxYears(any)(any)).
+        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2","uri3"))), Map.empty)))
       c
     }
   }
@@ -56,15 +55,15 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
   "SelectTaxYearController" must {
 
     "load select tax year page" in new LocalSetup {
-      val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
     }
 
     "redirect to technical error page when getTaxYears reurn status internal server error" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxYears(any)(any))
-        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
-      val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
+      val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
 
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
@@ -72,8 +71,8 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
 
     "return not found error page when citizen details returns locked status 423" in new LocalSetup {
       when(controller.citizenDetailsConnector.getPersonDetails(any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.LOCKED,None)))
-      val result = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        thenReturn(Future.successful(HttpResponse(Status.LOCKED, null)))
+      val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
@@ -84,7 +83,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
         "selectTaxYear" -> "2016"
       )
 
-      val result = controller.submitSelectTaxYearPage().apply(FakeRequest()
+      val result: Future[Result] = controller.submitSelectTaxYearPage().apply(FakeRequest()
         .withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2016).url)
@@ -95,7 +94,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
         "selectTaxYear" -> ""
       )
 
-      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
+      val result: Future[Result] = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
         .withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.BAD_REQUEST
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.error.message"))
@@ -106,9 +105,9 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
         "selectTaxYear" -> ""
       )
       when(controller.taxHistoryConnector.getTaxYears(any)(any))
-        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR)))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
 
-      val result = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
+      val result: Future[Result] = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
         .withFormUrlEncodedBody(validSelectTaxYearForm: _*))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
