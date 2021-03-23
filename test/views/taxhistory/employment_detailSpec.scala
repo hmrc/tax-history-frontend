@@ -281,7 +281,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
         employment, completeCBList, clientName, incomeSourceNoDeductions)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.pay.and.tax",
-        employment.employerName, employment.startDate.get.toString("d MMMM yyyy"))).hasText shouldBe false
+        employment.employerName, employment.startDate.get.toString("d MMMM yyyy"))).hasText shouldBe true
 
     }
 

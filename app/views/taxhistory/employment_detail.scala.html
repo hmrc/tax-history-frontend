@@ -141,7 +141,7 @@
             </table>
         }
         case None => {
-            <p id="no-payments" class="govuk-body">messages("employmenthistory.no.pay.and.tax", employment.employerName, ControllerUtils.getStartDate(employment))</p>
+            <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, ControllerUtils.getStartDate(employment))</p>
         }
     }
 }
