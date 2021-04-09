@@ -23,7 +23,8 @@
     hmrcHead: HmrcHead,
     hmrcStandardHeader: HmrcStandardHeader,
     hmrcStandardFooter: HmrcStandardFooter,
-    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
+    hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcScripts: HmrcScripts
 )
 
 @(title: String, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None, backLink: Option[String]= None)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
@@ -31,11 +32,6 @@
 @head ={
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href='@routes.Assets.versioned("stylesheets/taxhistory.css")' type="text/css"/>
-}
-
-@scripts = {
-    <script src='@controllers.routes.Assets.versioned("lib/govuk-frontend/govuk/all.js")'></script>
-    <script>window.GOVUKFrontend.initAll();</script>
 }
 
 @feedbackBanner = {
@@ -80,6 +76,6 @@
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
-    bodyEndBlock = Some(scripts)
+    bodyEndBlock = Some(hmrcScripts())
 )(content)
 
