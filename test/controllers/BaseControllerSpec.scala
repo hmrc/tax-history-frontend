@@ -163,21 +163,21 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
       val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result).get should include("/gg/sign-in")
+      redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
     "redirect to gg logged in when session expired" in new failureOnAuthorisation  {
       val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result).get should include("/gg/sign-in")
+      redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
     "redirect to gg logged in when Internal server error or other errors" in new failureOnOtherException  {
       val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
         fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result).get should include("/gg/sign-in")
+      redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
     "redirect to not authorised page when user is not authorised" in new failureInsufficientEnrolments {

@@ -41,13 +41,14 @@ class CitizenDetailsConnectorSpec extends TestUtil with PersonFixture with BaseS
   "CitizenDetailsConnector" should {
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = Json.toJson(person), Map.empty)))
 
       val result: HttpResponse = connector.getPersonDetails(Nino(nino)).futureValue
 
       result.status shouldBe Status.OK
       result.json shouldBe Json.toJson(Some(person))
+
     }
   }
 

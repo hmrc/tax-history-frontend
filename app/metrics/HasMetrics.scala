@@ -20,7 +20,7 @@ import com.codahale.metrics._
 import com.kenshoo.play.metrics.Metrics
 
 trait HasMetrics {
-  
+
   type Metric = String
 
   val metricsOperator = new MetricsOperator

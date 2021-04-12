@@ -287,7 +287,7 @@
                 }
                 <tr class="govuk-table__row">
                     <th class="govuk-table__cell">@messages("tax.code.total.allowances")</th>
-                    <td class="govuk-table__cell govuk-table__cell--numeric thick-top-bottom" id="AllowanceTotal">@{
+                    <td class="govuk-table__cell govuk-table__cell--numeric" id="AllowanceTotal">@{
                         Currency(incomeSource.get.allowances.map(_.amount).sum)
                         }
                     </td>
@@ -325,7 +325,7 @@
                     <tr class="govuk-table__row">
                         <th class="govuk-table__cell">@messages("tax.code.total.deductions")</th>
                         <td class="govuk-table__cell govuk-table__cell--numeric"></td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric thick-top-bottom" id="DeductionTotal">@{
+                        <td class="govuk-table__cell govuk-table__cell--numeric" id="DeductionTotal">@{
                             Currency(incomeSource.get.deductions.map(_.amount).sum)
                             }
                         </td>

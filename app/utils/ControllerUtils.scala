@@ -33,7 +33,7 @@ object ControllerUtils {
     }
   }
 
-  private def noRecord(implicit messages: Messages) = Messages("lbl.date.no-record")
+  private def noRecord(implicit messages: Messages): String = Messages("lbl.date.no-record")
 
   def getStartDate(employment: Employment)(implicit messages: Messages): String = {
     employment.startDate.map(startDate => DateHelper.formatDate(startDate)).getOrElse(noRecord)
@@ -60,7 +60,7 @@ object ControllerUtils {
 
   def displayTaxCode(basisOperation: Option[Int]):Option[String] =
     basisOperation match{
-      case (Some(1) | Some(3)) => Some("X")
+      case Some(1) | Some(3) => Some("X")
       case _ => None
     }
 
@@ -69,7 +69,11 @@ object ControllerUtils {
   }
 
   def isJobSeekerAllowance(employment: Employment)(implicit messages: Messages): String = {
-    if (employment.isJobseekersAllowance) Messages("employmenthistory.job.seekers")
-    else employment.employerName
+    if (employment.isJobseekersAllowance) {
+      Messages("employmenthistory.job.seekers")
+    }
+    else {
+      employment.employerName
+    }
   }
 }

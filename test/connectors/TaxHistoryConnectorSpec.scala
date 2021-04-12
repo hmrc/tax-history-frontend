@@ -58,7 +58,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
 
     "fetch tax history" in new LocalSetup {
       val employmentsJson: JsArray = JsArray(Seq(Json.toJson(employment)))
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = employmentsJson, Map.empty)))
 
       val result: HttpResponse = connector.getEmploymentsAndPensions(Nino(nino), 2017).futureValue
@@ -73,7 +73,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         iabdType = "allowanceType",
         amount = BigDecimal(12.00))
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = Json.toJson(Seq(allowance)), Map.empty)))
 
       val result: HttpResponse = connector.getAllowances(Nino(nino), 2017).futureValue
@@ -86,7 +86,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
     "fetch company benefits for Employment details" in new LocalSetup {
       val companyBenefits: CompanyBenefit = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = Json.toJson(Seq(companyBenefits)), Map.empty)))
 
       val result: HttpResponse = connector.getCompanyBenefits(Nino(nino), 2014, "c9923a63-4208-4e03-926d-7c7c88adc7ee").futureValue
@@ -113,7 +113,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = eyuList)
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = Json.toJson(payAndTaxWithEyu), Map.empty)))
 
       val result: HttpResponse = connector.getPayAndTaxDetails(Nino(nino), 2014, "12341234").futureValue
@@ -124,7 +124,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
 
     "fetch Employment from backend" in new LocalSetup {
       val employmentJson: JsValue = Json.toJson(employment)
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = employmentJson, Map.empty)))
 
       val result: HttpResponse = connector.getEmployment(Nino(nino), 2014, "12341234").futureValue
@@ -137,7 +137,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
 
       val taxYears = List(IndividualTaxYear(2015, "uri1","uri2","uri3"), IndividualTaxYear(2015, "uri1","uri2", "uri3"))
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = Json.toJson(taxYears), Map.empty)))
 
       val result: HttpResponse = connector.getTaxYears(Nino(nino)).futureValue
@@ -158,7 +158,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         paymentDate = Some(new LocalDate("2016-02-20")),
         earlierYearUpdates = List.empty)
 
-      when(mockHttpClient.GET[HttpResponse](any)(any, any, any)).thenReturn(
+      when(mockHttpClient.GET[HttpResponse](any, any, any)(any, any, any)).thenReturn(
         Future.successful(HttpResponse(Status.OK, json = Json.toJson(payAndTax), Map.empty)))
 
       val result: HttpResponse = connector.getPayAndTaxDetails(Nino(nino),2017,"testID").futureValue

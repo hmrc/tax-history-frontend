@@ -117,7 +117,7 @@
         <h2 class="govuk-heading-m blue-underline no-top-margin">@messages("employmenthistory.employment.records")</h2>
         <div class = "govuk-grid-row">
             <div class = "govuk-grid-column-two-thirds">
-                <p class="grey" id="no-benefits">@messages("employmenthistory.no.employments")</p>
+                <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
             </div>
         }
             <div class ="govuk-grid-column-one-third">
@@ -146,7 +146,7 @@
         } else {
             <div class = "govuk-grid-row">
                 <div class = "govuk-grid-column-two-thirds">
-                    <p id="no-pensions" class="grey">@messages("employmenthistory.no.pensions")</p>
+                    <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
                 </div>
         }
                 <div class ="govuk-grid-column-one-third">
@@ -189,7 +189,7 @@
                     @if(allowances.nonEmpty) {
                         @allowanceTable
                     } else {
-                        <p id="no-allowances" class="grey">@messages("employmenthistory.allowance.no-allowances")</p>
+                        <p id="no-allowances" class="govuk-caption-m">@messages("employmenthistory.allowance.no-allowances")</p>
                     }
                 </div>
                 <div class="govuk-grid-column-one-third"></div>
