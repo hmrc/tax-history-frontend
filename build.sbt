@@ -23,10 +23,7 @@ lazy val microservice =  Project(appName, file("."))
     publishingSettings,
     defaultSettings(),
     retrieveManaged := true,
-    resolvers ++= Seq(
-      Resolver.bintrayRepo("hmrc", "releases"),
-      Resolver.jcenterRepo
-    ),
+    resolvers += Resolver.jcenterRepo,
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
       ".*BuildInfo.*;.*helpers.*;.*Routes.*;controllers.ExampleController;controllers.testonly.TestOnlyController",
     ScoverageKeys.coverageMinimum := 90.00,
