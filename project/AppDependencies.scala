@@ -8,11 +8,10 @@ object AppDependencies {
   private val compile = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"            %% "domain"                           % "5.11.0-play-27",
-    "uk.gov.hmrc"            %% "bootstrap-frontend-play-27"       % "4.2.0",
+    "uk.gov.hmrc"            %% "bootstrap-frontend-play-27"       % "5.3.0",
     "uk.gov.hmrc"            %% "play-frontend-hmrc"               % "0.57.0-play-27",
     "uk.gov.hmrc"            %% "play-partials"                    % "8.0.0-play-27",
     "uk.gov.hmrc"            %% "url-builder"                      % "3.5.0-play-27",
-    "uk.gov.hmrc"            %% "auth-client"                      % "5.2.0-play-26",
     "uk.gov.hmrc"            %% "agent-mtd-identifiers"            % "0.23.0-play-27",
     "uk.gov.hmrc"            %% "tax-year"                         % "1.3.0",
     "com.typesafe.play"      %% "play-json-joda"                   % "2.9.2"
