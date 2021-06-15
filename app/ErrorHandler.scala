@@ -16,18 +16,18 @@
 
 import com.google.inject.name.Named
 import config.AppConfig
-
-import javax.inject.{Inject, Singleton}
+import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Request, RequestHeader}
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.{JsValidationException, NotFoundException, Upstream4xxResponse}
+import uk.gov.hmrc.http.{JsValidationException, Upstream4xxResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.config.{AuthRedirects, HttpAuditEvent}
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.ExecutionContext
 
 @Singleton
@@ -70,12 +70,12 @@ trait ErrorAuditing extends HttpAuditEvent {
 
   def auditServerError(request: RequestHeader, ex: Throwable)(implicit ec: ExecutionContext): Unit = {
     val eventType = ex match {
-      case _: Upstream4xxResponse   => ResourceNotFound
+      case Upstream4xxResponse(_, NOT_FOUND, _, _)   => ResourceNotFound
       case _: JsValidationException => ServerValidationError
       case _                        => ServerInternalError
     }
     val transactionName = ex match {
-      case _: Upstream4xxResponse => notFoundError
+      case Upstream4xxResponse(_, NOT_FOUND, _, _) => notFoundError
       case _                    => unexpectedError
     }
     auditConnector.sendEvent(
