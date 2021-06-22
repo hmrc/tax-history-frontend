@@ -16,28 +16,19 @@
 
 package connectors
 
-import java.net.URL
-
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class CitizenDetailsConnector @Inject()(val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
-  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse): HttpResponse = response
-  }
+  implicit lazy val httpReads: HttpReads[HttpResponse] = (_: String, _: String, response: HttpResponse) => response
 
-  private def url(nino: String) = new URL(appConfig.citizenDetailsBaseUrl, s"/citizen-details/$nino/designatory-details/basic")
-
-    /**
-      * Gets the person details
-      */
     def getPersonDetails(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] = {
-      httpClient.GET[HttpResponse](url(nino.value).toString)
+      httpClient.GET[HttpResponse](s"${appConfig.citizenDetailsBaseUrl}/citizen-details/$nino/designatory-details/basic")
     }
   }

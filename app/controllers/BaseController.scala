@@ -17,8 +17,8 @@
 package controllers
 
 import controllers.auth.AgentAuth
-import javax.inject.Inject
 import models.taxhistory.Person
+import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import play.twirl.api.Html
@@ -28,13 +28,13 @@ import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments, Mi
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
-import utils.TaxHistoryLogger
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 
 abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implicit ec: ExecutionContext)
-  extends AgentAuth(cc) with I18nSupport with TaxHistoryLogger {
+  extends AgentAuth(cc) with I18nSupport with Logging {
 
   /**
    * The URI to direct to for login.
@@ -52,7 +52,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
     Link.toInternalPage(controllers.routes.EmploymentSummaryController.logout().url, Some("Sign out")).toHtml
 
   // todo : this needs to go with the rest of the session data
-  val ninoSessionKey = "USER_NINO"
+  lazy val ninoSessionKey = "USER_NINO"
 
   def logout(): Action[AnyContent] = Action.async {
       logger.info("Sign out of the service")
@@ -82,7 +82,11 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
         case _ =>
           logger.info("No affinity group provided")
           redirectToExitPage
-      }.recoverWith {
+      }.recoverWith { case e => authorisedAgentErrorHandling(e)}
+  }
+
+  protected def authorisedAgentErrorHandling(throwable: Throwable)(implicit hc: HeaderCarrier): Future[Result] = {
+    throwable match {
       case i: InsufficientEnrolments =>
         logger.info(s"InsufficientEnrolments:${i.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
@@ -112,7 +116,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino, taxYears: Option[Int] = None): Result = {
+  protected[controllers] def handleHttpFailureResponse(status: Int, taxYears: Option[Int] = None): Result = {
     logger.info(s"HttpFailure status is $status")
     status match {
       case NOT_FOUND =>
@@ -127,7 +131,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
     }
   }
 
-  def retrieveCitizenDetails(ninoField: Nino, citizenDetailsResponse: Future[HttpResponse]):Future[Either[Int, Person]] = {
+  def retrieveCitizenDetails(citizenDetailsResponse: Future[HttpResponse]):Future[Either[Int, Person]] = {
     {
       citizenDetailsResponse map {
         personResponse =>

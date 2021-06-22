@@ -75,7 +75,7 @@ class ClientErrorController @Inject()(
     implicit request => {
       getNinoFromSession(request).fold(redirectToSelectClientPage) {
         nino =>
-          retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap {
+          retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)).flatMap {
             case Left(status) => redirectToClientErrorPage(status)
             case Right(person) => Future.successful(Ok(noData(person, nino.toString, taxYear)))
           }

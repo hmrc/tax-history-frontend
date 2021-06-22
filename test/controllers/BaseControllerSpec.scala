@@ -190,19 +190,19 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
 
   "show not found error page when 404 returned from connector" in new HappyPathSetup {
 
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino),Some(2017)))
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND, Some(2017)))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(2017).url)
   }
 
   "show not authorised error page when 401 returned from connector" in new HappyPathSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino)))
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.UNAUTHORIZED))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
   }
 
   "show technical error page when any response other than 200, 401, 404 returned from connector" in new HappyPathSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino)))
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }
@@ -244,14 +244,14 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedTrue.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Left(GONE)
     }
 
     "The deceased flag is false" in new HappyPathSetup with PersonFixture {
 
       val json: JsValue = loadFile("/json/model/api/personDeceasedFalse.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new HappyPathSetup {
@@ -259,7 +259,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
       val json: JsValue = loadFile("/json/model/api/personDeceasedNoValue.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
       val person = Person(Some("first name"), Some("second name"), None)
-      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person)
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person)
     }
   }
 

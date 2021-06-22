@@ -27,6 +27,6 @@ object DateHelper {
 }
 
 trait LocalDateFormat {
-  implicit val localDateReads: Reads[LocalDate] = JodaReads.DefaultJodaLocalDateReads
-  implicit val localDateWrites: Writes[LocalDate] = JodaWrites.DefaultJodaLocalDateWrites
+  lazy implicit val localDateReads: Reads[LocalDate] = JodaReads.DefaultJodaLocalDateReads
+  lazy implicit val localDateWrites: Writes[LocalDate] = JodaWrites.DefaultJodaLocalDateWrites
 }

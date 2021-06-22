@@ -46,7 +46,7 @@ class EmploymentDetailController @Inject()(
 
   private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)
                                          (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+    retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
       case Right(person) =>
         taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
@@ -54,7 +54,7 @@ class EmploymentDetailController @Inject()(
             case OK =>
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
-            case status => Future.successful(handleHttpFailureResponse(status, nino))
+            case status => Future.successful(handleHttpFailureResponse(status))
           }
         }
     }
