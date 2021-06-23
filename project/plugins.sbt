@@ -15,3 +15,4 @@ addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.7.9")
 addSbtPlugin("org.irundaia.sbt" % "sbt-sassify" % "1.4.13")
 
 addSbtPlugin("com.timushev.sbt" % "sbt-updates" % "0.5.1")
+addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "0.14.5")

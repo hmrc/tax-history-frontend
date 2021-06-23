@@ -2,7 +2,6 @@ import sbt.Keys.{evictionWarningOptions, resolvers}
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, integrationTestSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
-import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "tax-history-frontend"
 val silencerVersion = "1.7.1"
@@ -14,7 +13,8 @@ lazy val microservice =  Project(appName, file("."))
   .settings(integrationTestSettings(): _*)
   .settings(inConfig(IntegrationTest)(Defaults.itSettings): _*)
   .settings(
-    majorVersion := 3,
+majorVersion := 3,
+
     scalaSettings,
     scalaVersion := "2.12.12",
     libraryDependencies ++= AppDependencies(),
@@ -44,8 +44,21 @@ lazy val microservice =  Project(appName, file("."))
     evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
 
+mainClass in assembly := Some("play.core.server.ProdServerStart")
+fullClasspath in assembly += Attributed.blank(PlayKeys.playPackageAssets.value)
 
+assemblyMergeStrategy in assembly := {
+  case manifest if manifest.contains("MANIFEST.MF") =>
+    // We don't need manifest files since sbt-assembly will create
+    // one with the given settings
+    MergeStrategy.discard
+  case referenceOverrides if referenceOverrides.contains("reference-overrides.conf") =>
+    // Keep the content for all reference-overrides.conf files
+    MergeStrategy.concat
+ case PathList("META-INF", xs @ _*) => MergeStrategy.discard
 
+  case x => MergeStrategy.first
+}
 
 
 
