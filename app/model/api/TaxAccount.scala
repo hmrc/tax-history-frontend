@@ -23,7 +23,8 @@ import play.api.libs.json.Json
 case class TaxAccount(taxAccountId: UUID = UUID.randomUUID(),
                       outstandingDebtRestriction: Option[BigDecimal] = None,
                       underpaymentAmount: Option[BigDecimal] = None,
-                      actualPUPCodedInCYPlusOneTaxYear: Option[BigDecimal] = None)
+                      actualPUPCodedInCYPlusOneTaxYear: Option[BigDecimal] = None
+                     )
 
 object TaxAccount {
   implicit val formats = Json.format[TaxAccount]

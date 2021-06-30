@@ -46,7 +46,8 @@ class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
     earlierYearUpdateId = UUID.fromString("cf1886e7-ae56-4ec2-84a6-926d64ace287"),
     taxablePayEYU = BigDecimal(6543.21),
     taxEYU = BigDecimal(123.45),
-    receivedDate = new LocalDate("2016-06-26"))
+    receivedDate = new LocalDate("2016-06-26")
+  )
 
 
   "Employment" should {
@@ -55,7 +56,8 @@ class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
       val eyu = EarlierYearUpdate(
         taxablePayEYU = BigDecimal(1.11),
         taxEYU = BigDecimal(22.22),
-        receivedDate = new LocalDate("2015-05-29"))
+        receivedDate = new LocalDate("2015-05-29")
+      )
 
       eyu.earlierYearUpdateId.toString.nonEmpty shouldBe true
       eyu.earlierYearUpdateId shouldNot be(earlierYearUpdate1.earlierYearUpdateId)

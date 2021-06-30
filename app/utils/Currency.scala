@@ -17,6 +17,7 @@
 package utils
 
 import java.util.Locale
+import scala.language.implicitConversions
 
 case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 

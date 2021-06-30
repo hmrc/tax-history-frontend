@@ -18,7 +18,8 @@ package controllers
 
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.IndividualTaxYear
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -27,27 +28,32 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.fixtures.PersonFixture
 import support.{BaseSpec, ControllerSpec}
+import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
-import uk.gov.hmrc.http.HttpResponse
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import views.html.taxhistory.select_tax_year
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+
 class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with BaseSpec {
 
-  trait LocalSetup extends MockitoSugar with ArgumentMatchersSugar {
+  trait LocalSetup extends MockitoSugar {
 
     lazy val controller: SelectTaxYearController = {
 
       val c = new SelectTaxYearController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
         app.configuration, environment, messagesControllerComponents, appConfig, injected[select_tax_year])(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
-      when(c.citizenDetailsConnector.getPersonDetails(any)(any)).
-        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
-      when(c.taxHistoryConnector.getTaxYears(any)(any)).
-        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2","uri3"))), Map.empty)))
+      when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+
+      when(c.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
+
+      when(c.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(List(IndividualTaxYear(2015, "uri1","uri2","uri3"))), Map.empty)))
       c
     }
   }
@@ -61,8 +67,9 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
     }
 
     "redirect to technical error page when getTaxYears reurn status internal server error" in new LocalSetup {
-      when(controller.taxHistoryConnector.getTaxYears(any)(any))
+      when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
+
       val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
 
       status(result) shouldBe Status.SEE_OTHER
@@ -70,8 +77,9 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
     }
 
     "return not found error page when citizen details returns locked status 423" in new LocalSetup {
-      when(controller.citizenDetailsConnector.getPersonDetails(any)(any)).
-        thenReturn(Future.successful(HttpResponse(Status.LOCKED, null)))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(Status.LOCKED, null)))
+
       val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation (result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
@@ -85,6 +93,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
 
       val result: Future[Result] = controller.submitSelectTaxYearPage().apply(FakeRequest()
         .withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(2016).url)
     }
@@ -104,11 +113,12 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
       val validSelectTaxYearForm = Seq(
         "selectTaxYear" -> ""
       )
-      when(controller.taxHistoryConnector.getTaxYears(any)(any))
+      when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
 
       val result: Future[Result] = controller.submitSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino)
         .withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }

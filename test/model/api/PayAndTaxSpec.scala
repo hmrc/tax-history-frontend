@@ -49,8 +49,8 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
     studentLoan = None,
     studentLoanIncludingEYU = None,
     paymentDate = Some(new LocalDate("2016-02-20")),
-    earlierYearUpdates = Nil)
-
+    earlierYearUpdates = Nil
+  )
 
   "PayAndTax" should {
 
@@ -63,7 +63,9 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
         studentLoan = None,
         studentLoanIncludingEYU = None,
         paymentDate = Some(new LocalDate("2016-02-20")),
-        earlierYearUpdates = Nil)
+        earlierYearUpdates = Nil
+      )
+
       payAndTax.payAndTaxId.toString.nonEmpty shouldBe true
       payAndTax.payAndTaxId shouldNot be(payAndTaxNoEyu.payAndTaxId)
     }
@@ -97,7 +99,8 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
             studentLoanEYU = None,
             receivedDate = new LocalDate("2016-12-12")
           )
-        ))
+        )
+      )
 
       payAndTax.earlierYearUpdatesWithStudentLoans.size should be(2)
       payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.size should be(3)

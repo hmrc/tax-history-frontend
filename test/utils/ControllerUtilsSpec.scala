@@ -37,7 +37,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = None,
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.ongoing")
     }
@@ -53,7 +54,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(parsedEndDate),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEndDate(emp) shouldBe DateTimeFormat.forPattern("d MMMM yyyy").print(parsedEndDate)
     }
@@ -67,7 +69,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = None,
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.date.no-record")
     }
@@ -81,7 +84,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEndDate(emp) shouldBe "1 February 2016"
     }
@@ -95,7 +99,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEndDate(emp) shouldBe "1 February 2016"
     }
@@ -109,7 +114,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = None,
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEndDate(emp) shouldBe Messages("lbl.date.no-record")
     }
@@ -137,7 +143,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.current")
     }
@@ -151,7 +158,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.ceased")
     }
@@ -165,7 +173,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.Unknown,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.unknown")
     }
@@ -181,7 +190,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
         employmentStatus = EmploymentStatus.PotentiallyCeased,
-        worksNumber = "00191048716")
+        worksNumber = "00191048716"
+      )
 
       ControllerUtils.hasEmploymentDetails(emp) shouldBe true
     }
@@ -196,7 +206,8 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
           endDate = Some(LocalDate.parse("2016-02-01")),
           employmentPaymentType = None,
           employmentStatus = EmploymentStatus.Unknown,
-          worksNumber = "00191048716")
+          worksNumber = "00191048716"
+        )
 
         ControllerUtils.hasEmploymentDetails(emp) shouldBe false
       }

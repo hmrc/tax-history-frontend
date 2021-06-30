@@ -16,18 +16,21 @@
 
 package controllers
 
-import org.mockito.MockitoSugar
+import org.scalatestplus.mockito.MockitoSugar
+import org.mockito.ArgumentMatchers.any
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{BaseSpec, ControllerSpec}
+import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
+import uk.gov.hmrc.http.HeaderCarrier
 import views.html.taxhistory.select_client
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
@@ -38,8 +41,8 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
       val c = new SelectClientController(mock[AuthConnector],
         app.configuration, environment, messagesControllerComponents, appConfig, injected[select_client])(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any, any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any, any)).thenReturn(
-        Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+      when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
       c
     }
   }

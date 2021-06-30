@@ -41,7 +41,8 @@ class AllowanceSpec extends TestUtil with BaseSpec {
 
   lazy val allowance1: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "allowanceType",
-    amount = BigDecimal(12.00))
+    amount = BigDecimal(12.00)
+  )
 
   lazy val allowanceList = List(allowance1)
 
