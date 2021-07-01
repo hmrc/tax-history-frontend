@@ -31,7 +31,8 @@ class EmploymentStatusSpec extends BaseSpec {
 
     "throw error on invalid data" in {
       EmploymentStatus.jsonReads.reads(Json.obj("employmentStatus" -> 10)) shouldBe JsError(List((JsPath \ "employmentStatus",
-        List(JsonValidationError(List("Invalid EmploymentStatus"))))))
+        List(JsonValidationError(List("Invalid EmploymentStatus")))))
+      )
     }
   }
 

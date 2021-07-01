@@ -28,9 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class CitizenDetailsConnector @Inject()(val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
-  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse): HttpResponse = response
-  }
+  implicit val httpReads: HttpReads[HttpResponse] = (method: String, url: String, response: HttpResponse) => response
 
   private def url(nino: String) = new URL(appConfig.citizenDetailsBaseUrl, s"/citizen-details/$nino/designatory-details/basic")
 

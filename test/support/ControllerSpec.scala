@@ -16,7 +16,7 @@
 
 package support
 
-import org.mockito.{ArgumentMatchersSugar, MockitoSugar}
+import org.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
 import play.api.mvc.AnyContentAsEmpty
 import play.api.test.FakeRequest
@@ -24,7 +24,7 @@ import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.http.SessionKeys
 import utils.TestUtil
 
-trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar with ArgumentMatchersSugar {
+trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar {
 
   lazy val nino: String = randomNino.toString
   lazy val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("USER_NINO" -> nino)

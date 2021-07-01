@@ -44,7 +44,8 @@ class CompanyBenefitSpec extends TestUtil with BaseSpec {
     iabdType = "companyBenefitType",
     amount = BigDecimal(12.00),
     source = Some(3),
-    isForecastBenefit = true)
+    isForecastBenefit = true
+  )
 
   "CompanyBenefit" should {
 

@@ -28,9 +28,7 @@ import scala.concurrent.{ExecutionContext, Future}
 @Singleton
 class TaxHistoryConnector @Inject()(val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
-  implicit val httpReads: HttpReads[HttpResponse] = new HttpReads[HttpResponse] {
-    override def read(method: String, url: String, response: HttpResponse): HttpResponse = response
-  }
+  implicit val httpReads: HttpReads[HttpResponse] = (method: String, url: String, response: HttpResponse) => response
 
   private val taxHistoryUrl = new URL(appConfig.taxHistoryBaseUrl, "/tax-history")
 
@@ -50,7 +48,7 @@ class TaxHistoryConnector @Inject()(val appConfig: AppConfig, httpClient: HttpCl
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId")
 
   def getTaxYears(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/tax-years ")
+    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/tax-years")
 
   def getTaxAccount(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/tax-account")
