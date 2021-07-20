@@ -16,9 +16,10 @@
 
 package support
 
-import org.scalatest.{Matchers, WordSpec}
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpec
 
-class CallOpsSpec extends WordSpec with Matchers {
+class CallOpsSpec extends AnyWordSpec with Matchers {
 
   "addParamsToUrl" should {
     val url = "http://localhost:9996/tax-history/select-client"

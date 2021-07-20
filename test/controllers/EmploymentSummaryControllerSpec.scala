@@ -16,18 +16,16 @@
 
 package controllers
 
-import java.util.UUID
-
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
 import org.joda.time.LocalDate
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -41,9 +39,10 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import views.html.taxhistory.employment_summary
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture with BaseSpec with ScalaFutures{
+class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture with BaseSpec with ScalaFutures {
 
   lazy val taxYear: Int = 2016
 
@@ -123,7 +122,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
   trait LocalSetup extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
+    implicit val materializer: Materializer = Materializer(actorSystem)
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
