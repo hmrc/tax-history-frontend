@@ -18,7 +18,7 @@ package views
 
 import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
-import org.scalatest.MustMatchers
+import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.CSRFTokenHelper.CSRFRequest
@@ -28,10 +28,11 @@ import views.Strings.TextHelpers
 
 import scala.collection.JavaConverters._
 
-trait Fixture extends MustMatchers {
+trait Fixture extends Matchers {
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   def view: HtmlFormat.Appendable
+
   lazy val html: String = view.body
   lazy val doc: Document = Jsoup.parse(html)
   lazy val form: Element = doc.getElementsByTag("form").first()
@@ -40,7 +41,7 @@ trait Fixture extends MustMatchers {
   lazy val errorSummary: Element = doc.getElementsByClass("amls-error-summary").first()
 
   def validateParagraphizedContent(messageKey: String)(implicit messages: Messages): Unit = {
-    for(p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala) {
+    for (p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala) {
       doc.body().toString must include(p.text())
     }
   }

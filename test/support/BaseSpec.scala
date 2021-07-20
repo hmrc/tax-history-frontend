@@ -17,10 +17,12 @@
 package support
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import config.AppConfig
 import org.scalatest._
 import org.scalatest.concurrent.PatienceConfiguration
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.wordspec.AnyWordSpecLike
 import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Environment
@@ -31,7 +33,7 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
 
-trait BaseSpec extends WordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach with Injecting { this: Suite =>
+trait BaseSpec extends AnyWordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach with Injecting { this: Suite =>
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -45,6 +47,6 @@ trait BaseSpec extends WordSpecLike with Matchers with OptionValues with GuiceOn
   implicit val ec: ExecutionContext = injected[ExecutionContext]
 
   implicit val actorSystem: ActorSystem = ActorSystem("test")
-  implicit val materializer: ActorMaterializer = ActorMaterializer()
+  implicit val materializer: Materializer = Materializer(actorSystem)
 
 }

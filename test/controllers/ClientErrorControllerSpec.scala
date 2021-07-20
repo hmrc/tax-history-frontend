@@ -17,7 +17,7 @@
 package controllers
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.Materializer
 import connectors.CitizenDetailsConnector
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
@@ -41,7 +41,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
   trait LocalSetup extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
-    implicit val materializer: ActorMaterializer = ActorMaterializer()
+    implicit val materializer: Materializer = Materializer(actorSystem)
 
     val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
