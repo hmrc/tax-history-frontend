@@ -26,14 +26,13 @@ lazy val microservice =  Project(appName, file("."))
     resolvers += Resolver.jcenterRepo,
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
       ".*BuildInfo.*;.*helpers.*;.*Routes.*;controllers.ExampleController;controllers.testonly.TestOnlyController",
-    ScoverageKeys.coverageMinimum := 90.00,
+    ScoverageKeys.coverageMinimumStmtTotal := 90.00,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
   .settings(TwirlKeys.templateImports ++= Seq(
     "play.twirl.api.HtmlFormat",
     "uk.gov.hmrc.govukfrontend.views.html.components._",
-    "uk.gov.hmrc.govukfrontend.views.html.helpers._",
     "uk.gov.hmrc.hmrcfrontend.views.html.components._",
     "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     ),
@@ -41,7 +40,7 @@ lazy val microservice =  Project(appName, file("."))
       "-P:silencer:pathFilters=target/.*",
       s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
     ),
-    evictionWarningOptions in update := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
   )
 
 
