@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ class ClientErrorController @Inject()(
         _ =>
           request.getQueryString("issue") match {
             case Some(issue) =>
-              Logger(getClass).error(s"Form Error: $issue")
+              logger.error(s"[ClientErrorController][getNotAuthorised] Form Error: $issue")
               throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
             case None =>
               Future successful Ok(notAuthorised(getNinoFromSession(request)))

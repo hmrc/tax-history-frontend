@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 HM Revenue & Customs
+ * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,6 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-
   private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person], taxYear: Int)
                                   (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
     maybePerson match {
@@ -93,7 +92,9 @@ class EmploymentSummaryController @Inject()(
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                 incomeTotals = dataResponse._4))
           }
-        case status => Future.successful(handleHttpFailureResponse(status, ninoField, Some(taxYear)))
+        case status =>
+          logger.error(s"[EmploymentSummaryController][retrieveTaxHistoryData] Error calling taxHistory getEmploymentsAndPensions, received status $status")
+          Future.successful(handleHttpFailureResponse(status, ninoField, Some(taxYear)))
       }
     }
   }
@@ -127,7 +128,6 @@ class EmploymentSummaryController @Inject()(
         List.empty
     }
   }
-
 
   private def getStatePensionsFromResponse(statePensionResponse: HttpResponse) = {
     statePensionResponse.status match {
@@ -163,7 +163,7 @@ class EmploymentSummaryController @Inject()(
       }
     } recover {
       case e =>
-        logger.warn(s"buildIncomeTotals failed with ${e.getMessage}")
+        logger.error(s"[EmploymentSummaryController][buildIncomeTotals] buildIncomeTotals failed with ${e.getMessage}")
         None
     }
   }
