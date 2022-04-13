@@ -52,7 +52,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
     "load select client page" in new LocalSetup {
       val result: Future[Result] = controller.getSelectClientPage()(fakeRequest)
       status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.select.client.title"))
+      contentAsString(result) should include(messages("employmenthistory.select.client.title"))
     }
 
     "return Status: 400 when invalid data is entered" in new LocalSetup {

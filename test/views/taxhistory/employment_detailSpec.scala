@@ -26,10 +26,10 @@ import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllerUtils, TestUtil}
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.employment_detail
 
-class employment_detailSpec extends GuiceAppSpec with DetailConstants {
+class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
 
   trait ViewFixture extends Fixture {
     val currentTaxYear: Int = TaxYear.current.startYear
@@ -52,7 +52,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
 
-      doc.title shouldBe Messages("employmenthistory.employment.details.title")
+      doc.title shouldBe expectedPageTitle(messages("employmenthistory.employment.details.title"))
       doc.getElementById("ClientIncomeRecord").text() shouldBe s"$clientName's income records"
       doc.select("h1").text() shouldBe employment.employerName
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe false
@@ -64,7 +64,7 @@ class employment_detailSpec extends GuiceAppSpec with DetailConstants {
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
 
-      doc.title shouldBe Messages("employmenthistory.employment.details.title")
+      doc.title shouldBe expectedPageTitle(messages("employmenthistory.employment.details.title"))
       doc.getElementById("ClientIncomeRecord").text() shouldBe s"$clientName's income records"
       doc.select("h1").text() shouldBe employment.employerName
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe true

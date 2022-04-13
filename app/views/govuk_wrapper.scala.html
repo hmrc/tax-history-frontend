@@ -34,6 +34,11 @@
     <link rel="stylesheet" media="all" href='@routes.Assets.versioned("stylesheets/taxhistory.css")' type="text/css"/>
 }
 
+@fullTitle = @{
+    s"$title - ${messages("lbl.service.title")} - GOV.UK"
+}
+
+
 @feedbackBanner = {
     @messages("feedback.before")
     <a class='govuk-link' href='@{appConfig.betaFeedbackUrl}'>@messages("feedback.link")</a>
@@ -65,7 +70,7 @@
 
 
 @govukTemplate(
-    pageTitle = Some(title),
+    pageTitle = Some(fullTitle),
     headBlock = Some(hmrcHead(Some(head))),
     headerBlock = hmrcStandardHeader(
         serviceName = Some(messages("service.name")),

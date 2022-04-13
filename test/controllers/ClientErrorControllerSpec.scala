@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.{MessagesControllerComponents, Result}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{BaseSpec, ControllerSpec}
@@ -59,8 +59,10 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
   "ClientErrorController" should {
     "get Mci restricted page" in new LocalSetup {
       val result: Future[Result] = controller.getMciRestricted().apply(FakeRequest())
+      val expectedView = app.injector.instanceOf[mci_restricted]
       status(result) shouldBe OK
-      contentAsString(result) should include(Messages("employmenthistory.mci.restricted.title"))
+
+      result rendersTheSameViewAs expectedView()(FakeRequest(), messages, appConfig)
     }
 
     "get Not Authorised page with a NINO and relationship" in new LocalSetup {
@@ -83,8 +85,10 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
     "get deceased page" in new LocalSetup {
       val result: Future[Result] = controller.getDeceased().apply(FakeRequest())
+      val expectedView = app.injector.instanceOf[deceased]
       status(result) shouldBe OK
-      contentAsString(result) should include(Messages("employmenthistory.deceased.title"))
+
+      result rendersTheSameViewAs expectedView()(FakeRequest(), messages, appConfig)
     }
 
     "get No Data Available page" in new LocalSetup {
