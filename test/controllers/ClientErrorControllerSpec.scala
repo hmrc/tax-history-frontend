@@ -24,7 +24,7 @@ import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{AnyContent, MessagesControllerComponents, Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{BaseSpec, ControllerSpec}
@@ -42,7 +42,6 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)
-
     val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
     lazy val controller: ClientErrorController = new ClientErrorController(mock[CitizenDetailsConnector], injected[MessagesControllerComponents],
@@ -58,11 +57,12 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
   "ClientErrorController" should {
     "get Mci restricted page" in new LocalSetup {
+      implicit val request: Request[_] = FakeRequest()
       val result: Future[Result] = controller.getMciRestricted().apply(FakeRequest())
       val expectedView = app.injector.instanceOf[mci_restricted]
       status(result) shouldBe OK
 
-      result rendersTheSameViewAs expectedView()(FakeRequest(), messages, appConfig)
+      result rendersTheSameViewAs expectedView()
     }
 
     "get Not Authorised page with a NINO and relationship" in new LocalSetup {
@@ -84,11 +84,12 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
     }
 
     "get deceased page" in new LocalSetup {
+      implicit val request: Request[_] = FakeRequest()
       val result: Future[Result] = controller.getDeceased().apply(FakeRequest())
       val expectedView = app.injector.instanceOf[deceased]
       status(result) shouldBe OK
 
-      result rendersTheSameViewAs expectedView()(FakeRequest(), messages, appConfig)
+      result rendersTheSameViewAs expectedView()
     }
 
     "get No Data Available page" in new LocalSetup {

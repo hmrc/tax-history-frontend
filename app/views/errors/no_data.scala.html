@@ -32,9 +32,6 @@
 
     <h1 class="govuk-heading-xl no-bottom-margin">@messages("employmenthistory.header", person.getName.getOrElse(nino))</h1>
 
-    @*AFID-462 - temporarily disabled due to security issue*@
-    @*if(person.getName.nonEmpty){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}*@
-
     @p(Html(messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString)), "govuk-heading-m", Some("taxYearRange"))
     @p(Html(messages("employmenthistory.no.data.header")), "govuk-caption-m", Some("pre-header"))
 

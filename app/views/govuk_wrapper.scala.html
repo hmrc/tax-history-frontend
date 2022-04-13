@@ -27,7 +27,7 @@
     hmrcScripts: HmrcScripts
 )
 
-@(title: String, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None, backLink: Option[String]= None)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(title: String, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None, backLink: Option[String]= None, hasPageError: Boolean = false)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @head ={
     <meta name="format-detection" content="telephone=no" />
@@ -35,7 +35,10 @@
 }
 
 @fullTitle = @{
-    s"$title - ${messages("lbl.service.title")} - GOV.UK"
+    val standardTitle = s"$title - ${messages("lbl.service.title")} - GOV.UK"
+    val errorTitle = s"${messages("lbl.error")}: $standardTitle"
+
+    if(hasPageError) errorTitle else standardTitle
 }
 
 

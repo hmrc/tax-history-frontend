@@ -32,6 +32,7 @@ lbl.back=Back
 lbl.employer=Employer
 lbl.provider=Provider
 lbl.details=Details
+lbl.error=Error
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -140,7 +141,7 @@ tax.code.total.deductions=Total deductions
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
-employmenthistory.select.client.title=Select client - GOV.UK
+employmenthistory.select.client.title=Enter a client''s National Insurance number
 employmenthistory.select.client.heading=Enter a client''s National Insurance number
 employmenthistory.select.client.clients.nino=Client National Insurance number
 employmenthistory.select.client.nino.hint=For example, QQ123456C

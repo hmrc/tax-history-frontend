@@ -29,7 +29,7 @@
 
 @(sCForm: Form[SelectClient])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@govukWrapper(title = messages("employmenthistory.select.client.title"), backLink = Some(appConfig.agentAccountHomePage)) {
+@govukWrapper(title = messages("employmenthistory.select.client.title"), backLink = Some(appConfig.agentAccountHomePage), hasPageError = sCForm.hasErrors) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
