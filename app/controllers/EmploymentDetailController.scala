@@ -54,7 +54,9 @@ class EmploymentDetailController @Inject()(
             case OK =>
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
-            case status => Future.successful(handleHttpFailureResponse(status, nino))
+            case status =>
+              logger.error(s"[EmploymentDetailController][renderEmploymentDetailsPage] received a $status and response from TaxHistory getEmployment")
+              Future.successful(handleHttpFailureResponse(status, nino))
           }
         }
     }
@@ -67,8 +69,6 @@ class EmploymentDetailController @Inject()(
       }
   }
 
-
-
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
                           (implicit hc: HeaderCarrier): Future[Option[PayAndTax]] = {
     taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
@@ -77,7 +77,6 @@ class EmploymentDetailController @Inject()(
         case _ =>
           val result = payAndTaxResponse.json.as[PayAndTax]
           if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
-
       }
     }.recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
   }
@@ -104,7 +103,7 @@ class EmploymentDetailController @Inject()(
 
   private def recoverWithEmptyDefault[U](connectorMethodName: String, emptyValue: U): PartialFunction[Throwable, Future[U]] = {
     case e =>
-      logger.warn(s"Failed to call connector method $connectorMethodName", e)
+      logger.error(s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName", e)
       Future.successful(emptyValue)
   }
 
@@ -121,5 +120,4 @@ class EmploymentDetailController @Inject()(
     } yield Ok(employmentDetail(taxYear, payAndTax,
       employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource))
   }
-
 }

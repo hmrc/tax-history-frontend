@@ -70,8 +70,8 @@ class SelectTaxYearController @Inject()(
           httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))
 
         case status =>
+          logger.error(s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Error calling taxHistory getTaxYears, received status $status")
           handleHttpFailureResponse(status, nino)
-
       }
     }
   }
