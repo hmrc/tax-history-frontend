@@ -92,9 +92,13 @@ class EmploymentSummaryController @Inject()(
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                 incomeTotals = dataResponse._4))
           }
-        case status =>
+        case status if status > OK && status < INTERNAL_SERVER_ERROR =>
+          logger.warn(s"[EmploymentSummaryController][retrieveTaxHistoryData] Non 200 response calling taxHistory" +
+            s" getEmploymentsAndPensions, received status $status")
+          Future.successful(handleHttpFailureResponse(status, Some(taxYear)))
+        case status if status >= INTERNAL_SERVER_ERROR =>
           logger.error(s"[EmploymentSummaryController][retrieveTaxHistoryData] Error calling taxHistory getEmploymentsAndPensions, received status $status")
-          Future.successful(handleHttpFailureResponse(status, ninoField, Some(taxYear)))
+          Future.successful(handleHttpFailureResponse(status, Some(taxYear)))
       }
     }
   }
@@ -102,8 +106,7 @@ class EmploymentSummaryController @Inject()(
   private def getTaxAccountFromResponse(taxAccountResponse: HttpResponse) = {
     taxAccountResponse.status match {
       case OK => taxAccountResponse.json.asOpt[TaxAccount]
-      case status =>
-        logger.info(s"Tax Account Status: $status")
+      case status => logger.info(s"Tax Account Status: $status")
         None
     }
   }
@@ -111,8 +114,7 @@ class EmploymentSummaryController @Inject()(
   private def getAllowancesFromResponse(allowancesResponse: HttpResponse) = {
     allowancesResponse.status match {
       case OK => allowancesResponse.json.as[List[Allowance]]
-      case status =>
-        logger.info(s"Allowance Status: $status")
+      case status => logger.info(s"Allowance Status: $status")
         List.empty
     }
   }
@@ -123,8 +125,7 @@ class EmploymentSummaryController @Inject()(
   private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) = {
     patResponse.status match {
       case OK => patResponse.json.as[Map[String, PayAndTax]]
-      case status =>
-        logger.info(s"All Pay And Tax Status: $status")
+      case status => logger.info(s"All Pay And Tax Status: $status")
         List.empty
     }
   }
@@ -132,8 +133,7 @@ class EmploymentSummaryController @Inject()(
   private def getStatePensionsFromResponse(statePensionResponse: HttpResponse) = {
     statePensionResponse.status match {
       case OK => statePensionResponse.json.asOpt[StatePension]
-      case status =>
-        logger.info(s"State Pension Status: $status")
+      case status => logger.info(s"State Pension Status: $status")
         None
     }
   }
