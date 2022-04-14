@@ -55,7 +55,8 @@ class EmploymentDetailController @Inject()(
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status if status > OK && status < INTERNAL_SERVER_ERROR =>
-              logger.warn(s"[EmploymentDetailController][renderEmploymentDetailsPage] Non 200 response calling taxHistory getEmployment, received status $status")
+              logger.warn(s"[EmploymentDetailController][renderEmploymentDetailsPage] Non 200 response calling " +
+                s"taxHistory getEmployment, received status $status")
               Future.successful(handleHttpFailureResponse(status))
             case status if status >= INTERNAL_SERVER_ERROR =>
               logger.error(s"[EmploymentDetailController][renderEmploymentDetailsPage] Error calling taxHistory getEmployment, received status $status")

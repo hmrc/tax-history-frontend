@@ -162,5 +162,23 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
+
+    "show technical error page when getEmployment returns a 4xx response" in new LocalSetup {
+      when(controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, null)))
+
+      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+
+    "show technical error page when getEmployment returns a 3xx response" in new LocalSetup {
+      when(controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, null)))
+
+      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
   }
 }
