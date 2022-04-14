@@ -16,19 +16,15 @@
 
 import com.google.inject.name.Named
 import config.AppConfig
-import play.api.http.Status._
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Request, RequestHeader}
+import play.api.mvc.Request
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
-import uk.gov.hmrc.http.{JsValidationException, Upstream4xxResponse}
 import uk.gov.hmrc.play.audit.http.connector.AuditConnector
-import uk.gov.hmrc.play.bootstrap.config.{AuthRedirects, HttpAuditEvent}
+import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import uk.gov.hmrc.play.http.HeaderCarrierConverter
 
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
 
 @Singleton
 class ErrorHandler @Inject()(
