@@ -68,10 +68,12 @@ class SelectTaxYearController @Inject()(
         case OK =>
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
           httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))
-
-        case status =>
+        case status if status > OK && status < INTERNAL_SERVER_ERROR =>
+          logger.warn(s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status")
+          handleHttpFailureResponse(status)
+        case status if status >= INTERNAL_SERVER_ERROR =>
           logger.error(s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Error calling taxHistory getTaxYears, received status $status")
-          handleHttpFailureResponse(status, nino)
+          handleHttpFailureResponse(status)
       }
     }
   }
