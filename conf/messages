@@ -42,7 +42,7 @@ feedback.after = will help us to improve it.
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
-employmenthistory.title=Clients income record
+employmenthistory.title=Income record
 employmenthistory.header={0}''s income record
 employmenthistory.missing.client.name=client
 employmenthistory.nopaydata=No data available

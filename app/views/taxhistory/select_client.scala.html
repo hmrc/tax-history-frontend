@@ -17,6 +17,7 @@
 @import controllers.routes
 @import models.taxhistory.SelectClient
 @import config.AppConfig
+@import views.models.PageTitle
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
@@ -29,7 +30,7 @@
 
 @(sCForm: Form[SelectClient])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@govukWrapper(title = messages("employmenthistory.select.client.title"), backLink = Some(appConfig.agentAccountHomePage), hasPageError = sCForm.hasErrors) {
+@govukWrapper(PageTitle(messages("employmenthistory.select.client.title"), sCForm.hasErrors), backLink = Some(appConfig.agentAccountHomePage)) {
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
