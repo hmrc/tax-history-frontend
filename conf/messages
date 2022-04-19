@@ -42,7 +42,7 @@ feedback.after = will help us to improve it.
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
-employmenthistory.title=income record
+employmenthistory.title=Clients income record
 employmenthistory.header={0}''s income record
 employmenthistory.missing.client.name=client
 employmenthistory.nopaydata=No data available
@@ -153,7 +153,7 @@ employmenthistory.select.client.error.empty=Enter a National Insurance number
 employmenthistory.select.client.sidebar.agent-services-home=Agent services home
 
 ################################ Employment Details ####################################################
-employmenthistory.employment.details.title=Client single record - GOV.UK
+employmenthistory.employment.details.title=Client single record
 employmenthistory.employment.details.companybenefits=Company Benefits
 employmenthistory.employment.details.no.benefits=HMRC has no record of company benefits from {0} for this tax year.
 employmenthistory.employment.details.benefit=Benefit
