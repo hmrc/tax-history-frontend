@@ -239,7 +239,7 @@
 
                             <a href="/tax-history/single-record@employment.employmentURI" id=@{s"view-link-employment-${index}"}>
                                 @messages("employmenthistory.view")
-                                <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span>
+                                <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName, ControllerUtils.isJobSeekerAllowance(employment))</span>
                             </a>
                         } else {
                             <span id=@{s"view-employment-${index}"}>@messages("lbl.none")</span>
