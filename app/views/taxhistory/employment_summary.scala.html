@@ -238,7 +238,7 @@
 
                             <a href="/tax-history/single-record@employment.employmentURI" id=@{s"view-link-employment-${index}"}>
                                 @messages("employmenthistory.view")
-                                <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span>
+                                <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName, ControllerUtils.isJobSeekerAllowance(employment))</span>
                             </a>
                         } else {
                             <span id=@{s"view-employment-${index}"}>@messages("lbl.none")</span>
@@ -290,34 +290,26 @@
 
         <tbody class="govuk-table__body">
             @allowances.map { allowance =>
-                @if(allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag) {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell govuk-body-s">@messages(s"employmenthistory.al.${allowance.iabdType}")
-                           <p>
-                               <details class="govuk-details" data-module="govuk-details">
-                                <summary class="govuk-details__summary">
-                                    <span class="govuk-details__summary-text">
-                                      @messages("employmenthistory.allowances.eya.summary.header")
-                                    </span>
-                                </summary>
-                                <div class="govuk-details__text">
-                                    @p(Html(messages("employmenthistory.allowances.eya.summary.detail1")), classes = "govuk-body")
-                                    @p(Html(messages("employmenthistory.allowances.eya.summary.detail2")), classes = "govuk-body")
-                                </div>
-                                </details>
-                           </p>
-                        </td>
-                        <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(allowance.amount)</td>
-                    </tr>
-                    } else {
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell govuk-body-s">@messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-                        <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(allowance.amount)</td>
-                    </tr>
-                }
+                <tr class="govuk-table__row">
+                    <td class="govuk-table__cell govuk-body-s">@messages(s"employmenthistory.al.${allowance.iabdType}")</td>
+                    <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(allowance.amount)</td>
+                </tr>
             }
         </tbody>
     </table>
+    @if(allowances.exists(allowance => allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag)) {
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text">
+                    @messages("employmenthistory.allowances.eya.summary.header")
+                </span>
+            </summary>
+            <div class="govuk-details__text">
+                @p(Html(messages("employmenthistory.allowances.eya.summary.detail1")), classes = "govuk-body")
+                @p(Html(messages("employmenthistory.allowances.eya.summary.detail2")), classes = "govuk-body")
+            </div>
+        </details>
+    }
 }
 
 @taxAccountTable={

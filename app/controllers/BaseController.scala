@@ -111,8 +111,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino, taxYears: Option[Int] = None): Result = {
-    logger.info(s"HttpFailure status is $status")
+  protected[controllers] def handleHttpFailureResponse(status: Int, taxYears: Option[Int] = None): Result = {
     status match {
       case NOT_FOUND =>
         taxYears match {

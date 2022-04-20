@@ -17,12 +17,10 @@
 package controllers
 
 import config.AppConfig
-
-import javax.inject.Inject
 import models.taxhistory.Person
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.libs.json.JsValue
 import play.api.mvc.{MessagesControllerComponents, Result, Results}
@@ -33,9 +31,9 @@ import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
-import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures {
@@ -135,19 +133,19 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
   }
 
   "show not found error page when 404 returned from connector" in new TestSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND, Nino(nino),Some(2017)))
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND,Some(2017)))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(2017).url)
   }
 
   "show not authorised error page when 401 returned from connector" in new TestSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.UNAUTHORIZED, Nino(nino)))
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.UNAUTHORIZED))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
   }
 
   "show technical error page when any response other than 200, 401, 404 returned from connector" in new TestSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR, Nino(nino)))
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR))
     status(result) shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }

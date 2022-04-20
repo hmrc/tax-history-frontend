@@ -71,9 +71,9 @@ employmenthistory.state.pensions=State Pension
 employmenthistory.state.pensions.text.weekly.p1=Your client started receiving a State Pension of {0} per week on {1}.
 employmenthistory.state.pensions.text.weekly.p2=Their state pension income up to {0} is {1}.
 employmenthistory.state.pensions.text.yearly=Your client''s State Pension this tax year was {0}.
-employmenthistory.allowances.eya.summary.header=What is this?
-employmenthistory.allowances.eya.summary.detail1=HMRC can adjust a client''s tax code to repay tax they have overpaid in previous tax years. This is called an Earlier Years Adjustment (EYA).
-employmenthistory.allowances.eya.summary.detail2=An EYA is included in a tax code to refund the tax owed for things such as job expenses and professional subscriptions.
+employmenthistory.allowances.eya.summary.header=EYA Explained
+employmenthistory.allowances.eya.summary.detail1=HMRC can adjust a client’s tax code to refund tax that was overpaid in previous years. This is called an Earlier Years Adjustment (EYA).
+employmenthistory.allowances.eya.summary.detail2=A tax overpayment may have arisen when tax relief was claimed for such things as job expenses or professional subscriptions.
 employmenthistory.employment.summary.sidebar.agent-services-home=Agent services home
 employmenthistory.employment.summary.sidebar.income.and.tax=View client income and tax records
 employmenthistory.employment.summary.sidebar.change.client=Change client
@@ -122,7 +122,7 @@ employmenthistory.cb.VoucherAndCreditCards=Vouchers and credit cards
 employmenthistory.cb.NonCashBenefit=Non Cash benefit
 employmenthistory.al.FlatRateJobExpenses=Flat rate job expenses
 employmenthistory.al.ProfessionalSubscriptions=Professional subscriptions
-employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment
+employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment (EYA)
 
 ################################ Tax Codes ####################################################
 tax.code.heading=Tax code breakdown

@@ -66,9 +66,29 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
     }
 
-    "redirect to technical error page when getTaxYears reurn status internal server error" in new LocalSetup {
+    "redirect to technical error page when getTaxYears returns status internal server error" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
+
+      val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+
+    "redirect to technical error page when getTaxYears returns 4xx status" in new LocalSetup {
+      when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, null)))
+
+      val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+
+      status(result) shouldBe Status.SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+
+    "redirect to technical error page when getTaxYears returns 3xx status" in new LocalSetup {
+      when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, null)))
 
       val result: Future[Result] = controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
 

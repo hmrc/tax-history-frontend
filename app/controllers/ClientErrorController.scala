@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.CitizenDetailsConnector
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import views.html.errors._
 
