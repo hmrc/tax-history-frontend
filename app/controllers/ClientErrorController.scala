@@ -20,7 +20,7 @@ import config.AppConfig
 import connectors.CitizenDetailsConnector
 import javax.inject.{Inject, Singleton}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import views.html.errors._
 
@@ -53,7 +53,7 @@ class ClientErrorController @Inject()(
         _ =>
           request.getQueryString("issue") match {
             case Some(issue) =>
-              Logger(getClass).error(s"Form Error: $issue")
+              logger.error(s"[ClientErrorController][getNotAuthorised] Form Error: $issue")
               throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
             case None =>
               Future successful Ok(notAuthorised(getNinoFromSession(request)))

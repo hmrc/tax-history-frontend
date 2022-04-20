@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,17 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
-@import views.models.PageTitle
+package views.models
 
-@this(
-    govukWrapper: views.html.govuk_wrapper,
-    p: helpers.p
-)
+import play.api.i18n.Messages
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+case class PageTitle(title: String, formErrorsExist: Boolean = false) {
+  def fullTitle()(implicit messages: Messages): String = {
+    val standardTitle = s"$title - ${messages("lbl.service.title")} - GOV.UK"
+    val errorTitle = s"${messages("lbl.error")}: $standardTitle"
 
-@govukWrapper(PageTitle(messages("employmenthistory.no.agent.services.account.title"))) {
-
-    <h1 class="govuk-heading-xl">@messages("employmenthistory.no.agent.services.account.title")</h1>
-    @p{@messages("employmenthistory.no.agent.services.account.p1")}
+    if(formErrorsExist) errorTitle else standardTitle
+  }
 }

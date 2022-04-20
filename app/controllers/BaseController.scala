@@ -57,7 +57,6 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
   def logout(): Action[AnyContent] = Action.async {
       logger.info("Sign out of the service")
       Future.successful(Redirect(serviceSignout).withNewSession)
-
   }
 
   // todo : work out what eventualResult is for, and call it that.
@@ -84,10 +83,10 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
           redirectToExitPage
       }.recoverWith {
       case i: InsufficientEnrolments =>
-        logger.info(s"InsufficientEnrolments:${i.getMessage}")
+        logger.warn(s"InsufficientEnrolments:${i.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
       case b: BadGatewayException =>
-        logger.warn(s"BadGatewayException:${b.getMessage}")
+        logger.error(s"[BaseController][authorisedAgent] BadGatewayException:${b.getMessage}")
         Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
       case m: MissingBearerToken =>
         logger.warn(s"MissingBearerToken:${m.getMessage}")
@@ -96,7 +95,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
         logger.warn(s"AuthorisationException:${a.getMessage}")
         Future.successful(ggSignInRedirect)
       case e =>
-        logger.error(s"Exception thrown:${e.getMessage}")
+        logger.error(s"[BaseController][authorisedAgent] Exception thrown:${e.getMessage}")
         Future.successful(ggSignInRedirect)
     }
   }
@@ -112,8 +111,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
     }
   }
 
-  protected[controllers] def handleHttpFailureResponse(status: Int, nino: Nino, taxYears: Option[Int] = None): Result = {
-    logger.info(s"HttpFailure status is $status")
+  protected[controllers] def handleHttpFailureResponse(status: Int, taxYears: Option[Int] = None): Result = {
     status match {
       case NOT_FOUND =>
         taxYears match {
@@ -145,7 +143,7 @@ abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implic
       }
     }.recoverWith {
       case e =>
-        logger.warn(s"citizenDetails lookup failed with ${e.getMessage}")
+        logger.error(s"[BaseController][retrieveCitizenDetails] citizenDetails lookup failed with ${e.getMessage}")
         Future.successful(Left(BAD_REQUEST))
     }
   }

@@ -18,11 +18,15 @@ package support
 
 import org.mockito.MockitoSugar
 import play.api.i18n.MessagesApi
-import play.api.mvc.AnyContentAsEmpty
+import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
+import play.api.test.Helpers._
+import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.http.SessionKeys
 import utils.TestUtil
+
+import scala.concurrent.Future
 
 trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar {
 
@@ -40,5 +44,10 @@ trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with Mocki
   )
 
   implicit val messagesApi: MessagesApi
+
+  implicit class ViewMatcherHelper(result: Future[Result]) {
+    def rendersTheSameViewAs(expected: Html): Unit =
+      contentAsString(result) shouldEqual(expected.toString)
+  }
 
 }

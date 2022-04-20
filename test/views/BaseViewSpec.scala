@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2022 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,20 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import config.AppConfig
-@import views.models.PageTitle
+package views
 
-@this(
-    govukWrapper: views.html.govuk_wrapper,
-    p: helpers.p
-)
+import support.GuiceAppSpec
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
-
-@govukWrapper(PageTitle(messages("employmenthistory.no.agent.services.account.title"))) {
-
-    <h1 class="govuk-heading-xl">@messages("employmenthistory.no.agent.services.account.title")</h1>
-    @p{@messages("employmenthistory.no.agent.services.account.p1")}
+trait BaseViewSpec { this: GuiceAppSpec =>
+  def expectedPageTitle(preTitle: String) = s"$preTitle - ${messages("lbl.service.title")} - GOV.UK"
+  def expectedErrorPageTitle(preTitle: String) = s"${messages("lbl.error")}: $preTitle - ${messages("lbl.service.title")} - GOV.UK"
 }
