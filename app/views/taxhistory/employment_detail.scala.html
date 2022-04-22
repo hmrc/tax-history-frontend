@@ -19,6 +19,7 @@
 @import utils.DateHelper._
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
+@import views.models.PageTitle
 
 @this(govukWrapper: views.html.govuk_wrapper)
 
@@ -33,7 +34,7 @@
     TaxYear.current.currentYear == taxYear
 }
 
-@govukWrapper(title = messages("employmenthistory.employment.details.title"), backLink =  Some(controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url)) {
+@govukWrapper(PageTitle(messages("employmenthistory.employment.details.title")), backLink = Some(controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url)) {
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">

@@ -16,13 +16,11 @@
 
 package controllers
 
-import java.util.UUID
-
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
 import org.joda.time.LocalDate
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -37,6 +35,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import views.html.taxhistory.employment_detail
 
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture with BaseSpec {

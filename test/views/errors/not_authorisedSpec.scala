@@ -21,10 +21,10 @@ import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.domain.Nino
 import utils.TestUtil
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.errors.not_authorised
 
-class not_authorisedSpec extends GuiceAppSpec {
+class not_authorisedSpec extends GuiceAppSpec with BaseViewSpec {
 
   trait ViewFixture extends Fixture with TestUtil {
     val nino: Nino = randomNino
@@ -36,8 +36,7 @@ class not_authorisedSpec extends GuiceAppSpec {
 
       val view: HtmlFormat.Appendable = inject[not_authorised].apply(Some(nino))
 
-      val title: String = Messages("employmenthistory.not.authorised.title")
-      doc.title mustBe title
+      doc.title mustBe expectedPageTitle(messages("employmenthistory.not.authorised.title"))
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header")

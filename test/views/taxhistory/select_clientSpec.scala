@@ -25,36 +25,34 @@ import play.api.libs.json.{JsObject, Json}
 import play.twirl.api.HtmlFormat
 import support.{BaseSpec, GuiceAppSpec}
 import utils.TestUtil
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.select_client
 
-class select_clientSpec extends GuiceAppSpec with BaseSpec with TestUtil {
+class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
 
   trait ViewFixture extends Fixture {
     lazy val nino: String = randomNino.toString()
     val postData: JsObject = Json.obj("clientId" -> nino)
     val validForm: Form[SelectClient] = selectClientForm.bind(postData, 100)
     val invalidFormWrongFormat: Form[SelectClient] = selectClientForm.bind(Json.obj("clientId" -> "123456#$&"), 100)
-
   }
 
   "select_client view" should {
 
-    "have the correct title" in new ViewFixture {
+    "have the correct title when no form errors have occurred" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.title shouldBe Messages("employmenthistory.select.client.title")
+      doc.title shouldBe expectedPageTitle(messages("employmenthistory.select.client.title"))
+    }
 
+    "have the correct title when form errors have occurred" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
+      doc.title shouldBe expectedErrorPageTitle(messages("employmenthistory.select.client.title"))
     }
 
     "have the correct heading" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
       doc.select("h1").text() shouldBe Messages("employmenthistory.select.client.heading")
     }
-
-   /* "display input field label for accessibility" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.select("span.visuallyhidden").text shouldBe Messages("employmenthistory.select.client.clients.nino")
-    }*/
 
     "display input field hint" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)

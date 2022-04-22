@@ -27,10 +27,10 @@ import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
 import utils.{Currency, TestUtil}
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.employment_summary
 
-class employment_summarySpec extends GuiceAppSpec with Constants {
+class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
   trait ViewFixture extends Fixture {
     val nino: String = TestUtil.randomNino.toString()
@@ -46,10 +46,7 @@ class employment_summarySpec extends GuiceAppSpec with Constants {
 
       val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None)
 
-      val title: String = Messages("employmenthistory.title")
-      doc.title mustBe title
-      // AFID-462 - temporarily disabled due to security issue
-      //doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 1
+      doc.title mustBe expectedPageTitle(messages("employmenthistory.title"))
       doc.getElementById("taxYearRange").text must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
         (currentTaxYear + 1).toString))
 

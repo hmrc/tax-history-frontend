@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import views.models.PageTitle
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
@@ -24,7 +25,7 @@
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-@govukWrapper(title = messages("employmenthistory.deceased.title"), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
+@govukWrapper(PageTitle(messages("employmenthistory.deceased.title")), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 
     <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.deceased.header")</h1>
 
