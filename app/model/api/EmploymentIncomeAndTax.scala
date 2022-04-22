@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-package views.errors
+package model.api
 
-import play.twirl.api.HtmlFormat
-import support.GuiceAppSpec
-import views.{BaseViewSpec, Fixture}
-import views.html.errors.no_agent_services_account
-
-class no_agent_services_accountSpec extends GuiceAppSpec with BaseViewSpec {
-
-  "no agent services account view" must {
-    "have correct title and heading page view event" in new Fixture {
-      val view: HtmlFormat.Appendable = inject[no_agent_services_account].apply
-      doc.title mustBe expectedPageTitle(messages("employmenthistory.no.agent.services.account.title"))
-    }
-  }
-
-}
+case class EmploymentIncomeAndTax(employmentId: String, income: BigDecimal, tax: BigDecimal)

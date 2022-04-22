@@ -107,61 +107,20 @@
     <div class="govuk-tabs__panel" id="income-records">
         @if(employments.exists(!_.isOccupationalPension)) {
         <h2 id="EmploymentDetails" class="govuk-heading-m blue-underline">@messages("employmenthistory.table.header.employments")</h2>
-        <div class = "govuk-grid-row">
-            <div class = "govuk-grid-column-two-thirds">
-                @p{@messages("employmenthistory.employment.table.text")}
-                @employmentTable
-            </div>
+            @p{@messages("employmenthistory.employment.table.text")}
+            @employmentTable
         } else {
-        <h2 class="govuk-heading-m blue-underline no-top-margin">@messages("employmenthistory.employment.records")</h2>
-        <div class = "govuk-grid-row">
-            <div class = "govuk-grid-column-two-thirds">
-                <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
-            </div>
+            <h2 class="govuk-heading-m blue-underline no-top-margin">@messages("employmenthistory.employment.records")</h2>
+            <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
         }
-            <div class ="govuk-grid-column-one-third">
-                @incomeTotals match {
-                    case Some(incomeTotals) => {
-                        @p(Html(messages("employmenthistory.employment.total.income")), classes = "govuk-body govuk-!-font-weight-bold no-bottom-margin")
-                        @p(Html(s"${Currency(incomeTotals.employmentTaxablePayTotalIncludingEYU)}"), classes = "govuk-body total-summary-big no-bottom-margin", id = Some("employmentIncome"))
-                        @p(Html(messages("employmenthistory.employment.total.income.tax")), classes = "govuk-body-s govuk-!-font-weight-bold no-bottom-margin")
-                        @p(Html(s"${Currency(incomeTotals.employmentTaxTotalIncludingEYU)}"), classes = "govuk-body total-summary-small", id = Some("employmentIncomeTax"))
-
-                    }
-                    case None => {
-                        @p(Html(messages("employmenthistory.employment.table.error.no-values")), classes = "govuk-caption-m", id = Some("employmentIncomeEmpty"))
-                    }
-                }
-            </div>
-        </div>
 
         <h2 id = "Pensions" class="govuk-heading-m blue-underline">@messages("employmenthistory.table.header.pensions")</h2>
         @if(employments.exists(_.isOccupationalPension)) {
             <h2 class="govuk-heading-m blue-underline-thin margin-top-and-bottom">@messages("employmenthistory.table.header.pensions.private")</h2>
-            <div class = "govuk-grid-row">
-                <div class = "govuk-grid-column-two-thirds">
                     @pensionTable
-                </div>
         } else {
-            <div class = "govuk-grid-row">
-                <div class = "govuk-grid-column-two-thirds">
-                    <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
-                </div>
+            <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
         }
-                <div class ="govuk-grid-column-one-third">
-                    @incomeTotals match {
-                        case Some(incomeTotals) => {
-                            @p(Html(messages("employmenthistory.pension.total.income")), classes = "govuk-body govuk-!-font-weight-bold no-bottom-margin")
-                            @p(Html(s"${Currency(incomeTotals.pensionTaxablePayTotalIncludingEYU)}"), classes = "govuk-body total-summary-big no-bottom-margin", id = Some("pensionIncome"))
-                            @p(Html(messages("employmenthistory.employment.total.income.tax")), classes = "govuk-body-s govuk-!-font-weight-bold no-bottom-margin")
-                            @p(Html(s"${Currency(incomeTotals.pensionTaxTotalIncludingEYU)}"), classes = "govuk-body total-summary-small", id = Some("pensionIncomeTax") )
-                        }
-                        case None => {
-                            @p(Html(messages("employmenthistory.pension.table.error.no-values")), classes = "govuk-caption-m", id = Some("pensionIncomeEmpty"))
-                        }
-                    }
-                </div>
-            </div>
 
         @statePension.map { sp =>
             <h2 id = "StatePensions" class="govuk-heading-m blue-underline-thin">@messages("employmenthistory.state.pensions")</h2>
@@ -219,21 +178,26 @@
     <table id="employment-table" class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.employer")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.date.start")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.date.end")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.status")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.record")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.employer")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.date.start")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.date.end")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.status")</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.income")</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.tax")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.record")</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
             @employments.filter(!_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-body-s">@ControllerUtils.isJobSeekerAllowance(employment)</td>
-                    <td class="govuk-table__cell govuk-body-s">@ControllerUtils.getStartDate(employment)</td>
-                    <td class="govuk-table__cell govuk-body-s">@ControllerUtils.getEndDate(employment)</td>
-                    <td class="govuk-table__cell govuk-body-s">@ControllerUtils.getEmploymentStatus(employment)</td>
-                    <td class="govuk-table__cell govuk-body-s">
+                    <th scope="row" class="govuk-table__cell" data-label="@messages("lbl.employer")">@ControllerUtils.isJobSeekerAllowance(employment)</th>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.start")">@ControllerUtils.getStartDate(employment)</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@ControllerUtils.getEndDate(employment)</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.status")">@ControllerUtils.getEmploymentStatus(employment)</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="@{if(employments.count(!_.isOccupationalPension) == 1) "employmentIncome" else s"employmentIncome$index"}">@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.income)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="@{if(employments.count(!_.isOccupationalPension) == 1) "employmentIncomeTax" else s"employmentIncomeTax$index"}">@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.tax)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
+
+                    <td class="govuk-table__cell"  data-label="@messages("lbl.record")">
                         @if(ControllerUtils.hasEmploymentDetails(employment)) {
 
                             <a href="/tax-history/single-record@employment.employmentURI" id=@{s"view-link-employment-${index}"}>
@@ -246,6 +210,15 @@
                     </td>
                 </tr>
             }
+
+            @if(employments.count(!_.isOccupationalPension) > 1 && incomeTotals.isDefined) {
+                <tr class="govuk-table__row">
+                    <th scope="row" colspan="4" class="govuk-table__cell" data-label="@messages("lbl.employer")" >@messages("lbl.total")</th>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="employmentIncome">@Html(s"${Currency(incomeTotals.get.employmentTaxablePayTotalIncludingEYU)}")</td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="employmentIncomeTax">@Html(s"${Currency(incomeTotals.get.employmentTaxTotalIncludingEYU)}")</td>
+                    <td class="govuk-table__cell"></td>
+                </tr>
+            }
         </tbody>
     </table>
 }
@@ -254,24 +227,36 @@
     <table id="pension-table" class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.provider")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.date.start")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.date.end")</th>
-                <th scope="col" class="govuk-table__header govuk-body-s">@messages("lbl.record")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.provider")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.date.start")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.date.end")</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.income")</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.tax")</th>
+                <th scope="col" class="govuk-table__header">@messages("lbl.record")</th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
             @employments.filter(_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-body-s">@employment.employerName</td>
-                    <td class="govuk-table__cell govuk-body-s">@ControllerUtils.getStartDate(employment)</td>
-                    <td class="govuk-table__cell govuk-body-s">@ControllerUtils.getEndDate(employment)</td>
-                    <td class="govuk-table__cell govuk-body-s">
+                    <th class="govuk-table__cell" data-label="@messages("lbl.provider")">@employment.employerName</th>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.start")">@ControllerUtils.getStartDate(employment)</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@ControllerUtils.getEndDate(employment)</td>
+                    <td class="govuk-table__cell total govuk-table__cell--numeric" data-label="@messages("lbl.income")" id=@{if(employments.count(_.isOccupationalPension)==1) "pensionIncome" else s"pensionIncome$index"}>@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.income)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
+                    <td class="govuk-table__cell total govuk-table__cell--numeric"  data-label="@messages("lbl.tax")" id=@{if(employments.count(_.isOccupationalPension)==1) "pensionIncomeTax" else s"pensionIncomeTax$index"}>@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.tax)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
+                    <td class="govuk-table__cell"  data-label="@messages("lbl.record")">
                         <a href="/tax-history/single-record@employment.employmentURI" id=@{s"view-pension-${index}"}>
                             @messages("employmenthistory.view")
                             <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span>
                         </a>
                     </td>
+                </tr>
+            }
+            @if(employments.count(_.isOccupationalPension) > 1 && incomeTotals.isDefined) {
+                <tr class="govuk-table__row">
+                    <th scope="row" colspan="4" class="govuk-table__cell" data-label="@messages("lbl.provider")">@messages("lbl.total")</th>
+                    <td class="govuk-table__cell total govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="pensionIncome">@Html(s"${Currency(incomeTotals.get.pensionTaxablePayTotalIncludingEYU)}")</td>
+                    <td class="govuk-table__cell total govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="pensionIncomeTax">@Html(s"${Currency(incomeTotals.get.pensionTaxTotalIncludingEYU)}")</td>
+                    <td class="govuk-table__cell"></td>
                 </tr>
             }
         </tbody>

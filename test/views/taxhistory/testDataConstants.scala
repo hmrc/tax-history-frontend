@@ -90,6 +90,11 @@ trait Constants {
     worksNumber = "00191048716")
 
   val totalIncome: TotalIncome = TotalIncome(
+    employmentIncomeAndTax = List(
+      EmploymentIncomeAndTax(emp2.employmentId.toString, BigDecimal(100), BigDecimal(300) ),
+      EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(100), BigDecimal(200)),
+      EmploymentIncomeAndTax(emp1.employmentId.toString, BigDecimal(100), BigDecimal(200) )
+    ),
     employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
     pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
     employmentTaxTotalIncludingEYU = BigDecimal(300),
