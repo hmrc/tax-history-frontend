@@ -66,7 +66,7 @@
         </div>
     </div>
 
-    <div class="govuk-grid-column-one-third">@sidebar()</div>
+@*    <div class="govuk-grid-column-one-third">@sidebar()</div>*@
 </div>
 
 <div class="govuk-tabs" data-module="govuk-tabs">
@@ -347,41 +347,41 @@
     </table>
 }
 
-@sidebar()={
-<section class="section subsection section--blue-top">
-    <ul class="govuk-list" id="nav-bar">
-        <li>
-            <p class="govuk-body">
-                <div class="govuk-!-font-weight-bold">@messages("employmenthistory.sidebar.links.more-options")</div>
-                @link(
-                appConfig.agentAccountHomePage,
-                messages("employmenthistory.select.client.sidebar.agent-services-home"),
-                classes = "govuk-link govuk-body"
-                )
-            </p>
-        </li>
-        <li>
-            <p class="govuk-body">
-                <div class="govuk-!-font-weight-bold">@messages("employmenthistory.employment.summary.sidebar.income.and.tax")</div>
-                @link(
-                controllers.routes.SelectClientController.getSelectClientPage().url,
-                messages("employmenthistory.employment.summary.sidebar.change.client"),
-                classes = "govuk-link govuk-body"
-                )
-            </p>
-        </li>
-        <li>
-            <p class="govuk-body">
-                <div class="govuk-!-font-weight-bold">@messages("employmenthistory.employment.summary.sidebar.income.record",getName)</div>
-                @link(
-                controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url,
-                messages("employmenthistory.employment.summary.sidebar.change.tax.year"),
-                classes = "govuk-link govuk-body"
-                )
-            </p>
-        </li>
-    </ul>
-</section>
+@* sidebar()={*@
+@*<section class="section subsection section--blue-top">*@
+@*    <ul class="govuk-list" id="nav-bar">*@
+@*        <li>*@
+@*            <p class="govuk-body">*@
+@*                <div class="govuk-!-font-weight-bold">@messages("employmenthistory.sidebar.links.more-options")</div>*@
+@*                @link(*@
+@*                appConfig.agentAccountHomePage,*@
+@*                messages("employmenthistory.select.client.sidebar.agent-services-home"),*@
+@*                classes = "govuk-link govuk-body"*@
+@*                )*@
+@*            </p>*@
+@*        </li>*@
+@*        <li>*@
+@*            <p class="govuk-body">*@
+@*                <div class="govuk-!-font-weight-bold">@messages("employmenthistory.employment.summary.sidebar.income.and.tax")</div>*@
+@*                @link(*@
+@*                controllers.routes.SelectClientController.getSelectClientPage().url,*@
+@*                messages("employmenthistory.employment.summary.sidebar.change.client"),*@
+@*                classes = "govuk-link govuk-body"*@
+@*                )*@
+@*            </p>*@
+@*        </li>*@
+@*        <li>*@
+@*            <p class="govuk-body">*@
+@*                <div class="govuk-!-font-weight-bold">@messages("employmenthistory.employment.summary.sidebar.income.record",getName)</div>*@
+@*                @link(*@
+@*                controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url,*@
+@*                messages("employmenthistory.employment.summary.sidebar.change.tax.year"),*@
+@*                classes = "govuk-link govuk-body"*@
+@*                )*@
+@*            </p>*@
+@*        </li>*@
+@*    </ul>*@
+@*</section>*@
 
-}
+@*}*@
 
