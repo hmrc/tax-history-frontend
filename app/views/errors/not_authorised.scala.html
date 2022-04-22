@@ -17,6 +17,7 @@
 @import config.AppConfig
 @import uk.gov.hmrc.domain.Nino
 @import support.CallOps._
+@import views.models.PageTitle
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
@@ -35,7 +36,7 @@
   )
 }
 
-@govukWrapper(title = messages("employmenthistory.not.authorised.title"), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
+@govukWrapper(PageTitle(messages("employmenthistory.not.authorised.title")), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 
     <h1 class="govuk-heading-xl" id="error-heading">
         @messages("employmenthistory.not.authorised.header")

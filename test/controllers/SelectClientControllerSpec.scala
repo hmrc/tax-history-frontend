@@ -16,11 +16,12 @@
 
 package controllers
 
+import form.SelectClientForm.selectClientForm
 import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.mvc.Result
+import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import support.{BaseSpec, ControllerSpec}
@@ -50,9 +51,11 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
   "SelectClientController" must {
 
     "load select client page" in new LocalSetup {
+      implicit val request: Request[_] = FakeRequest()
       val result: Future[Result] = controller.getSelectClientPage()(fakeRequest)
+      val expectedView = app.injector.instanceOf[select_client]
       status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.select.client.title"))
+      result rendersTheSameViewAs expectedView(selectClientForm)
     }
 
     "return Status: 400 when invalid data is entered" in new LocalSetup {

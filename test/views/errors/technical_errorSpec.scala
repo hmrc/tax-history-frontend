@@ -19,10 +19,10 @@ package views.errors
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.errors.technical_error
 
-class technical_errorSpec extends GuiceAppSpec {
+class technical_errorSpec extends GuiceAppSpec with BaseViewSpec {
 
 
   "Technical Error view" must {
@@ -31,8 +31,7 @@ class technical_errorSpec extends GuiceAppSpec {
 
       val view: HtmlFormat.Appendable = inject[technical_error].apply
 
-      val title: String = Messages("employmenthistory.technical.error.title")
-      doc.title mustBe title
+      doc.title mustBe expectedPageTitle(messages("employmenthistory.technical.error.title"))
       doc.getElementById("back-link").attr("href").contains(appConfig.agentAccountHomePage) mustBe true
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.technical.error.header")

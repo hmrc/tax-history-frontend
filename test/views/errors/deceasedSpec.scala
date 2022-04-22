@@ -19,10 +19,10 @@ package views.errors
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.Fixture
 import views.html.errors.deceased
+import views.{BaseViewSpec, Fixture}
 
-class deceasedSpec extends GuiceAppSpec {
+class deceasedSpec extends GuiceAppSpec with BaseViewSpec {
 
 
   "Deceased view" must {
@@ -31,8 +31,7 @@ class deceasedSpec extends GuiceAppSpec {
 
       val view: HtmlFormat.Appendable = inject[deceased].apply
 
-      val title: String = Messages("employmenthistory.deceased.title")
-      doc.title mustBe title
+      doc.title mustBe expectedPageTitle(messages("employmenthistory.deceased.title"))
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.deceased.header")

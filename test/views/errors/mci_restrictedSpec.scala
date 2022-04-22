@@ -20,10 +20,10 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import utils.TestUtil
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.errors.mci_restricted
 
-class mci_restrictedSpec extends GuiceAppSpec {
+class mci_restrictedSpec extends GuiceAppSpec with BaseViewSpec {
 
   trait ViewFixture extends Fixture {
     val nino: String = TestUtil.randomNino.toString()
@@ -35,8 +35,7 @@ class mci_restrictedSpec extends GuiceAppSpec {
 
       val view: HtmlFormat.Appendable = inject[mci_restricted].apply
 
-      val title: String = Messages("employmenthistory.mci.restricted.title")
-      doc.title mustBe title
+      doc.title mustBe expectedPageTitle(messages("employmenthistory.mci.restricted.title"))
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.text")).hasText mustBe true

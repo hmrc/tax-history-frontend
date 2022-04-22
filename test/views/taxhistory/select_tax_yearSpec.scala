@@ -26,35 +26,40 @@ import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.Fixture
+import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.select_tax_year
 
-class select_tax_yearSpec extends GuiceAppSpec {
+class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
 
   private val maxChar: Int = 100
 
   trait ViewFixture extends Fixture {
     val postData: JsObject = Json.obj("selectTaxYear" -> "2016")
     val validForm: Form[SelectTaxYear] = selectTaxYearForm.bind(postData, maxChar)
+    val invalidForm: Form[SelectTaxYear] = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""), maxChar)
     val name: Option[String] = Some("Test Name")
     val nino: String = "QQ123456C"
   }
 
   "select_tax_year view" must {
 
-    "have correct title, heading and GA pageview event" in new ViewFixture {
-
+    "have correct heading and GA pageview event" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, name, nino)
-
-      doc.title mustBe Messages("employmenthistory.select.tax.year.title")
       doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"${name.get}"))
       doc.select("h1").text() must include(Messages("employmenthistory.select.tax.year.h1"))
-      // AFID-462 - temporarily disabled due to security issue
-      //doc.getElementsByClass("pre-heading medium-text").size() shouldBe 1
+    }
+
+    "have correct title when no form errors occur" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, name, nino)
+      doc.title mustBe expectedPageTitle(messages("employmenthistory.select.tax.year.title"))
+    }
+
+    "have correct title when form errors occur" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[select_tax_year].apply(invalidForm, List.empty, name, nino)
+      doc.title mustBe expectedErrorPageTitle(messages("employmenthistory.select.tax.year.title"))
     }
 
     "Show nino when no name is present" in new ViewFixture {
-
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, None, nino)
       doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"$nino"))
       doc.getElementsByClass("pre-heading medium-text").size() shouldBe 0
@@ -73,7 +78,6 @@ class select_tax_yearSpec extends GuiceAppSpec {
     }
 
     "show correct content on the page for form with error" in new ViewFixture {
-      val invalidForm: Form[SelectTaxYear] = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""), maxChar)
       val options = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(invalidForm, options, name, nino)

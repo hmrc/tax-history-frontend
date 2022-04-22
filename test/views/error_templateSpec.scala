@@ -22,7 +22,7 @@ import play.twirl.api.{Html, HtmlFormat}
 import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 import views.html.error_template
-class error_templateSpec extends GuiceAppSpec {
+class error_templateSpec extends GuiceAppSpec with BaseViewSpec {
 
   trait ViewFixture extends Fixture {
     val headingText = "error heading"
@@ -33,7 +33,7 @@ class error_templateSpec extends GuiceAppSpec {
   "error_template view" must {
     "have correct title and heading" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText,messageText,gaEventId = Some("unauthorised"))
-      doc.title must be(titleText)
+      doc.title mustBe expectedPageTitle(titleText)
       val foundHeading: Elements = doc.body().select("#error-heading")
       foundHeading.size mustBe 1
       foundHeading.get(0).text() mustBe headingText

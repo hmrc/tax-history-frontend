@@ -15,6 +15,7 @@
  *@
 
 @import config.AppConfig
+@import views.models.PageTitle
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
@@ -34,7 +35,7 @@
   }
 }
 
-@govukWrapper(title = pageTitle) {
+@govukWrapper(PageTitle(pageTitle)) {
     @mainContent
     @sidebarLink.map{link=>@link}
 }

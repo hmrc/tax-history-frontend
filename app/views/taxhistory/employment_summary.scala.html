@@ -21,6 +21,7 @@
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 @import org.joda.time.LocalDate
+@import views.models.PageTitle
 
 @import model.api.{TaxAccount, StatePension, TotalIncome}
 
@@ -49,14 +50,12 @@
     TaxYear.current.currentYear == taxYear
 }
 
-@govukWrapper(title = messages("employmenthistory.title"), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
+@govukWrapper(PageTitle(messages("employmenthistory.title")), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <div class="page-header" >
             <h1 class="govuk-heading-xl no-bottom-margin">@messages("employmenthistory.header", getName)</h1>
-            @*AFID-462 - temporarily disabled due to security issue*@
-            @*if(nino!=getName){<p class="grey no-bottom-margin" id="clientNino">@nino</p>}*@
             <h2 class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString) </h2>
         </div>
 

@@ -32,6 +32,7 @@ lbl.back=Back
 lbl.employer=Employer
 lbl.provider=Provider
 lbl.details=Details
+lbl.error=Error
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -41,7 +42,7 @@ feedback.after = will help us to improve it.
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
-employmenthistory.title=Client income record - GOV.UK
+employmenthistory.title=Client income record
 employmenthistory.header={0}''s income record
 employmenthistory.missing.client.name=client
 employmenthistory.nopaydata=No data available
@@ -140,7 +141,7 @@ tax.code.total.deductions=Total deductions
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
-employmenthistory.select.client.title=Select client - GOV.UK
+employmenthistory.select.client.title=Enter a client''s National Insurance number
 employmenthistory.select.client.heading=Enter a client''s National Insurance number
 employmenthistory.select.client.clients.nino=Client National Insurance number
 employmenthistory.select.client.nino.hint=For example, QQ123456C
@@ -152,7 +153,7 @@ employmenthistory.select.client.error.empty=Enter a National Insurance number
 employmenthistory.select.client.sidebar.agent-services-home=Agent services home
 
 ################################ Employment Details ####################################################
-employmenthistory.employment.details.title=Client single record - GOV.UK
+employmenthistory.employment.details.title=Client single record
 employmenthistory.employment.details.companybenefits=Company Benefits
 employmenthistory.employment.details.no.benefits=HMRC has no record of company benefits from {0} for this tax year.
 employmenthistory.employment.details.benefit=Benefit
@@ -177,7 +178,7 @@ employmenthistory.sidebar.links.income-records={0}''s income records
 employmenthistory.sidebar.links.change-tax-year=Change tax year
 
 ################################## Select tax year ####################################################
-employmenthistory.select.tax.year.title=Select tax year - GOV.UK
+employmenthistory.select.tax.year.title=Select the tax year you want to view
 employmenthistory.select.tax.year.h1=Select the tax year you want to view
 employmenthistory.select.tax.year.header={0}''s income record
 employmenthistory.select.tax.year.option={0} to {1}
@@ -199,7 +200,7 @@ employmenthistory.tax-account.text=Underpaid taxes and debts are only displayed 
 employmenthistory.tax-account.empty.text=Your client has no underpaid tax or debts.
 
 ################################ Error Pages ###########################################################
-employmenthistory.not.authorised.title=There is a problem - View client income and tax records - GOV.UK
+employmenthistory.not.authorised.title=There is a problem
 employmenthistory.not.authorised.header=There is a problem
 employmenthistory.not.authorised.text1=You are not authorised to view the income record for National Insurance number {0}.
 employmenthistory.not.authorised.text2=You need to ask the person who holds this National Insurance number to share their income record with you.
@@ -210,17 +211,17 @@ employmenthistory.mci.restricted.header=You do not have access to this client''s
 employmenthistory.mci.restricted.text=For further information, contact HMRC on:
 employmenthistory.mci.restricted.telephone=telephone 0300 200 3300
 employmenthistory.mci.restricted.textphone=textphone 0300 200 3319
-employmenthistory.mci.restricted.title=You cannot access their data right now - GOV.UK
+employmenthistory.mci.restricted.title=You do not have access to this client''s income record
 employmenthistory.mci.restricted.select.client.link.text=Enter another client''s National Insurance number
 employmenthistory.deceased.header=You do not have access to this client''s income record
 employmenthistory.deceased.text=Please check with your client.
-employmenthistory.deceased.title=You cannot access their data - GOV.UK
+employmenthistory.deceased.title=You do not have access to this client''s income record
 employmenthistory.deceased.select.client.link.text=Enter another client''s National Insurance number
-employmenthistory.no.data.title=This client’s income record contains no data - GOV.UK
+employmenthistory.no.data.title=The client’s income record contains no data for this tax year
 employmenthistory.no.data.header=The client’s income record contains no data for this tax year
 employmenthistory.no.data.text=You can:
 employmenthistory.no.data.select.client.link.text=enter another client''s National Insurance number
-employmenthistory.technical.error.title=Service unavailable - GOV.UK
+employmenthistory.technical.error.title=Service unavailable
 employmenthistory.technical.error.header=Service unavailable
 employmenthistory.technical.error.message=We''re experiencing technical problems, so you won''t be able to use the service at the moment. Try again later.
 employmenthistory.no.agent.services.account.title=Your agent business does not have an Agent Services account

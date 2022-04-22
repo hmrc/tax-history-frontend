@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package views.errors
+package views.models
 
-import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.{BaseViewSpec, Fixture}
-import views.html.errors.no_agent_services_account
+import views.BaseViewSpec
 
-class no_agent_services_accountSpec extends GuiceAppSpec with BaseViewSpec {
+class PageTitleSpec extends GuiceAppSpec with BaseViewSpec {
 
-  "no agent services account view" must {
-    "have correct title and heading page view event" in new Fixture {
-      val view: HtmlFormat.Appendable = inject[no_agent_services_account].apply
-      doc.title mustBe expectedPageTitle(messages("employmenthistory.no.agent.services.account.title"))
+  val postTitleText = s"- ${messages("lbl.service.title")} - GOV.UK"
+  val title = "testTitle"
+
+  "fullTitle" should {
+    "return a title with post text when no form errors are present" in {
+      val pageTitle = PageTitle(title)
+      pageTitle.fullTitle() shouldBe s"$title $postTitleText"
+    }
+
+    "return a title with error pre text and title post text when form errors are present" in {
+      val pageTitle = PageTitle(title, true)
+      pageTitle.fullTitle() shouldBe s"${messages("lbl.error")}: $title $postTitleText"
     }
   }
-
 }
