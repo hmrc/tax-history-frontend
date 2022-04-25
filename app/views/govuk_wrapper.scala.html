@@ -113,19 +113,21 @@
             </a>
 
             <ul class="hmrc-account-menu__main js-hidden">
-                <li>
-                @if(request.path == "/tax-history/select-tax-year" || request.path.contains("client-income-record") || request.path.contains("single-record")) {
-                        <a href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">Select client</a>
-                }
-                </li>
+                @defining(request.path.contains("client-income-record") || request.path.contains("single-record")) { navigationCheck =>
+                    <li>
+                        @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
+                            <a href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">Select client</a>
+                        }
+                    </li>
 
-                <li>
-                @if(request.path.contains("client-income-record") || request.path.contains("single-record")) {
+                    <li>
+                    @if(navigationCheck) {
                         <a href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">Select year</a>
-                } else {
-                    <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    } else {
+                        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+                    }
+                    </li>
                 }
-                </li>
             </ul>
         </nav>
             <!-- END ACCOUNT MENU -->
