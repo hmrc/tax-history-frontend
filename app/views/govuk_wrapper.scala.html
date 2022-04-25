@@ -71,16 +71,16 @@
                                 <!--[if IE 8]>
             <img src="/assets/images/govuk-logotype-crown.png" class="govuk-header__logotype-crown-fallback-image" width="36" height="32">
             <![endif]-->
-                            <span class="govuk-header__logotype-text">
-                            GOV.UK
-                            </span>
+                            <span class="govuk-header__logotype-text">GOV.UK</span>
                         </span>
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a href="/" class="hmrc-header__service-name hmrc-header__service-name--linked">
-                    @messages("service.name")
-                    </a>
+                    <a class="hmrc-header__service-name hmrc-header__service-name--linked">@messages("service.name") (link)</a>
+
+                    <nav class="hmrc-sign-out-nav">
+                        <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">Sign out</a>
+                    </nav>
                 </div>
             </div>
         </div>
