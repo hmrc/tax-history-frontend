@@ -102,7 +102,7 @@
             </a>
 
             <ul class="hmrc-account-menu__main js-hidden">
-                @defining(request.path.contains("client-income-record") || request.path.contains("single-record")) { navigationCheck =>
+                @defining(request.path.contains("/tax-history/client-income-record") || request.path.contains("/tax-history/single-record")) { navigationCheck =>
                     <li>
                         @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
                             <a id="nav-client" href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">@messages("nav.client")</a>

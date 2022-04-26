@@ -16,21 +16,25 @@
 
 package views.taxhistory
 
-import controllers.routes
 import model.api.{EmploymentStatus, StatePension}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
 import utils.{Currency, TestUtil}
-import views.html.taxhistory.{employment_summary, select_tax_year}
+import views.html.taxhistory.employment_summary
 import views.{BaseViewSpec, Fixture}
 
 class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constants {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
     val nino: String = TestUtil.randomNino.toString()
@@ -194,22 +198,6 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
     doc.getElementsContainingOwnText(Messages("employmenthistory.allowances.eya.summary.header")).hasText mustBe false
   }
 
-  "Show correct heading and links for nav bar" in new ViewFixture {
-    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, 2016, employmentsNoPensions, allowances, None, taxAccount, None, None)
-
-    doc.getElementById("nav-bar").child(0).select("div").text shouldBe Messages("employmenthistory.sidebar.links.more-options")
-    doc.getElementById("nav-bar").child(0).select("a").text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
-    doc.getElementById("nav-bar").child(0).select("a").attr("href") shouldBe appConfig.agentAccountHomePage
-
-    doc.getElementById("nav-bar").child(1).select("div").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")
-    doc.getElementById("nav-bar").child(1).select("a").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.change.client")
-    doc.getElementById("nav-bar").child(1).select("a").attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
-
-    doc.getElementById("nav-bar").child(2).select("div").text shouldBe Messages("employmenthistory.sidebar.links.income-records", nino)
-    doc.getElementById("nav-bar").child(2).select("a").text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
-    doc.getElementById("nav-bar").child(2).select("a").attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
-  }
-
   "Show correct total amounts " in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome))
     doc.getElementById("pensionIncome").text() shouldBe s"£${totalIncome.pensionTaxablePayTotalIncludingEYU.toString()}"
@@ -247,8 +235,8 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
   "display navigation bar with correct links" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None)
     doc.getElementById("nav-home").text shouldBe Messages("nav.home")
-    doc.getElementById("nav-client").text shouldBe Messages("nav.home")
-    doc.getElementById("nav-year").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-client").text shouldBe Messages("nav.client")
+    doc.getElementById("nav-year").text shouldBe Messages("nav.year")
 
     //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
   }

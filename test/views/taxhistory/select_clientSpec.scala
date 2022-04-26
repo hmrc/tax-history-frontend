@@ -18,19 +18,21 @@ package views.taxhistory
 
 import form.SelectClientForm.selectClientForm
 import models.taxhistory.SelectClient
-import org.jsoup.nodes.Element
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.{BaseSpec, GuiceAppSpec}
 import utils.TestUtil
-import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.select_client
-
-import scala.util.{Failure, Success, Try}
+import views.{BaseViewSpec, Fixture}
 
 class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/select-client").withCSRFToken
 
   trait ViewFixture extends Fixture {
     lazy val nino: String = randomNino.toString()

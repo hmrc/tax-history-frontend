@@ -17,6 +17,9 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import utils.TestUtil
@@ -24,6 +27,8 @@ import views.{BaseViewSpec, Fixture}
 import views.html.errors.mci_restricted
 
 class mci_restrictedSpec extends GuiceAppSpec with BaseViewSpec {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   trait ViewFixture extends Fixture {
     val nino: String = TestUtil.randomNino.toString()

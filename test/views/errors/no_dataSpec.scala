@@ -18,6 +18,9 @@ package views.errors
 
 import models.taxhistory.Person
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import views.{BaseViewSpec, Fixture}
@@ -25,6 +28,7 @@ import views.html.errors.no_data
 
 class no_dataSpec extends GuiceAppSpec with BaseViewSpec {
 
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   "no data available view" must {
 

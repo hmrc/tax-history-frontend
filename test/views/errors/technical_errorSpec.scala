@@ -17,6 +17,9 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import views.{BaseViewSpec, Fixture}
@@ -24,6 +27,7 @@ import views.html.errors.technical_error
 
 class technical_errorSpec extends GuiceAppSpec with BaseViewSpec {
 
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   "Technical Error view" must {
 

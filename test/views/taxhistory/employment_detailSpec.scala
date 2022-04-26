@@ -16,20 +16,24 @@
 
 package views.taxhistory
 
-import controllers.routes
 import model.api.EmploymentPaymentType.OccupationalPension
 import model.api.{CompanyBenefit, IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllerUtils, TestUtil}
+import views.html.taxhistory.employment_detail
 import views.{BaseViewSpec, Fixture}
-import views.html.taxhistory.{employment_detail, employment_summary}
 
 class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
     val currentTaxYear: Int = TaxYear.current.startYear
@@ -303,9 +307,10 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
   "display navigation bar with correct links" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
       employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
+
     doc.getElementById("nav-home").text shouldBe Messages("nav.home")
-    doc.getElementById("nav-client").text shouldBe Messages("nav.home")
-    doc.getElementById("nav-year").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-client").text shouldBe Messages("nav.client")
+    doc.getElementById("nav-year").text shouldBe Messages("nav.year")
     //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
   }
 }

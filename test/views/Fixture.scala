@@ -20,9 +20,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.CSRFTokenHelper.CSRFRequest
-import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.Strings.TextHelpers
 
@@ -30,7 +27,6 @@ import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 trait Fixture extends Matchers {
-  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   def view: HtmlFormat.Appendable
 
