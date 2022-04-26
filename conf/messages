@@ -175,11 +175,6 @@ employmenthistory.eyu.updates.single.part1=There is
 employmenthistory.eyu.updates.single.part2=update to this clients income record.
 employmenthistory.company.benefit.caveat=Benefits are confirmed when an employer submits form P11D to HMRC. Forecasted benefits may be carried forward from a previous year or estimated from other sources, but are not confirmed until a P11D is received.
 employmenthistory.student.loans=Student loan repaid
-employmenthistory.sidebar.links.more-options=More options
-employmenthistory.sidebar.links.income-and-tax=View client income and tax records
-employmenthistory.sidebar.links.change-client=Change client
-employmenthistory.sidebar.links.income-records={0}''s income records
-employmenthistory.sidebar.links.change-tax-year=Change tax year
 
 ################################## Select tax year ####################################################
 employmenthistory.select.tax.year.title=Select the tax year you want to view
