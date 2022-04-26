@@ -28,6 +28,8 @@ import utils.TestUtil
 import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.select_client
 
+import scala.util.{Failure, Success, Try}
+
 class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
 
   trait ViewFixture extends Fixture {
@@ -84,9 +86,8 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
     "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
       doc.getElementById("nav-home").text shouldBe Messages("nav.home")
-      doc.getElementById("nav-client").text shouldBe Messages("nav.home")
-      doc.getElementById("nav-year").text shouldBe Messages("nav.home")
-
+      validateConditionalContent("nav-client")
+      validateConditionalContent("nav-year")
 //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }

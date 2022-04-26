@@ -27,6 +27,7 @@ import play.twirl.api.HtmlFormat
 import views.Strings.TextHelpers
 
 import scala.collection.JavaConverters._
+import scala.util.{Failure, Success, Try}
 
 trait Fixture extends Matchers {
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
@@ -43,6 +44,15 @@ trait Fixture extends Matchers {
   def validateParagraphizedContent(messageKey: String)(implicit messages: Messages): Unit = {
     for (p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala) {
       doc.body().toString must include(p.text())
+    }
+  }
+
+  def validateConditionalContent(id: String) = {
+    Try {
+      doc.getElementById(id).text
+    } match {
+      case Success(_) => fail()
+      case Failure(_) => succeed
     }
   }
 

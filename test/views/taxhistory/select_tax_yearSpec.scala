@@ -107,9 +107,8 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
     "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, name, nino)
       doc.getElementById("nav-home").text shouldBe Messages("nav.home")
-      doc.getElementById("nav-client").text shouldBe Messages("nav.home")
-      doc.getElementById("nav-year").text shouldBe Messages("nav.home")
-
+      doc.getElementById("nav-client").text shouldBe Messages("nav.client")
+      validateConditionalContent("nav-year")
       //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }

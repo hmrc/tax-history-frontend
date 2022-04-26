@@ -319,10 +319,10 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
 
   "display navigation bar with correct links" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
+      employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
     doc.getElementById("nav-home").text shouldBe Messages("nav.home")
     doc.getElementById("nav-client").text shouldBe Messages("nav.home")
     doc.getElementById("nav-year").text shouldBe Messages("nav.home")
-
     //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
   }
 }
