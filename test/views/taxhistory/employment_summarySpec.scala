@@ -237,8 +237,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
     doc.getElementById("nav-home").text shouldBe Messages("nav.home")
     doc.getElementById("nav-client").text shouldBe Messages("nav.client")
     doc.getElementById("nav-year").text shouldBe Messages("nav.year")
-
-    //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
+    doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
   }
 
 }

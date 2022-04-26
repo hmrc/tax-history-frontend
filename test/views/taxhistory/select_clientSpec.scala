@@ -90,7 +90,7 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
       doc.getElementById("nav-home").text shouldBe Messages("nav.home")
       validateConditionalContent("nav-client")
       validateConditionalContent("nav-year")
-//      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
+      doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }
 }

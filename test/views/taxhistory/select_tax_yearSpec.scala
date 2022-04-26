@@ -100,7 +100,7 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
       doc.getElementById("nav-home").text shouldBe Messages("nav.home")
       doc.getElementById("nav-client").text shouldBe Messages("nav.client")
       validateConditionalContent("nav-year")
-      //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
+      doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }
 
