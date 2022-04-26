@@ -105,4 +105,3 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
   }
 
 }
-

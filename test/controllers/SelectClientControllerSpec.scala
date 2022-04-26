@@ -17,10 +17,9 @@
 package controllers
 
 import form.SelectClientForm.selectClientForm
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentMatchers.any
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
-import play.api.i18n.Messages
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
