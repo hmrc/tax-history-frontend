@@ -40,6 +40,12 @@ feedback.before = This is a new service - your
 feedback.link = feedback
 feedback.after = will help us to improve it.
 
+# PTA Navigation
+# ----------------------------------------------------------
+nav.home = Agent services home
+nav.client = Select client
+nav.year = Select year
+
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
 employmenthistory.title=Client income record
@@ -150,7 +156,6 @@ employmenthistory.select.client.error.invalid-format.title=There is a problem
 employmenthistory.select.client.error.invalid-format=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
 employmenthistory.select.client.error.empty.title=There is a problem
 employmenthistory.select.client.error.empty=Enter a National Insurance number
-employmenthistory.select.client.sidebar.agent-services-home=Agent services home
 
 ################################ Employment Details ####################################################
 employmenthistory.employment.details.title=Client single record
@@ -171,7 +176,6 @@ employmenthistory.eyu.updates.single.part2=update to this clients income record.
 employmenthistory.company.benefit.caveat=Benefits are confirmed when an employer submits form P11D to HMRC. Forecasted benefits may be carried forward from a previous year or estimated from other sources, but are not confirmed until a P11D is received.
 employmenthistory.student.loans=Student loan repaid
 employmenthistory.sidebar.links.more-options=More options
-employmenthistory.sidebar.links.agent-services-home=Agent services home
 employmenthistory.sidebar.links.income-and-tax=View client income and tax records
 employmenthistory.sidebar.links.change-client=Change client
 employmenthistory.sidebar.links.income-records={0}''s income records

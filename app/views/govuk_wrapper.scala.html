@@ -43,7 +43,6 @@
 
 @beforeContentBlock = {
     @backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
-
 }
 
 @content = {
@@ -58,7 +57,7 @@
     </div>
 }
 
-    @topBar = {
+    @header = {
     <header role="banner">
         <div class="govuk-header hmrc-header  hmrc-header--with-additional-navigation" data-module="govuk-header">
             <div class="govuk-header__container govuk-width-container">
@@ -76,10 +75,9 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a class="hmrc-header__service-name hmrc-header__service-name--linked">@messages("service.name") (link)</a>
-
+                    <a class="hmrc-header__service-name hmrc-header__service-name--linked">@messages("service.name")</a>
                     <nav class="hmrc-sign-out-nav">
-                        <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">Sign out</a>
+                        <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">@messages("global.link.signout")</a>
                     </nav>
                 </div>
             </div>
@@ -90,39 +88,30 @@
 
         <div class="govuk-phase-banner">
             <p class="govuk-phase-banner__content">
-
-                <strong class="govuk-tag govuk-phase-banner__content__tag">
-                beta
-                </strong>
-
-
-                <span class="govuk-phase-banner__text">
-
-                This is a new service - your
+                <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
+                <span class="govuk-phase-banner__text">This is a new service - your
                     <a class="govuk-link" href="http://localhost:9250/contact/beta-feedback">feedback</a>
-                    will help us to improve it.
-                </span>
+                    will help us to improve it.</span>
             </p>
         </div>
 
             <!-- ACCOUNT MENU -->
         <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
-            <a href="#home" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
-                <span class="hmrc-account-icon hmrc-account-icon--home">
-                Agent services home (move to Messages file) </span>
+            <a id="nav-home" href="#home" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
+                <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
             </a>
 
             <ul class="hmrc-account-menu__main js-hidden">
                 @defining(request.path.contains("client-income-record") || request.path.contains("single-record")) { navigationCheck =>
                     <li>
                         @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
-                            <a href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">Select client</a>
+                            <a id="nav-client" href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">@messages("nav.client")</a>
                         }
                     </li>
 
                     <li>
                     @if(navigationCheck) {
-                        <a href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">Select year</a>
+                        <a id="nav-year" href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">@messages("nav.year")</a>
                     } else {
                         <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
                     }
@@ -138,10 +127,9 @@
 @govukTemplate(
     pageTitle = Some(title.fullTitle()),
     headBlock = Some(hmrcHead(Some(head))),
-    headerBlock = topBar,
+    headerBlock = header,
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
     bodyEndBlock = Some(hmrcScripts())
 )(content)
-

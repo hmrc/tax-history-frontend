@@ -27,7 +27,7 @@ import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllerUtils, TestUtil}
 import views.{BaseViewSpec, Fixture}
-import views.html.taxhistory.employment_detail
+import views.html.taxhistory.{employment_detail, employment_summary}
 
 class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
 
@@ -315,5 +315,14 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
       employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
     doc.getElementById("DeductionTotal").text shouldBe "£2"
     doc.getElementById("AllowanceTotal").text shouldBe "£2"
+  }
+
+  "display navigation bar with correct links" in new ViewFixture {
+    val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
+    doc.getElementById("nav-home").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-client").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-year").text shouldBe Messages("nav.home")
+
+    //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
   }
 }

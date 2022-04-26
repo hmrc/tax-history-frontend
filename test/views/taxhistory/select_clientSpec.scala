@@ -81,12 +81,13 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
       doc.getElementById("clientId-error").text contains Messages("employmenthistory.select.client.error.invalid-format")
     }
 
-    "display sidebar with correct link(s)" in new ViewFixture {
+    "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      val agentServicesHomeLink: Element = doc.body.getElementById("nav-bar").child(0)
-      agentServicesHomeLink.select("a").text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
-      agentServicesHomeLink.select("div").text shouldBe Messages("employmenthistory.sidebar.links.more-options")
-      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
+      doc.getElementById("nav-home").text shouldBe Messages("nav.home")
+      doc.getElementById("nav-client").text shouldBe Messages("nav.home")
+      doc.getElementById("nav-year").text shouldBe Messages("nav.home")
+
+//      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }
 }

@@ -27,8 +27,8 @@ import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.DateHelper._
 import utils.{Currency, TestUtil}
+import views.html.taxhistory.{employment_summary, select_tax_year}
 import views.{BaseViewSpec, Fixture}
-import views.html.taxhistory.employment_summary
 
 class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
@@ -242,6 +242,15 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
   "Not show underpaid tax and debts tab for current year minus 2 or earlier" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None)
     doc.getElementsContainingOwnText(Messages("employmenthistory.employment.summary.tab.3")).size shouldBe 1
+  }
+
+  "display navigation bar with correct links" in new ViewFixture {
+    val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None)
+    doc.getElementById("nav-home").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-client").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-year").text shouldBe Messages("nav.home")
+
+    //      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
   }
 
 }
