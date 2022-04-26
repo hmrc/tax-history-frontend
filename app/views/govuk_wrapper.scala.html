@@ -75,7 +75,7 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <a class="hmrc-header__service-name hmrc-header__service-name--linked">@messages("service.name")</a>
+                    <span class="hmrc-header__service-name">@messages("service.name")</span>
                     <nav class="hmrc-sign-out-nav">
                         <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">@messages("global.link.signout")</a>
                     </nav>
@@ -97,7 +97,7 @@
 
             <!-- ACCOUNT MENU -->
         <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
-            <a id="nav-home" href="#home" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
+            <a id="nav-home" href="@appConfig.agentAccountHomePage" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
                 <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
             </a>
 
