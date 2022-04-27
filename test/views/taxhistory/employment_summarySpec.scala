@@ -17,7 +17,8 @@
 package views.taxhistory
 
 import controllers.routes
-import model.api.{EmploymentStatus, StatePension}
+import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
+import model.api.{Employment, EmploymentIncomeAndTax, EmploymentStatus, StatePension, TotalIncome}
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.jsoup.nodes.Element
@@ -29,6 +30,8 @@ import utils.DateHelper._
 import utils.{Currency, TestUtil}
 import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.employment_summary
+
+import java.util.UUID
 
 class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
@@ -210,7 +213,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
     doc.getElementById("nav-bar").child(2).select("a").attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
   }
 
-  "Show correct total amounts " in new ViewFixture {
+  "Show correct total amounts for one employer and two pensions" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome))
     doc.getElementById("pensionIncome").text() shouldBe s"£${totalIncome.pensionTaxablePayTotalIncludingEYU.toString()}"
     doc.getElementById("employmentIncomeTax").text() shouldBe s"£${totalIncome.employmentTaxTotalIncludingEYU.toString()}"
@@ -218,9 +221,38 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
     doc.getElementById("pensionIncomeTax").text() shouldBe s"£${totalIncome.pensionTaxTotalIncludingEYU.toString()}"
   }
 
+  "Show correct total amounts for two employers and one pension" in new ViewFixture {
+    val employer1: Employment = emp1.copy(employmentPaymentType = Some(JobseekersAllowance), employmentId = UUID.randomUUID())
+    val employer2: Employment = emp1.copy(employmentPaymentType = None, employmentId = UUID.randomUUID())
+    val pension: Employment = emp1.copy(employmentPaymentType = Some(OccupationalPension), employmentId = UUID.randomUUID())
+    val employmentWithPensions = List(employer1, employer2, pension)
+    val incomeTotals: TotalIncome = totalIncome.copy(employmentIncomeAndTax =
+      List(
+        EmploymentIncomeAndTax(employer1.employmentId.toString, BigDecimal(100), BigDecimal(50)),
+        EmploymentIncomeAndTax(employer2.employmentId.toString, BigDecimal(20), BigDecimal(30)),
+        EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(70), BigDecimal(20)))
+    )
+    val view: HtmlFormat.Appendable =
+      inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(incomeTotals))
+
+    doc.getElementById("pensionIncome").text() shouldBe s"£${incomeTotals.employmentIncomeAndTax.last.income.toString()}"
+    doc.getElementById("pensionIncomeTax").text() shouldBe s"£${incomeTotals.employmentIncomeAndTax.last.tax.toString()}"
+    doc.getElementById("employmentIncomeTax").text() shouldBe s"£${totalIncome.employmentTaxTotalIncludingEYU.toString()}"
+    doc.getElementById("employmentIncome").text() shouldBe s"£${totalIncome.employmentTaxablePayTotalIncludingEYU.toString()}"
+    doc.getElementById("employmentIncome0").text() shouldBe s"£${incomeTotals.employmentIncomeAndTax.head.income.toString()}"
+    doc.getElementById("employmentIncomeTax0").text() shouldBe s"£${incomeTotals.employmentIncomeAndTax.head.tax.toString()}"
+    doc.getElementById("employmentIncome1").text() shouldBe s"£${incomeTotals.employmentIncomeAndTax(1).income.toString()}"
+    doc.getElementById("employmentIncomeTax1").text() shouldBe s"£${incomeTotals.employmentIncomeAndTax(1).tax.toString()}"
+  }
+
   "Show error message when total amounts are zero" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None)
-    doc.getElementById("employmentIncomeEmpty").text() shouldBe Messages("employmenthistory.employment.table.error.no-values")
+    doc.getElementById("employmentIncome").text() shouldBe Messages("employmenthistory.error.no-record")
+    doc.getElementById("employmentIncomeTax").text() shouldBe Messages("employmenthistory.error.no-record")
+    doc.getElementById("pensionIncome0").text() shouldBe Messages("employmenthistory.error.no-record")
+    doc.getElementById("pensionIncomeTax0").text() shouldBe Messages("employmenthistory.error.no-record")
+    doc.getElementById("pensionIncome1").text() shouldBe Messages("employmenthistory.error.no-record")
+    doc.getElementById("pensionIncomeTax1").text() shouldBe Messages("employmenthistory.error.no-record")
   }
 
   "Show underpaid tax and debts tab in current year minus 1" in new ViewFixture {

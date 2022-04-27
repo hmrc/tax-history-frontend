@@ -152,7 +152,13 @@ class EmploymentSummaryController @Inject()(
         val employmentsPayAndTax: Seq[PayAndTax] = employments.map(_._2)
         val pensionsPayAndTax: Seq[PayAndTax] = pensions.map(_._2)
 
+        val employmentIncomeAndTax = allPayAndTax.map(tupleEmploymentIdAndPayTax =>
+          EmploymentIncomeAndTax(tupleEmploymentIdAndPayTax._1,
+            pickTaxablePayTotalIncludingEYU(tupleEmploymentIdAndPayTax._2),
+            pickTaxTotalIncludingEYU(tupleEmploymentIdAndPayTax._2)))
+
         Future successful Some(TotalIncome(
+          employmentIncomeAndTax,
           employmentTaxablePayTotalIncludingEYU = employmentsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
           pensionTaxablePayTotalIncludingEYU = pensionsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
           employmentTaxTotalIncludingEYU = employmentsPayAndTax.map(pickTaxTotalIncludingEYU).sum,

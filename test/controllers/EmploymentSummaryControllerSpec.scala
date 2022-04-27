@@ -68,7 +68,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     underpaymentAmount = Some(300),
     actualPUPCodedInCYPlusOneTaxYear = Some(400))
 
-  private val employments = List(employment, employment.copy(employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4")))
+  private val employments = List(employment, employment.copy(employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"), employmentPaymentType = Some(OccupationalPension)))
   private val allowances = List(allowance)
 
   private val statePension: StatePension = StatePension(100, "test")
@@ -193,8 +193,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
-      contentAsString(result) should include(Messages("employmenthistory.employment.table.error.no-values"))
-      contentAsString(result) should include(Messages("employmenthistory.pension.table.error.no-values"))
+      contentAsString(result) should include(Messages("employmenthistory.error.no-record"))
     }
 
     "return 200 when pay and tax records do not match employment records" in new LocalSetup {
@@ -310,6 +309,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       val expectedTaxTotal = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
       totalIncome shouldBe Some(
         TotalIncome(
+          employmentIncomeAndTax = List(
+            EmploymentIncomeAndTax(empl1.employmentId.toString,payAndTax1.taxablePayTotalIncludingEYU.get,payAndTax1.taxTotalIncludingEYU.get),
+            EmploymentIncomeAndTax(empl2.employmentId.toString, payAndTax2.taxablePayTotalIncludingEYU.get, payAndTax2.taxTotalIncludingEYU.get)),
           employmentTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
           employmentTaxTotalIncludingEYU = expectedTaxTotal,
           pensionTaxablePayTotalIncludingEYU = BigDecimal(0),
@@ -332,6 +334,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
       val expectedTaxTotal = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
       totalIncome shouldBe Some(
         TotalIncome(
+          employmentIncomeAndTax = List(
+            EmploymentIncomeAndTax(empl1.employmentId.toString,payAndTax1.taxablePayTotalIncludingEYU.get,payAndTax1.taxTotalIncludingEYU.get),
+            EmploymentIncomeAndTax(empl2.employmentId.toString, payAndTax2.taxablePayTotalIncludingEYU.get, payAndTax2.taxTotalIncludingEYU.get)),
           employmentTaxablePayTotalIncludingEYU = BigDecimal(0),
           employmentTaxTotalIncludingEYU = BigDecimal(0),
           pensionTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
