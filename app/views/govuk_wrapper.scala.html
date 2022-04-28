@@ -89,9 +89,7 @@
         <div class="govuk-phase-banner">
             <p class="govuk-phase-banner__content">
                 <strong class="govuk-tag govuk-phase-banner__content__tag">beta</strong>
-                <span class="govuk-phase-banner__text">This is a new service - your
-                    <a class="govuk-link" href="http://localhost:9250/contact/beta-feedback">feedback</a>
-                    will help us to improve it.</span>
+                @feedbackBanner
             </p>
         </div>
 
@@ -100,22 +98,21 @@
             <a id="nav-home" href="@appConfig.agentAccountHomePage" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
                 <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
             </a>
-            <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">
-      Income Record Viewer menu </a>
+            <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
 
             <ul class="hmrc-account-menu__main js-hidden">
                 @defining(request.path.contains("/tax-history/client-income-record") || request.path.contains("/tax-history/single-record") || request.path.contains("/tax-history/no-data")) { navigationCheck =>
-                    <li>
                         @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
+                            <li>
                             <a id="nav-client" href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">@messages("nav.client")</a>
+                            </li>
                         }
-                    </li>
 
-                    <li>
                     @if(navigationCheck) {
+                        <li>
                         <a id="nav-year" href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">@messages("nav.year")</a>
+                        </li>
                     }
-                    </li>
                 }
             </ul>
         </nav>

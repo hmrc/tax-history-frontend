@@ -48,6 +48,7 @@ feedback.after = will help us to improve it.
 nav.home = Agent services home
 nav.client = Select client
 nav.year = Select year
+nav.menu = Income Record Viewer menu
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}

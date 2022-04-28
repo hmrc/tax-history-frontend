@@ -16,13 +16,8 @@
 
 package views.taxhistory
 
-<<<<<<< HEAD
-import model.api.{EmploymentStatus, StatePension}
-=======
-import controllers.routes
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
-import model.api.{Employment, EmploymentIncomeAndTax, EmploymentStatus, StatePension, TotalIncome}
->>>>>>> 3f5d4b33f940bd3d70e3f35a41e7fa4599bffb5c
+import model.api._
 import models.taxhistory.Person
 import org.joda.time.LocalDate
 import org.jsoup.nodes.Element
