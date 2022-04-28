@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
+@import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.models.PageTitle
 
 @this(
+    appConfig: AppConfig,
     govukTemplate: GovukTemplate,
     govukBackLink: GovukBackLink,
     govukPhaseBanner: GovukPhaseBanner,
@@ -25,6 +27,7 @@
     hmrcStandardHeader: HmrcStandardHeader,
     hmrcStandardFooter: HmrcStandardFooter,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
     hmrcScripts: HmrcScripts
 )
 
@@ -42,7 +45,8 @@
 }
 
 @beforeContentBlock = {
-    @backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
+@hmrcLanguageSelectHelper()
+@backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
 }
 
 @content = {

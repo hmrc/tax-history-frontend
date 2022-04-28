@@ -1,0 +1,248 @@
+################################### Generic Labels ################################################
+service.name = View client income and tax records
+error.summary.title = There is a problem
+
+lbl.organisation.name=Organisation name
+lbl.payroll.id=Payroll ID
+lbl.paye.reference=PAYE reference
+lbl.taxable.income=Taxable income
+lbl.income.tax=Income Tax paid
+lbl.company.benefits=Company Benefits
+lbl.allowance=Allowance
+lbl.source=Source
+lbl.amount=Amount
+lbl.date.start=Start date
+lbl.status=Status
+lbl.date.end=End date
+lbl.record=Record
+lbl.to=to
+lbl.employment.status.current=Current
+lbl.employment.status.ceased=Ceased
+lbl.employment.status.unknown=Unknown
+lbl.none=None
+lbl.income=Income
+lbl.tax=Tax
+lbl.total=Total
+lbl.service.title=View client income and tax records
+lbl.select.new.client=Select a new client
+global.link.signout=Sign out
+lbl.date.no-record=No record
+lbl.end-date.ongoing=Ongoing
+lbl.no.data.available=No data available
+lbl.no.data.available.text=no data available
+lbl.continue=Continue
+lbl.back=Back
+lbl.employer=Employer
+lbl.provider=Provider
+lbl.details=Details
+lbl.error=Error
+
+# BETA Banner
+# ----------------------------------------------------------
+feedback.before = This is a new service - your
+feedback.link = feedback
+feedback.after = will help us to improve it.
+
+# PTA Navigation
+# ----------------------------------------------------------
+nav.home = Agent services home
+nav.client = Select client
+nav.year = Select year
+nav.menu = Income Record Viewer menu
+
+################################## Client Income Record / Employment Summary ##############################################
+employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
+employmenthistory.title=Client income record
+employmenthistory.header={0}''s income record
+employmenthistory.missing.client.name=client
+employmenthistory.nopaydata=No data available
+employmenthistory.allowance.heading=Allowances
+employmenthistory.allowance.description=Your client gets tax relief on these amounts.
+employmenthistory.allowance.no-allowances=Your client does not have any tax relief allowance for this tax year.
+employmenthistory.eyu.pay=Income amount
+employmenthistory.eyu.studentloan=Student loan amount
+employmenthistory.eyu.tax=Tax
+employmenthistory.eyu.date.received=Date
+employmenthistory.view=View
+employmenthistory.view.record.hidden=View {0}''s income record for {1}
+employmenthistory.employment.records=Employment records
+employmenthistory.no.employments=HMRC has no employment record for your client for this tax year.
+employmenthistory.table.header.employments=Employments
+employmenthistory.table.header.pensions.private=Private pensions
+employmenthistory.table.header.pensions=Pensions
+employmenthistory.no.pensions=HMRC has no pension income record for your client for this tax year.
+employmenthistory.caveat.p1.text=This is the most up-to-date information we hold for this client. It is the same information we used to provide by phone.
+employmenthistory.caveat.p2.text=If you need to query this information, check with your client first before you contact us.
+employmenthistory.select.different.taxyear.link=Select a different tax year
+employmenthistory.select.different.taxyear.link.lower=select a different tax year
+employmenthistory.display.client.name={0}''s income records
+employmenthistory.job.seekers=Jobseeker''s Allowance
+employmenthistory.state.pensions=State Pension
+employmenthistory.state.pensions.text.weekly.p1=Your client started receiving a State Pension of {0} per week on {1}.
+employmenthistory.state.pensions.text.weekly.p2=Their state pension income up to {0} is {1}.
+employmenthistory.state.pensions.text.yearly=Your client''s State Pension this tax year was {0}.
+employmenthistory.allowances.eya.summary.header=EYA Explained
+employmenthistory.allowances.eya.summary.detail1=HMRC can adjust a client’s tax code to refund tax that was overpaid in previous years. This is called an Earlier Years Adjustment (EYA).
+employmenthistory.allowances.eya.summary.detail2=A tax overpayment may have arisen when tax relief was claimed for such things as job expenses or professional subscriptions.
+employmenthistory.employment.summary.sidebar.agent-services-home=Agent services home
+employmenthistory.employment.summary.sidebar.income.and.tax=View client income and tax records
+employmenthistory.employment.summary.sidebar.change.client=Change client
+employmenthistory.employment.summary.sidebar.income.record={0}''s income records
+employmenthistory.employment.summary.sidebar.change.tax.year=Change tax year
+employmenthistory.employment.summary.tab.1=Income records
+employmenthistory.employment.summary.tab.2=Allowances
+employmenthistory.employment.summary.tab.3=Underpaid tax and debts
+employmenthistory.employment.total.income=Total employment and taxable benefits income
+employmenthistory.employment.total.income.tax=Total Income Tax
+employmenthistory.employment.table.text=The employment record shows time in employment, taxable benefits, and any gap where no record is held by HMRC.
+employmenthistory.pension.total.income=Total private pension income
+employmenthistory.error.no-record=No record
+
+################################## Company Benefits & Allowances ##################################
+employmenthistory.cb.EmployerProvidedServices=Employer provided services
+employmenthistory.cb.CarFuelBenefit=Car fuel benefit
+employmenthistory.cb.MedicalInsurance=Medical insurance
+employmenthistory.cb.CarBenefit=Car benefit
+employmenthistory.cb.TelephoneBenefit=Telephone
+employmenthistory.cb.ServiceBenefit=Service benefit
+employmenthistory.cb.TaxableExpenseBenefit=Taxable expenses benefit
+employmenthistory.cb.VanBenefit=Van benefit
+employmenthistory.cb.VanFuelBenefit=Van fuel benefit
+employmenthistory.cb.BeneficialLoan=Beneficial loan
+employmenthistory.cb.TotalBenefitInKind=Benefits in kind
+employmenthistory.cb.P11D=P11D
+employmenthistory.cb.forecast=Forecast
+employmenthistory.cb.Accommodation=Accommodation
+employmenthistory.cb.Assets=Assets
+employmenthistory.cb.AssetTransfer=Assets transferred
+employmenthistory.cb.EducationalService=Education service
+employmenthistory.cb.Entertaining=Entertaining
+employmenthistory.cb.ExpensesPay=Expenses
+employmenthistory.cb.Mileage=Mileage
+employmenthistory.cb.NonQualifyingRelocationExpense=Non qualifying relocation expenses
+employmenthistory.cb.OtherItems=Other items
+employmenthistory.cb.PaymentEmployeesBehalf=Payments on employee''s behalf
+employmenthistory.cb.PersonalIncidentExpenses=Personal incidental expenses
+employmenthistory.cb.QualifyingRelocationExpenses=Qualifying relocation expenses
+employmenthistory.cb.EmployerProvidedProfessionalSubscription=Employer provided professional subscriptions
+employmenthistory.cb.IncomeTaxPaidNotDeductedFromDirectorsRemuneration=Income Tax paid (but not deducted from director''s remuneration)
+employmenthistory.cb.TravelAndSubsistence=Travel and subsistence
+employmenthistory.cb.VoucherAndCreditCards=Vouchers and credit cards
+employmenthistory.cb.NonCashBenefit=Non Cash benefit
+employmenthistory.al.FlatRateJobExpenses=Flat rate job expenses
+employmenthistory.al.ProfessionalSubscriptions=Professional subscriptions
+employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment (EYA)
+
+################################ Tax Codes ####################################################
+tax.code.heading=Tax code breakdown
+tax.code.subheading=Latest tax code issued
+tax.code.caveat=Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so that the correct amount is repaid over the course of the year.
+tax.code.allowance=Allowance
+tax.code.deduction=Deduction
+tax.code.allowances=Allowances
+tax.code.deductions=Deductions
+tax.code.allowance.type=Allowance type
+tax.code.deduction.type=Deduction type
+tax.code.source.amount=Amount owed
+tax.code.no.deductions=There are no deductions.
+tax.code.total.allowances=Total allowances
+tax.code.total.deductions=Total deductions
+
+################################ Select Client ####################################################
+employmenthistory.select.client.continue=Continue
+employmenthistory.select.client.title=Enter a client''s National Insurance number
+employmenthistory.select.client.heading=Enter a client''s National Insurance number
+employmenthistory.select.client.clients.nino=Client National Insurance number
+employmenthistory.select.client.nino.hint=For example, QQ123456C
+employmenthistory.select.client.error.invalid-format.title=There is a problem
+employmenthistory.select.client.error.invalid-format.title=There is a problem
+employmenthistory.select.client.error.invalid-format=National Insurance number must be 2 letters, 6 numbers, then A, B, C or D
+employmenthistory.select.client.error.empty.title=There is a problem
+employmenthistory.select.client.error.empty=Enter a National Insurance number
+
+################################ Employment Details ####################################################
+employmenthistory.employment.details.title=Client single record
+employmenthistory.employment.details.companybenefits=Company Benefits
+employmenthistory.employment.details.no.benefits=HMRC has no record of company benefits from {0} for this tax year.
+employmenthistory.employment.details.benefit=Benefit
+employmenthistory.employment.details.client.name=Client name
+employmenthistory.employment.details.caption.employment=Employment details
+employmenthistory.employment.details.caption.pension=Pension details
+employmenthistory.pay.and.tax.heading=Payments
+employmenthistory.no.pay.and.tax=HMRC has no record of payments made by {0} to your client for the role which began on {1}.
+employmenthistory.eyu.button=View updates to this income record
+employmenthistory.eyu.caveat=Your client's year-to-date income record includes these updates.
+employmenthistory.eyu.updates.part1=There are
+employmenthistory.eyu.updates.part2=updates to this clients income record.
+employmenthistory.eyu.updates.single.part1=There is
+employmenthistory.eyu.updates.single.part2=update to this clients income record.
+employmenthistory.company.benefit.caveat=Benefits are confirmed when an employer submits form P11D to HMRC. Forecasted benefits may be carried forward from a previous year or estimated from other sources, but are not confirmed until a P11D is received.
+employmenthistory.student.loans=Student loan repaid
+
+################################## Select tax year ####################################################
+employmenthistory.select.tax.year.title=Select the tax year you want to view
+employmenthistory.select.tax.year.h1=Select the tax year you want to view
+employmenthistory.select.tax.year.header={0}''s income record
+employmenthistory.select.tax.year.option={0} to {1}
+employmenthistory.select.tax.year=Select a tax year
+employmenthistory.select.tax.year.error.heading=There is a problem
+employmenthistory.select.tax.year.error.linktext=Select a tax year
+employmenthistory.select.tax.year.error.message=Select a tax year
+employemntHistory.select.tax.year.sidebar.agent-services-home =Agent services home
+employemntHistory.select.tax.year.sidebar.income.and.tax=View client income and tax records
+employemntHistory.select.tax.year.sidebar.change.client=Change client
+
+################################## Tax Account ####################################################
+employmenthistory.tax-account.header=Underpaid tax and debts
+employmenthistory.tax-account.underpayment-amount.title=Confirmed underpaid tax included in your clients tax code for the tax year {0} to {1}, carried over from earlier years.
+employmenthistory.tax-account.potential-underpayment.title=Estimated underpaid tax in your clients tax code for the current tax, carried over from tax year {0} to {1}.
+employmenthistory.tax-account.outstanding.debt.title=Other outstanding debt included in your client''s tax code for tax year {0} to {1}, carried over from previous tax years.
+employmenthistory.tax-account.outstanding.debt.text=Debts may relate to Self Assessment, tax credits or National Insurance class 2.
+employmenthistory.tax-account.text=Underpaid taxes and debts are only displayed in the last completed tax year. They are not shown in any other year.
+employmenthistory.tax-account.empty.text=Your client has no underpaid tax or debts.
+
+################################ Error Pages ###########################################################
+employmenthistory.not.authorised.title=There is a problem
+employmenthistory.not.authorised.header=There is a problem
+employmenthistory.not.authorised.text1=You are not authorised to view the income record for National Insurance number {0}.
+employmenthistory.not.authorised.text2=You need to ask the person who holds this National Insurance number to share their income record with you.
+employmenthistory.not.authorised.text3=You will be able to view their income record once they have accepted your request.
+employmenthistory.not.authorised.select.client.link.text=Enter another National Insurance number
+employmenthistory.not.authorised.invite.client.link.text=Request authorisation
+employmenthistory.mci.restricted.header=You do not have access to this client''s income record
+employmenthistory.mci.restricted.text=For further information, contact HMRC on:
+employmenthistory.mci.restricted.telephone=telephone 0300 200 3300
+employmenthistory.mci.restricted.textphone=textphone 0300 200 3319
+employmenthistory.mci.restricted.title=You do not have access to this client''s income record
+employmenthistory.mci.restricted.select.client.link.text=Enter another client''s National Insurance number
+employmenthistory.deceased.header=You do not have access to this client''s income record
+employmenthistory.deceased.text=Please check with your client.
+employmenthistory.deceased.title=You do not have access to this client''s income record
+employmenthistory.deceased.select.client.link.text=Enter another client''s National Insurance number
+employmenthistory.no.data.title=The client’s income record contains no data for this tax year
+employmenthistory.no.data.header=The client’s income record contains no data for this tax year
+employmenthistory.no.data.text=You can:
+employmenthistory.no.data.select.client.link.text=enter another client''s National Insurance number
+employmenthistory.technical.error.title=Service unavailable
+employmenthistory.technical.error.header=Service unavailable
+employmenthistory.technical.error.message=We''re experiencing technical problems, so you won''t be able to use the service at the moment. Try again later.
+employmenthistory.no.agent.services.account.title=Your agent business does not have an Agent Services account
+employmenthistory.no.agent.services.account.p1=If you are authorised to act on their behalf, you can create an account now.
+
+# General Messages
+# Error messages for digital services
+global.error.400.title=Bad request - 400
+global.error.400.heading=Bad request
+global.error.400.message=Please check that you have entered the correct web address.
+global.error.403.title=Forbidden - 403
+global.error.403.heading=Sorry, you haven''t been authorised to proceed.
+global.error.403.message=
+global.error.passcode.title=Forbidden - 403
+global.error.passcode.heading=Sorry, you haven''t been authorised to proceed.
+global.error.passcode.message=
+global.error.404.title=Page not found - 404
+global.error.404.heading=This page can''t be found
+global.error.404.message=Please check that you have entered the correct web address.
+global.error.500.title=Sorry, we are experiencing technical difficulties - 500
+global.error.500.heading=Sorry, we''re experiencing technical difficulties
+global.error.500.message=Please try again in a few minutes.

@@ -16,11 +16,10 @@
 
 package config
 
-import java.net.URL
-
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URL
+import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 @Singleton
