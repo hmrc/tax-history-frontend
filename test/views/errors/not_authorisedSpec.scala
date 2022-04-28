@@ -17,14 +17,19 @@
 package views.errors
 
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.domain.Nino
 import utils.TestUtil
-import views.{BaseViewSpec, Fixture}
 import views.html.errors.not_authorised
+import views.{BaseViewSpec, Fixture}
 
 class not_authorisedSpec extends GuiceAppSpec with BaseViewSpec {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   trait ViewFixture extends Fixture with TestUtil {
     val nino: Nino = randomNino

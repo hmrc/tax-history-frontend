@@ -16,12 +16,17 @@
 
 package views.errors
 
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import views.{BaseViewSpec, Fixture}
 import views.html.errors.no_agent_services_account
+import views.{BaseViewSpec, Fixture}
 
 class no_agent_services_accountSpec extends GuiceAppSpec with BaseViewSpec {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   "no agent services account view" must {
     "have correct title and heading page view event" in new Fixture {

@@ -16,20 +16,24 @@
 
 package views.taxhistory
 
-import controllers.routes
 import model.api.EmploymentPaymentType.OccupationalPension
 import model.api.{CompanyBenefit, IncomeSource, TaAllowance, TaDeduction}
 import models.taxhistory.Person
 import org.jsoup.nodes.Element
 import play.api.i18n.Messages
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
 import utils.{ControllerUtils, TestUtil}
-import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.employment_detail
+import views.{BaseViewSpec, Fixture}
 
 class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
     val currentTaxYear: Int = TaxYear.current.startYear
@@ -291,23 +295,6 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.employment.details.no.benefits", "employer-1")).hasText shouldBe true
     }
-
-    "Show correct heading and links for nav bar" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
-        employment, List.empty, clientName, None)
-
-      doc.getElementById("nav-bar").child(0).select("div").text shouldBe Messages("employmenthistory.sidebar.links.more-options")
-      doc.getElementById("nav-bar").child(0).select("a").text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
-      doc.getElementById("nav-bar").child(0).select("a").attr("href") shouldBe appConfig.agentAccountHomePage
-
-      doc.getElementById("nav-bar").child(1).select("div").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.income.and.tax")
-      doc.getElementById("nav-bar").child(1).select("a").text shouldBe Messages("employemntHistory.select.tax.year.sidebar.change.client")
-      doc.getElementById("nav-bar").child(1).select("a").attr("href") shouldBe routes.SelectClientController.getSelectClientPage().url
-
-      doc.getElementById("nav-bar").child(2).select("div").text shouldBe Messages("employmenthistory.sidebar.links.income-records", clientName)
-      doc.getElementById("nav-bar").child(2).select("a").text shouldBe Messages("employmenthistory.sidebar.links.change-tax-year")
-      doc.getElementById("nav-bar").child(2).select("a").attr("href") shouldBe routes.SelectTaxYearController.getSelectTaxYearPage().url
-    }
   }
 
   "totals for allowance and deduction have the correct values" in new ViewFixture {
@@ -315,5 +302,15 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
       employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
     doc.getElementById("DeductionTotal").text shouldBe "£2"
     doc.getElementById("AllowanceTotal").text shouldBe "£2"
+  }
+
+  "display navigation bar with correct links" in new ViewFixture {
+    val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
+      employment, List.empty, clientName, incomeSourceWithdeductionsAndAllowances)
+
+    doc.getElementById("nav-home").text shouldBe Messages("nav.home")
+    doc.getElementById("nav-client").text shouldBe Messages("nav.client")
+    doc.getElementById("nav-year").text shouldBe Messages("nav.year")
+    doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
   }
 }

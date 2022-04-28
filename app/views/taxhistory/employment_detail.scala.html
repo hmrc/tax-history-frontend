@@ -57,27 +57,10 @@
 
     </div>
     <div class="govuk-grid-column-one-third">
-        <section class="section subsection section--blue-top">
+        <section class="section subsection">
             <section class="employment-summary deskContent govuk-section-break govuk-section-break--visible" id="details-bar-desktop">
                 <div class="no-top-margin" id="employment-data-desktop">@employmentDetails()</div>
             </section>
-            <ul class="govuk-list" id="nav-bar">
-                <li>
-                    <p class="govuk-body"><div class="govuk-!-font-weight-bold">@messages("employmenthistory.sidebar.links.more-options")</div>
-                        <a href="@appConfig.agentAccountHomePage" class="govuk-link govuk-!-font-size-19">@messages("employmenthistory.sidebar.links.agent-services-home")</a>
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body"><div class="govuk-!-font-weight-bold">@messages("employmenthistory.sidebar.links.income-and-tax")</div>
-                        <a href="@controllers.routes.SelectClientController.getSelectClientPage().url" class="govuk-link govuk-!-font-size-19">@messages("employmenthistory.sidebar.links.change-client")</a>
-                    </p>
-                </li>
-                <li>
-                    <p class="govuk-body"><div class="govuk-!-font-weight-bold">@messages("employmenthistory.sidebar.links.income-records", clientNameOrNino)</div>
-                        <a href="@controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url" class="govuk-link govuk-!-font-size-19">@messages("employmenthistory.sidebar.links.change-tax-year")</a>
-                    </p>
-                </li>
-            </ul>
         </section>
     </div>
 </div>

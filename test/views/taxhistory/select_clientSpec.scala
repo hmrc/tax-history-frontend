@@ -18,17 +18,21 @@ package views.taxhistory
 
 import form.SelectClientForm.selectClientForm
 import models.taxhistory.SelectClient
-import org.jsoup.nodes.Element
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.{BaseSpec, GuiceAppSpec}
 import utils.TestUtil
-import views.{BaseViewSpec, Fixture}
 import views.html.taxhistory.select_client
+import views.{BaseViewSpec, Fixture}
 
 class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/select-client").withCSRFToken
 
   trait ViewFixture extends Fixture {
     lazy val nino: String = randomNino.toString()
@@ -81,12 +85,12 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
       doc.getElementById("clientId-error").text contains Messages("employmenthistory.select.client.error.invalid-format")
     }
 
-    "display sidebar with correct link(s)" in new ViewFixture {
+    "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      val agentServicesHomeLink: Element = doc.body.getElementById("nav-bar").child(0)
-      agentServicesHomeLink.select("a").text shouldBe Messages("employmenthistory.select.client.sidebar.agent-services-home")
-      agentServicesHomeLink.select("div").text shouldBe Messages("employmenthistory.sidebar.links.more-options")
-      agentServicesHomeLink.select("a").attr("href") shouldBe appConfig.agentAccountHomePage
+      doc.getElementById("nav-home").text shouldBe Messages("nav.home")
+      validateConditionalContent("nav-client")
+      validateConditionalContent("nav-year")
+      doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }
 }

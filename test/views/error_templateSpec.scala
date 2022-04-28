@@ -18,11 +18,16 @@ package views
 
 import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
+import play.api.mvc.{AnyContentAsEmpty, Request}
+import play.api.test.CSRFTokenHelper.CSRFRequest
+import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import support.GuiceAppSpec
 import uk.gov.hmrc.urls.Link
 import views.html.error_template
 class error_templateSpec extends GuiceAppSpec with BaseViewSpec {
+
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   trait ViewFixture extends Fixture {
     val headingText = "error heading"

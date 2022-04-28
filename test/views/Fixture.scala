@@ -20,16 +20,13 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import play.api.mvc.{AnyContentAsEmpty, Request}
-import play.api.test.CSRFTokenHelper.CSRFRequest
-import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import views.Strings.TextHelpers
 
 import scala.collection.JavaConverters._
+import scala.util.{Failure, Success, Try}
 
 trait Fixture extends Matchers {
-  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   def view: HtmlFormat.Appendable
 
@@ -43,6 +40,15 @@ trait Fixture extends Matchers {
   def validateParagraphizedContent(messageKey: String)(implicit messages: Messages): Unit = {
     for (p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala) {
       doc.body().toString must include(p.text())
+    }
+  }
+
+  def validateConditionalContent(id: String) = {
+    Try {
+      doc.getElementById(id).text
+    } match {
+      case Success(_) => fail()
+      case Failure(_) => succeed
     }
   }
 
