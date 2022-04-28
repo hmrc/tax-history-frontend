@@ -20,6 +20,9 @@ lbl.employment.status.current=Current
 lbl.employment.status.ceased=Ceased
 lbl.employment.status.unknown=Unknown
 lbl.none=None
+lbl.income=Income
+lbl.tax=Tax
+lbl.total=Total
 lbl.service.title=View client income and tax records
 lbl.select.new.client=Select a new client
 global.link.signout=Sign out
@@ -91,9 +94,8 @@ employmenthistory.employment.summary.tab.3=Underpaid tax and debts
 employmenthistory.employment.total.income=Total employment and taxable benefits income
 employmenthistory.employment.total.income.tax=Total Income Tax
 employmenthistory.employment.table.text=The employment record shows time in employment, taxable benefits, and any gap where no record is held by HMRC.
-employmenthistory.employment.table.error.no-values=Total employment and taxable benefits income is not currently available.
-employmenthistory.pension.table.error.no-values=Total private pension income is not currently available.
 employmenthistory.pension.total.income=Total private pension income
+employmenthistory.error.no-record=No record
 
 ################################## Company Benefits & Allowances ##################################
 employmenthistory.cb.EmployerProvidedServices=Employer provided services
