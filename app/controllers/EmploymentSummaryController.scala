@@ -44,6 +44,10 @@ class EmploymentSummaryController @Inject()(
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
+  def signIn: Action[AnyContent] = Action { _ =>
+    Redirect(appConfig.loginContinue).withNewSession
+  }
+
   def getTaxHistory(taxYear: Int): Action[AnyContent] = Action.async {
     implicit request => {
       authorisedForAgent { nino =>
