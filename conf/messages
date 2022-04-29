@@ -52,8 +52,8 @@ nav.menu = Income Record Viewer menu
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Tax year 6 April {0} to 5 April {1}
-employmenthistory.title=Client income record
-employmenthistory.header={0}''s income record
+employmenthistory.title=Income record
+employmenthistory.header=Income record
 employmenthistory.missing.client.name=client
 employmenthistory.nopaydata=No data available
 employmenthistory.allowance.heading=Allowances
@@ -182,7 +182,6 @@ employmenthistory.student.loans=Student loan repaid
 ################################## Select tax year ####################################################
 employmenthistory.select.tax.year.title=Select the tax year you want to view
 employmenthistory.select.tax.year.h1=Select the tax year you want to view
-employmenthistory.select.tax.year.header={0}''s income record
 employmenthistory.select.tax.year.option={0} to {1}
 employmenthistory.select.tax.year=Select a tax year
 employmenthistory.select.tax.year.error.heading=There is a problem
@@ -219,7 +218,7 @@ employmenthistory.deceased.header=You do not have access to this client''s incom
 employmenthistory.deceased.text=Please check with your client.
 employmenthistory.deceased.title=You do not have access to this client''s income record
 employmenthistory.deceased.select.client.link.text=Enter another client''s National Insurance number
-employmenthistory.no.data.title=The client’s income record contains no data for this tax year
+employmenthistory.no.data.title=Income record
 employmenthistory.no.data.header=The client’s income record contains no data for this tax year
 employmenthistory.no.data.text=You can:
 employmenthistory.no.data.select.client.link.text=enter another client''s National Insurance number

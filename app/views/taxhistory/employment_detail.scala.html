@@ -38,13 +38,14 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <span class="govuk-caption-xl govuk-!-padding-bottom-1" id="ClientIncomeRecord">@messages("employmenthistory.display.client.name", s"$clientNameOrNino")</span>
-        <h1 class="govuk-heading-xl no-bottom-margin">
-            @ControllerUtils.isJobSeekerAllowance(employment)
-        </h1>
-
-        <h2 class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear + 1).toString)</h2>
-
+        <header class="hmrc-page-heading no-top-margin">
+            <h1 class="govuk-heading-xl no-bottom-margin">@ControllerUtils.isJobSeekerAllowance(employment)</h1>
+            <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
+                <span class="govuk-visually-hidden">This section relates to </span>
+                @clientNameOrNino
+            </p>
+            <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear + 1).toString)</span>
+        </header>
         @payments()
 
         @if(!employment.isJobseekersAllowance) {

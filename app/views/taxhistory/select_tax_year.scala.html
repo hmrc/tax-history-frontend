@@ -40,14 +40,7 @@
 
     <div class="govuk-grid-row">
         <div class="govuk-grid-column-two-thirds">
-
-            <div class="page-header">
-                    <span class="govuk-caption-xl" id ="pre-header">@messages("employmenthistory.display.client.name",s"${clientName.getOrElse(nino)}")</span>
-                    @*AFID-462 - temporarily disabled due to security issue*@
-                    @*if(clientName.nonEmpty){<span class="pre-heading medium-text" id="clientNino">@nino</span>}*@
-            </div>
-
-              @formHelper(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
+                @formHelper(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
 
                     @errorSummary(form.errors)
 
