@@ -23,6 +23,7 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
+import utils.TestUtil
 import views.{BaseViewSpec, Fixture}
 import views.html.errors.no_data
 
@@ -30,20 +31,37 @@ class no_dataSpec extends GuiceAppSpec with BaseViewSpec {
 
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
+  val firstName = "testFirstName"
+  val surname = "testSurname"
+  val person: Person = Person(Some(firstName), Some(surname), deceased = Some(false))
+  val nino: String = TestUtil.randomNino.toString()
+
   "no data available view" must {
 
-    "have correct title, heading and GA page view event" in new Fixture {
-      val person: Person = Person(Some("first name"), Some("second name"), deceased = Some(false))
-      val nino: String = "QQ12345C"
+    "have the correct title" in new Fixture {
       val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, 2017)
       doc.title mustBe expectedPageTitle(messages("employmenthistory.no.data.title"))
+    }
+
+    "have the correct header section" in new Fixture {
+      val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, 2017)
+      val preHeaderElement = doc.getElementById("pre-header")
+      val preHeaderWithoutHiddenText = preHeaderElement.ownText()
+      val preHeader = preHeaderElement.text()
+
+      heading.text() mustBe messages("employmenthistory.header")
+      preHeaderWithoutHiddenText mustBe s"$firstName $surname"
+      preHeader mustBe s"This section relates to $firstName $surname"
+    }
+
+    "have correct heading and GA page view event" in new Fixture {
+      val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, 2017)
+
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
-      doc.select("h1").text() mustBe Messages("employmenthistory.header", person.getName.getOrElse(nino))
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text mustBe Messages("employmenthistory.no.data.text")
       doc.getElementById("selectClient").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("selectTaxYear").attr("href") mustBe "/tax-history/select-tax-year"
-
     }
   }
 

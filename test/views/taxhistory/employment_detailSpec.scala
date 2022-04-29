@@ -33,13 +33,16 @@ import views.{BaseViewSpec, Fixture}
 
 class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
 
+  val firstName = "testFirstName"
+  val surname = "testSurname"
+
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
     val currentTaxYear: Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2016
-    val person: Person = Person(Some("James"), Some("Dean"), Some(false))
+    val person: Person = Person(Some(firstName), Some(surname), Some(false))
     val clientName: String = person.getName.getOrElse(nino)
     val incomeSourceNoDeductions: Option[IncomeSource] = Some(IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
@@ -52,25 +55,32 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
   "employment_detail view" should {
 
     "have correct title and headings for an employment" in new ViewFixture {
-
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None)
+      val preHeaderElement = doc.getElementById("pre-header")
+      val preHeaderWithoutHiddenText = preHeaderElement.ownText()
+      val preHeader = preHeaderElement.text()
 
       doc.title shouldBe expectedPageTitle(messages("employmenthistory.employment.details.title"))
-      doc.getElementById("ClientIncomeRecord").text() shouldBe s"$clientName's income records"
-      doc.select("h1").text() shouldBe employment.employerName
+      preHeaderWithoutHiddenText mustBe s"$firstName $surname"
+      preHeader mustBe s"This section relates to $firstName $surname"
+      heading.text() shouldBe employment.employerName
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe false
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe true
     }
 
     "have correct title and headings for a pension" in new ViewFixture {
-
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None)
 
+      val preHeaderElement = doc.getElementById("pre-header")
+      val preHeaderWithoutHiddenText = preHeaderElement.ownText()
+      val preHeader = preHeaderElement.text()
+
       doc.title shouldBe expectedPageTitle(messages("employmenthistory.employment.details.title"))
-      doc.getElementById("ClientIncomeRecord").text() shouldBe s"$clientName's income records"
-      doc.select("h1").text() shouldBe employment.employerName
+      preHeaderWithoutHiddenText mustBe s"$firstName $surname"
+      preHeader mustBe s"This section relates to $firstName $surname"
+      heading.text() shouldBe employment.employerName
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.pension")).hasText shouldBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.employment.details.caption.employment")).hasText shouldBe false
     }

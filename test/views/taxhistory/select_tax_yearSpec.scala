@@ -49,7 +49,6 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
 
     "have correct heading and GA pageview event" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, name, nino)
-      doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"${name.get}"))
       doc.select("h1").text() must include(Messages("employmenthistory.select.tax.year.h1"))
     }
 
@@ -61,12 +60,6 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
     "have correct title when form errors occur" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(invalidForm, List.empty, name, nino)
       doc.title mustBe expectedErrorPageTitle(messages("employmenthistory.select.tax.year.title"))
-    }
-
-    "Show nino when no name is present" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, None, nino)
-      doc.getElementById("pre-header").text() must include(Messages("employmenthistory.display.client.name", s"$nino"))
-      doc.getElementsByClass("pre-heading medium-text").size() shouldBe 0
     }
 
     "show correct content on the page" in new ViewFixture {
