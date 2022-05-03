@@ -14,10 +14,12 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.userresearchbanner.UserResearchBanner
+@import config.AppConfig
+@import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.models.PageTitle
 
 @this(
+    appConfig: AppConfig,
     govukTemplate: GovukTemplate,
     govukBackLink: GovukBackLink,
     govukPhaseBanner: GovukPhaseBanner,
@@ -26,7 +28,8 @@
     hmrcStandardFooter: HmrcStandardFooter,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
-    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
+    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
 )
 
 @(title: PageTitle, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None,
@@ -60,6 +63,9 @@
 }
 
 @beforeContentBlock = {
+    @if(appConfig.welshEnabled){
+        @hmrcLanguageSelectHelper()
+    }
     @if(signOut){
         @backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
     }

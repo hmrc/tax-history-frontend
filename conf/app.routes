@@ -17,7 +17,6 @@ GET   /service-unavailable-technical                      controllers.ClientErro
 GET   /client-income-record/:taxYear                      controllers.EmploymentSummaryController.getTaxHistory(taxYear:Int)
 GET   /logout                                             controllers.EmploymentSummaryController.logout()
 
-
 GET   /select-tax-year                                    controllers.SelectTaxYearController.getSelectTaxYearPage()
 POST  /select-tax-year                                    controllers.SelectTaxYearController.submitSelectTaxYearPage()
 

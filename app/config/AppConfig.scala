@@ -16,11 +16,10 @@
 
 package config
 
-import java.net.URL
-
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
+import java.net.URL
+import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 @Singleton
@@ -45,7 +44,7 @@ class AppConfig @Inject()(servicesConfig: ServicesConfig) {
   lazy val eyaWhatsThisFlag: Boolean = servicesConfig.getBoolean("featureFlags.eyaWhatsThisFlag")
   lazy val trackingConsentUrl: String = servicesConfig.getString("tracking-consent-frontend.url")
   lazy val gtmContainer: String = servicesConfig.getString("tracking-consent-frontend.gtm.container")
-
+  lazy val welshEnabled: Boolean = servicesConfig.getBoolean("welsh-enabled")
 
   lazy val timeout: Int = servicesConfig.getInt("timeout.timeout")
   lazy val timeoutCountdown: Int = servicesConfig.getInt("timeout.countdown")
