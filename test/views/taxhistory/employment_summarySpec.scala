@@ -37,6 +37,9 @@ import java.util.UUID
 
 class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
+  val firstName = "testFirstName"
+  val surname = "testSurname"
+
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
@@ -44,22 +47,59 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
     val currentTaxYear: Int = TaxYear.current.currentYear
     val cyMinus1: Int = TaxYear.current.previous.currentYear
     val cyMinus2:Int = TaxYear.current.previous.currentYear - 1
-    val person: Option[Person] = Some(Person(Some("James"), Some("Dean"), Some(false)))
+    val person: Option[Person] = Some(Person(Some(firstName), Some(surname), Some(false)))
   }
 
   "employment_summary view" must {
 
-    "have correct title and heading" in new ViewFixture {
-
+    "have the correct title" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None)
-
       doc.title mustBe expectedPageTitle(messages("employmenthistory.title"))
+    }
+
+    "display a client name as a pre header" in new ViewFixture {
+        val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None)
+        val preHeaderElement = doc.getElementById("pre-header")
+        val preHeaderWithoutHiddenText = preHeaderElement.ownText()
+        val preHeader = preHeaderElement.text()
+
+        preHeaderWithoutHiddenText mustBe s"$firstName $surname"
+        preHeader mustBe s"This section relates to $firstName $surname"
+    }
+
+    val preHeaderScenarios = List(
+      ("there is no client name available", None),
+      ("there is only a partial client name available", Some(Person(Some(firstName), None, None)))
+    )
+
+    "display a nino as a pre header" when {
+      preHeaderScenarios foreach { scenario =>
+        scenario._1 in new ViewFixture {
+          val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, scenario._2, taxAccount, None, None)
+          val preHeaderElement = doc.getElementById("pre-header")
+          val preHeaderWithoutHiddenText = preHeaderElement.ownText()
+          val preHeader = preHeaderElement.text()
+
+          preHeaderWithoutHiddenText mustBe nino
+          preHeader mustBe s"This section relates to $nino"
+        }
+      }
+    }
+
+    "display correct heading" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None)
+      heading.text() mustBe messages("employmenthistory.header")
+
       doc.getElementById("taxYearRange").text must be(Messages("employmenthistory.taxyear", currentTaxYear.toString,
         (currentTaxYear + 1).toString))
+    }
+
+    "display employments" in new ViewFixture{
+      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None)
 
       val viewDetailsElements: Element = doc.getElementById("view-link-employment-0")
       viewDetailsElements.html must include(Messages("employmenthistory.view") +
-        " <span class=\"govuk-visually-hidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-2") + "</span>")
+        " <span class=\"govuk-visually-hidden\">" + Messages("employmenthistory.view.record.hidden", s"$firstName $surname", "employer-2") + "</span>")
 
       val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
       viewDetailsElementsNoRecord.html must include(Messages("lbl.none"))
@@ -67,13 +107,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
       viewPensionElements.html must include(Messages("employmenthistory.view") +
-        " <span class=\"govuk-visually-hidden\">" + Messages("employmenthistory.view.record.hidden", "James Dean", "employer-1") + "</span>")
-
-    }
-    "Show nino when no name is present" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino,cyMinus1,employments,allowances,None,taxAccount,None,None)
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.header", nino)).hasText mustBe true
-      doc.getElementsByClass("grey no-bottom-margin").size() shouldBe 0
+        " <span class=\"govuk-visually-hidden\">" + Messages("employmenthistory.view.record.hidden", s"$firstName $surname", "employer-1") + "</span>")
     }
 
     "have correct employment content" in new ViewFixture {

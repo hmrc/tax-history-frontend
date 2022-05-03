@@ -274,6 +274,13 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     }
   }
 
+  "GET /tax-history/sign-in" should {
+      "display the navigation page" in new LocalSetup {
+          val result: Future[Result] = controller.signIn().apply(fakeRequest)
+          status(result) shouldBe SEE_OTHER
+      }
+  }
+
   "buildIncomeTotals" should {
     val empl1 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
     val empl2 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)

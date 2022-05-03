@@ -41,9 +41,7 @@
   incomeTotals: Option[TotalIncome])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @getName=@{
-    person.fold(nino) {
-        _.getName.fold(nino)(name => name)
-    }
+    person.flatMap(_.getName).getOrElse(nino)
 }
 
 @isCurrentYear=@{
@@ -54,10 +52,14 @@
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-        <div class="page-header" >
-            <h1 class="govuk-heading-xl no-bottom-margin">@messages("employmenthistory.header", getName)</h1>
-            <h2 class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString) </h2>
-        </div>
+        <header class="hmrc-page-heading no-top-margin">
+            <h1 class="govuk-heading-xl no-bottom-margin" id="header">@messages("employmenthistory.header")</h1>
+            <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
+                <span class="govuk-visually-hidden">This section relates to </span>
+                @getName
+            </p>
+            <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString) </span>
+        </header>
 
         <div class="govuk-inset-text govuk-!-margin-bottom-9 no-top-margin">
             @p(Html(messages("employmenthistory.caveat.p1.text")), id = Some("disclaimer-0"))

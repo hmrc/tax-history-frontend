@@ -27,15 +27,33 @@
     hmrcStandardHeader: HmrcStandardHeader,
     hmrcStandardFooter: HmrcStandardFooter,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
+    hmrcScripts: HmrcScripts,
+    hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
-    hmrcScripts: HmrcScripts
 )
 
-@(title: PageTitle, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None, backLink: Option[String]= None)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+@(title: PageTitle, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None,
+    signOut: Boolean = true,
+    timeoutActive: Boolean = true,
+    backLink: Option[String]= None)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @head ={
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href='@routes.Assets.versioned("stylesheets/taxhistory.css")' type="text/css"/>
+
+    @if(timeoutActive) {
+        @hmrcTimeoutDialogHelper(
+            signOutUrl = routes.EmploymentSummaryController.logout.url,
+            keepAliveUrl = Some(controllers.routes.SignedOutController.keepAlive().url),
+            timeoutUrl =  Some(controllers.routes.SignedOutController.signedOut().url),
+            timeout = Some(appConfig.timeout),
+            countdown = Some(appConfig.timeoutCountdown),
+            None,
+            message = Some(messages("timeout.message")),
+            keepAliveButtonText = Some(messages("timeout.keepAlive")),
+            signOutButtonText = Some(messages("timeout.signOut"))
+        )
+    }
 }
 
 @feedbackBanner = {
@@ -45,8 +63,12 @@
 }
 
 @beforeContentBlock = {
-@hmrcLanguageSelectHelper()
-@backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
+    @if(appConfig.welshEnabled){
+        @hmrcLanguageSelectHelper()
+    }
+    @if(signOut){
+        @backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
+    }
 }
 
 @content = {
@@ -80,9 +102,11 @@
                 </div>
                 <div class="govuk-header__content">
                     <span class="hmrc-header__service-name">@messages("service.name")</span>
-                    <nav class="hmrc-sign-out-nav">
-                        <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">@messages("global.link.signout")</a>
-                    </nav>
+                    @if(signOut){
+                        <nav class="hmrc-sign-out-nav">
+                            <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">@messages("global.link.signout")</a>
+                        </nav>
+                    }
                 </div>
             </div>
         </div>
@@ -99,9 +123,11 @@
 
             <!-- ACCOUNT MENU -->
         <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
-            <a id="nav-home" href="@appConfig.agentAccountHomePage" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
-                <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
-            </a>
+            @if(signOut){
+                <a id="nav-home" href="@appConfig.agentAccountHomePage" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
+                    <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
+                </a>
+            }
             <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
 
             <ul class="hmrc-account-menu__main js-hidden">

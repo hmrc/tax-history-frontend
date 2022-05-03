@@ -19,3 +19,8 @@ GET   /logout                                             controllers.Employment
 
 GET   /select-tax-year                                    controllers.SelectTaxYearController.getSelectTaxYearPage()
 POST  /select-tax-year                                    controllers.SelectTaxYearController.submitSelectTaxYearPage()
+
+GET   /keep-alive                                         controllers.SignedOutController.keepAlive()
+GET   /we-signed-you-out                                  controllers.SignedOutController.signedOut()
+
+GET   /sign-in                                            controllers.EmploymentSummaryController.signIn()
