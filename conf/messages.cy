@@ -198,7 +198,6 @@ employmenthistory.tax-account.underpayment-amount.title=Treth y cadarnhawyd ei b
 employmenthistory.tax-account.potential-underpayment.title=Amcangyfrif o’r dreth a dandalwyd yng nghod treth eich cleient ar gyfer y flwyddyn dreth gyfredol, sydd wedi’i chario drosodd o flwyddyn dreth {0} i {1}
 employmenthistory.tax-account.outstanding.debt.title=Dyled arall heb ei thalu, sydd wedi’i chynnwys yng nghod treth eich cleient ar gyfer blwyddyn dreth {0} i {1}, wedi’i chario drosodd o flynyddoedd treth blaenorol
 employmenthistory.tax-account.outstanding.debt.text=Gall dyledion ymwneud â Hunanasesiad, credydau treth neu Yswiriant Gwladol Dosbarth 2.
-employmenthistory.tax-account.text=Dim ond yn y flwyddyn dreth gyflawn ddiwethaf y mae trethi a dyledion a dandalwyd yn cael eu harddangos. Ni chaiff eu dangos mewn unrhyw flwyddyn arall.
 employmenthistory.tax-account.empty.text=Nid oes gan eich cleient dreth na dyledion sydd wedi’u tandalu.
 
 ################################ Error Pages ###########################################################

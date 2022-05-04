@@ -154,7 +154,6 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.text")).hasText mustBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.header")).hasText mustBe true
-      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.text")).hasText mustBe true
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
 
