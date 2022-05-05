@@ -9,7 +9,7 @@ object AppDependencies {
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc"            %% "domain"                           % "8.0.0-play-28",
     "uk.gov.hmrc"            %% "bootstrap-frontend-play-28"       % "5.23.0",
-    "uk.gov.hmrc"            %% "play-frontend-hmrc"               % "3.14.0-play-28",
+    "uk.gov.hmrc"            %% "play-frontend-hmrc"               % "3.15.0-play-28",
     "uk.gov.hmrc"            %% "play-partials"                    % "8.3.0-play-28",
     "uk.gov.hmrc"            %% "url-builder"                      % "3.6.0-play-28",
     "uk.gov.hmrc"            %% "agent-mtd-identifiers"            % "0.35.0-play-28",

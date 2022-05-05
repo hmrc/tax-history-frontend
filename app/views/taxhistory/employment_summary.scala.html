@@ -50,22 +50,18 @@
 
 @govukWrapper(PageTitle(messages("employmenthistory.title")), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
 
-<div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <header class="hmrc-page-heading no-top-margin">
-            <h1 class="govuk-heading-xl no-bottom-margin" id="header">@messages("employmenthistory.header")</h1>
-            <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
-                <span class="govuk-visually-hidden">This section relates to </span>
-                @getName
-            </p>
-            <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString) </span>
-        </header>
+<header class="hmrc-page-heading no-top-margin">
+    <h1 class="govuk-heading-xl no-bottom-margin" id="header">@messages("employmenthistory.header")</h1>
+    <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
+        <span class="govuk-visually-hidden">This section relates to </span>
+        @getName
+    </p>
+    <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString) </span>
+</header>
 
-        <div class="govuk-inset-text govuk-!-margin-bottom-9 no-top-margin">
-            @p(Html(messages("employmenthistory.caveat.p1.text")), id = Some("disclaimer-0"))
-            @p(Html(messages("employmenthistory.caveat.p2.text")), id = Some("disclaimer-1"))
-        </div>
-    </div>
+<div class="govuk-inset-text govuk-!-margin-bottom-9 no-top-margin">
+    @p(Html(messages("employmenthistory.caveat.p1.text")), id = Some("disclaimer-0"))
+    @p(Html(messages("employmenthistory.caveat.p2.text")), id = Some("disclaimer-1"))
 </div>
 
 <div class="govuk-tabs" data-module="govuk-tabs">
@@ -158,15 +154,10 @@
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="underpaid-tax-and-debts">
             <h2 id = "UnderpaidTaxAndDebts" class="govuk-heading-m blue-underline">@messages("employmenthistory.tax-account.header")</h2>
             @if(taxAccount.nonEmpty) {
-                <div class = "govuk-grid-row">
-                    <div class = "govuk-grid-column-two-thirds">
-                        @taxAccountTable
-                    </div>
-                    <div class="govuk-grid-column-one-third"></div>
-                </div>
-                } else {
-                    <p id="no-tax-account" class="govuk-body">@messages("employmenthistory.tax-account.empty.text")</p>
-                }
+                @taxAccountTable
+            } else {
+                <p id="no-tax-account" class="govuk-body">@messages("employmenthistory.tax-account.empty.text")</p>
+            }
         </div>
     }
 
@@ -300,31 +291,43 @@
     <table id="taxAccountTable" class="govuk-table">
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
-            <th scope="col" class="govuk-table__header">@messages("lbl.details")</th>
+            <th scope="col" class="govuk-table__header">@messages("employmenthistory.tax-account.type-of-underpayment-or-debt")</th>
             <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.amount")</th>
         </tr>
         </thead>
         <tbody class="govuk-table__body">
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-body-s">@messages("employmenthistory.tax-account.underpayment-amount.title",
-                    s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")</td>
-                <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0), 2)</td>
+                <th class="govuk-table__cell">@messages("employmenthistory.tax-account.underpayment-amount.title",
+                    s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")
+                    <br/>
+                    <span class="govuk-hint">
+                        @messages("employmenthistory.tax-account.underpayment-amount.hint")
+                    </span>
+                </th>
+                <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(taxAccount.get.underpaymentAmount.getOrElse(0), 2)</td>
             </tr>
 
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-body-s">@messages("employmenthistory.tax-account.potential-underpayment.title",
-                    s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")</td>
-                <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
+                <th class="govuk-table__cell">@messages("employmenthistory.tax-account.potential-underpayment.title",
+                    s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}",
+                    s"${TaxYear.current.currentYear}", s"${TaxYear.current.finishYear}")
+                    <br/>
+                    <span class="govuk-hint">
+                        @messages("employmenthistory.tax-account.potential-underpayment.hint",
+                            s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")
+                    </span>
+                </th>
+                <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(taxAccount.get.actualPUPCodedInCYPlusOneTaxYear.getOrElse(0), 2)</td>
             </tr>
 
             <tr class="govuk-table__row">
-                <td class="govuk-table__cell govuk-body-s">
+                <th class="govuk-table__cell">
                     @messages("employmenthistory.tax-account.outstanding.debt.title",
                     s"${TaxYear.current.previous.currentYear}",s"${TaxYear.current.previous.finishYear}")
-
-                    <p><span class="govuk-caption-m govuk-!-font-size-16">@messages("employmenthistory.tax-account.outstanding.debt.text")</span></p>
-                </td>
-                <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
+                    <br/>
+                    <span class="govuk-hint">@messages("employmenthistory.tax-account.outstanding.debt.hint")</span>
+                </th>
+                <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(taxAccount.get.outstandingDebtRestriction.getOrElse(0), 2)</td>
             </tr>
         </tbody>
     </table>

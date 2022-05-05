@@ -141,9 +141,13 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.title",
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.underpayment-amount.hint")).hasText mustBe true
       doc.getElementsContainingOwnText(oDR).hasText mustBe true
 
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.title",
+        s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}",
+        s"${TaxYear.current.currentYear}", s"${TaxYear.current.finishYear}")).hasText mustBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.potential-underpayment.hint",
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
 
       doc.getElementsContainingOwnText(uA).hasText mustBe true
@@ -152,7 +156,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
         s"${TaxYear.current.previous.currentYear}", s"${TaxYear.current.previous.finishYear}")).hasText mustBe true
       doc.getElementsContainingOwnText(aPC).hasText mustBe true
 
-      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.text")).hasText mustBe true
+      doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.outstanding.debt.hint")).hasText mustBe true
       doc.getElementsContainingOwnText(Messages("employmenthistory.tax-account.header")).hasText mustBe true
 
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
