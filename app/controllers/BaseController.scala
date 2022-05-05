@@ -17,7 +17,6 @@
 package controllers
 
 import controllers.auth.AgentAuth
-import javax.inject.Inject
 import models.taxhistory.Person
 import play.api.i18n.I18nSupport
 import play.api.mvc._
@@ -30,6 +29,7 @@ import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 import uk.gov.hmrc.urls.Link
 import utils.TaxHistoryLogger
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 

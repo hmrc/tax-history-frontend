@@ -17,7 +17,7 @@ lbl.date.end=Dyddiad dod i ben
 lbl.record=Cofnod
 lbl.to=i
 lbl.employment.status.current=Cyfredol
-lbl.employment.status.ceased=Ceased
+lbl.employment.status.ceased=Wedi dod i ben
 lbl.employment.status.unknown=Anhysbys
 lbl.none=Dim
 lbl.income=incwm
@@ -35,7 +35,7 @@ lbl.back=Yn ôl
 lbl.employer=Cyflogwr
 lbl.provider=Darparwr
 lbl.details=Manylion
-lbl.error=Error
+lbl.error=Gwall
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -48,7 +48,7 @@ feedback.after=yn ein helpu i’w wella.
 nav.home=Hafan gwasanaethau’r asiant
 nav.client=Dewiswch gleient
 nav.year=Dewiswch flwyddyn
-nav.menu=Income Record Viewer menu
+nav.menu=Dewislen ar gyfer y Darllenydd Cofnodion Incwm
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Blwyddyn dreth 6 Ebrill {0} i 5 Ebrill {1}

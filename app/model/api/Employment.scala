@@ -17,13 +17,13 @@
 package model.api
 
 import java.util.UUID
-
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
-import org.joda.time.LocalDate
 import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 import utils.LocalDateFormat
+
+import java.time.LocalDate
 
 case class Employment(employmentId: UUID = UUID.randomUUID(),
                       startDate: Option[LocalDate],

@@ -18,8 +18,11 @@ package utils
 
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
+import uk.gov.hmrc.play.language.LanguageUtils
 
-object ControllerUtils {
+import java.time.LocalDate
+
+object ControllerUtils extends DateHelper {
 
   def getEmploymentStatus(employment: Employment)(implicit messages: Messages): String = {
     val current = Messages("lbl.employment.status.current")
@@ -36,15 +39,15 @@ object ControllerUtils {
   private def noRecord(implicit messages: Messages): String = Messages("lbl.date.no-record")
 
   def getStartDate(employment: Employment)(implicit messages: Messages): String = {
-    employment.startDate.map(startDate => DateHelper.formatDate(startDate)).getOrElse(noRecord)
+    employment.startDate.fold(noRecord){date => format(date)}
   }
 
   def getEndDate(employment: Employment)(implicit messages: Messages): String = {
     val ongoing = Messages("lbl.end-date.ongoing")
     employment.employmentStatus match {
       case EmploymentStatus.PotentiallyCeased => noRecord
-      case EmploymentStatus.Unknown           => employment.endDate.map(DateHelper.formatDate).getOrElse(noRecord)
-      case _                                  => employment.endDate.map(DateHelper.formatDate).getOrElse(ongoing)
+      case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord){date => format(date)}
+      case _                                  => employment.endDate.fold(ongoing){date => format(date)}
     }
   }
 
