@@ -193,11 +193,14 @@ employemntHistory.select.tax.year.sidebar.change.client=Change client
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Underpaid tax and debts
-employmenthistory.tax-account.underpayment-amount.title=Confirmed underpaid tax included in your clients tax code for the tax year {0} to {1}, carried over from earlier years.
-employmenthistory.tax-account.potential-underpayment.title=Estimated underpaid tax in your clients tax code for the current tax, carried over from tax year {0} to {1}.
-employmenthistory.tax-account.outstanding.debt.title=Other outstanding debt included in your client''s tax code for tax year {0} to {1}, carried over from previous tax years.
-employmenthistory.tax-account.outstanding.debt.text=Debts may relate to Self Assessment, tax credits or National Insurance class 2.
+employmenthistory.tax-account.underpayment-amount.title=Underpaid tax for earlier years included in tax code for {0} to {1}
+employmenthistory.tax-account.underpayment-amount.hint=Also shown as ''amount of underpaid tax for earlier years'' on a client''s P2, ''PAYE Coding Notice''.
+employmenthistory.tax-account.potential-underpayment.title=Underpaid tax for {0} to {1} included in tax code for {2} to {3}
+employmenthistory.tax-account.potential-underpayment.hint=Also shown as ''estimated underpayment for {0} to {1}'' on a client''s P2, ''PAYE Coding Notice''.
+employmenthistory.tax-account.outstanding.debt.title=Outstanding debt included in tax code for {0} to {1}
+employmenthistory.tax-account.outstanding.debt.hint=Debts may relate to Self Assessment, tax credits or National Insurance Class 2.
 employmenthistory.tax-account.empty.text=Your client has no underpaid tax or debts.
+employmenthistory.tax-account.type-of-underpayment-or-debt=Type of underpayment or debt
 
 ################################ Error Pages ###########################################################
 employmenthistory.not.authorised.title=There is a problem

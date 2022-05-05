@@ -53,7 +53,7 @@ nav.menu=Income Record Viewer menu
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Blwyddyn dreth 6 Ebrill {0} i 5 Ebrill {1}
 employmenthistory.title=Cofnod incwm cleient
-employmenthistory.header=Cofnod incwm {0}
+employmenthistory.header=Cofnod incwm
 employmenthistory.missing.client.name=cleient
 employmenthistory.nopaydata=Dim data ar gael
 employmenthistory.allowance.heading=Lwfansau
@@ -194,11 +194,14 @@ employemntHistory.select.tax.year.sidebar.change.client=Newid cleient
 
 ################################## Tax Account ####################################################
 employmenthistory.tax-account.header=Treth a dyledion a dandalwyd
-employmenthistory.tax-account.underpayment-amount.title=Treth y cadarnhawyd ei bod wedi’i thandalu, sydd wedi’i chynnwys yng nghod treth eich cleient ar gyfer blwyddyn dreth {0} i {1}, wedi’i chario drosodd o flynyddoedd blaenorol
-employmenthistory.tax-account.potential-underpayment.title=Amcangyfrif o’r dreth a dandalwyd yng nghod treth eich cleient ar gyfer y flwyddyn dreth gyfredol, sydd wedi’i chario drosodd o flwyddyn dreth {0} i {1}
-employmenthistory.tax-account.outstanding.debt.title=Dyled arall heb ei thalu, sydd wedi’i chynnwys yng nghod treth eich cleient ar gyfer blwyddyn dreth {0} i {1}, wedi’i chario drosodd o flynyddoedd treth blaenorol
-employmenthistory.tax-account.outstanding.debt.text=Gall dyledion ymwneud â Hunanasesiad, credydau treth neu Yswiriant Gwladol Dosbarth 2.
+employmenthistory.tax-account.underpayment-amount.title=Treth a dandalwyd ar gyfer blynyddoedd cynharach sydd wedi’i chynnwys yn y cod treth ar gyfer {0} i {1}
+employmenthistory.tax-account.underpayment-amount.hint=Dangosir hyn hefyd fel ‘swm y dreth a dandalwyd ar gyfer blynyddoedd cynharach’ ar P2 ‘Hysbysiad Cod TWE’ cleient.
+employmenthistory.tax-account.potential-underpayment.title=Treth a dandalwyd ar gyfer {0} i {1} sydd wedi’i chynnwys yn y cod ar gyfer {2} i {3}
+employmenthistory.tax-account.potential-underpayment.hint=Dangosir hyn hefyd fel ‘tandaliad amcangyfrifedig ar gyfer {0} i {1}’ ar P2 ‘Hysbysiad Cod TWE’ cleient.
+employmenthistory.tax-account.outstanding.debt.title=Dyled heb ei thalu sydd wedi’i chynnwys yn y cod treth ar gyfer {0} i {1}
+employmenthistory.tax-account.outstanding.debt.hint=Gall dyledion ymwneud â Hunanasesiad, credydau treth neu Yswiriant Gwladol Dosbarth 2.
 employmenthistory.tax-account.empty.text=Nid oes gan eich cleient dreth na dyledion sydd wedi’u tandalu.
+employmenthistory.tax-account.type-of-underpayment-or-debt=Y math o dandaliad neu ddyled
 
 ################################ Error Pages ###########################################################
 employmenthistory.not.authorised.title=Mae problem wedi codi
