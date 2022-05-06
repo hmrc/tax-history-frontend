@@ -139,16 +139,12 @@
     @if(!isCurrentYear) {
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="allowances">
             <h2 id = "AllowancesHeader" class="govuk-heading-m blue-underline">@messages("employmenthistory.allowance.heading")</h2>
-            <div class = "govuk-grid-row">
-                <div class = "govuk-grid-column-two-thirds">
-                    @if(allowances.nonEmpty) {
-                        @allowanceTable
-                    } else {
-                        <p id="no-allowances" class="govuk-caption-m">@messages("employmenthistory.allowance.no-allowances")</p>
-                    }
-                </div>
-                <div class="govuk-grid-column-one-third"></div>
-            </div>
+
+            @if(allowances.nonEmpty) {
+                @allowanceTable
+            } else {
+                <p id="no-allowances" class="govuk-caption-m">@messages("employmenthistory.allowance.no-allowances")</p>
+            }
         </div>
     }
     @if(!isCurrentYear) {
@@ -256,6 +252,11 @@
 
 @allowanceTable ={
     @p{@messages("employmenthistory.allowance.description")}
+
+    <div class="govuk-inset-text">
+        <p>@messages("employmenthistory.allowance.inset")</p>
+    </div>
+
     <table id="allowanceTable" class="govuk-table">
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
@@ -267,8 +268,8 @@
         <tbody class="govuk-table__body">
             @allowances.map { allowance =>
                 <tr class="govuk-table__row">
-                    <td class="govuk-table__cell govuk-body-s">@messages(s"employmenthistory.al.${allowance.iabdType}")</td>
-                    <td class="govuk-table__cell govuk-body-s govuk-table__cell--numeric">@Currency(allowance.amount)</td>
+                    <th class="govuk-table__cell ">@messages(s"employmenthistory.al.${allowance.iabdType}")</th>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(allowance.amount)</td>
                 </tr>
             }
         </tbody>
