@@ -30,6 +30,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.DateUtils
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentSummaryController @Inject()(
@@ -98,7 +99,8 @@ class EmploymentSummaryController @Inject()(
                 person,
                 getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
-                incomeTotals = dataResponse._4))
+                incomeTotals = dataResponse._4,
+                dateUtils.format(LocalDate.now())))
           }
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
           logger.warn(s"[EmploymentSummaryController][retrieveTaxHistoryData] Non 200 response calling taxHistory" +
@@ -127,8 +129,13 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def getEmploymentsFromResponse(empResponse: HttpResponse) =
-    empResponse.json.as[List[Employment]]
+  private def formatEmploymentDates(employment: Employment)(implicit messages: Messages): Employment = {
+    employment.copy(startDateFormatted = Some(dateUtils.format(employment.startDate)),
+      endDateFormatted = Some(dateUtils.format(employment.endDate)))
+  }
+
+  private def getEmploymentsFromResponse(empResponse: HttpResponse)(implicit messages: Messages) =
+    empResponse.json.as[List[Employment]].map(formatEmploymentDates)
 
   private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) = {
     patResponse.status match {

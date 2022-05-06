@@ -167,7 +167,7 @@
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">@Currency.withPositive(cb.taxablePayEYU)</td>
                                 <td class="govuk-table__cell">@Currency.withPositive(cb.taxEYU)</td>
-                                <td class="govuk-table__cell">@formatDate(cb.receivedDate)</td>
+                                <td class="govuk-table__cell">@cb.receivedDateFormatted</td>
                             </tr>
                             }
                             </tbody>
@@ -185,7 +185,7 @@
                             @payAndTax.earlierYearUpdatesWithStudentLoans.map { cb =>
                             <tr class="govuk-table__row">
                                 <th class="govuk-table__header">@Currency.withPositive(cb.studentLoanEYU.getOrElse(BigDecimal(0.0)))</th>
-                                <td class="govuk-table__cell govuk-table__cell--numeric">@formatDate(cb.receivedDate)</td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric">@cb.receivedDateFormatted</td>
                             </tr>
                             }
                             </tbody>

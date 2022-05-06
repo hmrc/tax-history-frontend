@@ -27,6 +27,8 @@ import java.util.UUID
 case class Employment(employmentId: UUID = UUID.randomUUID(),
                       startDate: Option[LocalDate],
                       endDate: Option[LocalDate] = None,
+                      startDateFormatted: Option[String],
+                      endDateFormatted: Option[String],
                       payeReference: String,
                       employerName: String,
                       companyBenefitsURI: Option[String] = None,
@@ -48,6 +50,8 @@ object Employment {
     (JsPath \ "employmentId").read[UUID] and
       (JsPath \ "startDate").readNullable[LocalDate] and
       (JsPath \ "endDate").readNullable[LocalDate] and
+      (JsPath \ "startDateFormatted").readNullable[String] and
+      (JsPath \ "endDateFormatted").readNullable[String] and
       (JsPath \ "payeReference").read[String] and
       (JsPath \ "employerName").read[String] and
       (JsPath \ "companyBenefitsURI").readNullable[String] and
@@ -63,6 +67,8 @@ object Employment {
     (JsPath \ "employmentId").write[UUID] and
       (JsPath \ "startDate").writeNullable[LocalDate] and
       (JsPath \ "endDate").writeNullable[LocalDate] and
+      (JsPath \ "startDateFormatted").writeNullable[String] and
+      (JsPath \ "endDateFormatted").writeNullable[String] and
       (JsPath \ "payeReference").write[String] and
       (JsPath \ "employerName").write[String] and
       (JsPath \ "companyBenefitsURI").writeNullable[String] and

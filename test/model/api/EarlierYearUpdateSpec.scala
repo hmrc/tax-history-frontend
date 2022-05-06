@@ -33,14 +33,12 @@ package model.api
  */
 
 import java.util.UUID
-
-import org.joda.time.LocalDate
 import support.BaseSpec
 import utils.TestUtil
 
+import java.time.LocalDate
+
 class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
-
-
 
   lazy val earlierYearUpdate1: EarlierYearUpdate =  EarlierYearUpdate(
     earlierYearUpdateId = UUID.fromString("cf1886e7-ae56-4ec2-84a6-926d64ace287"),

@@ -38,8 +38,7 @@
   taxAccount: Option[TaxAccount],
   statePension: Option[StatePension],
   incomeTotals: Option[TotalIncome],
-        startDate: String,
-        endDate: String
+  formattedNowDate: String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @getName=@{
@@ -126,7 +125,7 @@
                 <div class = "govuk-grid-column-two-thirds">
                     @if(TaxYear.current.currentYear == taxYear) {
                         @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted)}
-                        @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formatDate(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
+                        @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
                     } else {
                         @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
                     }
@@ -183,8 +182,8 @@
             @employments.filter(!_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
                 <tr class="govuk-table__row">
                     <th scope="row" class="govuk-table__cell" data-label="@messages("lbl.employer")">@ControllerUtils.isJobSeekerAllowance(employment)</th>
-                    <td class="govuk-table__cell" data-label="@messages("lbl.date.start")">@startDate</td>
-                    <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@endDate</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.start")">@employment.startDateFormatted.getOrElse("")</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@employment.endDateFormatted.getOrElse("")</td>
                     <td class="govuk-table__cell" data-label="@messages("lbl.status")">@ControllerUtils.getEmploymentStatus(employment)</td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="@{if(employments.count(!_.isOccupationalPension) == 1) "employmentIncome" else s"employmentIncome$index"}">@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.income)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="@{if(employments.count(!_.isOccupationalPension) == 1) "employmentIncomeTax" else s"employmentIncomeTax$index"}">@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.tax)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
@@ -231,8 +230,8 @@
             @employments.filter(_.isOccupationalPension).zipWithIndex.map { case (employment, index) =>
                 <tr class="govuk-table__row">
                     <th class="govuk-table__cell" data-label="@messages("lbl.provider")">@employment.employerName</th>
-                    <td class="govuk-table__cell" data-label="@messages("lbl.date.start")">@startDate</td>
-                    <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@endDate</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.start")">@employment.startDateFormatted.getOrElse("")</td>
+                    <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@employment.endDateFormatted.getOrElse("")</td>
                     <td class="govuk-table__cell total govuk-table__cell--numeric" data-label="@messages("lbl.income")" id=@{if(employments.count(_.isOccupationalPension)==1) "pensionIncome" else s"pensionIncome$index"}>@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.income)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
                     <td class="govuk-table__cell total govuk-table__cell--numeric"  data-label="@messages("lbl.tax")" id=@{if(employments.count(_.isOccupationalPension)==1) "pensionIncomeTax" else s"pensionIncomeTax$index"}>@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.tax)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
                     <td class="govuk-table__cell"  data-label="@messages("lbl.record")">

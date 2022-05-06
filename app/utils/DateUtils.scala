@@ -28,6 +28,9 @@ class DateUtils @Inject()(languageUtils: LanguageUtils) {
   private def noRecord(implicit messages: Messages): String = Messages("lbl.date.no-record")
 
   def format(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDate(date)
+  def format(date: Option[LocalDate])(implicit messages: Messages): String = {
+    date.fold("")(languageUtils.Dates.formatDate)
+  }
 
   def getStartDate(employment: Employment)(implicit messages: Messages): String = {
     employment.startDate.fold(noRecord){date => format(date)}
