@@ -19,7 +19,7 @@ package model.api
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.time.TaxYear
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneOffset}
 import java.time.temporal.ChronoUnit
 
 case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymentFrequency: Option[Int] = None,
@@ -30,7 +30,7 @@ case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymen
       case Some(1) => //Weekly
         if (TaxYear.current.currentYear == taxYear) {
           startDate.flatMap { start =>
-            val noOfWeeksTillDate = ChronoUnit.WEEKS.between(start, LocalDate.now()).toInt
+            val noOfWeeksTillDate = ChronoUnit.WEEKS.between(start, Instant.now().atOffset(ZoneOffset.UTC).toLocalDate).toInt
             val noOfPaymentsTillDate = noOfWeeksTillDate + 1 //noOfWeeksTillDate comes out as one less than the no of payments
             Some(noOfPaymentsTillDate * weeklyAmount)
           }

@@ -30,7 +30,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.DateUtils
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneOffset}
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentSummaryController @Inject()(
@@ -100,7 +100,7 @@ class EmploymentSummaryController @Inject()(
                 getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                 incomeTotals = dataResponse._4,
-                dateUtils.format(LocalDate.now())))
+                dateUtils.format(Instant.now().atOffset(ZoneOffset.UTC).toLocalDate)))
           }
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
           logger.warn(s"[EmploymentSummaryController][retrieveTaxHistoryData] Non 200 response calling taxHistory" +
