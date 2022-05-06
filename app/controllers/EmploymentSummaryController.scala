@@ -130,8 +130,9 @@ class EmploymentSummaryController @Inject()(
   }
 
   private def formatEmploymentDates(employment: Employment)(implicit messages: Messages): Employment = {
-    employment.copy(startDateFormatted = Some(dateUtils.format(employment.startDate)),
-      endDateFormatted = Some(dateUtils.format(employment.endDate)))
+    val startDateFormatted = dateUtils.getStartDate(employment)
+    val endDateFormatted = dateUtils.getEndDate(employment)
+    employment.copy(startDateFormatted = Some(startDateFormatted), endDateFormatted = Some(endDateFormatted))
   }
 
   private def getEmploymentsFromResponse(empResponse: HttpResponse)(implicit messages: Messages) =
