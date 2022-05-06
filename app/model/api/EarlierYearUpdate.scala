@@ -27,7 +27,7 @@ case class EarlierYearUpdate(earlierYearUpdateId: UUID = UUID.randomUUID(),
                              taxEYU: BigDecimal,
                              studentLoanEYU: Option[BigDecimal] = None,
                              receivedDate: LocalDate,
-                             receivedDateFormatted: String)
+                             receivedDateFormatted: Option[String])
 
 object EarlierYearUpdate extends LocalDateFormat {
   implicit val formats = Json.format[EarlierYearUpdate]

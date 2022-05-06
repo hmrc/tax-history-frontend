@@ -167,7 +167,7 @@
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">@Currency.withPositive(cb.taxablePayEYU)</td>
                                 <td class="govuk-table__cell">@Currency.withPositive(cb.taxEYU)</td>
-                                <td class="govuk-table__cell">@cb.receivedDateFormatted</td>
+                                <td class="govuk-table__cell">@cb.receivedDateFormatted.getOrElse("")</td>
                             </tr>
                             }
                             </tbody>

@@ -77,7 +77,7 @@ class EmploymentDetailController @Inject()(
   }
 
   private def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax = {
-    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates.map(eyu => eyu.copy(receivedDateFormatted = dateUtils.format(eyu.receivedDate))))
+    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates.map(eyu => eyu.copy(receivedDateFormatted = Some(dateUtils.format(eyu.receivedDate)))))
   }
 
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
