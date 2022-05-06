@@ -18,8 +18,6 @@ package controllers
 
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
-
-import javax.inject.Inject
 import model.api._
 import models.taxhistory.Person
 import play.api.i18n.Messages
@@ -30,7 +28,8 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.DateUtils
 
-import java.time.{Instant, LocalDate, ZoneOffset}
+import java.time.{Instant, ZoneOffset}
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentSummaryController @Inject()(
