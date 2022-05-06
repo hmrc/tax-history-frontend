@@ -28,9 +28,8 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
-import uk.gov.hmrc.play.language.LanguageUtils
 import uk.gov.hmrc.time.TaxYear
-import utils.DateHelper
+import utils.DateUtils
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,6 +43,7 @@ class SelectTaxYearController @Inject()(
                                          val cc: MessagesControllerComponents,
                                          implicit val appConfig: AppConfig,
                                          selectTaxYear: views.html.taxhistory.select_tax_year,
+                                         dateUtils: DateUtils
                                        )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
@@ -54,8 +54,8 @@ class SelectTaxYearController @Inject()(
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          format(TaxYear(taxYear.year).starts),
-          format(TaxYear(taxYear.year).finishes))
+          dateUtils.format(TaxYear(taxYear.year).starts),
+          dateUtils.format(TaxYear(taxYear.year).finishes))
     }
   }
 

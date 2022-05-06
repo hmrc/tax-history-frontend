@@ -17,10 +17,10 @@
 package model.api
 
 import java.util.UUID
-
-import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import utils.LocalDateFormat
+
+import java.time.LocalDate
 
 case class EarlierYearUpdate(earlierYearUpdateId: UUID = UUID.randomUUID(),
                              taxablePayEYU: BigDecimal,

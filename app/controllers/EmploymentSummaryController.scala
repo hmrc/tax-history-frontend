@@ -18,14 +18,17 @@ package controllers
 
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+
 import javax.inject.Inject
 import model.api._
 import models.taxhistory.Person
+import play.api.i18n.Messages
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.DateUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,7 +40,8 @@ class EmploymentSummaryController @Inject()(
    override val env: Environment,
    val cc: MessagesControllerComponents,
    implicit val appConfig: AppConfig,
-   employmentSummary: views.html.taxhistory.employment_summary
+   employmentSummary: views.html.taxhistory.employment_summary,
+   dateUtils: DateUtils
  )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
@@ -134,9 +138,13 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def getStatePensionsFromResponse(statePensionResponse: HttpResponse) = {
+  private def formatStatePensionStartDate(statePension: StatePension)(implicit messages: Messages) = {
+    statePension.startDate.fold(statePension)(date => statePension.copy(startDateFormatted = Some(dateUtils.format(date))))
+  }
+
+  private def getStatePensionsFromResponse(statePensionResponse: HttpResponse)(implicit messages: Messages) = {
     statePensionResponse.status match {
-      case OK => statePensionResponse.json.asOpt[StatePension]
+      case OK => statePensionResponse.json.asOpt[StatePension].fold(None: Option[StatePension])(statePension => Some(formatStatePensionStartDate(statePension)))
       case status => logger.info(s"State Pension Status: $status")
         None
     }

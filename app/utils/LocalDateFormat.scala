@@ -16,16 +16,11 @@
 
 package utils
 
-import play.api.i18n.Messages
 import play.api.libs.json.{Reads, Writes}
-import uk.gov.hmrc.play.language.LanguageUtils
 
 import java.time.LocalDate
 
-trait DateHelper { self: LanguageUtils =>
-
+trait LocalDateFormat {
   implicit val localDateReads: Reads[LocalDate] = Reads.DefaultLocalDateReads
   implicit val localDateWrites: Writes[LocalDate] = Writes.DefaultLocalDateWrites
-
-  def format(date: LocalDate)(implicit messages: Messages): String = Dates.formatDate(date)
 }

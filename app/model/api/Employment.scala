@@ -16,14 +16,13 @@
 
 package model.api
 
-import java.util.UUID
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import utils.LocalDateFormat
 
 import java.time.LocalDate
+import java.util.UUID
 
 case class Employment(employmentId: UUID = UUID.randomUUID(),
                       startDate: Option[LocalDate],
@@ -41,7 +40,7 @@ case class Employment(employmentId: UUID = UUID.randomUUID(),
   def isOccupationalPension = employmentPaymentType.contains(OccupationalPension)
 }
 
-object Employment extends LocalDateFormat {
+object Employment {
 
   import EmploymentPaymentType.format
 
