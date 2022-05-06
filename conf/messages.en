@@ -58,6 +58,7 @@ employmenthistory.missing.client.name=client
 employmenthistory.nopaydata=No data available
 employmenthistory.allowance.heading=Allowances
 employmenthistory.allowance.description=Your client gets tax relief on these amounts.
+employmenthistory.allowance.inset=HMRC does not hold details of the employment to which these allowances may have related.
 employmenthistory.allowance.no-allowances=Your client does not have any tax relief allowance for this tax year.
 employmenthistory.eyu.pay=Income amount
 employmenthistory.eyu.studentloan=Student loan amount

@@ -58,6 +58,7 @@ employmenthistory.missing.client.name=cleient
 employmenthistory.nopaydata=Dim data ar gael
 employmenthistory.allowance.heading=Lwfansau
 employmenthistory.allowance.description=Mae’ch cleient yn cael rhyddhad treth ar y symiau hyn.
+employmenthistory.allowance.inset=Nid yw CThEM yn cadw manylion y gyflogaeth y gallai’r lwfansau hyn fod wedi bod yn gysylltiedig â hi.
 employmenthistory.allowance.no-allowances=Nid oes gan eich cleient unrhyw lwfans rhyddhad treth ar gyfer y flwyddyn dreth hon.
 employmenthistory.eyu.pay=Swm yr incwm
 employmenthistory.eyu.studentloan=Swm y Benthyciad Myfyriwr
