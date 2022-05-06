@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import views.html.helper.CSPNonce
 @import views.models.PageTitle
 
 @this(
@@ -153,10 +154,12 @@
 
 @govukTemplate(
     pageTitle = Some(title.fullTitle()),
-    headBlock = Some(hmrcHead(Some(head))),
+    headBlock = Some(hmrcHead(
+        nonce = CSPNonce.get,
+        headBlock = Some(head))),
     headerBlock = header,
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
-    bodyEndBlock = Some(hmrcScripts())
+    bodyEndBlock = Some(hmrcScripts(nonce = CSPNonce.get))
 )(content)
