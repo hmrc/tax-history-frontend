@@ -16,14 +16,52 @@
 
 package utils
 
-import org.joda.time.LocalDate
-import org.scalatestplus.play.PlaySpec
+import model.api.EmploymentStatus
+import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import support.GuiceAppSpec
+import views.taxhistory.Constants
 
-class DateHelperSpec extends PlaySpec {
+import java.time.LocalDate
 
-  "DateHelper" must {
+class DateHelperSpec extends GuiceAppSpec with Constants {
+
+  val dateUtils = inject[DateUtils]
+
+  "DateHelper" should {
     "convert input to the expected date format" in {
-      DateHelper.formatDate(LocalDate.parse("2001-10-11")) mustBe "11 October 2001"
+      dateUtils.format(LocalDate.parse("2001-10-11")) mustBe "11 October 2001"
+    }
+
+    "convert optional some input to the expected date format" in {
+      dateUtils.format(Some(LocalDate.parse("2001-10-11"))) mustBe "11 October 2001"
+    }
+
+    "convert optional none input to empty string" in {
+      dateUtils.format(None) mustBe ""
+    }
+
+    "get start date" in {
+      dateUtils.getStartDate(emp1) mustBe "21 January 2016"
+    }
+
+    "return no record given start date" in {
+      dateUtils.getStartDate(emp1.copy(startDate = None)) mustBe "No record"
+    }
+
+    "get end date" in {
+      dateUtils.getEndDate(emp1) mustBe "1 January 2017"
+    }
+
+    "return no record given a potentially ceased status" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.PotentiallyCeased)) mustBe "No record"
+    }
+
+    "return ongoing given an unknown status" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Unknown)) mustBe "No record"
+    }
+
+    "return ongoing given a live status" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Live)) mustBe "Ongoing"
     }
   }
 

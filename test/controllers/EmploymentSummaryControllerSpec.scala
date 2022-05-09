@@ -22,7 +22,6 @@ import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -37,8 +36,10 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.DateUtils
 import views.html.taxhistory.employment_summary
 
+import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -83,7 +84,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List.empty),
     "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
       PayAndTax(
@@ -94,7 +95,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List.empty))
 
   private val payAndTaxRandomUUID = Map(
@@ -106,7 +107,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List.empty),
     UUID.randomUUID().toString ->
       PayAndTax(
@@ -116,7 +117,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
         taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List.empty))
 
   trait LocalSetup extends MockitoSugar {
@@ -126,7 +127,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, appConfig, injected[employment_summary])(stubControllerComponents().executionContext)
+        app.configuration, environment, messagesControllerComponents, appConfig, injected[employment_summary], injected[DateUtils])(stubControllerComponents().executionContext)
 
       when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))

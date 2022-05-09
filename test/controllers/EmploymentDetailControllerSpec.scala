@@ -18,7 +18,6 @@ package controllers
 
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
@@ -33,8 +32,10 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.DateUtils
 import views.html.taxhistory.employment_detail
 
+import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -47,7 +48,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
 
     lazy val controller: EmploymentDetailController = {
           val c = new EmploymentDetailController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, injected[employment_detail])(stubControllerComponents().executionContext, appConfig)
+        app.configuration, environment, messagesControllerComponents, injected[employment_detail], injected[DateUtils])(stubControllerComponents().executionContext, appConfig)
 
       val cbUUID = UUID.randomUUID()
       val companyBenefits = List(
@@ -62,7 +63,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture w
         taxTotalIncludingEYU = Some(979.36),
         studentLoan = None,
         studentLoanIncludingEYU  = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List.empty
       )
 

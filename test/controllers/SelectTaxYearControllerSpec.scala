@@ -33,6 +33,7 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.DateUtils
 import views.html.taxhistory.select_tax_year
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +45,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with
     lazy val controller: SelectTaxYearController = {
 
       val c = new SelectTaxYearController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, appConfig, injected[select_tax_year])(stubControllerComponents().executionContext)
+        app.configuration, environment, messagesControllerComponents, appConfig, injected[select_tax_year], injected[DateUtils])(stubControllerComponents().executionContext)
 
       when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))

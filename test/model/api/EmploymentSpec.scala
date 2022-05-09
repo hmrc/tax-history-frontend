@@ -33,10 +33,10 @@ package model.api
  */
 
 import java.util.UUID
-
-import org.joda.time.LocalDate
 import support.BaseSpec
 import utils.TestUtil
+
+import java.time.LocalDate
 
 class EmploymentSpec extends TestUtil with BaseSpec {
 

@@ -17,16 +17,16 @@
 package views.taxhistory
 
 import java.util.UUID
-
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import model.api._
 import models.taxhistory.Person
-import org.joda.time.LocalDate
+
+import java.time.LocalDate
 
 trait Constants {
 
-  val startDate = new LocalDate("2016-01-21")
-  val endDate = new LocalDate("2016-11-01")
+  val startDate = LocalDate.parse("2016-01-21")
+  val endDate = LocalDate.parse("2016-11-01")
 
   val emp1: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -149,7 +149,7 @@ trait DetailConstants {
     taxTotalIncludingEYU = Some(1007.34),
     studentLoan = Some(101.00),
     studentLoanIncludingEYU = Some(111.0),
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = eyuList
   )
 
@@ -160,7 +160,7 @@ trait DetailConstants {
     taxTotalIncludingEYU = None,
     studentLoan = Some(101.00),
     studentLoanIncludingEYU = Some(101.0),
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = List.empty
   )
 
@@ -171,7 +171,7 @@ trait DetailConstants {
     taxTotalIncludingEYU = Some(1007.34),
     studentLoan = None,
     studentLoanIncludingEYU = None,
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = eyuList)
 
   val uuid: UUID = UUID.randomUUID()
