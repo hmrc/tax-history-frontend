@@ -19,6 +19,7 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
 import support.GuiceAppSpec
+import uk.gov.hmrc.play.language.LanguageUtils
 import views.taxhistory.DetailConstants
 
 import java.time.LocalDate
@@ -27,10 +28,12 @@ import java.util.UUID
 
 class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
 
-  val dateUtils = inject[DateUtils]
+  val languageUtils = mock[LanguageUtils]
+  val dateUtils = new DateUtils(languageUtils)
 
   "ControllerUtils - getEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
+
       val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",

@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class DateUtils @Inject()(languageUtils: LanguageUtils) {
 
-  private def noRecord(implicit messages: Messages): String = Messages("lbl.date.no-record")
+  private def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
 
   def format(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDate(date)
   def format(date: Option[LocalDate])(implicit messages: Messages): String = {
@@ -37,7 +37,7 @@ class DateUtils @Inject()(languageUtils: LanguageUtils) {
   }
 
   def getEndDate(employment: Employment)(implicit messages: Messages): String = {
-    val ongoing = Messages("lbl.end-date.ongoing")
+    val ongoing = messages("lbl.end-date.ongoing")
     employment.employmentStatus match {
       case EmploymentStatus.PotentiallyCeased => noRecord
       case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord){date => format(date)}

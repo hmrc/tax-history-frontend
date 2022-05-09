@@ -36,5 +36,4 @@ class GuiceAppSpec extends BaseSpec {
 
    implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
    implicit val messages: Messages = messagesApi.preferred(FakeRequest())
-
 }
