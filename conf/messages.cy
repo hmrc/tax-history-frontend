@@ -249,9 +249,9 @@ global.error.500.message=Rhowch gynnig arall arni mewn ychydig o funudau.
 #********************************************************************
 # timeout text
 #********************************************************************
-timeout.message = For your security, we will sign you out in
-timeout.keepAlive = Stay signed in
-timeout.signOut = Sign out
+timeout.message=Er eich diogelwch, byddwn yn eich allgofnodi cyn pen
+timeout.keepAlive=Parhau i fod wedi’ch mewngofnodi
+timeout.signOut=Allgofnodi
 
-signedOut.title = For your security, we signed you out
-signedOut.signIn = Sign in
+signedOut.title=Er eich diogelwch, gwnaethom eich allgofnodi
+signedOut.signIn=Mewngofnodi
