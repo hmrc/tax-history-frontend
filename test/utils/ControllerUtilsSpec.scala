@@ -28,7 +28,7 @@ import java.util.UUID
 
 class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
 
-  val languageUtils = mock[LanguageUtils]
+  val languageUtils = injected[LanguageUtils]
   val dateUtils = new DateUtils(languageUtils)
 
   "ControllerUtils - getEndDate" must {

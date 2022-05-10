@@ -129,7 +129,6 @@ class EmploymentDetailController @Inject()(
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
       incomeSource <- getIncomeSource(nino, taxYear, employmentId)
     } yield Ok(employmentDetail(taxYear, payAndTax,
-      employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource,
-      dateUtils.getStartDate(employment), dateUtils.getEndDate(employment)))
+      employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource))
   }
 }

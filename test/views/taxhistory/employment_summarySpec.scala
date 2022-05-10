@@ -25,6 +25,7 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
+import uk.gov.hmrc.play.language.LanguageUtils
 import uk.gov.hmrc.time.TaxYear
 import utils.{Currency, DateUtils, TestUtil}
 import views.html.taxhistory.employment_summary
@@ -37,7 +38,8 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
   val firstName = "testFirstName"
   val surname = "testSurname"
-  val dateUtils = inject[DateUtils]
+  val languageUtils = injected[LanguageUtils]
+  val dateUtils = new DateUtils(languageUtils)
   val now = dateUtils.format(LocalDate.now())
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
   
@@ -165,7 +167,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
   "Show state pensions when clients receiving them for the first time in the current year" in new ViewFixture {
     val startDate: LocalDate = LocalDate.now().withYear(currentTaxYear)
-    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate))
+    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate), startDateFormatted = Some("10 May 2022"))
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None, now)
     doc.getElementsContainingOwnText("State Pension").hasText mustBe true
     val weeklyP1: String = messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", dateUtils.format(startDate))

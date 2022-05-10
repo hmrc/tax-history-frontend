@@ -19,13 +19,15 @@ package utils
 import model.api.EmploymentStatus
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import support.GuiceAppSpec
+import uk.gov.hmrc.play.language.LanguageUtils
 import views.taxhistory.Constants
 
 import java.time.LocalDate
 
 class DateHelperSpec extends GuiceAppSpec with Constants {
 
-  val dateUtils = inject[DateUtils]
+  val languageUtils = injected[LanguageUtils]
+  val dateUtils = new DateUtils(languageUtils)
 
   "DateHelper" should {
     "convert input to the expected date format" in {
@@ -56,12 +58,20 @@ class DateHelperSpec extends GuiceAppSpec with Constants {
       dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.PotentiallyCeased)) mustBe "No record"
     }
 
-    "return ongoing given an unknown status" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Unknown)) mustBe "No record"
+    "return end date given an unknown status" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Unknown)) mustBe "1 January 2017"
     }
 
-    "return ongoing given a live status" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Live)) mustBe "Ongoing"
+    "return no record given an unknown status and no end date" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None)) mustBe "No record"
+    }
+
+    "return end date given a live status" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Live)) mustBe "1 January 2017"
+    }
+
+    "return ongoing given a live status and no end date" in {
+      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Live, endDate = None)) mustBe "Ongoing"
     }
   }
 

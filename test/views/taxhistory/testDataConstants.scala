@@ -212,6 +212,8 @@ trait DetailConstants {
     employerName = "employer-1",
     startDate = Some(LocalDate.parse("2016-01-21")),
     endDate = Some(LocalDate.parse("2017-01-01")),
+    startDateFormatted = Some("21 January 2016"),
+    endDateFormatted = Some("1 January 2017"),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,

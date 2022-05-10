@@ -124,7 +124,7 @@
             <div class = "govuk-grid-row">
                 <div class = "govuk-grid-column-two-thirds">
                     @if(TaxYear.current.currentYear == taxYear) {
-                        @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted)}
+                        @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted.getOrElse(""))}
                         @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
                     } else {
                         @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}

@@ -27,9 +27,7 @@
   employment: Employment,
   companyBenefits: List[CompanyBenefit],
   clientNameOrNino: String,
-  incomeSource: Option[IncomeSource],
-  startDate: String,
-  endDate: String)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  incomeSource: Option[IncomeSource])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @isCurrentYear = @{
     TaxYear.current.currentYear == taxYear
@@ -90,11 +88,11 @@
         }
         <div class="govuk-summary-list__row">
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.start")</dt>
-            <dd class="govuk-body-s margin-inline-start">@startDate</dd>
+            <dd class="govuk-body-s margin-inline-start">@employment.startDateFormatted.getOrElse("")</dd>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.end")</dt>
-            <dd class="govuk-body-s margin-inline-start">@endDate</dd>
+            <dd class="govuk-body-s margin-inline-start">@employment.endDateFormatted.getOrElse("")</dd>
         </div>
         @if(!employment.isOccupationalPension) {
             <div class="govuk-summary-list__row">
@@ -127,7 +125,7 @@
             </table>
         }
         case None => {
-            <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, startDate)</p>
+            <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, employment.startDateFormatted.getOrElse(""))</p>
         }
     }
 }
