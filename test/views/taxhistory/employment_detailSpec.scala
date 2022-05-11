@@ -43,7 +43,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
   val dateUtils = new DateUtils(languageUtils)
   val start = dateUtils.format(LocalDate.now())
   val end = dateUtils.format(LocalDate.now())
-  val format = DateTimeFormatter.ofPattern("D MMMM Y")
+  val format = DateTimeFormatter.ofPattern("d MMMM y")
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 
   trait ViewFixture extends Fixture {

@@ -34,6 +34,8 @@ trait Constants {
     employerName = "employer-1",
     startDate = Some(LocalDate.parse("2016-01-21")),
     endDate = Some(LocalDate.parse("2017-01-01")),
+    startDateFormatted = Some("21 January 2016"),
+    endDateFormatted = Some("1 January 2017"),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = Some(OccupationalPension),
@@ -47,6 +49,8 @@ trait Constants {
     employerName = "employer-2",
     startDate = Some(LocalDate.parse("2016-01-21")),
     endDate = None,
+    startDateFormatted = Some("21 January 2016"),
+    endDateFormatted = Some("Ongoing"),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
@@ -58,6 +62,8 @@ trait Constants {
     payeReference = "paye-2",
     employerName = "employer-2",
     startDate = Some(LocalDate.parse("2016-01-21")),
+    startDateFormatted = Some("21 January 2016"),
+    endDateFormatted = Some("Ongoing"),
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
@@ -71,6 +77,8 @@ trait Constants {
     employerName = "employer-3",
     startDate = Some(LocalDate.parse("2016-01-21")),
     endDate = None,
+    startDateFormatted = Some("21 January 2016"),
+    endDateFormatted = Some("No record"),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
@@ -131,13 +139,15 @@ trait DetailConstants {
     taxablePayEYU = 0,
     taxEYU = 8.99,
     studentLoanEYU = Some(10.0),
-    receivedDate = LocalDate.parse("2016-01-21")
+    receivedDate = LocalDate.parse("2016-01-21"),
+    receivedDateFormatted = Some("21 January 2016")
   )
 
   val eyu2: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 10,
     taxEYU = 18.99,
-    receivedDate = LocalDate.parse("2016-05-21")
+    receivedDate = LocalDate.parse("2016-05-21"),
+    receivedDateFormatted = Some("21 May 2016")
   )
 
   val eyuList = List(eyu1, eyu2)

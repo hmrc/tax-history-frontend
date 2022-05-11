@@ -120,10 +120,12 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
       employments.foreach(emp => {
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
         doc.getElementsContainingOwnText(dateUtils.format(emp.startDate.get)).hasText mustBe true
-        if (emp.employmentStatus == EmploymentStatus.PotentiallyCeased) {
-          doc.getElementsMatchingOwnText(messages("lbl.date.no-record")).hasText mustBe true
-        } else {
-          doc.getElementsMatchingOwnText(emp.endDate.fold(messages("lbl.end-date.ongoing"))
+
+        emp.employmentStatus match {
+          case EmploymentStatus.PotentiallyCeased => doc.getElementsMatchingOwnText(messages("lbl.date.no-record")).hasText mustBe true
+          case EmploymentStatus.Live | EmploymentStatus.Ceased => doc.getElementsMatchingOwnText(emp.endDate.fold(messages("lbl.end-date.ongoing"))
+          (d => dateUtils.format(d))).hasText mustBe true
+          case EmploymentStatus.Unknown => doc.getElementsMatchingOwnText(emp.endDate.fold(messages("lbl.date.no-record"))
           (d => dateUtils.format(d))).hasText mustBe true
         }
       })
@@ -167,7 +169,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
   "Show state pensions when clients receiving them for the first time in the current year" in new ViewFixture {
     val startDate: LocalDate = LocalDate.now().withYear(currentTaxYear)
-    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate), startDateFormatted = Some("10 May 2022"))
+    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate), startDateFormatted = Some(dateUtils.format(startDate)))
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None, now)
     doc.getElementsContainingOwnText("State Pension").hasText mustBe true
     val weeklyP1: String = messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", dateUtils.format(startDate))
