@@ -54,8 +54,8 @@ class SelectTaxYearController @Inject()(
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          dateUtils.format(TaxYear(taxYear.year).starts),
-          dateUtils.format(TaxYear(taxYear.year).finishes))
+          dateUtils.dateToFormattedString(TaxYear(taxYear.year).starts),
+          dateUtils.dateToFormattedString(TaxYear(taxYear.year).finishes))
     }
   }
 

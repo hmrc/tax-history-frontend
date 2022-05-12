@@ -26,7 +26,7 @@ import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import support.fixtures.PersonFixture
+import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
@@ -38,7 +38,7 @@ import views.html.taxhistory.select_tax_year
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectTaxYearControllerSpec extends ControllerSpec with PersonFixture with BaseSpec {
+class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec {
 
   trait LocalSetup extends MockitoSugar {
 

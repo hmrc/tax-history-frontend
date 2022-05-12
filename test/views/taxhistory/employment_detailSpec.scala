@@ -41,8 +41,8 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
   val surname = "testSurname"
   val languageUtils = injected[LanguageUtils]
   val dateUtils = new DateUtils(languageUtils)
-  val start = dateUtils.format(LocalDate.now())
-  val end = dateUtils.format(LocalDate.now())
+  val start = dateUtils.dateToFormattedString(LocalDate.now())
+  val end = dateUtils.dateToFormattedString(LocalDate.now())
   val format = DateTimeFormatter.ofPattern("d MMMM y")
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 

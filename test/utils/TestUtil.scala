@@ -27,7 +27,9 @@ object TestUtil extends TestUtil
 trait TestUtil {
 
   def loadFile(path:String): JsValue = {
-    val jsonString = Source.fromURL(getClass.getResource(path)).mkString
+    val source = Source.fromURL(getClass.getResource(path))
+    val jsonString = source.mkString
+    source.close()
     Json.parse(jsonString)
   }
 

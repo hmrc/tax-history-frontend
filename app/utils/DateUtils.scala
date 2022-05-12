@@ -20,38 +20,38 @@ import model.api.{Employment, EmploymentStatus, PayAndTax}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.language.LanguageUtils
 
-import java.time.LocalDate
+import java.time.{Instant, LocalDate, ZoneOffset}
 import javax.inject.Inject
 
 class DateUtils @Inject()(languageUtils: LanguageUtils) {
 
   def formatEmploymentDates(employment: Employment)(implicit messages: Messages): Employment = {
-    val startDateFormatted = getStartDate(employment)
-    val endDateFormatted = getEndDate(employment)
+    val startDateFormatted = formatStartDate(employment)
+    val endDateFormatted = formatEndDate(employment)
     employment.copy(startDateFormatted = Some(startDateFormatted), endDateFormatted = Some(endDateFormatted))
   }
 
   def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax = {
-    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates.map(eyu => eyu.copy(receivedDateFormatted = Some(format(eyu.receivedDate)))))
+    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates
+      .map(eyu => eyu.copy(receivedDateFormatted = Some(dateToFormattedString(eyu.receivedDate)))))
   }
 
-  private def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
+  def nowDateFormatted(implicit messages: Messages): String = dateToFormattedString(Instant.now().atOffset(ZoneOffset.UTC).toLocalDate)
 
-  def format(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDate(date)
-  def format(date: Option[LocalDate])(implicit messages: Messages): String = {
-    date.fold("")(languageUtils.Dates.formatDate)
+  def dateToFormattedString(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDate(date)
+
+  def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
+
+  def formatStartDate(employment: Employment)(implicit messages: Messages): String = {
+    employment.startDate.fold(noRecord){date => dateToFormattedString(date)}
   }
 
-  def getStartDate(employment: Employment)(implicit messages: Messages): String = {
-    employment.startDate.fold(noRecord){date => format(date)}
-  }
-
-  def getEndDate(employment: Employment)(implicit messages: Messages): String = {
+  def formatEndDate(employment: Employment)(implicit messages: Messages): String = {
     val ongoing = messages("lbl.end-date.ongoing")
     employment.employmentStatus match {
       case EmploymentStatus.PotentiallyCeased => noRecord
-      case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord){date => format(date)}
-      case _                                  => employment.endDate.fold(ongoing){date => format(date)}
+      case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord){date => dateToFormattedString(date)}
+      case _                                  => employment.endDate.fold(ongoing){date => dateToFormattedString(date)}
     }
   }
 

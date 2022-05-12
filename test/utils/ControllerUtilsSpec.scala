@@ -31,7 +31,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
   val languageUtils = injected[LanguageUtils]
   val dateUtils = new DateUtils(languageUtils)
 
-  "ControllerUtils - getEndDate" must {
+  "ControllerUtils - formatEndDate" must {
     "return default message when there is no end date and employment status is Live" in {
 
       val emp = Employment(
@@ -45,7 +45,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.getEndDate(emp) shouldBe Messages("lbl.end-date.ongoing")
+      dateUtils.formatEndDate(emp) shouldBe Messages("lbl.end-date.ongoing")
     }
 
     "return end date when there is an end date and employment status is Live" in {
@@ -62,7 +62,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.getEndDate(emp) shouldBe DateTimeFormatter.ofPattern("d MMMM yyyy").format(parsedEndDate)
+      dateUtils.formatEndDate(emp) shouldBe DateTimeFormatter.ofPattern("d MMMM yyyy").format(parsedEndDate)
     }
 
     "return default message when employment status is PotentiallyCeased" in {
@@ -77,7 +77,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.getEndDate(emp) shouldBe Messages("lbl.date.no-record")
+      dateUtils.formatEndDate(emp) shouldBe Messages("lbl.date.no-record")
     }
 
     "return formatted end date" in {
@@ -92,7 +92,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.getEndDate(emp) shouldBe "1 February 2016"
+      dateUtils.formatEndDate(emp) shouldBe "1 February 2016"
     }
 
     "return date when Employment Status is unknown and endDate is provided" in {
@@ -107,7 +107,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.getEndDate(emp) shouldBe "1 February 2016"
+      dateUtils.formatEndDate(emp) shouldBe "1 February 2016"
     }
 
     "return unknown when Employment Status is unknown and no endDate is provided" in {
@@ -122,19 +122,19 @@ class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.getEndDate(emp) shouldBe Messages("lbl.date.no-record")
+      dateUtils.formatEndDate(emp) shouldBe Messages("lbl.date.no-record")
     }
   }
 
   "ControllerUtils - getStartDate" must {
     "return default message when there is no start date" in {
       val employmentNoStart = employment.copy(startDate = None)
-      dateUtils.getStartDate(employmentNoStart) shouldBe "No record"
+      dateUtils.formatStartDate(employmentNoStart) shouldBe "No record"
     }
 
     "return formatted date when there is a start date" in {
       val employmentNoStart = employment.copy(startDate = Some(LocalDate.parse("2016-02-01")))
-      dateUtils.getStartDate(employmentNoStart) shouldBe "1 February 2016"
+      dateUtils.formatStartDate(employmentNoStart) shouldBe "1 February 2016"
     }
   }
 

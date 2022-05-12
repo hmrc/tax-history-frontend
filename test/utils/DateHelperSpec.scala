@@ -26,52 +26,42 @@ import java.time.LocalDate
 
 class DateHelperSpec extends GuiceAppSpec with Constants {
 
-  val languageUtils = injected[LanguageUtils]
+  val languageUtils: LanguageUtils = injected[LanguageUtils]
   val dateUtils = new DateUtils(languageUtils)
 
   "DateHelper" should {
     "convert input to the expected date format" in {
-      dateUtils.format(LocalDate.parse("2001-10-11")) mustBe "11 October 2001"
+      dateUtils.dateToFormattedString(LocalDate.parse("2001-10-11")) mustBe "11 October 2001"
     }
 
-    "convert optional some input to the expected date format" in {
-      dateUtils.format(Some(LocalDate.parse("2001-10-11"))) mustBe "11 October 2001"
+    "format dates correctly for an employment object" in {
+      val formattedEmployment = dateUtils.formatEmploymentDates(emp1)
+      formattedEmployment.startDateFormatted.get mustBe "21 January 2016"
+      formattedEmployment.endDateFormatted.get mustBe "1 January 2017"
     }
 
-    "convert optional none input to empty string" in {
-      dateUtils.format(None) mustBe ""
+    "return noRecord for start date given no start date" in {
+      dateUtils.formatEmploymentDates(emp1.copy(startDate = None)).startDateFormatted.get mustBe "No record"
     }
 
-    "get start date" in {
-      dateUtils.getStartDate(emp1) mustBe "21 January 2016"
-    }
-
-    "return no record given start date" in {
-      dateUtils.getStartDate(emp1.copy(startDate = None)) mustBe "No record"
-    }
-
-    "get end date" in {
-      dateUtils.getEndDate(emp1) mustBe "1 January 2017"
-    }
-
-    "return no record given a potentially ceased status" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.PotentiallyCeased)) mustBe "No record"
+    "return noRecord for end date given a potentially ceased status" in {
+      dateUtils.formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.PotentiallyCeased)).endDateFormatted.get mustBe "No record"
     }
 
     "return end date given an unknown status" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Unknown)) mustBe "1 January 2017"
+      dateUtils.formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Unknown)).endDateFormatted.get mustBe "1 January 2017"
     }
 
-    "return no record given an unknown status and no end date" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None)) mustBe "No record"
+    "return noRecord for end date given an unknown status and no end date" in {
+      dateUtils.formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None)).endDateFormatted.get mustBe "No record"
     }
 
     "return end date given a live status" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Live)) mustBe "1 January 2017"
+      dateUtils.formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Live)).endDateFormatted.get mustBe "1 January 2017"
     }
 
-    "return ongoing given a live status and no end date" in {
-      dateUtils.getEndDate(emp1.copy(employmentStatus = EmploymentStatus.Live, endDate = None)) mustBe "Ongoing"
+    "return ongoing for end date given a live status and no end date" in {
+      dateUtils.formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Live, endDate = None)).endDateFormatted.get mustBe "Ongoing"
     }
   }
 

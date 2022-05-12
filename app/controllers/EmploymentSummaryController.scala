@@ -99,7 +99,7 @@ class EmploymentSummaryController @Inject()(
                 getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
                 getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                 incomeTotals = dataResponse._4,
-                dateUtils.format(Instant.now().atOffset(ZoneOffset.UTC).toLocalDate)))
+                dateUtils.nowDateFormatted))
           }
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
           logger.warn(s"[EmploymentSummaryController][retrieveTaxHistoryData] Non 200 response calling taxHistory" +
@@ -140,7 +140,7 @@ class EmploymentSummaryController @Inject()(
   }
 
   private def formatStatePensionStartDate(statePension: StatePension)(implicit messages: Messages) = {
-    statePension.startDate.fold(statePension)(date => statePension.copy(startDateFormatted = Some(dateUtils.format(date))))
+    statePension.startDate.fold(statePension)(date => statePension.copy(startDateFormatted = Some(dateUtils.dateToFormattedString(date))))
   }
 
   private def getStatePensionsFromResponse(statePensionResponse: HttpResponse)(implicit messages: Messages) = {

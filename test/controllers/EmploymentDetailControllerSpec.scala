@@ -25,7 +25,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers._
-import support.fixtures.PersonFixture
+import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
@@ -38,46 +38,16 @@ import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentDetailControllerSpec extends ControllerSpec with PersonFixture with BaseSpec {
+class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec {
 
   trait LocalSetup extends MockitoSugar {
 
     lazy val taxYear: Int = 2014
-    lazy val employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
+    lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
 
     lazy val controller: EmploymentDetailController = {
           val c = new EmploymentDetailController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
         app.configuration, environment, messagesControllerComponents, injected[employment_detail], dateUtils)(stubControllerComponents().executionContext, appConfig)
-
-      val cbUUID = UUID.randomUUID()
-      val companyBenefits = List(
-        CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1), isForecastBenefit = true),
-        CompanyBenefit(cbUUID, "CarFuelBenefit", 1000, isForecastBenefit = true)
-      )
-
-      val payAndTax = PayAndTax(
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(4896.80),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(979.36),
-        studentLoan = None,
-        studentLoanIncludingEYU  = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty
-      )
-
-      val employment = Employment(
-        employmentId = employmentId,
-        payeReference = "paye-1",
-        employerName = "employer-1",
-        startDate = Some(LocalDate.parse("2016-01-21")),
-        endDate = Some(LocalDate.parse("2017-01-01")),
-        companyBenefitsURI = None,
-        payAndTaxURI = None,
-        employmentPaymentType = None,
-        employmentStatus = EmploymentStatus.Live,
-        worksNumber = "00191048716"
-      )
 
       val incomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 

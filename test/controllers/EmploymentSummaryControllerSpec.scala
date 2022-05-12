@@ -29,7 +29,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{contentAsString, _}
-import support.fixtures.PersonFixture
+import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -42,69 +42,9 @@ import java.time.LocalDate
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture with BaseSpec with ScalaFutures {
+class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec with ScalaFutures {
 
   lazy val taxYear: Int = 2016
-
-  private val allowance: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "EarlierYearsAdjustment",
-    amount = BigDecimal(32.00))
-
-  private val taxAccount: TaxAccount = TaxAccount(taxAccountId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    outstandingDebtRestriction = Some(200),
-    underpaymentAmount = Some(300),
-    actualPUPCodedInCYPlusOneTaxYear = Some(400))
-
-  private val employments = List(employment, employment.copy(employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"), employmentPaymentType = Some(OccupationalPension)))
-  private val allowances = List(allowance)
-
-  private val statePension: StatePension = StatePension(100, "test")
-
-  private val payAndTaxFixedUUID = Map(
-    "01318d7c-bcd9-47e2-8c38-551e7ccdfae3" ->
-      PayAndTax(
-        payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(12.34),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(56.78),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty),
-    "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
-      PayAndTax(
-        payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(90.12),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(34.56),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty))
-
-  private val payAndTaxRandomUUID = Map(
-    UUID.randomUUID().toString ->
-      PayAndTax(
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(12.34),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(56.78),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty),
-    UUID.randomUUID().toString ->
-      PayAndTax(
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(90.12),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(34.56),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty))
 
   trait LocalSetup extends MockitoSugar {
 

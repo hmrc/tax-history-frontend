@@ -40,7 +40,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
   val surname = "testSurname"
   val languageUtils = injected[LanguageUtils]
   val dateUtils = new DateUtils(languageUtils)
-  val now = dateUtils.format(LocalDate.now())
+  val now = dateUtils.dateToFormattedString(LocalDate.now())
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
   
   trait ViewFixture extends Fixture {
@@ -119,14 +119,14 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
       doc.getElementsMatchingOwnText(messages("employmenthistory.table.header.pensions")).hasText mustBe true
       employments.foreach(emp => {
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
-        doc.getElementsContainingOwnText(dateUtils.format(emp.startDate.get)).hasText mustBe true
+        doc.getElementsContainingOwnText(dateUtils.dateToFormattedString(emp.startDate.get)).hasText mustBe true
 
         emp.employmentStatus match {
           case EmploymentStatus.PotentiallyCeased => doc.getElementsMatchingOwnText(messages("lbl.date.no-record")).hasText mustBe true
           case EmploymentStatus.Live | EmploymentStatus.Ceased => doc.getElementsMatchingOwnText(emp.endDate.fold(messages("lbl.end-date.ongoing"))
-          (d => dateUtils.format(d))).hasText mustBe true
+          (d => dateUtils.dateToFormattedString(d))).hasText mustBe true
           case EmploymentStatus.Unknown => doc.getElementsMatchingOwnText(emp.endDate.fold(messages("lbl.date.no-record"))
-          (d => dateUtils.format(d))).hasText mustBe true
+          (d => dateUtils.dateToFormattedString(d))).hasText mustBe true
         }
       })
 
@@ -169,11 +169,11 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
   "Show state pensions when clients receiving them for the first time in the current year" in new ViewFixture {
     val startDate: LocalDate = LocalDate.now().withYear(currentTaxYear)
-    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate), startDateFormatted = Some(dateUtils.format(startDate)))
+    val sp: StatePension = StatePension(100, "test", Some(1), Some(startDate), startDateFormatted = Some(dateUtils.dateToFormattedString(startDate)))
     val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, None, taxAccount,Some(sp), None, now)
     doc.getElementsContainingOwnText("State Pension").hasText mustBe true
-    val weeklyP1: String = messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", dateUtils.format(startDate))
-    val weeklyP2: String = messages("employmenthistory.state.pensions.text.weekly.p2",  dateUtils.format(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(currentTaxYear))}")
+    val weeklyP1: String = messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", dateUtils.dateToFormattedString(startDate))
+    val weeklyP2: String = messages("employmenthistory.state.pensions.text.weekly.p2",  dateUtils.dateToFormattedString(LocalDate.now()), s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(currentTaxYear))}")
     doc.getElementsContainingOwnText(weeklyP1).hasText mustBe true
     doc.getElementsContainingOwnText(weeklyP2).hasText mustBe true
   }
