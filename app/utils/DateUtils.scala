@@ -16,7 +16,7 @@
 
 package utils
 
-import model.api.{Employment, EmploymentStatus, PayAndTax}
+import model.api.{Employment, EmploymentStatus, PayAndTax, StatePension}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.language.LanguageUtils
 
@@ -34,6 +34,10 @@ class DateUtils @Inject()(languageUtils: LanguageUtils) {
   def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax = {
     payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates
       .map(eyu => eyu.copy(receivedDateFormatted = Some(dateToFormattedString(eyu.receivedDate)))))
+  }
+
+  def formatStatePensionStartDate(statePension: StatePension)(implicit messages: Messages): StatePension = {
+    statePension.startDate.fold(statePension)(date => statePension.copy(startDateFormatted = Some(dateToFormattedString(date))))
   }
 
   def nowDateFormatted(implicit messages: Messages): String = dateToFormattedString(Instant.now().atOffset(ZoneOffset.UTC).toLocalDate)

@@ -34,6 +34,14 @@ class DateHelperSpec extends GuiceAppSpec with Constants {
       dateUtils.dateToFormattedString(LocalDate.parse("2001-10-11")) mustBe "11 October 2001"
     }
 
+    "format pension start date if present" in {
+      dateUtils.formatStatePensionStartDate(statePension).startDateFormatted.get mustBe "30 December 2000"
+    }
+
+    "return none given no pension start date" in {
+      dateUtils.formatStatePensionStartDate(statePension.copy(startDate = None)).startDateFormatted mustBe None
+    }
+
     "format dates correctly for an employment object" in {
       val formattedEmployment = dateUtils.formatEmploymentDates(emp1)
       formattedEmployment.startDateFormatted.get mustBe "21 January 2016"

@@ -28,7 +28,6 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import utils.DateUtils
 
-import java.time.{Instant, ZoneOffset}
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -139,13 +138,10 @@ class EmploymentSummaryController @Inject()(
     }
   }
 
-  private def formatStatePensionStartDate(statePension: StatePension)(implicit messages: Messages) = {
-    statePension.startDate.fold(statePension)(date => statePension.copy(startDateFormatted = Some(dateUtils.dateToFormattedString(date))))
-  }
-
   private def getStatePensionsFromResponse(statePensionResponse: HttpResponse)(implicit messages: Messages) = {
     statePensionResponse.status match {
-      case OK => statePensionResponse.json.asOpt[StatePension].fold(None: Option[StatePension])(statePension => Some(formatStatePensionStartDate(statePension)))
+      case OK => statePensionResponse.json.asOpt[StatePension].fold(None: Option[StatePension])(statePension =>
+        Some(dateUtils.formatStatePensionStartDate(statePension)))
       case status => logger.info(s"State Pension Status: $status")
         None
     }
