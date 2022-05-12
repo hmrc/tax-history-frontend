@@ -16,7 +16,7 @@
 
 package utils
 
-import model.api.{Employment, EmploymentStatus}
+import model.api.{Employment, EmploymentStatus, PayAndTax}
 import play.api.i18n.Messages
 import uk.gov.hmrc.play.language.LanguageUtils
 
@@ -24,6 +24,16 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class DateUtils @Inject()(languageUtils: LanguageUtils) {
+
+  def formatEmploymentDates(employment: Employment)(implicit messages: Messages): Employment = {
+    val startDateFormatted = getStartDate(employment)
+    val endDateFormatted = getEndDate(employment)
+    employment.copy(startDateFormatted = Some(startDateFormatted), endDateFormatted = Some(endDateFormatted))
+  }
+
+  def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax = {
+    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates.map(eyu => eyu.copy(receivedDateFormatted = Some(format(eyu.receivedDate)))))
+  }
 
   private def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
 

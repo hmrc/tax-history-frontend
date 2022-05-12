@@ -76,17 +76,12 @@ class EmploymentDetailController @Inject()(
       }
   }
 
-  private def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax = {
-    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates.map(eyu => eyu.copy(receivedDateFormatted = Some(dateUtils.format(eyu.receivedDate)))))
-  }
-
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
                           (implicit hc: HeaderCarrier, messages: Messages): Future[Option[PayAndTax]] = {
     taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
       payAndTaxResponse.status match {
         case NOT_FOUND => None
-        case _ =>
-          val result = formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
+        case _ => val result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
           if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
       }
     }.recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
@@ -123,7 +118,7 @@ class EmploymentDetailController @Inject()(
                                         taxYear: Int,
                                         employmentId: String,
                                         person: Person)(implicit hc: HeaderCarrier, request: Request[_]) = {
-    val employment = empResponse.json.as[Employment]
+    val employment = dateUtils.formatEmploymentDates(empResponse.json.as[Employment])
     for {
       payAndTax <- getPayAndTax(nino, taxYear, employmentId)
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)

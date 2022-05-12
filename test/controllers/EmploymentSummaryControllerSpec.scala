@@ -36,7 +36,6 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utils.DateUtils
 import views.html.taxhistory.employment_summary
 
 import java.time.LocalDate
@@ -46,19 +45,6 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture with BaseSpec with ScalaFutures {
 
   lazy val taxYear: Int = 2016
-
-  private val employment: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = Some(LocalDate.parse("2016-01-21")),
-    endDate = Some(LocalDate.parse("2017-01-01")),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
 
   private val allowance: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "EarlierYearsAdjustment",
@@ -124,10 +110,11 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture 
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)
+
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, appConfig, injected[employment_summary], injected[DateUtils])(stubControllerComponents().executionContext)
+        app.configuration, environment, messagesControllerComponents, appConfig, injected[employment_summary], dateUtils)(stubControllerComponents().executionContext)
 
       when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
