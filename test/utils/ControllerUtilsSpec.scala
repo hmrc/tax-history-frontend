@@ -19,17 +19,13 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
 import support.GuiceAppSpec
-import uk.gov.hmrc.play.language.LanguageUtils
-import views.taxhistory.DetailConstants
+import views.taxhistory.Constants
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 
-class ControllerUtilsSpec extends GuiceAppSpec with DetailConstants {
-
-  val languageUtils = injected[LanguageUtils]
-  val dateUtils = new DateUtils(languageUtils)
+class ControllerUtilsSpec extends GuiceAppSpec with Constants {
 
   "ControllerUtils - formatEndDate" must {
     "return default message when there is no end date and employment status is Live" in {

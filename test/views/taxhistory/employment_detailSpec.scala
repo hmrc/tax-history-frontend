@@ -26,27 +26,25 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import uk.gov.hmrc.play.language.LanguageUtils
 import uk.gov.hmrc.time.TaxYear
-import utils.{ControllerUtils, DateUtils, TestUtil}
+import utils.{ControllerUtils, TestUtil}
 import views.html.taxhistory.employment_detail
 import views.{BaseViewSpec, Fixture}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
+class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
-  val firstName = "testFirstName"
-  val surname = "testSurname"
-  val languageUtils = injected[LanguageUtils]
-  val dateUtils = new DateUtils(languageUtils)
-  val start = dateUtils.dateToFormattedString(LocalDate.now())
-  val end = dateUtils.dateToFormattedString(LocalDate.now())
-  val format = DateTimeFormatter.ofPattern("d MMMM y")
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
+    val firstName = "testFirstName"
+    val surname = "testSurname"
+    val start: String = dateUtils.dateToFormattedString(LocalDate.now())
+    val end: String = dateUtils.dateToFormattedString(LocalDate.now())
+    val format: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM y")
+
     val currentTaxYear: Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2016

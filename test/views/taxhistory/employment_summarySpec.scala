@@ -25,9 +25,8 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import uk.gov.hmrc.play.language.LanguageUtils
 import uk.gov.hmrc.time.TaxYear
-import utils.{Currency, DateUtils, TestUtil}
+import utils.{Currency, TestUtil}
 import views.html.taxhistory.employment_summary
 import views.{BaseViewSpec, Fixture}
 
@@ -36,13 +35,11 @@ import java.util.UUID
 
 class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
+  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
   val firstName = "testFirstName"
   val surname = "testSurname"
-  val languageUtils = injected[LanguageUtils]
-  val dateUtils = new DateUtils(languageUtils)
-  val now = dateUtils.dateToFormattedString(LocalDate.now())
-  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
-  
+  val now: String = dateUtils.dateToFormattedString(LocalDate.now())
+
   trait ViewFixture extends Fixture {
     val nino: String = TestUtil.randomNino.toString()
     val currentTaxYear: Int = TaxYear.current.currentYear

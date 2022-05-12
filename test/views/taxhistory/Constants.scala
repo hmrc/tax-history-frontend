@@ -140,14 +140,7 @@ trait Constants {
     paymentFrequency = None,
     startDate = Some(LocalDate.of(2000, 12, 30))
   )
-}
 
-trait DetailConstants {
-
-  val startDate: LocalDate = LocalDate.parse("2016-01-21")
-  val endDate: LocalDate = LocalDate.parse("2017-01-01")
-  val startDateFormatted = "21 January 2016"
-  val endDateFormatted = "1 January 2017"
 
   val eyu1: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 0,

@@ -19,15 +19,11 @@ package utils
 import model.api.EmploymentStatus
 import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
 import support.GuiceAppSpec
-import uk.gov.hmrc.play.language.LanguageUtils
 import views.taxhistory.Constants
 
 import java.time.LocalDate
 
 class DateHelperSpec extends GuiceAppSpec with Constants {
-
-  val languageUtils: LanguageUtils = injected[LanguageUtils]
-  val dateUtils = new DateUtils(languageUtils)
 
   "DateHelper" should {
     "convert input to the expected date format" in {
@@ -40,6 +36,11 @@ class DateHelperSpec extends GuiceAppSpec with Constants {
 
     "return none given no pension start date" in {
       dateUtils.formatStatePensionStartDate(statePension.copy(startDate = None)).startDateFormatted mustBe None
+    }
+
+    "format Earlier Year Update Receive date" in {
+      val dates = List("21 January 2016", "21 May 2016")
+      dateUtils.formatEarlierYearUpdateReceivedDate(payAndTax).earlierYearUpdates.flatMap(_.receivedDateFormatted) should equal(dates)
     }
 
     "format dates correctly for an employment object" in {

@@ -24,15 +24,12 @@ import play.api.test.Helpers._
 import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.{Enrolment, EnrolmentIdentifier}
 import uk.gov.hmrc.http.SessionKeys
-import uk.gov.hmrc.play.language.LanguageUtils
-import utils.{DateUtils, TestUtil}
+import utils.TestUtil
 
 import scala.concurrent.Future
 
 trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar {
 
-  lazy val languageUtils: LanguageUtils = injected[LanguageUtils]
-  lazy val dateUtils: DateUtils = new DateUtils(languageUtils)
   lazy val nino: String = randomNino.toString
   lazy val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("USER_NINO" -> nino)
 
