@@ -26,7 +26,7 @@ lazy val microservice =  Project(appName, file("."))
     resolvers += Resolver.jcenterRepo,
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
       ".*BuildInfo.*;.*helpers.*;.*Routes.*;controllers.ExampleController;controllers.testonly.TestOnlyController",
-    ScoverageKeys.coverageMinimumStmtTotal := 90.00,
+    ScoverageKeys.coverageMinimumStmtTotal := 94.00,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
