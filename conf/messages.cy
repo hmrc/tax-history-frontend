@@ -183,7 +183,6 @@ employmenthistory.student.loans=Benthyciad Myfyriwr a ad-dalwyd
 ################################## Select tax year ####################################################
 employmenthistory.select.tax.year.title=Dewiswch y flwyddyn dreth rydych am fwrw golwg drosti
 employmenthistory.select.tax.year.h1=Dewiswch y flwyddyn dreth rydych am fwrw golwg drosti
-employmenthistory.select.tax.year.header=Cofnod incwm {0}
 employmenthistory.select.tax.year.option={0} i {1}
 employmenthistory.select.tax.year=Dewiswch flwyddyn dreth
 employmenthistory.select.tax.year.error.heading=Mae problem wedi codi
@@ -247,3 +246,13 @@ global.error.404.message=Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
 global.error.500.title=Mae’n ddrwg gennym. Mae anawsterau technegol wedi codi – 500
 global.error.500.heading=Mae’n ddrwg gennym. Mae anawsterau technegol wedi codi
 global.error.500.message=Rhowch gynnig arall arni mewn ychydig o funudau.
+
+#********************************************************************
+# timeout text
+#********************************************************************
+timeout.message = For your security, we will sign you out in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
+
+signedOut.title = For your security, we signed you out
+signedOut.signIn = Sign in
