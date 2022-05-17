@@ -17,11 +17,9 @@
 package connectors
 
 import java.util.UUID
-
 import model.api.EmploymentPaymentType.JobseekersAllowance
 import model.api._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.joda.time.LocalDate
 import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
@@ -31,6 +29,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import utils.TestUtil
 
+import java.time.LocalDate
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
@@ -106,7 +105,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         earlierYearUpdateId = UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
         taxablePayEYU = BigDecimal(123.45),
         taxEYU = BigDecimal(67.89),
-        receivedDate = new LocalDate("2015-05-29")
+        receivedDate = LocalDate.parse("2015-05-29")
       ))
 
       lazy val payAndTaxWithEyu: PayAndTax = PayAndTax(
@@ -117,7 +116,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         taxTotalIncludingEYU = Some(BigDecimal(3333.33)),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = eyuList
       )
 
@@ -165,7 +164,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         taxTotalIncludingEYU = Some(BigDecimal(868.25)),
         studentLoan = Some(101.00),
         studentLoanIncludingEYU = Some(101.00),
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List.empty
       )
 
@@ -251,11 +250,11 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         taxTotalIncludingEYU = Some(BigDecimal(3333.33)),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List(EarlierYearUpdate(
           UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"), BigDecimal(123.45),
           taxEYU = BigDecimal(67.89),
-          receivedDate = new LocalDate("2015-05-29")
+          receivedDate = LocalDate.parse("2015-05-29")
         ))
       )
 

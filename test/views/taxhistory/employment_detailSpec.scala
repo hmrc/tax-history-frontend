@@ -31,14 +31,20 @@ import utils.{ControllerUtils, TestUtil}
 import views.html.taxhistory.employment_detail
 import views.{BaseViewSpec, Fixture}
 
-class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailConstants {
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
-  val firstName = "testFirstName"
-  val surname = "testSurname"
+class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
 
   trait ViewFixture extends Fixture {
+    val firstName = "testFirstName"
+    val surname = "testSurname"
+    val start: String = dateUtils.dateToFormattedString(LocalDate.now())
+    val end: String = dateUtils.dateToFormattedString(LocalDate.now())
+    val format: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM y")
+
     val currentTaxYear: Int = TaxYear.current.startYear
     val nino: String = TestUtil.randomNino.toString()
     val taxYear = 2016
@@ -97,8 +103,8 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
 
       payrollId.text should include(employment.worksNumber)
       payeReference.text should include(employment.payeReference)
-      startDate.text should include(employment.startDate.get.toString("d MMMM yyyy"))
-      endDate.text should include(employment.endDate.get.toString("d MMMM yyyy"))
+      startDate.text should include(employment.startDateFormatted.get)
+      endDate.text should include(employment.endDateFormatted.get)
       taxablePay.text should include("£4,906.80")
       incomeTax.text should include("£1,007.34")
     }
@@ -113,8 +119,8 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
 
       doc.getElementsContainingText(employment.worksNumber).hasText shouldBe false
       doc.getElementsContainingText(ControllerUtils.getEmploymentStatus(employment)).hasText shouldBe false
-      startDate.text should include(employment.startDate.get.toString("d MMMM yyyy"))
-      endDate.text should include(employment.endDate.get.toString("d MMMM yyyy"))
+      startDate.text should include(employment.startDate.get.format(format))
+      endDate.text should include(employment.endDate.get.format(format))
       taxablePay.text should include("£4,906.80")
       incomeTax.text should include("£1,007.34")
     }
@@ -171,7 +177,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
           employment, List.empty, clientName, None)
         val taxablePay: Element = doc.getElementById("pay-and-tax-table").child(0).child(1)
         taxablePay.text should include(Messages("employmenthistory.nopaydata"))
-        val paymentGuidance: String = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.toString("d MMMM yyyy"))
+        val paymentGuidance: String = Messages("employmenthistory.pay.and.tax.guidance", employment.employerName, payAndTax.paymentDate.get.format(format))
         doc.getElementsContainingOwnText(paymentGuidance).hasText shouldBe false
       }
     }
@@ -295,8 +301,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with DetailCo
         employment, completeCBList, clientName, incomeSourceNoDeductions)
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.no.pay.and.tax",
-        employment.employerName, employment.startDate.get.toString("d MMMM yyyy"))).hasText shouldBe true
-
+        employment.employerName, employment.startDate.get.format(format))).hasText shouldBe true
     }
 
     "show alternate text when no company benefits are available" in new ViewFixture {

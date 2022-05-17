@@ -17,23 +17,27 @@
 package views.taxhistory
 
 import java.util.UUID
-
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import model.api._
 import models.taxhistory.Person
-import org.joda.time.LocalDate
+
+import java.time.LocalDate
 
 trait Constants {
 
-  val startDate = new LocalDate("2016-01-21")
-  val endDate = new LocalDate("2016-11-01")
+  val startDate: LocalDate = LocalDate.parse("2016-01-21")
+  val endDate: LocalDate = LocalDate.parse("2017-01-01")
+  val startDateFormatted = "21 January 2016"
+  val endDateFormatted = "1 January 2017"
 
   val emp1: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
-    startDate = Some(LocalDate.parse("2016-01-21")),
-    endDate = Some(LocalDate.parse("2017-01-01")),
+    startDate = Some(startDate),
+    endDate = Some(endDate),
+    startDateFormatted = Some(startDateFormatted),
+    endDateFormatted = Some(endDateFormatted),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = Some(OccupationalPension),
@@ -45,8 +49,10 @@ trait Constants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-2",
     employerName = "employer-2",
-    startDate = Some(LocalDate.parse("2016-01-21")),
+    startDate = Some(startDate),
     endDate = None,
+    startDateFormatted = Some(startDateFormatted),
+    endDateFormatted = Some("Ongoing"),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
@@ -57,7 +63,9 @@ trait Constants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-2",
     employerName = "employer-2",
-    startDate = Some(LocalDate.parse("2016-01-21")),
+    startDate = Some(startDate),
+    startDateFormatted = Some(startDateFormatted),
+    endDateFormatted = Some("Ongoing"),
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
@@ -69,8 +77,10 @@ trait Constants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-3",
     employerName = "employer-3",
-    startDate = Some(LocalDate.parse("2016-01-21")),
+    startDate = Some(startDate),
     endDate = None,
+    startDateFormatted = Some(startDateFormatted),
+    endDateFormatted = Some("No record"),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
@@ -81,7 +91,7 @@ trait Constants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-3",
     employerName = "employer-3",
-    startDate = Some(LocalDate.parse("2016-01-21")),
+    startDate = Some(startDate),
     endDate = None,
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
@@ -123,21 +133,28 @@ trait Constants {
   val uA = "202.00"
   val aPC = "301.01"
   val taxAccount: Option[TaxAccount] = Some(TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC))))
-}
 
-trait DetailConstants {
+  val statePension: StatePension = StatePension(
+    grossAmount = 1.0,
+    typeDescription = "test",
+    paymentFrequency = None,
+    startDate = Some(LocalDate.of(2000, 12, 30))
+  )
+
 
   val eyu1: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 0,
     taxEYU = 8.99,
     studentLoanEYU = Some(10.0),
-    receivedDate = LocalDate.parse("2016-01-21")
+    receivedDate = startDate,
+    receivedDateFormatted = Some(startDateFormatted)
   )
 
   val eyu2: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 10,
     taxEYU = 18.99,
-    receivedDate = LocalDate.parse("2016-05-21")
+    receivedDate = LocalDate.parse("2016-05-21"),
+    receivedDateFormatted = Some("21 May 2016")
   )
 
   val eyuList = List(eyu1, eyu2)
@@ -149,7 +166,7 @@ trait DetailConstants {
     taxTotalIncludingEYU = Some(1007.34),
     studentLoan = Some(101.00),
     studentLoanIncludingEYU = Some(111.0),
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = eyuList
   )
 
@@ -160,7 +177,7 @@ trait DetailConstants {
     taxTotalIncludingEYU = None,
     studentLoan = Some(101.00),
     studentLoanIncludingEYU = Some(101.0),
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = List.empty
   )
 
@@ -171,7 +188,7 @@ trait DetailConstants {
     taxTotalIncludingEYU = Some(1007.34),
     studentLoan = None,
     studentLoanIncludingEYU = None,
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = eyuList)
 
   val uuid: UUID = UUID.randomUUID()
@@ -210,8 +227,10 @@ trait DetailConstants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "Payroll ID",
     employerName = "employer-1",
-    startDate = Some(LocalDate.parse("2016-01-21")),
-    endDate = Some(LocalDate.parse("2017-01-01")),
+    startDate = Some(startDate),
+    endDate = Some(endDate),
+    startDateFormatted = Some(startDateFormatted),
+    endDateFormatted = Some(endDateFormatted),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
@@ -222,8 +241,8 @@ trait DetailConstants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
-    startDate = Some(LocalDate.parse("2016-01-21")),
-    endDate = Some(LocalDate.parse("2017-01-01")),
+    startDate = Some(startDate),
+    endDate = Some(endDate),
     companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = Some(JobseekersAllowance),
@@ -234,7 +253,7 @@ trait DetailConstants {
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-1",
     employerName = "employer-1",
-    startDate = Some(LocalDate.parse("2016-01-21")),
+    startDate = Some(startDate),
     employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
     worksNumber = "00191048716")

@@ -16,19 +16,21 @@
 
 package model.api
 
-import org.joda.time.{LocalDate, Weeks}
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.time.TaxYear
-import utils.LocalDateFormat
 
-case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymentFrequency: Option[Int] = None, startDate: Option[LocalDate] = None) {
+import java.time.{Instant, LocalDate, ZoneOffset}
+import java.time.temporal.ChronoUnit
+
+case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymentFrequency: Option[Int] = None,
+                        startDate: Option[LocalDate] = None, startDateFormatted: Option[String] = None) {
 
   def getAmountReceivedTillDate(taxYear: Int): Option[BigDecimal] =
     paymentFrequency match {
       case Some(1) => //Weekly
         if (TaxYear.current.currentYear == taxYear) {
           startDate.flatMap { start =>
-            val noOfWeeksTillDate = Weeks.weeksBetween(start, LocalDate.now()).getWeeks
+            val noOfWeeksTillDate = ChronoUnit.WEEKS.between(start, Instant.now().atOffset(ZoneOffset.UTC).toLocalDate).toInt
             val noOfPaymentsTillDate = noOfWeeksTillDate + 1 //noOfWeeksTillDate comes out as one less than the no of payments
             Some(noOfPaymentsTillDate * weeklyAmount)
           }
@@ -41,6 +43,6 @@ case class StatePension(grossAmount: BigDecimal, typeDescription: String, paymen
   lazy val weeklyAmount: BigDecimal = grossAmount / 52
 }
 
-object StatePension extends LocalDateFormat {
+object StatePension {
   implicit val formats: OFormat[StatePension] = Json.format[StatePension]
 }

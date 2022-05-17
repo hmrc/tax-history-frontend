@@ -33,21 +33,6 @@ object ControllerUtils {
     }
   }
 
-  private def noRecord(implicit messages: Messages): String = Messages("lbl.date.no-record")
-
-  def getStartDate(employment: Employment)(implicit messages: Messages): String = {
-    employment.startDate.map(startDate => DateHelper.formatDate(startDate)).getOrElse(noRecord)
-  }
-
-  def getEndDate(employment: Employment)(implicit messages: Messages): String = {
-    val ongoing = Messages("lbl.end-date.ongoing")
-    employment.employmentStatus match {
-      case EmploymentStatus.PotentiallyCeased => noRecord
-      case EmploymentStatus.Unknown           => employment.endDate.map(DateHelper.formatDate).getOrElse(noRecord)
-      case _                                  => employment.endDate.map(DateHelper.formatDate).getOrElse(ongoing)
-    }
-  }
-
   def hasEmploymentDetails(employment: Employment):Boolean = {
     employment.employmentStatus match{
       case EmploymentStatus.Unknown => false

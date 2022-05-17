@@ -22,7 +22,6 @@ import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
-import org.joda.time.LocalDate
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatestplus.mockito.MockitoSugar
@@ -30,7 +29,7 @@ import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
 import play.api.test.Helpers.{contentAsString, _}
-import support.fixtures.PersonFixture
+import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -42,91 +41,19 @@ import views.html.taxhistory.employment_summary
 import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentSummaryControllerSpec extends ControllerSpec with PersonFixture with BaseSpec with ScalaFutures {
+class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec with ScalaFutures {
 
   lazy val taxYear: Int = 2016
-
-  private val employment: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = Some(LocalDate.parse("2016-01-21")),
-    endDate = Some(LocalDate.parse("2017-01-01")),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
-
-  private val allowance: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    iabdType = "EarlierYearsAdjustment",
-    amount = BigDecimal(32.00))
-
-  private val taxAccount: TaxAccount = TaxAccount(taxAccountId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
-    outstandingDebtRestriction = Some(200),
-    underpaymentAmount = Some(300),
-    actualPUPCodedInCYPlusOneTaxYear = Some(400))
-
-  private val employments = List(employment, employment.copy(employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"), employmentPaymentType = Some(OccupationalPension)))
-  private val allowances = List(allowance)
-
-  private val statePension: StatePension = StatePension(100, "test")
-
-  private val payAndTaxFixedUUID = Map(
-    "01318d7c-bcd9-47e2-8c38-551e7ccdfae3" ->
-      PayAndTax(
-        payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(12.34),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(56.78),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
-        earlierYearUpdates = List.empty),
-    "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
-      PayAndTax(
-        payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(90.12),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(34.56),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
-        earlierYearUpdates = List.empty))
-
-  private val payAndTaxRandomUUID = Map(
-    UUID.randomUUID().toString ->
-      PayAndTax(
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(12.34),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(56.78),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
-        earlierYearUpdates = List.empty),
-    UUID.randomUUID().toString ->
-      PayAndTax(
-        taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(90.12),
-        taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(34.56),
-        studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
-        earlierYearUpdates = List.empty))
 
   trait LocalSetup extends MockitoSugar {
 
     implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)
+
     lazy val controller: EmploymentSummaryController = {
 
       val c = new EmploymentSummaryController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, appConfig, injected[employment_summary])(stubControllerComponents().executionContext)
+        app.configuration, environment, messagesControllerComponents, appConfig, injected[employment_summary], dateUtils)(stubControllerComponents().executionContext)
 
       when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
         .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))

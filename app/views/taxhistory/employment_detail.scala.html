@@ -16,7 +16,6 @@
 
 @import model.api.{PayAndTax, CompanyBenefit, Employment, IncomeSource}
 @import utils.{Currency, ControllerUtils}
-@import utils.DateHelper._
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 @import views.models.PageTitle
@@ -89,11 +88,11 @@
         }
         <div class="govuk-summary-list__row">
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.start")</dt>
-            <dd class="govuk-body-s margin-inline-start">@ControllerUtils.getStartDate(employment)</dd>
+            <dd class="govuk-body-s margin-inline-start">@employment.startDateFormatted.getOrElse("")</dd>
         </div>
         <div class="govuk-summary-list__row">
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.end")</dt>
-            <dd class="govuk-body-s margin-inline-start">@ControllerUtils.getEndDate(employment)</dd>
+            <dd class="govuk-body-s margin-inline-start">@employment.endDateFormatted.getOrElse("")</dd>
         </div>
         @if(!employment.isOccupationalPension) {
             <div class="govuk-summary-list__row">
@@ -126,7 +125,7 @@
             </table>
         }
         case None => {
-            <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, ControllerUtils.getStartDate(employment))</p>
+            <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, employment.startDateFormatted.getOrElse(""))</p>
         }
     }
 }
@@ -166,7 +165,7 @@
                             <tr class="govuk-table__row">
                                 <td class="govuk-table__cell">@Currency.withPositive(cb.taxablePayEYU)</td>
                                 <td class="govuk-table__cell">@Currency.withPositive(cb.taxEYU)</td>
-                                <td class="govuk-table__cell">@formatDate(cb.receivedDate)</td>
+                                <td class="govuk-table__cell">@cb.receivedDateFormatted.getOrElse("")</td>
                             </tr>
                             }
                             </tbody>
@@ -184,7 +183,7 @@
                             @payAndTax.earlierYearUpdatesWithStudentLoans.map { cb =>
                             <tr class="govuk-table__row">
                                 <th class="govuk-table__header">@Currency.withPositive(cb.studentLoanEYU.getOrElse(BigDecimal(0.0)))</th>
-                                <td class="govuk-table__cell govuk-table__cell--numeric">@formatDate(cb.receivedDate)</td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric">@cb.receivedDateFormatted.getOrElse("")</td>
                             </tr>
                             }
                             </tbody>

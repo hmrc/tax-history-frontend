@@ -16,17 +16,11 @@
 
 package utils
 
-import org.joda.time.LocalDate
-import org.joda.time.format.DateTimeFormat
-import play.api.libs.json.{JodaReads, JodaWrites, Reads, Writes}
+import play.api.libs.json.{Reads, Writes}
 
-object DateHelper {
-  def formatDate(date: LocalDate): String = {
-    DateTimeFormat.forPattern("d MMMM yyyy").print(date)
-  }
-}
+import java.time.LocalDate
 
 trait LocalDateFormat {
-  implicit val localDateReads: Reads[LocalDate] = JodaReads.DefaultJodaLocalDateReads
-  implicit val localDateWrites: Writes[LocalDate] = JodaWrites.DefaultJodaLocalDateWrites
+  implicit val localDateReads: Reads[LocalDate] = Reads.DefaultLocalDateReads
+  implicit val localDateWrites: Writes[LocalDate] = Writes.DefaultLocalDateWrites
 }

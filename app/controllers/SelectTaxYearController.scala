@@ -16,12 +16,9 @@
 
 package controllers
 
-import java.time.format.DateTimeFormatter
-
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import form.SelectTaxYearForm.selectTaxYearForm
-import javax.inject.Inject
 import model.api.IndividualTaxYear
 import models.taxhistory.SelectTaxYear
 import play.api.data.Form
@@ -32,19 +29,22 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
+import utils.DateUtils
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelectTaxYearController @Inject()(
-   val taxHistoryConnector: TaxHistoryConnector,
-   val citizenDetailsConnector: CitizenDetailsConnector,
-   override val authConnector: AuthConnector,
-   override val config: Configuration,
-   override val env: Environment,
-   val cc: MessagesControllerComponents,
-   implicit val appConfig: AppConfig,
-   selectTaxYear: views.html.taxhistory.select_tax_year
- )(implicit val ec: ExecutionContext) extends BaseController(cc) {
+                                         val taxHistoryConnector: TaxHistoryConnector,
+                                         val citizenDetailsConnector: CitizenDetailsConnector,
+                                         override val authConnector: AuthConnector,
+                                         override val config: Configuration,
+                                         override val env: Environment,
+                                         val cc: MessagesControllerComponents,
+                                         implicit val appConfig: AppConfig,
+                                         selectTaxYear: views.html.taxhistory.select_tax_year,
+                                         dateUtils: DateUtils
+                                       )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -54,10 +54,8 @@ class SelectTaxYearController @Inject()(
     taxYearList.map {
       taxYear =>
         taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          /*DateHelper.formatDate(TaxYear(taxYear.year).starts),
-          DateHelper.formatDate(TaxYear(taxYear.year).finishes))*/
-        TaxYear(taxYear.year).starts.format(DateTimeFormatter.ofPattern("d MMMM yyyy")),
-        TaxYear(taxYear.year).finishes.format(DateTimeFormatter.ofPattern("d MMMM yyyy")))
+          dateUtils.dateToFormattedString(TaxYear(taxYear.year).starts),
+          dateUtils.dateToFormattedString(TaxYear(taxYear.year).finishes))
     }
   }
 

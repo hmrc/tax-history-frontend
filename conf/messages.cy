@@ -15,9 +15,8 @@ lbl.date.start=Dyddiad dechrau
 lbl.status=Statws
 lbl.date.end=Dyddiad dod i ben
 lbl.record=Cofnod
-lbl.to=i
 lbl.employment.status.current=Cyfredol
-lbl.employment.status.ceased=Ceased
+lbl.employment.status.ceased=Wedi dod i ben
 lbl.employment.status.unknown=Anhysbys
 lbl.none=Dim
 lbl.income=incwm
@@ -35,7 +34,7 @@ lbl.back=Yn ôl
 lbl.employer=Cyflogwr
 lbl.provider=Darparwr
 lbl.details=Manylion
-lbl.error=Error
+lbl.error=Gwall
 
 # BETA Banner
 # ----------------------------------------------------------
@@ -48,7 +47,7 @@ feedback.after=yn ein helpu i’w wella.
 nav.home=Hafan gwasanaethau’r asiant
 nav.client=Dewiswch gleient
 nav.year=Dewiswch flwyddyn
-nav.menu=Income Record Viewer menu
+nav.menu=Dewislen ar gyfer y Darllenydd Cofnodion Incwm
 
 ################################## Client Income Record / Employment Summary ##############################################
 employmenthistory.taxyear=Blwyddyn dreth 6 Ebrill {0} i 5 Ebrill {1}
@@ -183,7 +182,6 @@ employmenthistory.student.loans=Benthyciad Myfyriwr a ad-dalwyd
 ################################## Select tax year ####################################################
 employmenthistory.select.tax.year.title=Dewiswch y flwyddyn dreth rydych am fwrw golwg drosti
 employmenthistory.select.tax.year.h1=Dewiswch y flwyddyn dreth rydych am fwrw golwg drosti
-employmenthistory.select.tax.year.header=Cofnod incwm {0}
 employmenthistory.select.tax.year.option={0} i {1}
 employmenthistory.select.tax.year=Dewiswch flwyddyn dreth
 employmenthistory.select.tax.year.error.heading=Mae problem wedi codi
@@ -247,3 +245,13 @@ global.error.404.message=Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
 global.error.500.title=Mae’n ddrwg gennym. Mae anawsterau technegol wedi codi – 500
 global.error.500.heading=Mae’n ddrwg gennym. Mae anawsterau technegol wedi codi
 global.error.500.message=Rhowch gynnig arall arni mewn ychydig o funudau.
+
+#********************************************************************
+# timeout text
+#********************************************************************
+timeout.message = For your security, we will sign you out in
+timeout.keepAlive = Stay signed in
+timeout.signOut = Sign out
+
+signedOut.title = For your security, we signed you out
+signedOut.signIn = Sign in

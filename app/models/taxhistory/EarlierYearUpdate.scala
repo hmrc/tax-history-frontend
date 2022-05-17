@@ -16,9 +16,10 @@
 
 package models.taxhistory
 
-import org.joda.time.LocalDate
 import play.api.libs.json.Json
 import utils.LocalDateFormat
+
+import java.time.LocalDate
 
 case class EarlierYearUpdate(
                               taxablePayEYU: BigDecimal,

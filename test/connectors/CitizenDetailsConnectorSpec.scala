@@ -22,14 +22,14 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
 import play.api.libs.json.Json
 import support.BaseSpec
-import support.fixtures.PersonFixture
+import support.fixtures.ControllerFixture
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import utils.TestUtil
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CitizenDetailsConnectorSpec extends TestUtil with PersonFixture with BaseSpec with ScalaFutures {
+class CitizenDetailsConnectorSpec extends TestUtil with ControllerFixture with BaseSpec with ScalaFutures {
 
   val mockHttpClient: HttpClient = mock[HttpClient]
 

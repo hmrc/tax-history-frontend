@@ -16,18 +16,19 @@
 
 package model.api
 
-import java.util.UUID
-
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
-import org.joda.time.LocalDate
 import play.api.libs.functional.syntax.{unlift, _}
 import play.api.libs.json.Reads._
 import play.api.libs.json._
-import utils.LocalDateFormat
+
+import java.time.LocalDate
+import java.util.UUID
 
 case class Employment(employmentId: UUID = UUID.randomUUID(),
                       startDate: Option[LocalDate],
                       endDate: Option[LocalDate] = None,
+                      startDateFormatted: Option[String] = None,
+                      endDateFormatted: Option[String] = None,
                       payeReference: String,
                       employerName: String,
                       companyBenefitsURI: Option[String] = None,
@@ -41,7 +42,7 @@ case class Employment(employmentId: UUID = UUID.randomUUID(),
   def isOccupationalPension = employmentPaymentType.contains(OccupationalPension)
 }
 
-object Employment extends LocalDateFormat {
+object Employment {
 
   import EmploymentPaymentType.format
 
@@ -49,6 +50,8 @@ object Employment extends LocalDateFormat {
     (JsPath \ "employmentId").read[UUID] and
       (JsPath \ "startDate").readNullable[LocalDate] and
       (JsPath \ "endDate").readNullable[LocalDate] and
+      (JsPath \ "startDateFormatted").readNullable[String] and
+      (JsPath \ "endDateFormatted").readNullable[String] and
       (JsPath \ "payeReference").read[String] and
       (JsPath \ "employerName").read[String] and
       (JsPath \ "companyBenefitsURI").readNullable[String] and
@@ -64,6 +67,8 @@ object Employment extends LocalDateFormat {
     (JsPath \ "employmentId").write[UUID] and
       (JsPath \ "startDate").writeNullable[LocalDate] and
       (JsPath \ "endDate").writeNullable[LocalDate] and
+      (JsPath \ "startDateFormatted").writeNullable[String] and
+      (JsPath \ "endDateFormatted").writeNullable[String] and
       (JsPath \ "payeReference").write[String] and
       (JsPath \ "employerName").write[String] and
       (JsPath \ "companyBenefitsURI").writeNullable[String] and

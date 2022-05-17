@@ -26,7 +26,7 @@ import play.api.libs.json.JsValue
 import play.api.mvc.{MessagesControllerComponents, Result, Results}
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import support.fixtures.PersonFixture
+import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -188,7 +188,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
     }
 
-    "The deceased flag is false" in new TestSetup with PersonFixture {
+    "The deceased flag is false" in new TestSetup with ControllerFixture {
       val json: JsValue = loadFile("/json/model/api/personDeceasedFalse.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)

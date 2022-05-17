@@ -18,15 +18,18 @@ package controllers
 
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+
 import javax.inject.Inject
 import model.api.IncomeSource._
 import model.api._
 import models.taxhistory.Person
+import play.api.i18n.Messages
 import play.api.mvc.{MessagesControllerComponents, _}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import utils.DateUtils
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -37,8 +40,8 @@ class EmploymentDetailController @Inject()(
    override val config: Configuration,
    override val env: Environment,
    val cc: MessagesControllerComponents,
-   employmentDetail: views.html.taxhistory.employment_detail
-  )(implicit val ec: ExecutionContext, val appConfig: AppConfig) extends BaseController(cc) {
+   employmentDetail: views.html.taxhistory.employment_detail,
+   dateUtils: DateUtils)(implicit val ec: ExecutionContext, val appConfig: AppConfig) extends BaseController(cc) {
 
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
@@ -74,12 +77,11 @@ class EmploymentDetailController @Inject()(
   }
 
   private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
-                          (implicit hc: HeaderCarrier): Future[Option[PayAndTax]] = {
+                          (implicit hc: HeaderCarrier, messages: Messages): Future[Option[PayAndTax]] = {
     taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
       payAndTaxResponse.status match {
         case NOT_FOUND => None
-        case _ =>
-          val result = payAndTaxResponse.json.as[PayAndTax]
+        case _ => val result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
           if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
       }
     }.recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
@@ -116,7 +118,7 @@ class EmploymentDetailController @Inject()(
                                         taxYear: Int,
                                         employmentId: String,
                                         person: Person)(implicit hc: HeaderCarrier, request: Request[_]) = {
-    val employment = empResponse.json.as[Employment]
+    val employment = dateUtils.formatEmploymentDates(empResponse.json.as[Employment])
     for {
       payAndTax <- getPayAndTax(nino, taxYear, employmentId)
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)

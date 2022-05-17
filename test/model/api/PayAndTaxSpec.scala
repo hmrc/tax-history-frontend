@@ -33,10 +33,10 @@ package model.api
  */
 
 import java.util.UUID
-
-import org.joda.time.LocalDate
 import support.BaseSpec
 import utils.TestUtil
+
+import java.time.LocalDate
 
 class PayAndTaxSpec extends TestUtil with BaseSpec {
 
@@ -48,7 +48,7 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
     taxTotalIncludingEYU = Some(BigDecimal(6666.66)),
     studentLoan = None,
     studentLoanIncludingEYU = None,
-    paymentDate = Some(new LocalDate("2016-02-20")),
+    paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = Nil
   )
 
@@ -62,7 +62,7 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
         taxTotalIncludingEYU = Some(BigDecimal(34.34)),
         studentLoan = None,
         studentLoanIncludingEYU = None,
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = Nil
       )
 
@@ -78,26 +78,26 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
         taxTotalIncludingEYU = Some(BigDecimal(3013.99)),
         studentLoan = Some(1254.00),
         studentLoanIncludingEYU = Some(2023.21),
-        paymentDate = Some(new LocalDate("2016-02-20")),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List(
           EarlierYearUpdate(
           earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
           taxablePayEYU = BigDecimal(234.44),
           taxEYU = BigDecimal(145.55),
           studentLoanEYU = Some(BigDecimal(234.55)),
-            receivedDate = new LocalDate("2016-05-10")),
+            receivedDate = LocalDate.parse("2016-05-10")),
         EarlierYearUpdate(
           earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf551"),
           taxablePayEYU = BigDecimal(0.0),
           taxEYU = BigDecimal(12.0),
           studentLoanEYU = Some(BigDecimal(534.66)),
-          receivedDate = new LocalDate("2016-06-15")),
+          receivedDate = LocalDate.parse("2016-06-15")),
           EarlierYearUpdate(
             earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf539"),
             taxablePayEYU = BigDecimal(251.33),
             taxEYU = BigDecimal(0.0),
             studentLoanEYU = None,
-            receivedDate = new LocalDate("2016-12-12")
+            receivedDate = LocalDate.parse("2016-12-12")
           )
         )
       )
