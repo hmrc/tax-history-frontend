@@ -15,7 +15,6 @@ lbl.date.start=Dyddiad dechrau
 lbl.status=Statws
 lbl.date.end=Dyddiad dod i ben
 lbl.record=Cofnod
-lbl.to=i
 lbl.employment.status.current=Cyfredol
 lbl.employment.status.ceased=Wedi dod i ben
 lbl.employment.status.unknown=Anhysbys

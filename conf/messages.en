@@ -15,7 +15,6 @@ lbl.date.start=Start date
 lbl.status=Status
 lbl.date.end=End date
 lbl.record=Record
-lbl.to=to
 lbl.employment.status.current=Current
 lbl.employment.status.ceased=Ceased
 lbl.employment.status.unknown=Unknown

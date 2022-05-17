@@ -42,33 +42,33 @@ class MessagesSpec extends GuiceAppSpec {
 
   "All message files" should {
     "have the same set of keys" in {
-      withClue(mismatchingKeys(englishMessages.keySet, welshMessages.keySet)) {
-        assert(welshMessages.keySet equals englishMessages.keySet)
+      withClue(mismatchingKeys(englishMessageKeys.keySet, welshMessagesKeys.keySet)) {
+        assert(welshMessagesKeys.keySet equals englishMessageKeys.keySet)
       }
     }
     "not have the same messages" in {
-      val same = englishMessages.keys.collect({
-        case key if englishMessages.get(key) == welshMessages.get(key) =>
-          (key, englishMessages.get(key))
+      val same = englishMessageKeys.keys.collect({
+        case key if englishMessageKeys.get(key) == welshMessagesKeys.get(key) =>
+          (key, englishMessageKeys.get(key))
       })
 
       // 94% of app needs to be translated into Welsh. 94% allows for:
       //   - Messages which just can't be different from English
       //     E.g. addresses, acronyms, numbers, etc.
       //   - Content which is pending translation to Welsh
-      same.size.toDouble / englishMessages.size.toDouble < 0.06 mustBe true
+      same.size.toDouble / englishMessageKeys.size.toDouble < 0.06 mustBe true
     }
     "have a non-empty message for each key" in {
       assertNonEmptyValuesForDefaultMessages()
-      assertNonEmptyValuesForWelshMessages()
+      assertNonEmptyValuesForwelshMessagesKeys()
     }
     "have no unescaped single quotes in value" in {
       assertCorrectUseOfQuotesForDefaultMessages()
-      assertCorrectUseOfQuotesForWelshMessages()
+      assertCorrectUseOfQuotesForwelshMessagesKeys()
     }
     "have a resolvable message for keys which take args" in {
-      val englishWithArgsMsgKeys = englishMessages collect { case (key, value) if countArgs(value) > 0 => key }
-      val welshWithArgsMsgKeys = welshMessages collect { case (key, value) if countArgs(value) > 0     => key }
+      val englishWithArgsMsgKeys = englishMessageKeys collect { case (key, value) if countArgs(value) > 0 => key }
+      val welshWithArgsMsgKeys = welshMessagesKeys collect { case (key, value) if countArgs(value) > 0     => key }
       val missingFromEnglish = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
       missingFromEnglish foreach { key =>
@@ -80,10 +80,10 @@ class MessagesSpec extends GuiceAppSpec {
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
     "have the same args in the same order for all keys which take args" in {
-      val englishWithArgsMsgKeysAndArgList = englishMessages collect {
+      val englishWithArgsMsgKeysAndArgList = englishMessageKeys collect {
         case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
       }
-      val welshWithArgsMsgKeysAndArgList = welshMessages collect {
+      val welshWithArgsMsgKeysAndArgList = welshMessagesKeys collect {
         case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
       }
       val mismatchedArgSequences = englishWithArgsMsgKeysAndArgList collect {
@@ -107,13 +107,13 @@ class MessagesSpec extends GuiceAppSpec {
 
   private def listArgs(msg: String) = toArgArray(msg).mkString
 
-  private def assertNonEmptyValuesForDefaultMessages() = assertNonEmptyNonTemporaryValues("Default", englishMessages)
+  private def assertNonEmptyValuesForDefaultMessages() = assertNonEmptyNonTemporaryValues("Default", englishMessageKeys)
 
-  private def assertNonEmptyValuesForWelshMessages() = assertNonEmptyNonTemporaryValues("Welsh", welshMessages)
+  private def assertNonEmptyValuesForwelshMessagesKeys() = assertNonEmptyNonTemporaryValues("Welsh", welshMessagesKeys)
 
-  private def assertCorrectUseOfQuotesForDefaultMessages() = assertCorrectUseOfQuotes("Default", englishMessages)
+  private def assertCorrectUseOfQuotesForDefaultMessages() = assertCorrectUseOfQuotes("Default", englishMessageKeys)
 
-  private def assertCorrectUseOfQuotesForWelshMessages() = assertCorrectUseOfQuotes("Welsh", welshMessages)
+  private def assertCorrectUseOfQuotesForwelshMessagesKeys() = assertCorrectUseOfQuotes("Welsh", welshMessagesKeys)
 
   private def assertNonEmptyNonTemporaryValues(label: String, messages: Map[String, String]) = messages.foreach {
     case (key: String, value: String) =>
@@ -135,11 +135,11 @@ class MessagesSpec extends GuiceAppSpec {
 
   private lazy val displayLine = "\n" + ("@" * 42) + "\n"
 
-  private lazy val englishMessages: Map[String, String] = getExpectedMessages("en")
+  private lazy val englishMessageKeys: Map[String, String] = getExpectedMessages("en")
 
-  private lazy val defaultMessageKeys: Seq[String] = getExpectedMessages("default").toSeq.diff(englishMessages.toSeq).map(_._1)
+  private lazy val defaultMessageKeys: Seq[String] = getExpectedMessages("default").toSeq.diff(englishMessageKeys.toSeq).map(_._1)
 
-  private lazy val welshMessages: Map[String, String] = getExpectedMessages("cy") -- defaultMessageKeys
+  private lazy val welshMessagesKeys: Map[String, String] = getExpectedMessages("cy") -- defaultMessageKeys
 
   private def getExpectedMessages(languageCode: String) =
     messagesApi.messages.getOrElse(languageCode, throw new Exception(s"Missing messages for $languageCode"))

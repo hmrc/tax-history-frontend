@@ -35,8 +35,9 @@ class GuiceAppSpec extends BaseSpec {
     .overrides(bind[DateUtils].toInstance(mock[DateUtils]))
     .build()
 
-   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
-   implicit val messages: Messages = messagesApi.preferred(FakeRequest())
+  implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]
+  implicit val messages: Messages = messagesApi.preferred(FakeRequest())
+  lazy val welshMessages: Messages = messagesApi.preferred(FakeRequest().withTransientLang("cy"))
 
   lazy val languageUtils: LanguageUtils = injected[LanguageUtils]
   lazy val dateUtils = new DateUtils(languageUtils)
