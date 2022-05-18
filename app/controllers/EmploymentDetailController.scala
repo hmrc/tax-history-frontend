@@ -29,8 +29,10 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import views.models.EmploymentViewDetail
 import utils.DateUtils
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentDetailController @Inject()(
@@ -123,7 +125,10 @@ class EmploymentDetailController @Inject()(
       payAndTax <- getPayAndTax(nino, taxYear, employmentId)
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
       incomeSource <- getIncomeSource(nino, taxYear, employmentId)
-    } yield Ok(employmentDetail(taxYear, payAndTax,
-      employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource))
+    } yield {
+      val employmentViewDetail = EmploymentViewDetail(employment.isJobseekersAllowance, employment.isOccupationalPension, employment.employerName)
+      Ok(employmentDetail(taxYear, payAndTax,
+        employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource, employmentViewDetail))
+    }
   }
 }

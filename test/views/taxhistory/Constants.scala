@@ -23,6 +23,7 @@ import models.taxhistory.Person
 
 import java.time.LocalDate
 
+
 trait Constants {
 
   val startDate: LocalDate = LocalDate.parse("2016-01-21")
@@ -259,4 +260,5 @@ trait Constants {
     worksNumber = "00191048716")
 
   val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
+
 }

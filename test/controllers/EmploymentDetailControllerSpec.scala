@@ -102,7 +102,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
+      contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
     "show employment details page even if getCompanyBenefits returns 404" in new LocalSetup {
@@ -111,7 +111,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
+      contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
     "show employment details page even if getIncomeSource returns 404" in new LocalSetup {
@@ -120,7 +120,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.employment.details.title"))
+      contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
     "show technical error page when getEmployment returns a status other than 200, 401, 404" in new LocalSetup {
