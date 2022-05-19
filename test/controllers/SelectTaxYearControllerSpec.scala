@@ -107,7 +107,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
     }
 
     "redirect to summary page successfully on valid data" in new LocalSetup {
-      controller.submitSelectTaxYearPage()
+
       val validSelectTaxYearForm = Seq(
         "selectTaxYear" -> "2016"
       )
