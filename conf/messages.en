@@ -77,6 +77,8 @@ employmenthistory.select.different.taxyear.link=Select a different tax year
 employmenthistory.select.different.taxyear.link.lower=select a different tax year
 employmenthistory.display.client.name={0}''s income records
 employmenthistory.job.seekers=Jobseeker''s Allowance
+employmenthistory.jobtype.employment = Employment at {0}
+employmenthistory.jobtype.pension = Pension from {0}
 employmenthistory.state.pensions=State Pension
 employmenthistory.state.pensions.text.weekly.p1=Your client started receiving a State Pension of {0} per week on {1}.
 employmenthistory.state.pensions.text.weekly.p2=Their state pension income up to {0} is {1}.
@@ -161,7 +163,9 @@ employmenthistory.select.client.error.empty.title=There is a problem
 employmenthistory.select.client.error.empty=Enter a National Insurance number
 
 ################################ Employment Details ####################################################
-employmenthistory.employment.details.title=Client single record
+employmenthistory.employment.details.job.seekers.title=Client employment allowance record
+employmenthistory.employment.details.employment.title=Client employment record
+employmenthistory.employment.details.pension.title=Client pension record
 employmenthistory.employment.details.companybenefits=Company Benefits
 employmenthistory.employment.details.no.benefits=HMRC has no record of company benefits from {0} for this tax year.
 employmenthistory.employment.details.benefit=Benefit

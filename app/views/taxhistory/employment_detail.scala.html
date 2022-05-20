@@ -19,6 +19,7 @@
 @import uk.gov.hmrc.time.TaxYear
 @import config.AppConfig
 @import views.models.PageTitle
+@import views.models.EmploymentViewDetail
 
 @this(govukWrapper: views.html.govuk_wrapper)
 
@@ -27,18 +28,21 @@
   employment: Employment,
   companyBenefits: List[CompanyBenefit],
   clientNameOrNino: String,
-  incomeSource: Option[IncomeSource])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  incomeSource: Option[IncomeSource],
+  employmentViewDetail: EmploymentViewDetail)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @isCurrentYear = @{
     TaxYear.current.currentYear == taxYear
 }
 
-@govukWrapper(PageTitle(messages("employmenthistory.employment.details.title")), backLink = Some(controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url)) {
+@govukWrapper(PageTitle(employmentViewDetail.title), backLink = Some(controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url)) {
 
 <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
         <header class="hmrc-page-heading no-top-margin">
-            <h1 class="govuk-heading-xl no-bottom-margin">@ControllerUtils.isJobSeekerAllowance(employment)</h1>
+            <h1 class="govuk-heading-xl no-bottom-margin">
+                @employmentViewDetail.heading
+            </h1>
             <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
                 <span class="govuk-visually-hidden">This section relates to </span>
                 @clientNameOrNino

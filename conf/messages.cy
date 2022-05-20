@@ -77,6 +77,8 @@ employmenthistory.select.different.taxyear.link=Dewiswch flwyddyn dreth wahanol
 employmenthistory.select.different.taxyear.link.lower=dewiswch flwyddyn dreth wahanol
 employmenthistory.display.client.name=Cofnodion incwm {0}
 employmenthistory.job.seekers=Lwfans Ceisio Gwaith
+employmenthistory.jobtype.employment = Cyflogaeth yn {0}
+employmenthistory.jobtype.pension = Pensiwn gan {0}
 employmenthistory.state.pensions=Pensiwn y Wladwriaeth
 employmenthistory.state.pensions.text.weekly.p1=Dechreuodd eich cleient gael Pensiwn y Wladwriaeth o {0} yr wythnos ar {1}.
 employmenthistory.state.pensions.text.weekly.p2=Ei incwm Pensiwn y Wladwriaeth hyd at {0} yw {1}.
@@ -161,7 +163,9 @@ employmenthistory.select.client.error.empty.title=Mae problem wedi codi
 employmenthistory.select.client.error.empty=Nodwch rif Yswiriant Gwladol
 
 ################################ Employment Details ####################################################
-employmenthistory.employment.details.title=Cofnod unigol cleient
+employmenthistory.employment.details.job.seekers.title=Cofnod o lwfans cyflogaeth y cleient
+employmenthistory.employment.details.employment.title=Cofnod o gyflogaeth y cleient
+employmenthistory.employment.details.pension.title=Cofnod o bensiwn y cleient
 employmenthistory.employment.details.companybenefits=Buddiannau cwmni
 employmenthistory.employment.details.no.benefits=Nid oes gan CThEM unrhyw gofnod o fuddiannau cwmni o {0} ar gyfer y flwyddyn dreth hon.
 employmenthistory.employment.details.benefit=Buddiant
