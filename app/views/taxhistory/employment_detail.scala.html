@@ -62,7 +62,7 @@
     </div>
     <div class="govuk-grid-column-one-third">
         <section class="section subsection">
-            <section class="employment-summary deskContent govuk-section-break govuk-section-break--visible" id="details-bar-desktop">
+            <section class="employment-summary deskContent govuk-section-break" id="details-bar-desktop">
                 <div class="no-top-margin" id="employment-data-desktop">@employmentDetails()</div>
             </section>
         </section>
@@ -71,7 +71,7 @@
 }
 
 @employmentDetails() = {
-    <h2 class="govuk-heading-s">
+    <h2 class="govuk-heading-m">
         @if(employment.isOccupationalPension) {
             @messages("employmenthistory.employment.details.caption.pension")
         } else {
@@ -81,28 +81,23 @@
 
     <dl class="govuk-summary-list">
         @if(!employment.isJobseekersAllowance) {
-            <div class="govuk-summary-list__row">
                 <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.paye.reference")</dt>
                 <dd class="govuk-body-s margin-inline-start">@employment.payeReference</dd>
-            </div>
+
         }
         @if(!employment.isOccupationalPension && !employment.isJobseekersAllowance) {
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.payroll.id")</dt>
             <dd class="govuk-body-s margin-inline-start">@employment.worksNumber</dd>
         }
-        <div class="govuk-summary-list__row">
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.start")</dt>
             <dd class="govuk-body-s margin-inline-start">@employment.startDateFormatted.getOrElse("")</dd>
-        </div>
-        <div class="govuk-summary-list__row">
+
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.end")</dt>
             <dd class="govuk-body-s margin-inline-start">@employment.endDateFormatted.getOrElse("")</dd>
-        </div>
+
         @if(!employment.isOccupationalPension) {
-            <div class="govuk-summary-list__row">
-                <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.status")</dt>
+            <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.status")</dt>
                 <dd class="govuk-body-s margin-inline-start">@ControllerUtils.getEmploymentStatus(employment)</dd>
-            </div>
         }
     </dl>
 }
