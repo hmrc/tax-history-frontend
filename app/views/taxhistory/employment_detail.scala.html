@@ -241,17 +241,15 @@
     }
 }
 @taxCodeBreakdown() = {
-    @if(incomeSource.isDefined) {
-
+    @if(incomeSource.isDefined && !employment.isOccupationalPension) {
         <h2 class="govuk-heading-m">@messages("tax.code.heading")</h2>
-
         <h2 class="govuk-heading-s no-bottom-margin">@messages("tax.code.subheading")</h2>
-
         <h2 class="govuk-heading-l" id="tax-code">@{
             incomeSource.get.taxCode
         }@{
             ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
-        }</h2>
+        }
+        </h2>
         <h2 class="govuk-heading-m">@messages("tax.code.allowances")</h2>
         <table class="govuk-table" id="tc-allowance-table">
             <thead class="govuk-table__head">
