@@ -102,15 +102,17 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     "have correct employment details" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment, List.empty, clientName, None, createEmploymentViewDetail(false, employment.employerName))
-      val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
-      val payrollId: Element = doc.getElementById("employment-data-desktop").child(1).child(2)
-      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
-      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(4)
+
+      val payeReference: Element = doc.getElementById("employment-data-desktop").child(1).child(2)
+      val payrollId: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
+      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
+      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(7)
+
       val taxablePay: Element = doc.getElementById("pay-and-tax-table").child(0).child(0)
       val incomeTax: Element = doc.getElementById("pay-and-tax-table").child(0).child(1)
 
-      payrollId.text should include(employment.worksNumber)
       payeReference.text should include(employment.payeReference)
+      payrollId.text should include(employment.worksNumber)
       startDate.text should include(employment.startDateFormatted.get)
       endDate.text should include(employment.endDateFormatted.get)
       taxablePay.text should include("£4,906.80")
@@ -121,8 +123,8 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(taxYear, Some(payAndTax),
         employment.copy(employmentPaymentType = Some(OccupationalPension)), List.empty, clientName, None,
         createEmploymentViewDetail(false, employment.employerName))
-      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(1)
-      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(2)
+      val startDate: Element = doc.getElementById("employment-data-desktop").child(1).child(3)
+      val endDate: Element = doc.getElementById("employment-data-desktop").child(1).child(5)
       val taxablePay: Element = doc.getElementById("pay-and-tax-table").child(0).child(0)
       val incomeTax: Element = doc.getElementById("pay-and-tax-table").child(0).child(1)
 
