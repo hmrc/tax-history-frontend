@@ -43,6 +43,7 @@ class EmploymentSummaryController @Inject()(
    dateUtils: DateUtils
  )(implicit val ec: ExecutionContext) extends BaseController(cc) {
 
+  private val noRecordHeld = "No record held"
   val loginContinue: String = appConfig.loginContinue
   val serviceSignout: String = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
@@ -72,10 +73,12 @@ class EmploymentSummaryController @Inject()(
 
   private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person], taxYear: Int)
                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
-    taxHistoryConnector.getEmploymentsAndPensions(ninoField, taxYear) flatMap { empResponse =>
+    taxHistoryConnector.getEmploymentsAndPensions(ninoField, taxYear)
+    .flatMap { empResponse =>
       empResponse.status match {
         case OK =>
           val employments: List[Employment] = getEmploymentsFromResponse(empResponse)
+            .filterNot(emp => emp.employerName.equalsIgnoreCase(noRecordHeld))
           val allowanceFuture = taxHistoryConnector.getAllowances(ninoField, taxYear)
           val taxAccountFuture = taxHistoryConnector.getTaxAccount(ninoField, taxYear)
           val statePensionFuture = taxHistoryConnector.getStatePension(ninoField, taxYear)
@@ -128,7 +131,7 @@ class EmploymentSummaryController @Inject()(
   }
 
   private def getEmploymentsFromResponse(empResponse: HttpResponse)(implicit messages: Messages) =
-    empResponse.json.as[List[Employment]].map(dateUtils.formatEmploymentDates)
+    empResponse.json.as[List[Employment]].map(dateUtils.formatEmploymentDatesAbbrMonth)
 
   private def getAllPayAndTaxFromResponse(patResponse: HttpResponse) = {
     patResponse.status match {

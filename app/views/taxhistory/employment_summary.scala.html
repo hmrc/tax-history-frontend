@@ -103,24 +103,23 @@
 
     <div class="govuk-tabs__panel" id="income-records">
         @if(employments.exists(!_.isOccupationalPension)) {
-        <h2 id="EmploymentDetails" class="govuk-heading-m blue-underline">@messages("employmenthistory.table.header.employments")</h2>
-            @p{@messages("employmenthistory.employment.table.text")}
+        <h2 id="EmploymentDetails" class="govuk-heading-l">@messages("employmenthistory.table.header.employment")</h2>
             @employmentTable
         } else {
-            <h2 class="govuk-heading-m blue-underline no-top-margin">@messages("employmenthistory.employment.records")</h2>
+            <h2 class="govuk-heading-l no-top-margin">@messages("employmenthistory.employment.records")</h2>
             <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
         }
 
-        <h2 id = "Pensions" class="govuk-heading-m blue-underline">@messages("employmenthistory.table.header.pensions")</h2>
+        <h2 id = "Pensions" class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
         @if(employments.exists(_.isOccupationalPension)) {
-            <h2 class="govuk-heading-m blue-underline-thin margin-top-and-bottom">@messages("employmenthistory.table.header.pensions.private")</h2>
+            <h2 class="govuk-heading-m">@messages("employmenthistory.table.header.pensions.private")</h2>
                     @pensionTable
         } else {
             <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
         }
 
         @statePension.map { sp =>
-            <h2 id = "StatePensions" class="govuk-heading-m blue-underline-thin">@messages("employmenthistory.state.pensions")</h2>
+            <h2 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h2>
             <div class = "govuk-grid-row">
                 <div class = "govuk-grid-column-two-thirds">
                     @if(TaxYear.current.currentYear == taxYear) {
@@ -138,7 +137,7 @@
 
     @if(!isCurrentYear) {
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="allowances">
-            <h2 id = "AllowancesHeader" class="govuk-heading-m blue-underline">@messages("employmenthistory.allowance.heading")</h2>
+            <h2 id = "AllowancesHeader" class="govuk-heading-l">@messages("employmenthistory.allowance.heading")</h2>
 
             @if(allowances.nonEmpty) {
                 @allowanceTable
@@ -149,7 +148,7 @@
     }
     @if(!isCurrentYear) {
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="underpaid-tax-and-debts">
-            <h2 id = "UnderpaidTaxAndDebts" class="govuk-heading-m blue-underline">@messages("employmenthistory.tax-account.header")</h2>
+            <h2 id = "UnderpaidTaxAndDebts" class="govuk-heading-l">@messages("employmenthistory.tax-account.header")</h2>
             @if(taxAccount.nonEmpty) {
                 @taxAccountTable
             } else {
@@ -171,7 +170,7 @@
                 <th scope="col" class="govuk-table__header">@messages("lbl.status")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.income")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.tax")</th>
-                <th scope="col" class="govuk-table__header">@messages("lbl.record")</th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@messages("lbl.record")</span></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -219,7 +218,7 @@
                 <th scope="col" class="govuk-table__header">@messages("lbl.date.end")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.income")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.tax")</th>
-                <th scope="col" class="govuk-table__header">@messages("lbl.record")</th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@messages("lbl.record")</span></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
