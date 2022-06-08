@@ -86,6 +86,16 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
+    "return 200 and not show No record held in employment section" in new LocalSetup {
+      val noEmployment: Employment = employment.copy(employmentId = UUID.randomUUID(), employerName = "No record held")
+      when(controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(noEmployment :: employments), Map.empty)))
+
+      val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
+      status(result) shouldBe OK
+      contentAsString(result) shouldNot include("No record held")
+    }
+
     "return 200 when empty list of allowances found" in new LocalSetup {
       when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.arr(), Map.empty)))

@@ -112,7 +112,7 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
       val view: HtmlFormat.Appendable = inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, None, None, None, now)
 
-      doc.getElementsMatchingOwnText(messages("employmenthistory.table.header.employments")).hasText mustBe true
+      doc.getElementsMatchingOwnText(messages("employmenthistory.table.header.employment")).hasText mustBe true
       doc.getElementsMatchingOwnText(messages("employmenthistory.table.header.pensions")).hasText mustBe true
       employments.foreach(emp => {
         doc.getElementsContainingOwnText(emp.employerName).hasText mustBe true
