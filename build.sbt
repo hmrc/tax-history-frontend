@@ -1,11 +1,10 @@
-import sbt.Keys.{evictionWarningOptions, resolvers}
+import sbt.Keys.resolvers
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, integrationTestSettings, scalaSettings}
 import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "tax-history-frontend"
-val silencerVersion = "1.7.1"
 
 lazy val microservice =  Project(appName, file("."))
   .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
@@ -16,7 +15,7 @@ lazy val microservice =  Project(appName, file("."))
   .settings(
     majorVersion := 3,
     scalaSettings,
-    scalaVersion := "2.12.12",
+    scalaVersion := "2.12.16",
     libraryDependencies ++= AppDependencies(),
     name := appName,
     PlayKeys.playDefaultPort := 9996,
@@ -39,8 +38,7 @@ lazy val microservice =  Project(appName, file("."))
     scalacOptions ++= Seq(
       "-P:silencer:pathFilters=target/.*",
       s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
-    ),
-    update / evictionWarningOptions := EvictionWarningOptions.default.withWarnScalaVersionEviction(false)
+    )
   )
 
 

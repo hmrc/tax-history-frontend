@@ -3,7 +3,7 @@ import sbt._
 
 object AppDependencies {
 
-  val silencerVersion = "1.7.1"
+  val silencerVersion = "1.7.9"
 
   private val compile = Seq(
     play.sbt.PlayImport.ws,
