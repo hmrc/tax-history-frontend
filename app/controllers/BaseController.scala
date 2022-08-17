@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.play.bootstrap.controller.WithDefaultFormBinding
+import uk.gov.hmrc.play.bootstrap.controller.WithUnsafeDefaultFormBinding
 import uk.gov.hmrc.urls.Link
 import utils.TaxHistoryLogger
 
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 
 abstract class BaseController @Inject()(cc: MessagesControllerComponents)(implicit ec: ExecutionContext)
-  extends AgentAuth(cc) with I18nSupport with TaxHistoryLogger with WithDefaultFormBinding {
+  extends AgentAuth(cc) with I18nSupport with TaxHistoryLogger with WithUnsafeDefaultFormBinding {
 
   /**
    * The URI to direct to for login.
