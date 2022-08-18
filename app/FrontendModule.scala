@@ -17,7 +17,8 @@
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient, HttpClient}
+import uk.gov.hmrc.http.HttpClient
+import uk.gov.hmrc.play.bootstrap.http.DefaultHttpClient
 
 class FrontendModule (val environment: Environment, val configuration: Configuration) extends AbstractModule {
 

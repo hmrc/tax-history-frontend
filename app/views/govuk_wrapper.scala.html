@@ -153,6 +153,7 @@
 
 
 @govukTemplate(
+    htmlLang = Some(messages.lang.code),
     pageTitle = Some(title.fullTitle()),
     headBlock = Some(hmrcHead(
         nonce = CSPNonce.get,
