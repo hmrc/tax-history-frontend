@@ -112,14 +112,14 @@
 
         <h2 id = "Pensions" class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
         @if(employments.exists(_.isOccupationalPension)) {
-            <h2 class="govuk-heading-m">@messages("employmenthistory.table.header.pensions.private")</h2>
+            <h3 class="govuk-heading-m">@messages("employmenthistory.table.header.pensions.private")</h3>
                     @pensionTable
         } else {
             <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
         }
 
         @statePension.map { sp =>
-            <h2 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h2>
+            <h3 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h3>
             <div class = "govuk-grid-row">
                 <div class = "govuk-grid-column-two-thirds">
                     @if(TaxYear.current.currentYear == taxYear) {
