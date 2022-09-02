@@ -22,7 +22,7 @@ import play.api.libs.json.Json
 import support.BaseSpec
 import utils.TestUtil
 
-class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
+class SelectTaxYearFormSpec extends BaseSpec with TestUtil {
 
   private val maxChar: Int = 100
 
@@ -34,7 +34,7 @@ class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
       )
 
       val validatedForm = selectTaxYearForm.bind(postData, maxChar)
-      val errors = validatedForm.errors
+      val errors        = validatedForm.errors
       errors shouldBe empty
     }
 
@@ -44,7 +44,9 @@ class SelectTaxYearFormSpec extends BaseSpec with TestUtil{
       )
 
       val validatedForm = selectTaxYearForm.bind(postData, maxChar)
-      validatedForm.errors shouldBe List(FormError("selectTaxYear", List("employmenthistory.select.tax.year.error.linktext")))
+      validatedForm.errors shouldBe List(
+        FormError("selectTaxYear", List("employmenthistory.select.tax.year.error.linktext"))
+      )
     }
   }
 }

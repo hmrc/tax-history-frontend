@@ -24,8 +24,8 @@ import java.time.LocalDate
 import java.util.UUID
 
 trait ControllerFixture {
-
-  val person: Option[Person] = Some(Person(Some("first name"),Some("second name"), Some(false)))
+  // scalastyle:off magic.number
+  val person: Option[Person] = Some(Person(Some("first name"), Some("second name"), Some(false)))
 
   val employment: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -53,22 +53,32 @@ trait ControllerFixture {
     taxTotal = Some(979.36),
     taxTotalIncludingEYU = Some(979.36),
     studentLoan = None,
-    studentLoanIncludingEYU  = None,
+    studentLoanIncludingEYU = None,
     paymentDate = Some(LocalDate.parse("2016-02-20")),
     earlierYearUpdates = List.empty
   )
 
-  val allowance: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance: Allowance = Allowance(
+    allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "EarlierYearsAdjustment",
-    amount = BigDecimal(32.00))
+    amount = BigDecimal(32.00)
+  )
 
-  val taxAccount: TaxAccount = TaxAccount(taxAccountId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val taxAccount: TaxAccount = TaxAccount(
+    taxAccountId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     outstandingDebtRestriction = Some(200),
     underpaymentAmount = Some(300),
-    actualPUPCodedInCYPlusOneTaxYear = Some(400))
+    actualPUPCodedInCYPlusOneTaxYear = Some(400)
+  )
 
-  val employments = List(employment, employment.copy(employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"), employmentPaymentType = Some(OccupationalPension)))
-  val allowances = List(allowance)
+  val employments = List(
+    employment,
+    employment.copy(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
+      employmentPaymentType = Some(OccupationalPension)
+    )
+  )
+  val allowances  = List(allowance)
 
   val statePension: StatePension = StatePension(100, "test")
 
@@ -83,7 +93,8 @@ trait ControllerFixture {
         studentLoan = None,
         studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty),
+        earlierYearUpdates = List.empty
+      ),
     "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
       PayAndTax(
         payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
@@ -94,7 +105,9 @@ trait ControllerFixture {
         studentLoan = None,
         studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty))
+        earlierYearUpdates = List.empty
+      )
+  )
 
   val payAndTaxRandomUUID = Map(
     UUID.randomUUID().toString ->
@@ -106,7 +119,8 @@ trait ControllerFixture {
         studentLoan = None,
         studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty),
+        earlierYearUpdates = List.empty
+      ),
     UUID.randomUUID().toString ->
       PayAndTax(
         taxablePayTotal = Some(4896.80),
@@ -116,5 +130,7 @@ trait ControllerFixture {
         studentLoan = None,
         studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty))
+        earlierYearUpdates = List.empty
+      )
+  )
 }

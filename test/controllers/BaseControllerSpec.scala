@@ -41,11 +41,25 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
   trait TestSetup extends MockitoSugar {
 
     lazy val controller: Controller = {
-      val controller = new Controller(mock[AuthConnector], injected[Configuration], injected[Environment],
-        messagesControllerComponents, appConfig)
+      val controller = new Controller(
+        mock[AuthConnector],
+        injected[Configuration],
+        injected[Environment],
+        messagesControllerComponents,
+        appConfig
+      )
 
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(
+          Future.successful(
+            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
+          )
+        )
 
       controller
     }
@@ -54,106 +68,175 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
   "BaseController" must {
 
     "redirect to agent-subscription-start when there is no enrolment" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(Set()))))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(
+          Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(Set())))
+        )
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc, fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controller.appConfig.agentSubscriptionStart)
     }
 
     "redirect to not no-agent-services-account when there is no enrolment and is not an agent" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(
+          Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set())))
+        )
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc, fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
+      redirectLocation(result) shouldBe Some(
+        controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url
+      )
     }
 
     "redirect to not no-agent-services-account when there is no enrolment and has no affinity group" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set()))))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(
+          Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set())))
+        )
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
-        fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url)
+      redirectLocation(result) shouldBe Some(
+        controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url
+      )
     }
 
     "load error page when failed to fetch enrolment" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.failed(new BadGatewayException("error")))
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
-        fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "redirect to gg when not logged in" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.failed(new MissingBearerToken))
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
-        fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
     "redirect to gg logged in when session expired" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.failed(new SessionRecordNotFound))
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
-        fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
     "redirect to gg logged in when Internal server error or other errors" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.failed(new RuntimeException))
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
-        fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
     "redirect to not authorised page when user is not authorised" in new TestSetup {
-      when(controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.failed(new InsufficientEnrolments))
 
-      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(hc,
-        fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
+        hc,
+        fakeRequest.withSession("USER_NINO" -> nino)
+      )
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
   }
 
   "show not found error page when 404 returned from connector" in new TestSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND,Some(2017)))
-    status(result) shouldBe Status.SEE_OTHER
-    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(2017).url)
+    val taxYear                = 2017
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND, Some(taxYear)))
+    status(result)           shouldBe Status.SEE_OTHER
+    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(taxYear).url)
   }
 
   "show not authorised error page when 401 returned from connector" in new TestSetup {
     val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.UNAUTHORIZED))
-    status(result) shouldBe Status.SEE_OTHER
+    status(result)           shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
   }
 
   "show technical error page when any response other than 200, 401, 404 returned from connector" in new TestSetup {
     val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR))
-    status(result) shouldBe Status.SEE_OTHER
+    status(result)           shouldBe Status.SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
   }
 
   "Sign out" must {
     "redirect to feed back survey link" in new TestSetup {
       val result: Future[Result] = controller.logout()(fakeRequest)
-      status(result) shouldBe Status.SEE_OTHER
+      status(result)           shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controller.appConfig.serviceSignOut)
     }
 
@@ -183,33 +266,34 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
   "retrieveCitizenDetails" when {
 
     "The deceased flag is true" in new TestSetup {
-      val json: JsValue = loadFile("/json/model/api/personDeceasedTrue.json")
+      val json: JsValue    = loadFile("/json/model/api/personDeceasedTrue.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
     }
 
     "The deceased flag is false" in new TestSetup with ControllerFixture {
-      val json: JsValue = loadFile("/json/model/api/personDeceasedFalse.json")
+      val json: JsValue    = loadFile("/json/model/api/personDeceasedFalse.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new TestSetup {
-      val json: JsValue = loadFile("/json/model/api/personDeceasedNoValue.json")
+      val json: JsValue    = loadFile("/json/model/api/personDeceasedNoValue.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      val person = Person(Some("first name"), Some("second name"), None)
+      val person           = Person(Some("first name"), Some("second name"), None)
       await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person)
     }
   }
 
-  class Controller @Inject()(override val authConnector: AuthConnector,
-                             override val config: Configuration,
-                             override val env: Environment,
-                             val cc: MessagesControllerComponents,
-                             implicit val appConfig: AppConfig
-                            ) extends BaseController(cc) {
-    val loginContinue: String = appConfig.loginContinue
-    val serviceSignout: String = appConfig.serviceSignOut
+  class Controller @Inject() (
+    override val authConnector: AuthConnector,
+    override val config: Configuration,
+    override val env: Environment,
+    val cc: MessagesControllerComponents,
+    implicit val appConfig: AppConfig
+  ) extends BaseController(cc) {
+    val loginContinue: String          = appConfig.loginContinue
+    val serviceSignout: String         = appConfig.serviceSignOut
     val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
   }
 }

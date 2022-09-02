@@ -63,9 +63,17 @@ class CallOpsSpec extends AnyWordSpec with Matchers {
 
       "there is an existing query part and one of the parameters to add has no value" in {
         CallOps
-          .addParamsToUrl(s"$url?foo=bar", "baz" -> Some("qwaggly"), "fnords" -> None) shouldBe s"$url?foo=bar&baz=qwaggly"
+          .addParamsToUrl(
+            s"$url?foo=bar",
+            "baz"    -> Some("qwaggly"),
+            "fnords" -> None
+          ) shouldBe s"$url?foo=bar&baz=qwaggly"
         CallOps
-          .addParamsToUrl(s"$url?foo=bar", "fnords" -> None, "baz" -> Some("qwaggly")) shouldBe s"$url?foo=bar&baz=qwaggly"
+          .addParamsToUrl(
+            s"$url?foo=bar",
+            "fnords" -> None,
+            "baz"    -> Some("qwaggly")
+          ) shouldBe s"$url?foo=bar&baz=qwaggly"
       }
     }
   }

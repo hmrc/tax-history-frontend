@@ -18,22 +18,19 @@ package models.taxhistory
 
 import play.api.libs.json.{Json, OFormat}
 
+case class Person(firstName: Option[String], lastName: Option[String], deceased: Option[Boolean]) {
 
-case class Person(firstName:Option[String], lastName:Option[String], deceased:Option[Boolean]){
-
-  def getName: Option[String] = {
+  def getName: Option[String] =
     for {
       f <- this.firstName
       l <- this.lastName
-    }yield Person.uppercaseToTitleCase(f) + " " + Person.uppercaseToTitleCase(l)
-  }
+    } yield Person.uppercaseToTitleCase(f) + " " + Person.uppercaseToTitleCase(l)
 
 }
 
 object Person {
   implicit val formats: OFormat[Person] = Json.format[Person]
 
-  def uppercaseToTitleCase(s: String): String = {
+  def uppercaseToTitleCase(s: String): String =
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
-  }
 }

@@ -67,7 +67,7 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
       )
 
       payAndTax.payAndTaxId.toString.nonEmpty shouldBe true
-      payAndTax.payAndTaxId shouldNot be(payAndTaxNoEyu.payAndTaxId)
+      payAndTax.payAndTaxId                  shouldNot be(payAndTaxNoEyu.payAndTaxId)
     }
 
     "generate a correct list of earlier year updates" in {
@@ -81,17 +81,19 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
         paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List(
           EarlierYearUpdate(
-          earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
-          taxablePayEYU = BigDecimal(234.44),
-          taxEYU = BigDecimal(145.55),
-          studentLoanEYU = Some(BigDecimal(234.55)),
-            receivedDate = LocalDate.parse("2016-05-10")),
-        EarlierYearUpdate(
-          earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf551"),
-          taxablePayEYU = BigDecimal(0.0),
-          taxEYU = BigDecimal(12.0),
-          studentLoanEYU = Some(BigDecimal(534.66)),
-          receivedDate = LocalDate.parse("2016-06-15")),
+            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
+            taxablePayEYU = BigDecimal(234.44),
+            taxEYU = BigDecimal(145.55),
+            studentLoanEYU = Some(BigDecimal(234.55)),
+            receivedDate = LocalDate.parse("2016-05-10")
+          ),
+          EarlierYearUpdate(
+            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf551"),
+            taxablePayEYU = BigDecimal(0.0),
+            taxEYU = BigDecimal(12.0),
+            studentLoanEYU = Some(BigDecimal(534.66)),
+            receivedDate = LocalDate.parse("2016-06-15")
+          ),
           EarlierYearUpdate(
             earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf539"),
             taxablePayEYU = BigDecimal(251.33),
@@ -102,14 +104,12 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
         )
       )
 
-      payAndTax.earlierYearUpdatesWithStudentLoans.size should be(2)
+      payAndTax.earlierYearUpdatesWithStudentLoans.size    should be(2)
       payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.size should be(3)
 
       payAndTax.earlierYearUpdatesWithStudentLoans.map(_.studentLoanEYU.get).sum should be(769.21)
-      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map(_.taxablePayEYU).sum should be(485.77)
-      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map(_.taxEYU).sum should be(157.55)
+      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map(_.taxablePayEYU).sum   should be(485.77)
+      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map(_.taxEYU).sum          should be(157.55)
     }
   }
 }
-
-

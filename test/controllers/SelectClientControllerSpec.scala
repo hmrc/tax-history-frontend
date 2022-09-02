@@ -38,11 +38,26 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
     lazy val controller: SelectClientController = {
 
-      val c = new SelectClientController(mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, appConfig, injected[select_client])(stubControllerComponents().executionContext)
+      val c = new SelectClientController(
+        mock[AuthConnector],
+        app.configuration,
+        environment,
+        messagesControllerComponents,
+        appConfig,
+        injected[select_client]
+      )(stubControllerComponents().executionContext)
 
-      when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+      when(
+        c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(
+          Future.successful(
+            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
+          )
+        )
       c
     }
   }
@@ -51,8 +66,8 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
     "load select client page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
-      val result: Future[Result] = controller.getSelectClientPage()(fakeRequest)
-      val expectedView = app.injector.instanceOf[select_client]
+      val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
+      val expectedView                 = app.injector.instanceOf[select_client]
       status(result) shouldBe Status.OK
       result rendersTheSameViewAs expectedView(selectClientForm)
     }
@@ -64,8 +79,12 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         "clientId" -> invalidTestNINO
       )
 
-      val result = controller.submitSelectClientPage().apply(FakeRequest()
-        .withFormUrlEncodedBody(invalidSelectClientForm: _*))
+      val result = controller
+        .submitSelectClientPage()
+        .apply(
+          FakeRequest()
+            .withFormUrlEncodedBody(invalidSelectClientForm: _*)
+        )
       status(result) shouldBe Status.BAD_REQUEST
     }
 
@@ -75,8 +94,9 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         "clientId" -> nino
       )
 
-      val result = controller.submitSelectClientPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*))
-      status(result) shouldBe Status.SEE_OTHER
+      val result =
+        controller.submitSelectClientPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*))
+      status(result)           shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SelectTaxYearController.getSelectTaxYearPage().url)
     }
   }

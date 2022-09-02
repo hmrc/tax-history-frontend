@@ -34,7 +34,7 @@ class CitizenDetailsConnectorSpec extends TestUtil with ControllerFixture with B
   val mockHttpClient: HttpClient = mock[HttpClient]
 
   val nino: String = randomNino.toString()
-  val url: String = s"http://localhost:9337/citizen-details/$nino/designatory-details/basic"
+  val url: String  = s"http://localhost:9337/citizen-details/$nino/designatory-details/basic"
 
   trait LocalSetup extends MockitoSugar {
     lazy val connector = new CitizenDetailsConnector(appConfig, mockHttpClient)
@@ -43,13 +43,19 @@ class CitizenDetailsConnectorSpec extends TestUtil with ControllerFixture with B
   "CitizenDetailsConnector" should {
 
     "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(person), Map.empty)))
 
       val result: HttpResponse = connector.getPersonDetails(Nino(nino)).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Some(person))
+      result.json   shouldBe Json.toJson(Some(person))
 
     }
   }

@@ -23,46 +23,51 @@ import uk.gov.hmrc.play.language.LanguageUtils
 import java.time.{Instant, LocalDate, ZoneOffset}
 import javax.inject.Inject
 
-class DateUtils @Inject()(languageUtils: LanguageUtils) {
+class DateUtils @Inject() (languageUtils: LanguageUtils) {
 
-  def formatEmploymentDatesAbbrMonth(employment: Employment)(implicit messages: Messages): Employment = {
+  def formatEmploymentDatesAbbrMonth(employment: Employment)(implicit messages: Messages): Employment =
     employment.copy(
       startDateFormatted = Some(formatStartDate(employment, dateToFormattedAbbrMonthString)),
-      endDateFormatted = Some(formatEndDate(employment, dateToFormattedAbbrMonthString)))
-  }
+      endDateFormatted = Some(formatEndDate(employment, dateToFormattedAbbrMonthString))
+    )
 
-  def formatEmploymentDates(employment: Employment)(implicit messages: Messages): Employment = {
-    employment.copy(startDateFormatted = Some(formatStartDate(employment, dateToFormattedString)),
-      endDateFormatted = Some(formatEndDate(employment, dateToFormattedString)))
-  }
+  def formatEmploymentDates(employment: Employment)(implicit messages: Messages): Employment =
+    employment.copy(
+      startDateFormatted = Some(formatStartDate(employment, dateToFormattedString)),
+      endDateFormatted = Some(formatEndDate(employment, dateToFormattedString))
+    )
 
-  def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax = {
-    payAndTax.copy(earlierYearUpdates = payAndTax.earlierYearUpdates
-      .map(eyu => eyu.copy(receivedDateFormatted = Some(dateToFormattedString(eyu.receivedDate)))))
-  }
+  def formatEarlierYearUpdateReceivedDate(payAndTax: PayAndTax)(implicit messages: Messages): PayAndTax =
+    payAndTax.copy(earlierYearUpdates =
+      payAndTax.earlierYearUpdates
+        .map(eyu => eyu.copy(receivedDateFormatted = Some(dateToFormattedString(eyu.receivedDate))))
+    )
 
-  def formatStatePensionStartDate(statePension: StatePension)(implicit messages: Messages): StatePension = {
-    statePension.startDate.fold(statePension)(date => statePension.copy(startDateFormatted = Some(dateToFormattedString(date))))
-  }
+  def formatStatePensionStartDate(statePension: StatePension)(implicit messages: Messages): StatePension =
+    statePension.startDate.fold(statePension)(date =>
+      statePension.copy(startDateFormatted = Some(dateToFormattedString(date)))
+    )
 
-  def nowDateFormatted(implicit messages: Messages): String = dateToFormattedString(Instant.now().atOffset(ZoneOffset.UTC).toLocalDate)
+  def nowDateFormatted(implicit messages: Messages): String = dateToFormattedString(
+    Instant.now().atOffset(ZoneOffset.UTC).toLocalDate
+  )
 
   def dateToFormattedString(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDate(date)
 
-  def dateToFormattedAbbrMonthString(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDateAbbrMonth(date)
+  def dateToFormattedAbbrMonthString(date: LocalDate)(implicit messages: Messages): String =
+    languageUtils.Dates.formatDateAbbrMonth(date)
 
   def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
 
-  def formatStartDate(employment: Employment, dateFormat: LocalDate => String)(implicit messages: Messages): String = {
-    employment.startDate.fold(noRecord){date => dateFormat(date)}
-  }
+  def formatStartDate(employment: Employment, dateFormat: LocalDate => String)(implicit messages: Messages): String =
+    employment.startDate.fold(noRecord)(date => dateFormat(date))
 
   def formatEndDate(employment: Employment, dateFormat: LocalDate => String)(implicit messages: Messages): String = {
     val ongoing = messages("lbl.end-date.ongoing")
     employment.employmentStatus match {
       case EmploymentStatus.PotentiallyCeased => noRecord
-      case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord){date => dateFormat(date)}
-      case _                                  => employment.endDate.fold(ongoing){date => dateFormat(date)}
+      case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord)(date => dateFormat(date))
+      case _                                  => employment.endDate.fold(ongoing)(date => dateFormat(date))
     }
   }
 

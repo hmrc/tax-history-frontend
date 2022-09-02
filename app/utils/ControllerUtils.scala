@@ -23,7 +23,7 @@ object ControllerUtils {
 
   def getEmploymentStatus(employment: Employment)(implicit messages: Messages): String = {
     val current = Messages("lbl.employment.status.current")
-    val ceased = Messages("lbl.employment.status.ceased")
+    val ceased  = Messages("lbl.employment.status.ceased")
     val unknown = Messages("lbl.employment.status.unknown")
 
     employment.employmentStatus match {
@@ -33,32 +33,28 @@ object ControllerUtils {
     }
   }
 
-  def hasEmploymentDetails(employment: Employment):Boolean = {
-    employment.employmentStatus match{
+  def hasEmploymentDetails(employment: Employment): Boolean =
+    employment.employmentStatus match {
       case EmploymentStatus.Unknown => false
       case _                        => true
     }
-  }
 
-  def displaySource(sourceAmount:Option[BigDecimal], amount: BigDecimal): Option[BigDecimal] =
+  def displaySource(sourceAmount: Option[BigDecimal], amount: BigDecimal): Option[BigDecimal] =
     if (sourceAmount.contains(amount)) None else sourceAmount
 
-  def displayTaxCode(basisOperation: Option[Int]):Option[String] =
-    basisOperation match{
+  def displayTaxCode(basisOperation: Option[Int]): Option[String] =
+    basisOperation match {
       case Some(1) | Some(3) => Some("X")
-      case _ => None
+      case _                 => None
     }
 
-  def sentenceCase(input :String): String = {
+  def sentenceCase(input: String): String =
     input.toLowerCase.capitalize
-  }
 
-  def isJobSeekerAllowance(employment: Employment)(implicit messages: Messages): String = {
+  def isJobSeekerAllowance(employment: Employment)(implicit messages: Messages): String =
     if (employment.isJobseekersAllowance) {
       Messages("employmenthistory.job.seekers")
-    }
-    else {
+    } else {
       employment.employerName
     }
-  }
 }

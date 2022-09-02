@@ -33,20 +33,28 @@ import uk.gov.hmrc.http.HeaderCarrier
 import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
 
-trait BaseSpec extends AnyWordSpecLike with Matchers with OptionValues with GuiceOneAppPerSuite with MockitoSugar with PatienceConfiguration with BeforeAndAfterEach with Injecting { this: Suite =>
+trait BaseSpec
+    extends AnyWordSpecLike
+    with Matchers
+    with OptionValues
+    with GuiceOneAppPerSuite
+    with MockitoSugar
+    with PatienceConfiguration
+    with BeforeAndAfterEach
+    with Injecting { this: Suite =>
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
-  def injected[T](c: Class[T]): T = app.injector.instanceOf(c)
+  def injected[T](c: Class[T]): T                    = app.injector.instanceOf(c)
   def injected[T](implicit evidence: ClassTag[T]): T = app.injector.instanceOf[T]
 
   lazy val messagesControllerComponents: MessagesControllerComponents = injected[MessagesControllerComponents]
-  lazy val environment: Environment = injected[Environment]
+  lazy val environment: Environment                                   = injected[Environment]
 
   implicit val appConfig: AppConfig = injected[AppConfig]
   implicit val ec: ExecutionContext = injected[ExecutionContext]
 
-  implicit val actorSystem: ActorSystem = ActorSystem("test")
+  implicit val actorSystem: ActorSystem   = ActorSystem("test")
   implicit val materializer: Materializer = Materializer(actorSystem)
 
 }

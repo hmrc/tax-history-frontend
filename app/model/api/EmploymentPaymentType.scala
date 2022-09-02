@@ -31,20 +31,20 @@ object EmploymentPaymentType {
   case object Unknown extends EmploymentPaymentType { val name = "Unknown" }
 
   def apply(name: String): EmploymentPaymentType = name.trim match {
-    case OccupationalPension.name => OccupationalPension
-    case JobseekersAllowance.name => JobseekersAllowance
-    case IncapacityBenefit.name => IncapacityBenefit
+    case OccupationalPension.name           => OccupationalPension
+    case JobseekersAllowance.name           => JobseekersAllowance
+    case IncapacityBenefit.name             => IncapacityBenefit
     case EmploymentAndSupportAllowance.name => EmploymentAndSupportAllowance
-    case StatePensionLumpSum.name => StatePensionLumpSum
-    case _ => Unknown
+    case StatePensionLumpSum.name           => StatePensionLumpSum
+    case _                                  => Unknown
   }
 
   def unapply(paymentType: EmploymentPaymentType): Option[String] = Some(paymentType.name)
 
   private implicit val reads: Reads[EmploymentPaymentType] = new Reads[EmploymentPaymentType] {
     override def reads(json: JsValue): JsResult[EmploymentPaymentType] = json match {
-      case JsString(value)  => JsSuccess(EmploymentPaymentType(value))
-      case invalid => JsError(s"Invalid EmploymentPaymentType $invalid")
+      case JsString(value) => JsSuccess(EmploymentPaymentType(value))
+      case invalid         => JsError(s"Invalid EmploymentPaymentType $invalid")
     }
   }
 

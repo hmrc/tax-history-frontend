@@ -18,36 +18,30 @@ package model.api
 
 import play.api.libs.json.Json
 
-case class TaDeduction(`type`:Int,
-                       npsDescription: String,
-                       amount: BigDecimal,
-                       sourceAmount: Option[BigDecimal])
+case class TaDeduction(`type`: Int, npsDescription: String, amount: BigDecimal, sourceAmount: Option[BigDecimal])
 
 object TaDeduction {
   implicit val formats = Json.format[TaDeduction]
 }
 
-case class TaAllowance(`type`:Int,
-                       npsDescription: String,
-                       amount: BigDecimal,
-                       sourceAmount: Option[BigDecimal])
+case class TaAllowance(`type`: Int, npsDescription: String, amount: BigDecimal, sourceAmount: Option[BigDecimal])
 
 object TaAllowance {
   implicit val formats = Json.format[TaAllowance]
 }
 
-
-case class IncomeSource(employmentId:Int,
-                        employmentType:Int,
-                        actualPUPCodedInCYPlusOneTaxYear:Option[BigDecimal],
-                        deductions: List[TaDeduction],
-                        allowances: List[TaAllowance],
-                        taxCode: String,
-                        basisOperation: Option[Int],
-                        employmentTaxDistrictNumber: Int,
-                        employmentPayeRef: String)
+case class IncomeSource(
+  employmentId: Int,
+  employmentType: Int,
+  actualPUPCodedInCYPlusOneTaxYear: Option[BigDecimal],
+  deductions: List[TaDeduction],
+  allowances: List[TaAllowance],
+  taxCode: String,
+  basisOperation: Option[Int],
+  employmentTaxDistrictNumber: Int,
+  employmentPayeRef: String
+)
 
 object IncomeSource {
   implicit val formats = Json.format[IncomeSource]
 }
-

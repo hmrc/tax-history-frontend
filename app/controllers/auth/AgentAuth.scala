@@ -28,30 +28,36 @@ import scala.concurrent.Future
 
 trait AgentAuthTrait
 
-abstract class AgentAuth(cc: MessagesControllerComponents) extends FrontendController(cc) with AuthorisedFunctions with AuthRedirects {
+abstract class AgentAuth(cc: MessagesControllerComponents)
+    extends FrontendController(cc)
+    with AuthorisedFunctions
+    with AuthRedirects {
 
   /**
-   * The url to redirect to.
-   */
+    * The url to redirect to.
+    */
   val agentSubscriptionStart: String
 
   def redirectToSubPage: Future[Result] = Future successful Redirect(agentSubscriptionStart)
 
-  def redirectToExitPage: Future[Result] = Future successful Redirect(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage())
+  def redirectToExitPage: Future[Result] =
+    Future successful Redirect(controllers.routes.ClientErrorController.getNoAgentServicesAccountPage())
 
   def isAgent(group: AffinityGroup): Boolean = group.toString.contains("Agent")
 
   def extractArn(enrolls: Set[Enrolment]): Option[String] =
-    enrolls.find(_.key equals "HMRC-AS-AGENT").flatMap(_.identifiers.find(_.key equals "AgentReferenceNumber").map(_.value))
+    enrolls
+      .find(_.key equals "HMRC-AS-AGENT")
+      .flatMap(_.identifiers.find(_.key equals "AgentReferenceNumber").map(_.value))
 
   type AfiActionWithArn = Request[AnyContent] => Future[Result]
   lazy val affinityGroupAllEnrolls: Retrieval[Option[AffinityGroup] ~ Enrolments] = affinityGroup and allEnrolments
-  lazy val AgentEnrolmentForPAYE: Enrolment = Enrolment("HMRC-AS-AGENT")
+  lazy val AgentEnrolmentForPAYE: Enrolment                                       = Enrolment("HMRC-AS-AGENT")
     .withDelegatedAuthRule("afi-auth")
 
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)
-  val isAnAgent:Boolean  = true
-  val isAuthorisedForPAYE = true
-  val isNotAuthorisedForPAYE = false
+  val isAnAgent: Boolean                     = true
+  val isAuthorisedForPAYE                    = true
+  val isNotAuthorisedForPAYE                 = false
 
 }

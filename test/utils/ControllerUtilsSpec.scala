@@ -58,7 +58,9 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
         worksNumber = "00191048716"
       )
 
-      dateUtils.formatEndDate(emp, dateUtils.dateToFormattedString) shouldBe DateTimeFormatter.ofPattern("d MMMM yyyy").format(parsedEndDate)
+      dateUtils.formatEndDate(emp, dateUtils.dateToFormattedString) shouldBe DateTimeFormatter
+        .ofPattern("d MMMM yyyy")
+        .format(parsedEndDate)
     }
 
     "return default message when employment status is PotentiallyCeased" in {
@@ -214,18 +216,18 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
       }
     }
   }
-
-  "ControllerUtils - displaySource " must {
+  // scalastyle:off magic.number
+  "ControllerUtils - displaySource "       must {
     "return none when both source amount and amount are the same" in {
       val sourceAmount: Option[BigDecimal] = Some(1)
-      val amount: BigDecimal = 1
+      val amount: BigDecimal               = 1
 
       ControllerUtils.displaySource(sourceAmount, amount) shouldBe None
     }
 
     "return the source amount when both source amount and amount are different" in {
       val sourceAmount: Option[BigDecimal] = Some(2)
-      val amount: BigDecimal = 1
+      val amount: BigDecimal               = 1
 
       ControllerUtils.displaySource(sourceAmount, amount) shouldBe Some(2)
     }
@@ -245,9 +247,10 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
 
       ControllerUtils.displayTaxCode(basisOperation2) shouldBe None
       ControllerUtils.displayTaxCode(basisOperation4) shouldBe None
-      ControllerUtils.displayTaxCode(None) shouldBe None
+      ControllerUtils.displayTaxCode(None)            shouldBe None
     }
   }
+  // scalastyle:on magic.number
 
   "ControllerUtils - sentenceCase " must {
     "return the input with the first letter capitalised and the rest lower case" in {

@@ -17,13 +17,16 @@
 import com.google.inject.AbstractModule
 import com.google.inject.name.Names
 import play.api.{Configuration, Environment}
-import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient, HttpClient}
+import uk.gov.hmrc.play.bootstrap.http.{DefaultHttpClient}
+import uk.gov.hmrc.http.HttpClient
 
-class FrontendModule (val environment: Environment, val configuration: Configuration) extends AbstractModule {
+class FrontendModule(val environment: Environment, val configuration: Configuration) extends AbstractModule {
 
   override def configure(): Unit = {
 
-    bind(classOf[String]).annotatedWith(Names.named("contactFormServiceIdentifier")).toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
+    bind(classOf[String])
+      .annotatedWith(Names.named("contactFormServiceIdentifier"))
+      .toInstance("AgentsForIndividuals") //contactFormServiceIdentifier
     bind(classOf[HttpClient]).to(classOf[DefaultHttpClient])
 
     //These library components must be bound in this way, or using providers

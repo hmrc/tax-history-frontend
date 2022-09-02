@@ -33,12 +33,14 @@ import views.{BaseViewSpec, Fixture}
 class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
 
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/select-client").withCSRFToken
+  private val maxChars                                  = 100
 
   trait ViewFixture extends Fixture {
-    lazy val nino: String = randomNino.toString()
-    val postData: JsObject = Json.obj("clientId" -> nino)
-    val validForm: Form[SelectClient] = selectClientForm.bind(postData, 100)
-    val invalidFormWrongFormat: Form[SelectClient] = selectClientForm.bind(Json.obj("clientId" -> "123456#$&"), 100)
+    lazy val nino: String                          = randomNino.toString()
+    val postData: JsObject                         = Json.obj("clientId" -> nino)
+    val validForm: Form[SelectClient]              = selectClientForm.bind(postData, maxChars)
+    val invalidFormWrongFormat: Form[SelectClient] =
+      selectClientForm.bind(Json.obj("clientId" -> "123456#$&"), maxChars)
   }
 
   "select_client view" should {
@@ -60,7 +62,9 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
 
     "display input field hint" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementsByClass("govuk-hint").get(0).text shouldBe Messages("employmenthistory.select.client.nino.hint")
+      doc.body.getElementsByClass("govuk-hint").get(0).text shouldBe Messages(
+        "employmenthistory.select.client.nino.hint"
+      )
     }
 
     "display input field" in new ViewFixture {
@@ -75,19 +79,23 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
 
     "display continue button" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementById("continueButton").text shouldBe Messages("employmenthistory.select.client.continue")
+      doc.body.getElementById("continueButton").text      shouldBe Messages("employmenthistory.select.client.continue")
       doc.body.getElementById("continueButton").className shouldBe "govuk-button"
     }
 
     "display correct error message for invalid nino" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      doc.getElementById("error-summary-title").text mustBe Messages("employmenthistory.select.client.error.invalid-format.title")
-      doc.getElementById("clientId-error").text contains Messages("employmenthistory.select.client.error.invalid-format")
+      doc.getElementById("error-summary-title").text mustBe Messages(
+        "employmenthistory.select.client.error.invalid-format.title"
+      )
+      doc.getElementById("clientId-error").text contains Messages(
+        "employmenthistory.select.client.error.invalid-format"
+      )
     }
 
     "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.getElementById("nav-home").text shouldBe Messages("nav.home")
+      doc.getElementById("nav-home").text         shouldBe Messages("nav.home")
       validateConditionalContent("nav-client")
       validateConditionalContent("nav-year")
       doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage

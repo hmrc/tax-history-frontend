@@ -25,7 +25,12 @@ class SignedOutControllerSpec extends ControllerSpec with BaseSpec {
 
   trait LocalSetup extends MockitoSugar {
     lazy val controller: SignedOutController = {
-      val c = new SignedOutController(injected[SignedOut], messagesControllerComponents, appConfig, stubControllerComponents().executionContext)
+      val c = new SignedOutController(
+        injected[SignedOut],
+        messagesControllerComponents,
+        appConfig,
+        stubControllerComponents().executionContext
+      )
       c
     }
   }
@@ -43,4 +48,3 @@ class SignedOutControllerSpec extends ControllerSpec with BaseSpec {
   }
 
 }
-

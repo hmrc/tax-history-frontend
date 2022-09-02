@@ -41,31 +41,64 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
   trait LocalSetup extends MockitoSugar {
 
-    lazy val taxYear: Int = 2014
+    lazy val taxYear: Int       = 2014
     lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
 
     lazy val controller: EmploymentDetailController = {
-          val c = new EmploymentDetailController(mock[TaxHistoryConnector], mock[CitizenDetailsConnector], mock[AuthConnector],
-        app.configuration, environment, messagesControllerComponents, injected[employment_detail], dateUtils)(stubControllerComponents().executionContext, appConfig)
+      val c = new EmploymentDetailController(
+        mock[TaxHistoryConnector],
+        mock[CitizenDetailsConnector],
+        mock[AuthConnector],
+        app.configuration,
+        environment,
+        messagesControllerComponents,
+        injected[employment_detail],
+        dateUtils
+      )(stubControllerComponents().executionContext, appConfig)
 
       val incomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
 
-      when(c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any[HeaderCarrier], any[ExecutionContext]))
-        .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+      when(
+        c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
+        .thenReturn(
+          Future.successful(
+            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
+          )
+        )
 
-      when(c.taxHistoryConnector.getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        c.taxHistoryConnector.getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTax), Map.empty)))
 
-      when(c.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        c.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employment), Map.empty)))
 
-      when(c.taxHistoryConnector.getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        c.taxHistoryConnector.getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(companyBenefits), Map.empty)))
 
-      when(c.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier])).
-        thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
+      when(c.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
-      when(c.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        c.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
 
       c
@@ -75,7 +108,8 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
   "EmploymentDetailController" must {
     "successfully load Employment details page" in new LocalSetup {
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include("first name second name")
 
@@ -83,69 +117,102 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
     "redirect to /select-client page when there is no nino in session" in new LocalSetup {
       val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest)
-      status(result) shouldBe Status.SEE_OTHER
+      status(result)           shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
     }
 
     "redirect to /client-income-record/:year when employment is not found (getEmployment returns 404)" in new LocalSetup {
-      when(controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+      when(
+        controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(taxYear).url)
     }
 
     "show employment details page even if getPayAndTaxDetails returns 404" in new LocalSetup {
-      when(controller.taxHistoryConnector.getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        controller.taxHistoryConnector
+          .getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier])
+      )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
     "show employment details page even if getCompanyBenefits returns 404" in new LocalSetup {
-      when(controller.taxHistoryConnector.getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        controller.taxHistoryConnector
+          .getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier])
+      )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
     "show employment details page even if getIncomeSource returns 404" in new LocalSetup {
-      when(controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
     "show technical error page when getEmployment returns a status other than 200, 401, 404" in new LocalSetup {
-      when(controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
 
     "show technical error page when getEmployment returns a 4xx response" in new LocalSetup {
-      when(controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, null)))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
 
     "show technical error page when getEmployment returns a 3xx response" in new LocalSetup {
-      when(controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier]))
+      when(
+        controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+          any[HeaderCarrier]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, null)))
 
-      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }

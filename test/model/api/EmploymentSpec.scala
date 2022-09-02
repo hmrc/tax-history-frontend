@@ -57,7 +57,8 @@ class EmploymentSpec extends TestUtil with BaseSpec {
   "Employment" should {
 
     "generate employmentId when none is supplied" in {
-      val emp = Employment(payeReference = "paye-1",
+      val emp = Employment(
+        payeReference = "paye-1",
         employerName = "employer-1",
         startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2017-01-01")),
@@ -68,7 +69,7 @@ class EmploymentSpec extends TestUtil with BaseSpec {
         worksNumber = "00191048716"
       )
       emp.employmentId.toString.nonEmpty shouldBe true
-      emp.employmentId shouldNot be(employment1.employmentId)
+      emp.employmentId                  shouldNot be(employment1.employmentId)
     }
   }
 }

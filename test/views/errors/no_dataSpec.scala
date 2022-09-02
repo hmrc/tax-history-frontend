@@ -31,35 +31,39 @@ class no_dataSpec extends GuiceAppSpec with BaseViewSpec {
 
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
-  val firstName = "testFirstName"
-  val surname = "testSurname"
-  val person: Person = Person(Some(firstName), Some(surname), deceased = Some(false))
-  val nino: String = TestUtil.randomNino.toString()
+  trait noDataFixture extends Fixture {
+    val firstName      = "testFirstName"
+    val surname        = "testSurname"
+    val person: Person = Person(Some(firstName), Some(surname), deceased = Some(false))
+    val nino: String   = TestUtil.randomNino.toString()
+    val taxYear        = 2017
+
+    val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, taxYear)
+
+  }
 
   "no data available view" must {
 
-    "have the correct title" in new Fixture {
-      val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, 2017)
+    "have the correct title" in new noDataFixture {
       doc.title mustBe expectedPageTitle(messages("employmenthistory.no.data.title"))
     }
 
-    "have the correct header section" in new Fixture {
-      val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, 2017)
-      val preHeaderElement = doc.getElementById("pre-header")
+    "have the correct header section" in new noDataFixture {
+      val preHeaderElement           = doc.getElementById("pre-header")
       val preHeaderWithoutHiddenText = preHeaderElement.ownText()
-      val preHeader = preHeaderElement.text()
+      val preHeader                  = preHeaderElement.text()
 
       heading.text() mustBe messages("employmenthistory.header")
       preHeaderWithoutHiddenText mustBe s"$firstName $surname"
       preHeader mustBe s"This section relates to $firstName $surname"
     }
 
-    "have correct heading and GA page view event" in new Fixture {
-      val view: HtmlFormat.Appendable = inject[no_data].apply(person, nino, 2017)
-
+    "have correct heading and GA page view event" in new noDataFixture {
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-tax-year"
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text mustBe Messages("employmenthistory.no.data.text")
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.no.data.text")).text mustBe Messages(
+        "employmenthistory.no.data.text"
+      )
       doc.getElementById("selectClient").attr("href") mustBe "/tax-history/select-client"
       doc.getElementById("selectTaxYear").attr("href") mustBe "/tax-history/select-tax-year"
     }

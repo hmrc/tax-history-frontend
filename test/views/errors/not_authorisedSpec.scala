@@ -46,13 +46,21 @@ class not_authorisedSpec extends GuiceAppSpec with BaseViewSpec {
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text1", nino.value)) should not be empty
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text2")) should not be empty
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text3")) should not be empty
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.select.client.link.text")).attr("href") mustBe "/tax-history/select-client"
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.invite.client.link.text"))  should not be empty
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text2"))             should not be empty
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text3"))             should not be empty
+      doc
+        .getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.select.client.link.text"))
+        .attr("href") mustBe "/tax-history/select-client"
+      doc.getElementsMatchingOwnText(
+        Messages("employmenthistory.not.authorised.invite.client.link.text")
+      )                                                                                              should not be empty
       doc.getElementById("service").`val` mustBe "PERSONAL-INCOME-RECORD"
       doc.getElementById("clientIdentifier").`val` mustBe s"$nino"
-      doc.getElementsByTag("form").attr("action") mustBe s"${appConfig.agentInvitationFastTrack}?continue=%2Ftax-history%2Fselect-client&error=%2Ftax-history%2Fnot-authorised"
+      doc
+        .getElementsByTag("form")
+        .attr(
+          "action"
+        ) mustBe s"${appConfig.agentInvitationFastTrack}?continue=%2Ftax-history%2Fselect-client&error=%2Ftax-history%2Fnot-authorised"
     }
   }
 

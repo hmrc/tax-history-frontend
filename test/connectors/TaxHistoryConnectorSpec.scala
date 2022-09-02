@@ -38,11 +38,15 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
 
   trait LocalSetup {
     lazy val nino: String = randomNino.toString()
-    lazy val connector = new TaxHistoryConnector(appConfig, mockHttpClient)
+    lazy val connector    = new TaxHistoryConnector(appConfig, mockHttpClient)
   }
 
+  private val taxYear2014 = 2014
+  private val taxYear2015 = 2015
+  private val taxYear2017 = 2017
+
   private val employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
-  private val employment = Employment(
+  private val employment   = Employment(
     employmentId = employmentId,
     payeReference = "paye-1",
     employerName = "employer-1",
@@ -58,55 +62,77 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
   "TaxHistoryConnector" should {
 
     "fetch tax history" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/2017/employments"
+      val url                      = s"http://localhost:9997/tax-history/$nino/2017/employments"
       val employmentsJson: JsArray = JsArray(Seq(Json.toJson(employment)))
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = employmentsJson, Map.empty)))
 
-      val result: HttpResponse = connector.getEmploymentsAndPensions(Nino(nino), 2017).futureValue
+      val result: HttpResponse = connector.getEmploymentsAndPensions(Nino(nino), taxYear2017).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe employmentsJson
+      result.json   shouldBe employmentsJson
     }
 
     "fetch allowance for tax history" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/2017/allowances"
+      val url                  = s"http://localhost:9997/tax-history/$nino/2017/allowances"
       val allowance: Allowance = Allowance(
         allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
         iabdType = "allowanceType",
         amount = BigDecimal(12.00)
       )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(Seq(allowance)), Map.empty)))
 
-      val result: HttpResponse = connector.getAllowances(Nino(nino), 2017).futureValue
+      val result: HttpResponse = connector.getAllowances(Nino(nino), taxYear2017).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Seq(allowance))
+      result.json   shouldBe Json.toJson(Seq(allowance))
     }
 
     "fetch company benefits for Employment details" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/company-benefits"
-      val companyBenefits: CompanyBenefit = CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
+      val url                             = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/company-benefits"
+      val companyBenefits: CompanyBenefit =
+        CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(Seq(companyBenefits)), Map.empty)))
 
-      val result: HttpResponse = connector.getCompanyBenefits(Nino(nino), 2014, employmentId.toString).futureValue
+      val result: HttpResponse =
+        connector.getCompanyBenefits(Nino(nino), taxYear2014, employmentId.toString).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(Seq(companyBenefits))
+      result.json   shouldBe Json.toJson(Seq(companyBenefits))
     }
 
     "fetch Employment details from backend" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/pay-and-tax"
-      lazy val eyuList = List(EarlierYearUpdate(
-        earlierYearUpdateId = UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
-        taxablePayEYU = BigDecimal(123.45),
-        taxEYU = BigDecimal(67.89),
-        receivedDate = LocalDate.parse("2015-05-29")
-      ))
+      val url          = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/pay-and-tax"
+      lazy val eyuList = List(
+        EarlierYearUpdate(
+          earlierYearUpdateId = UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
+          taxablePayEYU = BigDecimal(123.45),
+          taxEYU = BigDecimal(67.89),
+          receivedDate = LocalDate.parse("2015-05-29")
+        )
+      )
 
       lazy val payAndTaxWithEyu: PayAndTax = PayAndTax(
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
@@ -120,38 +146,61 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         earlierYearUpdates = eyuList
       )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(payAndTaxWithEyu), Map.empty)))
 
-      val result: HttpResponse = connector.getPayAndTaxDetails(Nino(nino), 2014, employmentId.toString).futureValue
+      val result: HttpResponse =
+        connector.getPayAndTaxDetails(Nino(nino), taxYear2014, employmentId.toString).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(payAndTaxWithEyu)
+      result.json   shouldBe Json.toJson(payAndTaxWithEyu)
     }
 
     "fetch Employment from backend" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}"
+      val url                     = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}"
       val employmentJson: JsValue = Json.toJson(employment)
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = employmentJson, Map.empty)))
 
-      val result: HttpResponse = connector.getEmployment(Nino(nino), 2014, employmentId.toString).futureValue
+      val result: HttpResponse = connector.getEmployment(Nino(nino), taxYear2014, employmentId.toString).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe employmentJson
+      result.json   shouldBe employmentJson
     }
 
     "fetch Tax years from backend" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/tax-years"
-      val taxYears = List(IndividualTaxYear(2015, "uri1", "uri2", "uri3"), IndividualTaxYear(2015, "uri1", "uri2", "uri3"))
+      val url      = s"http://localhost:9997/tax-history/$nino/tax-years"
+      val taxYears =
+        List(
+          IndividualTaxYear(taxYear2015, "uri1", "uri2", "uri3"),
+          IndividualTaxYear(taxYear2015, "uri1", "uri2", "uri3")
+        )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(taxYears), Map.empty)))
 
       val result: HttpResponse = connector.getTaxYears(Nino(nino)).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(taxYears)
+      result.json   shouldBe Json.toJson(taxYears)
     }
 
     "fetch payAndTax data from backend" in new LocalSetup {
@@ -168,13 +217,20 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         earlierYearUpdates = List.empty
       )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(payAndTax), Map.empty)))
 
-      val result: HttpResponse = connector.getPayAndTaxDetails(Nino(nino), 2017, employmentId.toString).futureValue
+      val result: HttpResponse =
+        connector.getPayAndTaxDetails(Nino(nino), taxYear2017, employmentId.toString).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(payAndTax)
+      result.json   shouldBe Json.toJson(payAndTax)
     }
 
     "fetch getTaxAccount data from the backend" in new LocalSetup {
@@ -187,13 +243,19 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         actualPUPCodedInCYPlusOneTaxYear = Some(BigDecimal(302.10))
       )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(taxAccount), Map.empty)))
 
-      val result: HttpResponse = connector.getTaxAccount(Nino(nino), 2017).futureValue
+      val result: HttpResponse = connector.getTaxAccount(Nino(nino), taxYear2017).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(taxAccount)
+      result.json   shouldBe Json.toJson(taxAccount)
     }
 
     "fetch getStatePension data from the backend" in new LocalSetup {
@@ -206,20 +268,27 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         startDate = Some(LocalDate.now())
       )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(statePension), Map.empty)))
 
-      val result: HttpResponse = connector.getStatePension(Nino(nino), 2017).futureValue
+      val result: HttpResponse = connector.getStatePension(Nino(nino), taxYear2017).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(statePension)
+      result.json   shouldBe Json.toJson(statePension)
     }
 
     "fetch getIncomeSource data from the backend" in new LocalSetup {
-      val url = s"http://localhost:9997/tax-history/$nino/2017/employments/$employmentId/income-source"
+      val url   = s"http://localhost:9997/tax-history/$nino/2017/employments/$employmentId/income-source"
+      val empId = 12345
 
       val incomeSource: IncomeSource = IncomeSource(
-        employmentId = 12345,
+        employmentId = empId,
         employmentType = 1,
         actualPUPCodedInCYPlusOneTaxYear = Some(BigDecimal(10.00)),
         deductions = List(TaDeduction(0, "some description", BigDecimal(10.00), Some(BigDecimal(10.00)))),
@@ -230,13 +299,19 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         employmentPayeRef = "employment paye ref"
       )
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(incomeSource), Map.empty)))
 
-      val result: HttpResponse = connector.getIncomeSource(Nino(nino), 2017, employmentId.toString).futureValue
+      val result: HttpResponse = connector.getIncomeSource(Nino(nino), taxYear2017, employmentId.toString).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(incomeSource)
+      result.json   shouldBe Json.toJson(incomeSource)
     }
 
     "fetch getAllPayAndTax data from the backend" in new LocalSetup {
@@ -251,22 +326,31 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         studentLoan = None,
         studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List(EarlierYearUpdate(
-          UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"), BigDecimal(123.45),
-          taxEYU = BigDecimal(67.89),
-          receivedDate = LocalDate.parse("2015-05-29")
-        ))
+        earlierYearUpdates = List(
+          EarlierYearUpdate(
+            UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
+            BigDecimal(123.45),
+            taxEYU = BigDecimal(67.89),
+            receivedDate = LocalDate.parse("2015-05-29")
+          )
+        )
       )
 
       val allPayAndTaxResponse = Map("first" -> payAndTax)
 
-      when(mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(any[HttpReads[HttpResponse]], any[HeaderCarrier], any[ExecutionContext]))
+      when(
+        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
+          any[HttpReads[HttpResponse]],
+          any[HeaderCarrier],
+          any[ExecutionContext]
+        )
+      )
         .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(allPayAndTaxResponse), Map.empty)))
 
-      val result: HttpResponse = connector.getAllPayAndTax(Nino(nino), 2017).futureValue
+      val result: HttpResponse = connector.getAllPayAndTax(Nino(nino), taxYear2017).futureValue
 
       result.status shouldBe Status.OK
-      result.json shouldBe Json.toJson(allPayAndTaxResponse)
+      result.json   shouldBe Json.toJson(allPayAndTaxResponse)
     }
   }
 }

@@ -24,19 +24,21 @@ import play.api.libs.json._
 import java.time.LocalDate
 import java.util.UUID
 
-case class Employment(employmentId: UUID = UUID.randomUUID(),
-                      startDate: Option[LocalDate],
-                      endDate: Option[LocalDate] = None,
-                      startDateFormatted: Option[String] = None,
-                      endDateFormatted: Option[String] = None,
-                      payeReference: String,
-                      employerName: String,
-                      companyBenefitsURI: Option[String] = None,
-                      payAndTaxURI: Option[String] = None,
-                      employmentURI: Option[String] = None,
-                      employmentPaymentType: Option[EmploymentPaymentType],
-                      employmentStatus: EmploymentStatus,
-                      worksNumber: String) {
+case class Employment(
+  employmentId: UUID = UUID.randomUUID(),
+  startDate: Option[LocalDate],
+  endDate: Option[LocalDate] = None,
+  startDateFormatted: Option[String] = None,
+  endDateFormatted: Option[String] = None,
+  payeReference: String,
+  employerName: String,
+  companyBenefitsURI: Option[String] = None,
+  payAndTaxURI: Option[String] = None,
+  employmentURI: Option[String] = None,
+  employmentPaymentType: Option[EmploymentPaymentType],
+  employmentStatus: EmploymentStatus,
+  worksNumber: String
+) {
   def isJobseekersAllowance = employmentPaymentType.contains(JobseekersAllowance)
 
   def isOccupationalPension = employmentPaymentType.contains(OccupationalPension)
@@ -60,8 +62,7 @@ object Employment {
       (JsPath \ "employmentPaymentType").readNullable[EmploymentPaymentType] and
       JsPath.read[EmploymentStatus] and
       (JsPath \ "worksNumber").read[String]
-    ) (Employment.apply _)
-
+  )(Employment.apply _)
 
   implicit val locationWrites: Writes[Employment] = (
     (JsPath \ "employmentId").write[UUID] and
@@ -77,6 +78,5 @@ object Employment {
       (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
-    ) (unlift(Employment.unapply))
+  )(unlift(Employment.unapply))
 }
-

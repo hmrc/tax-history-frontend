@@ -21,11 +21,24 @@ import play.api.i18n.Messages
 case class EmploymentViewDetail(heading: String, title: String)
 
 object EmploymentViewDetail {
-  def apply(isJobseekersAllowance: Boolean, isOccupationalPension: Boolean, incomeName: String)(implicit messages: Messages): EmploymentViewDetail = {
+  def apply(isJobseekersAllowance: Boolean, isOccupationalPension: Boolean, incomeName: String)(implicit
+    messages: Messages
+  ): EmploymentViewDetail =
     (isJobseekersAllowance, isOccupationalPension) match {
-      case(true, _) => EmploymentViewDetail(messages("employmenthistory.job.seekers"), messages("employmenthistory.employment.details.job.seekers.title"))
-      case(_, true) => EmploymentViewDetail(messages("employmenthistory.jobtype.pension", incomeName), messages("employmenthistory.employment.details.pension.title"))
-      case(_, false) =>  EmploymentViewDetail(messages("employmenthistory.jobtype.employment", incomeName), messages("employmenthistory.employment.details.employment.title"))
+      case (true, _)  =>
+        EmploymentViewDetail(
+          messages("employmenthistory.job.seekers"),
+          messages("employmenthistory.employment.details.job.seekers.title")
+        )
+      case (_, true)  =>
+        EmploymentViewDetail(
+          messages("employmenthistory.jobtype.pension", incomeName),
+          messages("employmenthistory.employment.details.pension.title")
+        )
+      case (_, false) =>
+        EmploymentViewDetail(
+          messages("employmenthistory.jobtype.employment", incomeName),
+          messages("employmenthistory.employment.details.employment.title")
+        )
     }
-  }
 }

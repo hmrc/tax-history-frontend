@@ -25,17 +25,18 @@ import uk.gov.hmrc.auth.core.AuthConnector
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectClientController @Inject()(
-   override val authConnector: AuthConnector,
-   override val config: Configuration,
-   override val env: Environment,
-   val cc: MessagesControllerComponents,
-   implicit val appConfig: AppConfig,
-   selectClient: views.html.taxhistory.select_client
-)(implicit val ec: ExecutionContext) extends BaseController(cc) {
+class SelectClientController @Inject() (
+  override val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  val cc: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  selectClient: views.html.taxhistory.select_client
+)(implicit val ec: ExecutionContext)
+    extends BaseController(cc) {
 
-  val loginContinue: String = appConfig.loginContinue
-  val serviceSignout: String = appConfig.serviceSignOut
+  val loginContinue: String          = appConfig.loginContinue
+  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   //TODO Remove this as it is only included to support legacy url
@@ -55,13 +56,15 @@ class SelectClientController @Inject()(
   }
 
   def submitSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-    selectClientForm.bindFromRequest().fold(
-      formWithErrors => Future.successful(BadRequest(selectClient(formWithErrors))),
-      validFormData =>
-        authorisedAgent(AuthProviderAgents) {
-          Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
-            .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
-        }
-    )
+    selectClientForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(selectClient(formWithErrors))),
+        validFormData =>
+          authorisedAgent(AuthProviderAgents) {
+            Future successful Redirect(routes.SelectTaxYearController.getSelectTaxYearPage())
+              .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
+          }
+      )
   }
 }
