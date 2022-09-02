@@ -87,7 +87,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
     "load select tax year page" in new LocalSetup {
       val result: Future[Result] =
-        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
       status(result) shouldBe Status.OK
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
     }
@@ -97,7 +97,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
 
       val result: Future[Result] =
-        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
 
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
@@ -108,7 +108,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, null)))
 
       val result: Future[Result] =
-        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
 
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
@@ -119,7 +119,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, null)))
 
       val result: Future[Result] =
-        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
 
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
@@ -130,7 +130,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         .thenReturn(Future.successful(HttpResponse(Status.LOCKED, null)))
 
       val result: Future[Result] =
-        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino))
+        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
       status(result) shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
@@ -143,8 +143,14 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         "selectTaxYear" -> "2016"
       )
 
-      val result: Future[Result] = controller.submitSelectTaxYearPage().apply(FakeRequest()
-        .withSession("USER_NINO" -> nino).withFormUrlEncodedBody(validSelectTaxYearForm: _*))
+      val result: Future[Result] = controller
+        .submitSelectTaxYearPage()
+        .apply(
+          FakeRequest()
+            .withSession("USER_NINO" -> nino)
+            .withFormUrlEncodedBody(validSelectTaxYearForm: _*)
+            .withMethod("POST")
+        )
 
       status(result)           shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(taxYear2016).url)
@@ -161,6 +167,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
           FakeRequest()
             .withSession("USER_NINO" -> nino)
             .withFormUrlEncodedBody(validSelectTaxYearForm: _*)
+            .withMethod("POST")
         )
       status(result) shouldBe Status.BAD_REQUEST
       contentAsString(result) should include(Messages("employmenthistory.select.tax.year.error.message"))
@@ -179,6 +186,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
           FakeRequest()
             .withSession("USER_NINO" -> nino)
             .withFormUrlEncodedBody(validSelectTaxYearForm: _*)
+            .withMethod("POST")
         )
 
       status(result)           shouldBe Status.SEE_OTHER

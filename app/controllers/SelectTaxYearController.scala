@@ -93,14 +93,12 @@ class SelectTaxYearController @Inject() (
   ): Future[Result] = {
     print("nino " + nino)
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-      case Left(citizenStatus) => {
+      case Left(citizenStatus) =>
         println("I', here 3")
         redirectToClientErrorPage(citizenStatus)
-      }
-      case Right(p)            => {
+      case Right(p)            =>
         println("I', here 4")
         fetchTaxYearsAndRenderPage(form, httpStatus, nino, p.getName)
-      }
     }
   }
 
@@ -116,14 +114,12 @@ class SelectTaxYearController @Inject() (
       .fold(
         formWithErrors ⇒
           getNinoFromSession(request) match {
-            case Some(nino) => {
+            case Some(nino) =>
               println("I'm here 1")
               renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
-            }
-            case None       => {
+            case None       =>
               println("I'm here 2")
               Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
-            }
           },
         validFormData =>
           authorisedForAgent { _ =>

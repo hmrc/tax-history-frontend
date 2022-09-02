@@ -84,6 +84,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         .apply(
           FakeRequest()
             .withFormUrlEncodedBody(invalidSelectClientForm: _*)
+            .withMethod("POST")
         )
       status(result) shouldBe Status.BAD_REQUEST
     }
@@ -95,7 +96,9 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
       )
 
       val result =
-        controller.submitSelectClientPage().apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*))
+        controller
+          .submitSelectClientPage()
+          .apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*).withMethod("POST"))
       status(result)           shouldBe Status.SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SelectTaxYearController.getSelectTaxYearPage().url)
     }

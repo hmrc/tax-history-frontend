@@ -128,7 +128,6 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
         Redirect(controllers.routes.ClientErrorController.getTechnicalError())
     }
 
-  //TODO ninoField isn't being used. Investigate if we can remove
   def retrieveCitizenDetails(
     ninoField: Nino,
     citizenDetailsResponse: Future[HttpResponse]
