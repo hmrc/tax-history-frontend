@@ -106,13 +106,8 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
 
       val viewDetailsElements: Element = doc.getElementById("view-link-employment-0")
       viewDetailsElements.html must include(
-        messages("employmenthistory.view") +
-          " <span class=\"govuk-visually-hidden\">" + messages(
-            "employmenthistory.view.record.hidden",
-            s"$firstName $surname",
-            "employer-2"
-          ) + "</span>"
-      )
+        "<span aria-hidden=\"true\">" + messages("employmenthistory.view") + "</span> " +
+        "<span class=\"govuk-visually-hidden\">" + messages("employmenthistory.view.record.hidden", s"$firstName $surname", "employer-2") + "</span>")
 
       val viewDetailsElementsNoRecord: Element = doc.getElementById("view-employment-2")
       viewDetailsElementsNoRecord.html must include(messages("lbl.none"))
@@ -120,13 +115,8 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
       val viewPensionElements: Element = doc.getElementById("view-pension-0")
       viewPensionElements.attr("href") mustBe "/tax-history/single-record"
       viewPensionElements.html must include(
-        messages("employmenthistory.view") +
-          " <span class=\"govuk-visually-hidden\">" + messages(
-            "employmenthistory.view.record.hidden",
-            s"$firstName $surname",
-            "employer-1"
-          ) + "</span>"
-      )
+        "<span aria-hidden=\"true\">" + messages("employmenthistory.view") + "</span> " +
+        "<span class=\"govuk-visually-hidden\">" + messages("employmenthistory.view.record.hidden", s"$firstName $surname", "employer-1") + "</span>")
     }
 
     "have correct employment content" in new ViewFixture {

@@ -112,14 +112,14 @@
 
         <h2 id = "Pensions" class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
         @if(employments.exists(_.isOccupationalPension)) {
-            <h2 class="govuk-heading-m">@messages("employmenthistory.table.header.pensions.private")</h2>
+            <h3 class="govuk-heading-m">@messages("employmenthistory.table.header.pensions.private")</h3>
                     @pensionTable
         } else {
             <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
         }
 
         @statePension.map { sp =>
-            <h2 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h2>
+            <h3 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h3>
             <div class = "govuk-grid-row">
                 <div class = "govuk-grid-column-two-thirds">
                     @if(TaxYear.current.currentYear == taxYear) {
@@ -170,7 +170,7 @@
                 <th scope="col" class="govuk-table__header">@messages("lbl.status")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.income")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.tax")</th>
-                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@messages("lbl.record")</span></th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@messages("lbl.actions")</span></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -183,11 +183,11 @@
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="@{if(employments.count(!_.isOccupationalPension) == 1) "employmentIncome" else s"employmentIncome$index"}">@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.income)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
                     <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="@{if(employments.count(!_.isOccupationalPension) == 1) "employmentIncomeTax" else s"employmentIncomeTax$index"}">@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.tax)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
 
-                    <td class="govuk-table__cell"  data-label="@messages("lbl.record")">
+                    <td class="govuk-table__cell"  data-label="@messages("lbl.actions")">
                         @if(ControllerUtils.hasEmploymentDetails(employment)) {
 
-                            <a href="/tax-history/single-record@employment.employmentURI" id=@{s"view-link-employment-${index}"}>
-                                @messages("employmenthistory.view")
+                            <a class="govuk-link" href="/tax-history/single-record@employment.employmentURI" id=@{s"view-link-employment-${index}"}>
+                                <span aria-hidden="true">@messages("employmenthistory.view")</span>
                                 <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName, ControllerUtils.isJobSeekerAllowance(employment))</span>
                             </a>
                         } else {
@@ -218,7 +218,7 @@
                 <th scope="col" class="govuk-table__header">@messages("lbl.date.end")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.income")</th>
                 <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.tax")</th>
-                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@messages("lbl.record")</span></th>
+                <th scope="col" class="govuk-table__header"><span class="govuk-visually-hidden">@messages("lbl.actions")</span></th>
             </tr>
         </thead>
         <tbody class="govuk-table__body">
@@ -229,9 +229,9 @@
                     <td class="govuk-table__cell" data-label="@messages("lbl.date.end")">@employment.endDateFormatted.getOrElse("")</td>
                     <td class="govuk-table__cell total govuk-table__cell--numeric" data-label="@messages("lbl.income")" id=@{if(employments.count(_.isOccupationalPension)==1) "pensionIncome" else s"pensionIncome$index"}>@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.income)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
                     <td class="govuk-table__cell total govuk-table__cell--numeric"  data-label="@messages("lbl.tax")" id=@{if(employments.count(_.isOccupationalPension)==1) "pensionIncomeTax" else s"pensionIncomeTax$index"}>@incomeTotals.flatMap(it => it.getIncomeAndTax(employment)).map(eit => Html(s"${Currency(eit.tax)}")).getOrElse(Html(messages("employmenthistory.error.no-record")))</td>
-                    <td class="govuk-table__cell"  data-label="@messages("lbl.record")">
-                        <a href="/tax-history/single-record@employment.employmentURI" id=@{s"view-pension-${index}"}>
-                            @messages("employmenthistory.view")
+                    <td class="govuk-table__cell"  data-label="@messages("lbl.actions")">
+                        <a class="govuk-link" href="/tax-history/single-record@employment.employmentURI" id=@{s"view-pension-${index}"}>
+                            <span aria-hidden="true">@messages("employmenthistory.view")</span>
                             <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span>
                         </a>
                     </td>
