@@ -7,14 +7,13 @@ object AppDependencies {
 
   private val compile = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc"       %% "domain"                     % "8.1.0-play-28",
-    "uk.gov.hmrc"       %% "bootstrap-frontend-play-28" % "7.2.0",
-    "uk.gov.hmrc"       %% "play-frontend-hmrc"         % "3.24.0-play-28",
-    "uk.gov.hmrc"       %% "play-partials"              % "8.3.0-play-28",
-    "uk.gov.hmrc"       %% "url-builder"                % "3.6.0-play-28",
-    "uk.gov.hmrc"       %% "agent-mtd-identifiers"      % "0.47.0-play-28",
-    "uk.gov.hmrc"       %% "tax-year"                   % "3.0.0",
-    "com.typesafe.play" %% "play-json-joda"             % "2.9.3"
+    "uk.gov.hmrc" %% "domain"                     % "8.1.0-play-28",
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % "7.2.0",
+    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "3.24.0-play-28",
+    "uk.gov.hmrc" %% "play-partials"              % "8.3.0-play-28",
+    "uk.gov.hmrc" %% "url-builder"                % "3.6.0-play-28",
+    "uk.gov.hmrc" %% "agent-mtd-identifiers"      % "0.47.0-play-28",
+    "uk.gov.hmrc" %% "tax-year"                   % "3.0.0"
   )
 
   private val test: Seq[ModuleID]                 = Seq(
