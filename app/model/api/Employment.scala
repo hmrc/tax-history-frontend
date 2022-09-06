@@ -39,9 +39,9 @@ case class Employment(
   employmentStatus: EmploymentStatus,
   worksNumber: String
 ) {
-  def isJobseekersAllowance = employmentPaymentType.contains(JobseekersAllowance)
+  def isJobseekersAllowance: Boolean = employmentPaymentType.contains(JobseekersAllowance)
 
-  def isOccupationalPension = employmentPaymentType.contains(OccupationalPension)
+  def isOccupationalPension: Boolean = employmentPaymentType.contains(OccupationalPension)
 }
 
 object Employment {

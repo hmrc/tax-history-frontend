@@ -127,7 +127,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -140,7 +140,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
         controller.taxHistoryConnector
           .getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier])
       )
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -153,7 +153,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
         controller.taxHistoryConnector
           .getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier])
       )
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -167,7 +167,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -181,7 +181,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -195,7 +195,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
@@ -209,7 +209,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))

@@ -127,7 +127,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return 200 when null allowances found" in new LocalSetup {
       when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result)        shouldBe OK
@@ -136,7 +136,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return 200 when no tax account found" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result)        shouldBe OK
@@ -164,7 +164,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return 200 and show technical error page when no citizen details available" in new LocalSetup {
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, null)))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result)           shouldBe SEE_OTHER
@@ -173,7 +173,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return not found error page when citizen details returns locked status 423" in new LocalSetup {
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(LOCKED, null)))
+        .thenReturn(Future.successful(HttpResponse(LOCKED, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result)           shouldBe SEE_OTHER

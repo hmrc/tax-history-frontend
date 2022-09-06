@@ -71,12 +71,14 @@ class MessagesSpec extends GuiceAppSpec {
       val welshWithArgsMsgKeys   = welshMessagesKeys collect { case (key, value) if countArgs(value) > 0 => key }
       val missingFromEnglish     = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh       = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
+      // scalastyle:off regex
       missingFromEnglish foreach { key =>
         println(s"Key which has arguments in English but not in Welsh: $key")
       }
       missingFromWelsh foreach { key =>
         println(s"Key which has arguments in Welsh but not in English: $key")
       }
+      // scalastyle:on regex
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
     "have the same args in the same order for all keys which take args" in {
@@ -90,12 +92,14 @@ class MessagesSpec extends GuiceAppSpec {
         case (key, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(key) =>
           (key, engArgSeq, welshWithArgsMsgKeysAndArgList(key))
       }
+      // scalastyle:off regex
       mismatchedArgSequences foreach { case (key, engArgSeq, welshArgSeq) =>
         println(
           s"key which has different arguments or order of arguments between English and Welsh: " +
             s"$key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
         )
       }
+      // scalastyle:on regex
       mismatchedArgSequences.size mustBe 0
     }
   }

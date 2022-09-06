@@ -7,7 +7,7 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 val appName = "tax-history-frontend"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(SbtAutoBuildPlugin, play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)

@@ -94,7 +94,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
     "redirect to technical error page when getTaxYears returns status internal server error" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, "")))
 
       val result: Future[Result] =
         controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
@@ -105,7 +105,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
     "redirect to technical error page when getTaxYears returns 4xx status" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, "")))
 
       val result: Future[Result] =
         controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
@@ -116,7 +116,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
     "redirect to technical error page when getTaxYears returns 3xx status" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, "")))
 
       val result: Future[Result] =
         controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
@@ -127,7 +127,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
     "return not found error page when citizen details returns locked status 423" in new LocalSetup {
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(Status.LOCKED, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.LOCKED, "")))
 
       val result: Future[Result] =
         controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
@@ -178,7 +178,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         "selectTaxYear" -> ""
       )
       when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, null)))
+        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, "")))
 
       val result: Future[Result] = controller
         .submitSelectTaxYearPage()

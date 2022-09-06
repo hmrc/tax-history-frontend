@@ -1,9 +1,3 @@
-.*
-
-!.gitignore
-!.github
-!.scalafmt.conf
-
 /.classpath
 db
 dist
@@ -28,3 +22,4 @@ target
 test-result
 tmp
 bin
+.bsp

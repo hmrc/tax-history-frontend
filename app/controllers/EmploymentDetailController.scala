@@ -62,7 +62,8 @@ class EmploymentDetailController @Inject() (
           empDetailsResponse.status match {
             case OK                                                      =>
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
-            case NOT_FOUND                                               => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
+            case NOT_FOUND                                               =>
+              Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status if status > OK && status < INTERNAL_SERVER_ERROR =>
               logger.warn(
                 s"[EmploymentDetailController][renderEmploymentDetailsPage] Non 200 response calling " +
