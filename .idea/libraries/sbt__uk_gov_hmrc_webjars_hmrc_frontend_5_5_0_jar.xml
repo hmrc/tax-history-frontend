@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="sbt: uk.gov.hmrc.webjars:hmrc-frontend:5.5.0:jar">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/Library/Caches/Coursier/v1/https/artefacts.tax.service.gov.uk/artifactory/hmrc-releases/uk/gov/hmrc/webjars/hmrc-frontend/5.5.0/hmrc-frontend-5.5.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
