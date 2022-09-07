@@ -21,11 +21,12 @@ import play.api.data.Form
 import play.api.data.Forms._
 
 object SelectTaxYearForm {
-  val selectTaxYearForm: Form[SelectTaxYear] = {
-    Form(mapping(
-      "selectTaxYear" -> optional(text)
-        .verifying("employmenthistory.select.tax.year.error.linktext", _.exists(_.nonEmpty))
-    )(SelectTaxYear.apply)(SelectTaxYear.unapply))
-  }
+  val selectTaxYearForm: Form[SelectTaxYear] =
+    Form(
+      mapping(
+        "selectTaxYear" -> optional(text)
+          .verifying("employmenthistory.select.tax.year.error.linktext", _.exists(_.nonEmpty))
+      )(SelectTaxYear.apply)(SelectTaxYear.unapply)
+    )
 
 }

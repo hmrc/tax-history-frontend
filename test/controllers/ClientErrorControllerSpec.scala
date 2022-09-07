@@ -40,26 +40,41 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
   trait LocalSetup extends MockitoSugar {
 
-    implicit val actorSystem: ActorSystem = ActorSystem("test")
+    implicit val actorSystem: ActorSystem   = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)
-    val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
+    val person: Option[Person]              = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
-    lazy val controller: ClientErrorController = new ClientErrorController(mock[CitizenDetailsConnector], injected[MessagesControllerComponents],
-      mock[AuthConnector], app.configuration, environment, appConfig, inject[not_authorised], inject[mci_restricted],
-      inject[deceased], inject[no_data], inject[technical_error], inject[no_agent_services_account])(stubControllerComponents().executionContext)
+    lazy val controller: ClientErrorController = new ClientErrorController(
+      mock[CitizenDetailsConnector],
+      injected[MessagesControllerComponents],
+      mock[AuthConnector],
+      app.configuration,
+      environment,
+      appConfig,
+      inject[not_authorised],
+      inject[mci_restricted],
+      inject[deceased],
+      inject[no_data],
+      inject[technical_error],
+      inject[no_agent_services_account]
+    )(stubControllerComponents().executionContext)
 
     when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
     when(controller.authConnector.authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any(), any()))
-      .thenReturn(Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))))
+      .thenReturn(
+        Future.successful(
+          new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
+        )
+      )
   }
 
   "ClientErrorController" should {
     "get Mci restricted page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
-      val result: Future[Result] = controller.getMciRestricted().apply(FakeRequest())
-      val expectedView = app.injector.instanceOf[mci_restricted]
+      val result: Future[Result]       = controller.getMciRestricted().apply(FakeRequest())
+      val expectedView                 = app.injector.instanceOf[mci_restricted]
       status(result) shouldBe OK
 
       result rendersTheSameViewAs expectedView()
@@ -67,33 +82,34 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
     "get Not Authorised page with a NINO and relationship" in new LocalSetup {
       val result: Future[Result] = controller.getNotAuthorised().apply(FakeRequest().withSession("USER_NINO" -> nino))
-      status(result) shouldBe OK
+      status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.not.authorised.title"))
     }
 
     "get Not Authorised page without NINO" in new LocalSetup {
       val result: Future[Result] = controller.getNotAuthorised().apply(FakeRequest())
-      status(result) shouldBe SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
     "get No Agent Services Account page" in new LocalSetup {
       val result: Future[Result] = controller.getNoAgentServicesAccountPage().apply(FakeRequest())
-      status(result) shouldBe OK
+      status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.no.agent.services.account.title"))
     }
 
     "get deceased page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
-      val result: Future[Result] = controller.getDeceased().apply(FakeRequest())
-      val expectedView = app.injector.instanceOf[deceased]
+      val result: Future[Result]       = controller.getDeceased().apply(FakeRequest())
+      val expectedView                 = app.injector.instanceOf[deceased]
       status(result) shouldBe OK
 
       result rendersTheSameViewAs expectedView()
     }
 
     "get No Data Available page" in new LocalSetup {
-      val result: Future[Result] = controller.getNoData(2017).apply(fakeRequestWithNino)
+      val taxYear                = 2017
+      val result: Future[Result] = controller.getNoData(taxYear).apply(fakeRequestWithNino)
       status(result) shouldBe OK
       val body: String = contentAsString(result)
       body should include(Messages("employmenthistory.no.data.title"))
@@ -102,7 +118,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
     "get Technical Error page" in new LocalSetup {
       val result: Future[Result] = controller.getTechnicalError().apply(FakeRequest())
-      status(result) shouldBe OK
+      status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.technical.error.title"))
     }
   }

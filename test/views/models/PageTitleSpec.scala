@@ -22,7 +22,7 @@ import views.BaseViewSpec
 class PageTitleSpec extends GuiceAppSpec with BaseViewSpec {
 
   val postTitleText = s"- ${messages("lbl.service.title")} - GOV.UK"
-  val title = "testTitle"
+  val title         = "testTitle"
 
   "fullTitle" should {
     "return a title with post text when no form errors are present" in {

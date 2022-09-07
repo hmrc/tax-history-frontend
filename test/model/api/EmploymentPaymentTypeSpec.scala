@@ -66,7 +66,8 @@ class EmploymentPaymentTypeSpec extends BaseSpec {
     }
 
     "throw error on invalid type" in {
-      format.reads(JsNumber(10)) shouldBe a[JsError]
+      val bigDec = 10
+      format.reads(JsNumber(bigDec)) shouldBe a[JsError]
     }
 
   }

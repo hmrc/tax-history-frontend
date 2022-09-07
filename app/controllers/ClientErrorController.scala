@@ -27,70 +27,61 @@ import views.html.errors._
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class ClientErrorController @Inject()(
-   val citizenDetailsConnector: CitizenDetailsConnector,
-   val cc: MessagesControllerComponents,
-   override val authConnector: AuthConnector,
-   override val config: Configuration,
-   override val env: Environment,
-   implicit val appConfig: AppConfig,
-   notAuthorised: not_authorised,
-   mciRestricted: mci_restricted,
-   deceased: deceased,
-   noData: no_data,
-   technicalError: technical_error,
-   noAgentServicesAccount: no_agent_services_account
-)(implicit ec: ExecutionContext) extends BaseController(cc) {
+class ClientErrorController @Inject() (
+  val citizenDetailsConnector: CitizenDetailsConnector,
+  val cc: MessagesControllerComponents,
+  override val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  implicit val appConfig: AppConfig,
+  notAuthorised: not_authorised,
+  mciRestricted: mci_restricted,
+  deceased: deceased,
+  noData: no_data,
+  technicalError: technical_error,
+  noAgentServicesAccount: no_agent_services_account
+)(implicit ec: ExecutionContext)
+    extends BaseController(cc) {
 
-  lazy val loginContinue: String = appConfig.loginContinue
-  lazy val serviceSignout: String = appConfig.serviceSignOut
+  lazy val loginContinue: String          = appConfig.loginContinue
+  lazy val serviceSignout: String         = appConfig.serviceSignOut
   lazy val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-
-  def getNotAuthorised: Action[AnyContent] = Action.async {
-    implicit request =>
-      getNinoFromSession(request).fold(redirectToSelectClientPage) {
-        _ =>
-          request.getQueryString("issue") match {
-            case Some(issue) =>
-              logger.error(s"[ClientErrorController][getNotAuthorised] Form Error: $issue")
-              throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
-            case None =>
-              Future successful Ok(notAuthorised(getNinoFromSession(request)))
-          }
-      }
-  }
-
-  def getMciRestricted: Action[AnyContent] = Action.async {
-    implicit request =>
-      Future.successful(Ok(mciRestricted()))
-  }
-
-  def getDeceased: Action[AnyContent] = Action.async {
-    implicit request =>
-      Future.successful(Ok(deceased()))
-  }
-
-  def getNoData(taxYear: Int): Action[AnyContent] = Action.async {
-    implicit request => {
-      getNinoFromSession(request).fold(redirectToSelectClientPage) {
-        nino =>
-          retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap {
-            case Left(status) => redirectToClientErrorPage(status)
-            case Right(person) => Future.successful(Ok(noData(person, nino.toString, taxYear)))
-          }
+  def getNotAuthorised: Action[AnyContent] = Action.async { implicit request =>
+    getNinoFromSession(request).fold(redirectToSelectClientPage) { _ =>
+      request.getQueryString("issue") match {
+        case Some(issue) =>
+          logger.error(s"[ClientErrorController][getNotAuthorised] Form Error: $issue")
+          throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
+        case None        =>
+          Future successful Ok(notAuthorised(getNinoFromSession(request)))
       }
     }
   }
 
-  def getTechnicalError: Action[AnyContent] = Action.async {
-    implicit request =>
-      Future.successful(Ok(technicalError()))
+  def getMciRestricted: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(mciRestricted()))
   }
 
-  def getNoAgentServicesAccountPage: Action[AnyContent] = Action.async {
-    implicit request =>
-      Future successful Ok(noAgentServicesAccount())
+  def getDeceased: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(deceased()))
+  }
+
+  def getNoData(taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
+    getNinoFromSession(request).fold(redirectToSelectClientPage) { nino =>
+      retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap {
+        case Left(status)  => redirectToClientErrorPage(status)
+        case Right(person) => Future.successful(Ok(noData(person, nino.toString, taxYear)))
+      }
+    }
+  }
+
+  def getTechnicalError: Action[AnyContent] = Action.async { implicit request =>
+    Future.successful(Ok(technicalError()))
+  }
+
+  def getNoAgentServicesAccountPage: Action[AnyContent] = Action.async { implicit request =>
+    Future successful Ok(noAgentServicesAccount())
   }
 
 }

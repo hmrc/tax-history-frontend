@@ -22,17 +22,19 @@ import utils.LocalDateFormat
 
 import java.time.LocalDate
 
-case class PayAndTax(payAndTaxId: UUID = UUID.randomUUID(),
-                     taxablePayTotal: Option[BigDecimal],
-                     taxablePayTotalIncludingEYU: Option[BigDecimal],
-                     taxTotal: Option[BigDecimal],
-                     taxTotalIncludingEYU: Option[BigDecimal],
-                     studentLoan: Option[BigDecimal],
-                     studentLoanIncludingEYU: Option[BigDecimal],
-                     paymentDate: Option[LocalDate],
-                     earlierYearUpdates: List[EarlierYearUpdate]) {
+case class PayAndTax(
+  payAndTaxId: UUID = UUID.randomUUID(),
+  taxablePayTotal: Option[BigDecimal],
+  taxablePayTotalIncludingEYU: Option[BigDecimal],
+  taxTotal: Option[BigDecimal],
+  taxTotalIncludingEYU: Option[BigDecimal],
+  studentLoan: Option[BigDecimal],
+  studentLoanIncludingEYU: Option[BigDecimal],
+  paymentDate: Option[LocalDate],
+  earlierYearUpdates: List[EarlierYearUpdate]
+) {
 
-  val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate] = earlierYearUpdates
+  val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate]    = earlierYearUpdates
     .filter(_.studentLoanEYU.isDefined)
   val earlierYearUpdatesWithNonZeroPayOrTax: List[EarlierYearUpdate] = earlierYearUpdates
     .filter(x => x.taxablePayEYU != 0.00 || x.taxEYU != 0.00)

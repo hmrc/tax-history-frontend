@@ -35,100 +35,138 @@ import utils.DateUtils
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EmploymentDetailController @Inject()(
-   val taxHistoryConnector: TaxHistoryConnector,
-   val citizenDetailsConnector: CitizenDetailsConnector,
-   override val authConnector: AuthConnector,
-   override val config: Configuration,
-   override val env: Environment,
-   val cc: MessagesControllerComponents,
-   employmentDetail: views.html.taxhistory.employment_detail,
-   dateUtils: DateUtils)(implicit val ec: ExecutionContext, val appConfig: AppConfig) extends BaseController(cc) {
+class EmploymentDetailController @Inject() (
+  val taxHistoryConnector: TaxHistoryConnector,
+  val citizenDetailsConnector: CitizenDetailsConnector,
+  override val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  val cc: MessagesControllerComponents,
+  employmentDetail: views.html.taxhistory.employment_detail,
+  dateUtils: DateUtils
+)(implicit val ec: ExecutionContext, val appConfig: AppConfig)
+    extends BaseController(cc) {
 
-  val loginContinue: String = appConfig.loginContinue
-  val serviceSignout: String = appConfig.serviceSignOut
+  val loginContinue: String          = appConfig.loginContinue
+  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)
-                                         (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Result] =
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-      case Right(person) =>
+      case Right(person)       =>
         taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
           empDetailsResponse.status match {
-            case OK =>
+            case OK                                                      =>
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
-            case NOT_FOUND => Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
+            case NOT_FOUND                                               =>
+              Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status if status > OK && status < INTERNAL_SERVER_ERROR =>
-              logger.warn(s"[EmploymentDetailController][renderEmploymentDetailsPage] Non 200 response calling " +
-                s"taxHistory getEmployment, received status $status")
+              logger.warn(
+                s"[EmploymentDetailController][renderEmploymentDetailsPage] Non 200 response calling " +
+                  s"taxHistory getEmployment, received status $status"
+              )
               Future.successful(handleHttpFailureResponse(status))
-            case status if status >= INTERNAL_SERVER_ERROR =>
-              logger.error(s"[EmploymentDetailController][renderEmploymentDetailsPage] Error calling taxHistory getEmployment, received status $status")
+            case status if status >= INTERNAL_SERVER_ERROR               =>
+              logger.error(
+                s"[EmploymentDetailController][renderEmploymentDetailsPage] Error calling taxHistory getEmployment, received status $status"
+              )
               Future.successful(handleHttpFailureResponse(status))
           }
         }
     }
+
+  def getEmploymentDetails(employmentId: String, taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
+    authorisedForAgent { nino =>
+      renderEmploymentDetailsPage(nino, taxYear, employmentId)
+    }
   }
 
-  def getEmploymentDetails(employmentId: String, taxYear: Int): Action[AnyContent] = Action.async {
-    implicit request =>
-      authorisedForAgent { nino =>
-        renderEmploymentDetailsPage(nino, taxYear, employmentId)
+  private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier,
+    messages: Messages
+  ): Future[Option[PayAndTax]] =
+    taxHistoryConnector
+      .getPayAndTaxDetails(nino, taxYear, employmentId)
+      .map { payAndTaxResponse =>
+        payAndTaxResponse.status match {
+          case NOT_FOUND => None
+          case _         =>
+            val result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
+            if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
+        }
       }
-  }
+      .recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
 
-  private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)
-                          (implicit hc: HeaderCarrier, messages: Messages): Future[Option[PayAndTax]] = {
-    taxHistoryConnector.getPayAndTaxDetails(nino, taxYear, employmentId).map{ payAndTaxResponse =>
-      payAndTaxResponse.status match {
-        case NOT_FOUND => None
-        case _ => val result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
-          if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
+  private def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[List[CompanyBenefit]] =
+    taxHistoryConnector
+      .getCompanyBenefits(nino, taxYear, employmentId)
+      .map { cbResponse =>
+        cbResponse.status match {
+          case NOT_FOUND => List.empty
+          case _         => cbResponse.json.as[List[CompanyBenefit]]
+        }
       }
-    }.recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
-  }
+      .recoverWith(recoverWithEmptyDefault("getCompanyBenefits", List.empty))
 
-  private def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)
-                                (implicit hc: HeaderCarrier): Future[List[CompanyBenefit]] = {
-    taxHistoryConnector.getCompanyBenefits(nino, taxYear, employmentId).map { cbResponse =>
-      cbResponse.status match {
-        case NOT_FOUND => List.empty
-        case _ => cbResponse.json.as[List[CompanyBenefit]]
+  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[IncomeSource]] =
+    taxHistoryConnector
+      .getIncomeSource(nino, taxYear, employmentId)
+      .map { iSResponse =>
+        iSResponse.status match {
+          case NOT_FOUND => None
+          case _         => Some(iSResponse.json.as[IncomeSource])
+        }
       }
-    }.recoverWith(recoverWithEmptyDefault("getCompanyBenefits", List.empty))
+      .recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
+
+  private def recoverWithEmptyDefault[U](
+    connectorMethodName: String,
+    emptyValue: U
+  ): PartialFunction[Throwable, Future[U]] = { case e =>
+    logger.error(
+      s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName",
+      e
+    )
+    Future.successful(emptyValue)
   }
 
-  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)
-                             (implicit hc: HeaderCarrier): Future[Option[IncomeSource]] = {
-    taxHistoryConnector.getIncomeSource(nino, taxYear, employmentId).map { iSResponse =>
-      iSResponse.status match {
-        case NOT_FOUND => None
-        case _ => Some(iSResponse.json.as[IncomeSource])
-      }
-    }.recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
-  }
-
-  private def recoverWithEmptyDefault[U](connectorMethodName: String, emptyValue: U): PartialFunction[Throwable, Future[U]] = {
-    case e =>
-      logger.error(s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName", e)
-      Future.successful(emptyValue)
-  }
-
-  private def loadEmploymentDetailsPage(empResponse: HttpResponse,
-                                        nino: Nino,
-                                        taxYear: Int,
-                                        employmentId: String,
-                                        person: Person)(implicit hc: HeaderCarrier, request: Request[_]) = {
+  private def loadEmploymentDetailsPage(
+    empResponse: HttpResponse,
+    nino: Nino,
+    taxYear: Int,
+    employmentId: String,
+    person: Person
+  )(implicit hc: HeaderCarrier, request: Request[_]) = {
     val employment = dateUtils.formatEmploymentDates(empResponse.json.as[Employment])
     for {
-      payAndTax <- getPayAndTax(nino, taxYear, employmentId)
+      payAndTax       <- getPayAndTax(nino, taxYear, employmentId)
       companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
-      incomeSource <- getIncomeSource(nino, taxYear, employmentId)
+      incomeSource    <- getIncomeSource(nino, taxYear, employmentId)
     } yield {
-      val employmentViewDetail = EmploymentViewDetail(employment.isJobseekersAllowance, employment.isOccupationalPension, employment.employerName)
-      Ok(employmentDetail(taxYear, payAndTax,
-        employment, companyBenefits, person.getName.getOrElse(nino.nino), incomeSource, employmentViewDetail))
+      val employmentViewDetail = EmploymentViewDetail(
+        employment.isJobseekersAllowance,
+        employment.isOccupationalPension,
+        employment.employerName
+      )
+      Ok(
+        employmentDetail(
+          taxYear,
+          payAndTax,
+          employment,
+          companyBenefits,
+          person.getName.getOrElse(nino.nino),
+          incomeSource,
+          employmentViewDetail
+        )
+      )
     }
   }
 }

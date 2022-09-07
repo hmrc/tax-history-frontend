@@ -27,15 +27,19 @@ import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
 import javax.inject.{Inject, Singleton}
 
 @Singleton
-class ErrorHandler @Inject()(
-   val env: Environment,
-   val auditConnector: AuditConnector,
-   val messagesApi: MessagesApi,
-   errorTemplate: views.html.error_template,
-   @Named("appName") val appName: String
+class ErrorHandler @Inject() (
+  val env: Environment,
+  val auditConnector: AuditConnector,
+  val messagesApi: MessagesApi,
+  errorTemplate: views.html.error_template,
+  @Named("appName") val appName: String
 )(implicit val config: Configuration, val appConfig: AppConfig)
-  extends FrontendErrorHandler with I18nSupport with AuthRedirects {
+    extends FrontendErrorHandler
+    with I18nSupport
+    with AuthRedirects {
 
-  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit request: Request[_]): Html =
-  errorTemplate(pageTitle, heading, message)
+  override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
+    request: Request[_]
+  ): Html =
+    errorTemplate(pageTitle, heading, message)
 }

@@ -16,13 +16,14 @@
 
 package model.api
 
-case class TotalIncome(employmentIncomeAndTax: List[EmploymentIncomeAndTax],
-                       employmentTaxablePayTotalIncludingEYU: BigDecimal,
-                       pensionTaxablePayTotalIncludingEYU: BigDecimal,
-                       employmentTaxTotalIncludingEYU: BigDecimal,
-                       pensionTaxTotalIncludingEYU: BigDecimal) {
+case class TotalIncome(
+  employmentIncomeAndTax: List[EmploymentIncomeAndTax],
+  employmentTaxablePayTotalIncludingEYU: BigDecimal,
+  pensionTaxablePayTotalIncludingEYU: BigDecimal,
+  employmentTaxTotalIncludingEYU: BigDecimal,
+  pensionTaxTotalIncludingEYU: BigDecimal
+) {
 
-  def getIncomeAndTax(employment: Employment): Option[EmploymentIncomeAndTax] = {
+  def getIncomeAndTax(employment: Employment): Option[EmploymentIncomeAndTax] =
     employmentIncomeAndTax.find(p => p.employmentId.equals(employment.employmentId.toString))
-  }
 }

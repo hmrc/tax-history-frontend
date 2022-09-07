@@ -19,6 +19,7 @@ package views
 import support.GuiceAppSpec
 
 trait BaseViewSpec { this: GuiceAppSpec =>
-  def expectedPageTitle(preTitle: String) = s"$preTitle - ${messages("lbl.service.title")} - GOV.UK"
-  def expectedErrorPageTitle(preTitle: String) = s"${messages("lbl.error")}: $preTitle - ${messages("lbl.service.title")} - GOV.UK"
+  def expectedPageTitle(preTitle: String): String      = s"$preTitle - ${messages("lbl.service.title")} - GOV.UK"
+  def expectedErrorPageTitle(preTitle: String): String =
+    s"${messages("lbl.error")}: $preTitle - ${messages("lbl.service.title")} - GOV.UK"
 }

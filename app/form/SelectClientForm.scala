@@ -22,11 +22,15 @@ import play.api.data.Forms.{mapping, text}
 import uk.gov.hmrc.domain.Nino
 
 object SelectClientForm {
-  val selectClientForm: Form[SelectClient] = {
-    Form(mapping(
-      "clientId" -> text
-        .verifying("employmenthistory.select.client.error.empty", _.nonEmpty)
-        .verifying("employmenthistory.select.client.error.invalid-format", text => text.isEmpty || Nino.isValid(text.toUpperCase))
-    )(SelectClient.apply)(SelectClient.unapply))
-  }
+  val selectClientForm: Form[SelectClient] =
+    Form(
+      mapping(
+        "clientId" -> text
+          .verifying("employmenthistory.select.client.error.empty", _.nonEmpty)
+          .verifying(
+            "employmenthistory.select.client.error.invalid-format",
+            text => text.isEmpty || Nino.isValid(text.toUpperCase)
+          )
+      )(SelectClient.apply)(SelectClient.unapply)
+    )
 }

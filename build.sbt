@@ -6,8 +6,8 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "tax-history-frontend"
 
-lazy val microservice =  Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+lazy val microservice = Project(appName, file("."))
+  .enablePlugins(SbtAutoBuildPlugin, play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .configs(IntegrationTest)
   .settings(integrationTestSettings(): _*)
@@ -29,11 +29,12 @@ lazy val microservice =  Project(appName, file("."))
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )
-  .settings(TwirlKeys.templateImports ++= Seq(
-    "play.twirl.api.HtmlFormat",
-    "uk.gov.hmrc.govukfrontend.views.html.components._",
-    "uk.gov.hmrc.hmrcfrontend.views.html.components._",
-    "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
+  .settings(
+    TwirlKeys.templateImports ++= Seq(
+      "play.twirl.api.HtmlFormat",
+      "uk.gov.hmrc.govukfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.components._",
+      "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     ),
     scalacOptions ++= Seq(
       "-P:silencer:pathFilters=target/.*",
@@ -41,8 +42,5 @@ lazy val microservice =  Project(appName, file("."))
     )
   )
 
-
-
-
-
-
+addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")
+addCommandAlias("scalastyleAll", "all scalastyle test:scalastyle")

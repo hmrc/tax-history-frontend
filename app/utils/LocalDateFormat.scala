@@ -21,6 +21,6 @@ import play.api.libs.json.{Reads, Writes}
 import java.time.LocalDate
 
 trait LocalDateFormat {
-  implicit val localDateReads: Reads[LocalDate] = Reads.DefaultLocalDateReads
+  implicit val localDateReads: Reads[LocalDate]   = Reads.DefaultLocalDateReads
   implicit val localDateWrites: Writes[LocalDate] = Writes.DefaultLocalDateWrites
 }

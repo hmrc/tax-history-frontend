@@ -24,14 +24,20 @@ class EmploymentStatusSpec extends BaseSpec {
 
   "EmploymentStatus" must {
     "read and write json successfully" in {
-      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Live)) shouldBe JsSuccess(Live)
-      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Ceased)) shouldBe JsSuccess(Ceased)
-      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.PotentiallyCeased)) shouldBe JsSuccess(PotentiallyCeased)
+      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Live))   shouldBe JsSuccess(
+        Live
+      )
+      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Ceased)) shouldBe JsSuccess(
+        Ceased
+      )
+      EmploymentStatus.jsonReads.reads(
+        EmploymentStatus.jsonWrites.writes(EmploymentStatus.PotentiallyCeased)
+      )                                                                                             shouldBe JsSuccess(PotentiallyCeased)
     }
 
     "throw error on invalid data" in {
-      EmploymentStatus.jsonReads.reads(Json.obj("employmentStatus" -> 10)) shouldBe JsError(List((JsPath \ "employmentStatus",
-        List(JsonValidationError(List("Invalid EmploymentStatus")))))
+      EmploymentStatus.jsonReads.reads(Json.obj("employmentStatus" -> 10)) shouldBe JsError(
+        List((JsPath \ "employmentStatus", List(JsonValidationError(List("Invalid EmploymentStatus")))))
       )
     }
   }

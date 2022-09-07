@@ -23,13 +23,12 @@ import models.taxhistory.Person
 
 import java.time.LocalDate
 
-
 trait Constants {
 
   val startDate: LocalDate = LocalDate.parse("2016-01-21")
-  val endDate: LocalDate = LocalDate.parse("2017-01-01")
-  val startDateFormatted = "21 January 2016"
-  val endDateFormatted = "1 January 2017"
+  val endDate: LocalDate   = LocalDate.parse("2017-01-01")
+  val startDateFormatted   = "21 January 2016"
+  val endDateFormatted     = "1 January 2017"
 
   val emp1: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -58,7 +57,8 @@ trait Constants {
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716")
+    worksNumber = "00191048716"
+  )
 
   val emp3: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -72,7 +72,8 @@ trait Constants {
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Ceased,
-    worksNumber = "00191048716")
+    worksNumber = "00191048716"
+  )
 
   val emp4: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -86,9 +87,10 @@ trait Constants {
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Unknown,
-    worksNumber = "00191048716")
+    worksNumber = "00191048716"
+  )
 
-  val pension: Employment = Employment(
+  val pension: Employment      = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "paye-3",
     employerName = "employer-3",
@@ -98,13 +100,14 @@ trait Constants {
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = Some(OccupationalPension),
     employmentStatus = EmploymentStatus.Unknown,
-    worksNumber = "00191048716")
-
+    worksNumber = "00191048716"
+  )
+  // scalastyle:off magic.number
   val totalIncome: TotalIncome = TotalIncome(
     employmentIncomeAndTax = List(
-      EmploymentIncomeAndTax(emp2.employmentId.toString, BigDecimal(100), BigDecimal(300) ),
+      EmploymentIncomeAndTax(emp2.employmentId.toString, BigDecimal(100), BigDecimal(300)),
       EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(100), BigDecimal(200)),
-      EmploymentIncomeAndTax(emp1.employmentId.toString, BigDecimal(100), BigDecimal(200) )
+      EmploymentIncomeAndTax(emp1.employmentId.toString, BigDecimal(100), BigDecimal(200))
     ),
     employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
     pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
@@ -112,28 +115,36 @@ trait Constants {
     pensionTaxTotalIncludingEYU = BigDecimal(400)
   )
 
-  val employments = List(emp1, emp2, emp3, emp4)
-  val employmentWithPensions = List(emp1, emp2, pension)
-  val employmentsNoPensions = List(emp2, emp3, emp4)
+  val employments               = List(emp1, emp2, emp3, emp4)
+  val employmentWithPensions    = List(emp1, emp2, pension)
+  val employmentsNoPensions     = List(emp2, emp3, emp4)
   val employmentWithPensionOnly = List(pension)
 
-  val allowance1: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  val allowance1: Allowance = Allowance(
+    allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "FlatRateJobExpenses",
-    amount = BigDecimal(12.00))
-  val allowance2: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    amount = BigDecimal(12.00)
+  )
+  val allowance2: Allowance = Allowance(
+    allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "ProfessionalSubscriptions",
-    amount = BigDecimal(22.00))
-  val allowance3: Allowance = Allowance(allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+    amount = BigDecimal(22.00)
+  )
+  val allowance3: Allowance = Allowance(
+    allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "EarlierYearsAdjustment",
-    amount = BigDecimal(32.00))
+    amount = BigDecimal(32.00)
+  )
 
-  val allowances = List(allowance1, allowance2, allowance3)
+  val allowances      = List(allowance1, allowance2, allowance3)
   val allowancesNoEYA = List(allowance1, allowance2)
 
-  val oDR = "101.01"
-  val uA = "202.00"
-  val aPC = "301.01"
-  val taxAccount: Option[TaxAccount] = Some(TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC))))
+  val oDR                            = "101.01"
+  val uA                             = "202.00"
+  val aPC                            = "301.01"
+  val taxAccount: Option[TaxAccount] = Some(
+    TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC)))
+  )
 
   val statePension: StatePension = StatePension(
     grossAmount = 1.0,
@@ -141,7 +152,6 @@ trait Constants {
     paymentFrequency = None,
     startDate = Some(LocalDate.of(2000, 12, 30))
   )
-
 
   val eyu1: EarlierYearUpdate = EarlierYearUpdate(
     taxablePayEYU = 0,
@@ -190,41 +200,43 @@ trait Constants {
     studentLoan = None,
     studentLoanIncludingEYU = None,
     paymentDate = Some(LocalDate.parse("2016-02-20")),
-    earlierYearUpdates = eyuList)
+    earlierYearUpdates = eyuList
+  )
 
   val uuid: UUID = UUID.randomUUID()
 
-  val completeCBList = List(CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "CarFuelBenefit", 1000, isForecastBenefit=true),
-    CompanyBenefit(uuid, "MedicalInsurance", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "CarBenefit", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "TelephoneBenefit", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "ServiceBenefit", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "TaxableExpenseBenefit", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "VanBenefit", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "VanFuelBenefit", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "BeneficialLoan", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "TotalBenefitInKind", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "Accommodation", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "Assets", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "AssetTransfer", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "EducationalService", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "Entertaining", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "ExpensesPay", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "Mileage", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "NonQualifyingRelocationExpense", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "OtherItems", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "PaymentEmployeesBehalf", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "PersonalIncidentExpenses", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "QualifyingRelocationExpenses", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "EmployerProvidedProfessionalSubscription", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "IncomeTaxPaidNotDeductedFromDirectorsRemuneration", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "TravelAndSubsistence", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "VoucherAndCreditCards", 1000.00, isForecastBenefit=true),
-    CompanyBenefit(uuid, "NonCashBenefit", 1000.00, isForecastBenefit=true)
+  val completeCBList = List(
+    CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "CarFuelBenefit", 1000, isForecastBenefit = true),
+    CompanyBenefit(uuid, "MedicalInsurance", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "CarBenefit", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "TelephoneBenefit", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "ServiceBenefit", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "TaxableExpenseBenefit", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "VanBenefit", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "VanFuelBenefit", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "BeneficialLoan", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "TotalBenefitInKind", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "Accommodation", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "Assets", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "AssetTransfer", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "EducationalService", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "Entertaining", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "ExpensesPay", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "Mileage", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "NonQualifyingRelocationExpense", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "OtherItems", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "PaymentEmployeesBehalf", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "PersonalIncidentExpenses", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "QualifyingRelocationExpenses", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "EmployerProvidedProfessionalSubscription", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "IncomeTaxPaidNotDeductedFromDirectorsRemuneration", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "TravelAndSubsistence", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "VoucherAndCreditCards", 1000.00, isForecastBenefit = true),
+    CompanyBenefit(uuid, "NonCashBenefit", 1000.00, isForecastBenefit = true)
   )
 
-  val employment : Employment = Employment(
+  val employment: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
     payeReference = "Payroll ID",
     employerName = "employer-1",
@@ -236,7 +248,8 @@ trait Constants {
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716")
+    worksNumber = "00191048716"
+  )
 
   val employmentWithJobseekers: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -248,7 +261,8 @@ trait Constants {
     payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
     employmentPaymentType = Some(JobseekersAllowance),
     employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716")
+    worksNumber = "00191048716"
+  )
 
   val employmentNoEndDate: Employment = Employment(
     employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -257,7 +271,8 @@ trait Constants {
     startDate = Some(startDate),
     employmentPaymentType = None,
     employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716")
+    worksNumber = "00191048716"
+  )
 
   val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 

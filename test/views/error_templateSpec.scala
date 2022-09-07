@@ -31,30 +31,33 @@ class error_templateSpec extends GuiceAppSpec with BaseViewSpec {
 
   trait ViewFixture extends Fixture {
     val headingText = "error heading"
-    val titleText = "error title"
+    val titleText   = "error title"
     val messageText = "error message"
   }
 
   "error_template view" must {
     "have correct title and heading" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText,messageText,gaEventId = Some("unauthorised"))
+      val view: HtmlFormat.Appendable =
+        inject[error_template].apply(titleText, headingText, messageText, gaEventId = Some("unauthorised"))
       doc.title mustBe expectedPageTitle(titleText)
-      val foundHeading: Elements = doc.body().select("#error-heading")
+      val foundHeading: Elements      = doc.body().select("#error-heading")
       foundHeading.size mustBe 1
       foundHeading.get(0).text() mustBe headingText
-      val foundMessage: Elements = doc.body().select("#error-message")
+      val foundMessage: Elements      = doc.body().select("#error-message")
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
 
     }
 
     "include sidebar links" in new ViewFixture {
-      val link: Html = Link.toExternalPage(id=Some("sidebar-link"), url="http://www.google.com", value=Some("Back To Google")).toHtml
-      val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText,messageText, Some(link))
+      val link: Html                  = Link
+        .toExternalPage(id = Some("sidebar-link"), url = "http://www.google.com", value = Some("Back To Google"))
+        .toHtml
+      val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText, messageText, Some(link))
 
       val sideBarLinks: Elements = doc.select("#sidebar-link")
       sideBarLinks.size mustBe 1
-      val sideBarLink: Element = sideBarLinks.get(0)
+      val sideBarLink: Element   = sideBarLinks.get(0)
       sideBarLink.text must include("Back To Google")
     }
   }

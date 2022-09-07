@@ -42,35 +42,36 @@ class CurrencySpec extends PlaySpec {
     }
 
     "format number to convert 100 to 100.00 when minDPs is 2" in {
-      Currency(BigDecimal(100), 2).toString must be ("£100.00")
+      val oneHundredInt = 100
+      Currency(BigDecimal(oneHundredInt), 2).toString must be("£100.00")
     }
 
     "format number 100.12 from decimals" in {
-      Currency(BigDecimal(100.12)).toString must be ("£100.12")
+      Currency(BigDecimal(100.12)).toString must be("£100.12")
     }
 
     "format -ve number to skip .00 from decimals when no minDPs is provided" in {
-      Currency(BigDecimal(-100.00)).toString must be ("- £100")
+      Currency(BigDecimal(-100.00)).toString must be("- £100")
     }
 
     "return nothing when using fromOptionBD if none is provided" in {
-      Currency.fromOptionBD(None) must be ("")
+      Currency.fromOptionBD(None) must be("")
     }
 
     "format +ve value successfully when using fromOptionBD" in {
-      Currency.fromOptionBD(Some(100.55)) must be ("£100.55")
+      Currency.fromOptionBD(Some(100.55)) must be("£100.55")
     }
 
     "format +ve with the + prefix when using withPositive" in {
-      Currency.withPositive(100.55) must be ("+£100.55")
+      Currency.withPositive(100.55) must be("+£100.55")
     }
 
     "format -ve with the - prefix when using withPositive" in {
-      Currency.withPositive(BigDecimal(-100.55)) must be ("-£100.55")
+      Currency.withPositive(BigDecimal(-100.55)) must be("-£100.55")
     }
 
     "add extra 0 when there is 1 number after the decimal point" in {
-      Currency(BigDecimal(101.1)).toString must be ("£101.10")
+      Currency(BigDecimal(101.1)).toString must be("£101.10")
     }
   }
 }

@@ -27,10 +27,11 @@ import play.api.test.CSRFTokenHelper.CSRFRequest
 
 class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
 
-  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/we-signed-you-out").withCSRFToken
+  implicit val request: Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "/tax-history/we-signed-you-out").withCSRFToken
 
   trait ViewFixture extends Fixture {
-    val href: String = "/tax-history/sign-in"
+    val href: String     = "/tax-history/sign-in"
     val linkText: String = messages("signedOut.signIn")
   }
 
@@ -48,7 +49,7 @@ class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
 
     "have the correct signIn link references" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      val aRefText: Element = doc.select(s"a[href=$href]").first()
+      val aRefText: Element           = doc.select(s"a[href=$href]").first()
       aRefText.text.trim() mustBe linkText.trim
     }
 

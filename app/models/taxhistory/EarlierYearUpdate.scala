@@ -22,10 +22,10 @@ import utils.LocalDateFormat
 import java.time.LocalDate
 
 case class EarlierYearUpdate(
-                              taxablePayEYU: BigDecimal,
-                              taxEYU: BigDecimal,
-                              receivedDate: LocalDate
-                            )
+  taxablePayEYU: BigDecimal,
+  taxEYU: BigDecimal,
+  receivedDate: LocalDate
+)
 
 object EarlierYearUpdate extends LocalDateFormat {
   implicit val format = Json.format[EarlierYearUpdate]

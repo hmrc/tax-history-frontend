@@ -39,8 +39,8 @@ import utils.TestUtil
 
 class CompanyBenefitSpec extends TestUtil with BaseSpec {
 
-
-  lazy val companyBenefit: CompanyBenefit = CompanyBenefit(companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+  lazy val companyBenefit: CompanyBenefit = CompanyBenefit(
+    companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
     iabdType = "companyBenefitType",
     amount = BigDecimal(12.00),
     source = Some(3),
@@ -50,11 +50,10 @@ class CompanyBenefitSpec extends TestUtil with BaseSpec {
   "CompanyBenefit" should {
 
     "generate companyBenefitId when none is supplied" in {
-      val comBenefit = CompanyBenefit(iabdType = "otherCompanyBenefitType", amount = BigDecimal(10.00), isForecastBenefit = true)
+      val comBenefit =
+        CompanyBenefit(iabdType = "otherCompanyBenefitType", amount = BigDecimal(10.00), isForecastBenefit = true)
       comBenefit.companyBenefitId.toString.nonEmpty shouldBe true
-      comBenefit.companyBenefitId shouldNot be(companyBenefit.companyBenefitId)
+      comBenefit.companyBenefitId                  shouldNot be(companyBenefit.companyBenefitId)
     }
   }
 }
-
-

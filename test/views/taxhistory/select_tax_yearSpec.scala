@@ -33,16 +33,17 @@ import views.{BaseViewSpec, Fixture}
 
 class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
 
-  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/select-tax-year").withCSRFToken
+  implicit val request: Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "/tax-history/select-tax-year").withCSRFToken
 
   private val maxChar: Int = 100
 
   trait ViewFixture extends Fixture {
-    val postData: JsObject = Json.obj("selectTaxYear" -> "2016")
-    val validForm: Form[SelectTaxYear] = selectTaxYearForm.bind(postData, maxChar)
+    val postData: JsObject               = Json.obj("selectTaxYear" -> "2016")
+    val validForm: Form[SelectTaxYear]   = selectTaxYearForm.bind(postData, maxChar)
     val invalidForm: Form[SelectTaxYear] = selectTaxYearForm.bind(Json.obj("selectTaxYear" -> ""), maxChar)
-    val name: Option[String] = Some("Test Name")
-    val nino: String = "QQ123456C"
+    val name: Option[String]             = Some("Test Name")
+    val nino: String                     = "QQ123456C"
   }
 
   "select_tax_year view" must {
@@ -66,11 +67,13 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
       val options = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, options, name, nino)
-      val radioGroup: Elements = doc.select("input[type='radio']")
+      val radioGroup: Elements        = doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
       val inputRadio: Element = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe ""
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1", s"${name.get}")).hasText mustBe true
+      doc
+        .getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1", s"${name.get}"))
+        .hasText mustBe true
 
     }
 
@@ -78,20 +81,22 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
       val options = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(invalidForm, options, name, nino)
-      val radioGroup: Elements = doc.select("input[type='radio']")
+      val radioGroup: Elements        = doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
       val inputRadio: Element = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe ""
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
 
       doc.getElementById("error-summary-title").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
-      doc.getElementById("selectTaxYear-error").text contains Messages("employmenthistory.select.tax.year.error.message")
+      doc.getElementById("selectTaxYear-error").text contains Messages(
+        "employmenthistory.select.tax.year.error.message"
+      )
     }
 
     "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, name, nino)
-      doc.getElementById("nav-home").text shouldBe Messages("nav.home")
-      doc.getElementById("nav-client").text shouldBe Messages("nav.client")
+      doc.getElementById("nav-home").text         shouldBe Messages("nav.home")
+      doc.getElementById("nav-client").text       shouldBe Messages("nav.client")
       validateConditionalContent("nav-year")
       doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }

@@ -22,12 +22,14 @@ import utils.LocalDateFormat
 
 import java.time.LocalDate
 
-case class EarlierYearUpdate(earlierYearUpdateId: UUID = UUID.randomUUID(),
-                             taxablePayEYU: BigDecimal,
-                             taxEYU: BigDecimal,
-                             studentLoanEYU: Option[BigDecimal] = None,
-                             receivedDate: LocalDate,
-                             receivedDateFormatted: Option[String] = None)
+case class EarlierYearUpdate(
+  earlierYearUpdateId: UUID = UUID.randomUUID(),
+  taxablePayEYU: BigDecimal,
+  taxEYU: BigDecimal,
+  studentLoanEYU: Option[BigDecimal] = None,
+  receivedDate: LocalDate,
+  receivedDateFormatted: Option[String] = None
+)
 
 object EarlierYearUpdate extends LocalDateFormat {
   implicit val formats = Json.format[EarlierYearUpdate]

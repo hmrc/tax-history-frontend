@@ -34,53 +34,69 @@ import utils.DateUtils
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectTaxYearController @Inject()(
-                                         val taxHistoryConnector: TaxHistoryConnector,
-                                         val citizenDetailsConnector: CitizenDetailsConnector,
-                                         override val authConnector: AuthConnector,
-                                         override val config: Configuration,
-                                         override val env: Environment,
-                                         val cc: MessagesControllerComponents,
-                                         implicit val appConfig: AppConfig,
-                                         selectTaxYear: views.html.taxhistory.select_tax_year,
-                                         dateUtils: DateUtils
-                                       )(implicit val ec: ExecutionContext) extends BaseController(cc) {
+class SelectTaxYearController @Inject() (
+  val taxHistoryConnector: TaxHistoryConnector,
+  val citizenDetailsConnector: CitizenDetailsConnector,
+  override val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  val cc: MessagesControllerComponents,
+  implicit val appConfig: AppConfig,
+  selectTaxYear: views.html.taxhistory.select_tax_year,
+  dateUtils: DateUtils
+)(implicit val ec: ExecutionContext)
+    extends BaseController(cc) {
 
-  val loginContinue: String = appConfig.loginContinue
-  val serviceSignout: String = appConfig.serviceSignOut
+  val loginContinue: String          = appConfig.loginContinue
+  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[_]): List[(String, String)] = {
-    taxYearList.map {
-      taxYear =>
-        taxYear.year.toString -> Messages("employmenthistory.select.tax.year.option",
-          dateUtils.dateToFormattedString(TaxYear(taxYear.year).starts),
-          dateUtils.dateToFormattedString(TaxYear(taxYear.year).finishes))
+  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[_]): List[(String, String)] =
+    taxYearList.map { taxYear =>
+      taxYear.year.toString -> Messages(
+        "employmenthistory.select.tax.year.option",
+        dateUtils.dateToFormattedString(TaxYear(taxYear.year).starts),
+        dateUtils.dateToFormattedString(TaxYear(taxYear.year).finishes)
+      )
     }
-  }
 
-  private def fetchTaxYearsAndRenderPage(form: Form[SelectTaxYear], httpStatus: Status, nino: Nino, clientName:Option[String])
-                                        (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  private def fetchTaxYearsAndRenderPage(
+    form: Form[SelectTaxYear],
+    httpStatus: Status,
+    nino: Nino,
+    clientName: Option[String]
+  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       taxYearResponse.status match {
-        case OK =>
+        case OK                                                      =>
+          print("i'm here 5")
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
           httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
-          logger.warn(s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status")
+          print("i'm here 6")
+          logger.warn(
+            s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status"
+          )
           handleHttpFailureResponse(status)
-        case status if status >= INTERNAL_SERVER_ERROR =>
-          logger.error(s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Error calling taxHistory getTaxYears, received status $status")
+        case status if status >= INTERNAL_SERVER_ERROR               =>
+          print("i'm here 7")
+          logger.error(
+            s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Error calling taxHistory getTaxYears, received status $status"
+          )
           handleHttpFailureResponse(status)
       }
     }
-  }
 
-  private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)
-                                     (implicit hc: HeaderCarrier, request: Request[_]): Future[Result] = {
+  private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)(implicit
+    hc: HeaderCarrier,
+    request: Request[_]
+  ): Future[Result] = {
+    print("nino " + nino)
     retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-      case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
-      case Right(p) => fetchTaxYearsAndRenderPage(form, httpStatus, nino, p.getName)
+      case Left(citizenStatus) =>
+        redirectToClientErrorPage(citizenStatus)
+      case Right(p)            =>
+        fetchTaxYearsAndRenderPage(form, httpStatus, nino, p.getName)
     }
   }
 
@@ -91,19 +107,25 @@ class SelectTaxYearController @Inject()(
   }
 
   def submitSelectTaxYearPage(): Action[AnyContent] = Action.async { implicit request =>
-    selectTaxYearForm.bindFromRequest().fold(
-      formWithErrors ⇒ {
-        getNinoFromSession(request) match {
-          case Some(nino) => renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
-          case None => Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
-        }
-      },
-      validFormData => authorisedForAgent { _ =>
-        Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(
-          validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)))
-      }
-    )
+    selectTaxYearForm
+      .bindFromRequest()
+      .fold(
+        formWithErrors ⇒
+          getNinoFromSession(request) match {
+            case Some(nino) =>
+              renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
+            case None       =>
+              Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+          },
+        validFormData =>
+          authorisedForAgent { _ =>
+            Future.successful(
+              Redirect(
+                routes.EmploymentSummaryController
+                  .getTaxHistory(validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)
+              )
+            )
+          }
+      )
   }
 }
-
-

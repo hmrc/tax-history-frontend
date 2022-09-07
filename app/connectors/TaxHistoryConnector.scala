@@ -26,7 +26,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxHistoryConnector @Inject()(val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
+class TaxHistoryConnector @Inject() (val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
 
   implicit val httpReads: HttpReads[HttpResponse] = (method: String, url: String, response: HttpResponse) => response
 
@@ -38,13 +38,17 @@ class TaxHistoryConnector @Inject()(val appConfig: AppConfig, httpClient: HttpCl
   def getAllowances(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/allowances")
 
-  def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId:String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/company-benefits")
 
-  def getPayAndTaxDetails(nino: Nino, taxYear: Int, employmentId:String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def getPayAndTaxDetails(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/pay-and-tax")
 
-  def getEmployment(nino: Nino, taxYear: Int, employmentId:String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def getEmployment(nino: Nino, taxYear: Int, employmentId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId")
 
   def getTaxYears(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] =
@@ -56,7 +60,9 @@ class TaxHistoryConnector @Inject()(val appConfig: AppConfig, httpClient: HttpCl
   def getStatePension(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/state-pension")
 
-  def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
+  def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[HttpResponse] =
     httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/income-source")
 
   def getAllPayAndTax(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =

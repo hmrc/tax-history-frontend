@@ -30,24 +30,28 @@ import scala.concurrent.Future
 
 trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar {
 
-  lazy val nino: String = randomNino.toString
+  lazy val nino: String                                             = randomNino.toString
   lazy val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("USER_NINO" -> nino)
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
     SessionKeys.sessionId -> "SessionId",
-    SessionKeys.authToken -> "Token",
+    SessionKeys.authToken -> "Token"
   )
 
   lazy val newEnrolments = Set(
-    Enrolment(key = "HMRC-AS-AGENT", identifiers = Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
-      state = "", delegatedAuthRule = None)
+    Enrolment(
+      key = "HMRC-AS-AGENT",
+      identifiers = Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
+      state = "",
+      delegatedAuthRule = None
+    )
   )
 
   implicit val messagesApi: MessagesApi
 
   implicit class ViewMatcherHelper(result: Future[Result]) {
     def rendersTheSameViewAs(expected: Html): Unit =
-      contentAsString(result) shouldEqual(expected.toString)
+      contentAsString(result) shouldEqual (expected.toString)
   }
 
 }

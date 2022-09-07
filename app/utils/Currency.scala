@@ -26,15 +26,13 @@ case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 
     if (value % 1 != 0) {
       formatter.setMinimumFractionDigits(2)
-    }
-    else {
+    } else {
       formatter.setMinimumFractionDigits(minDecimalPlaces)
     }
 
     if (value.signum >= 0) {
       formatter.format(value)
-    }
-    else {
+    } else {
       "- " + formatter.format(value.abs)
     }
   }
@@ -42,12 +40,11 @@ case class Currency(value: BigDecimal, minDecimalPlaces: Int = 0) {
 }
 
 object Currency {
-  implicit def fromOptionBD(value:Option[BigDecimal]): String = {
+  implicit def fromOptionBD(value: Option[BigDecimal]): String =
     value match {
       case Some(amount) => Currency(amount).toString
-      case None => ""
+      case None         => ""
     }
-  }
 
   implicit def fromBD(value: BigDecimal): Currency = Currency(value)
 
@@ -57,13 +54,11 @@ object Currency {
 
   implicit def currencyToFloat(c: Currency): Float = c.value.toFloat
 
-  implicit def withPositive(value:BigDecimal):String ={
+  implicit def withPositive(value: BigDecimal): String =
     if (value >= 0) {
       "+" + Currency(value)
-    }
-    else {
+    } else {
       "-" + Currency(value.abs)
     }
-  }
 
 }

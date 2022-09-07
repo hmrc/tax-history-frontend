@@ -26,16 +26,13 @@ object SelectTaxYear {
 
   implicit val format = Json.format[SelectTaxYear]
 
-  def options(taxYears: List[(String, String)]): Seq[RadioItem] = {
-
-    taxYears.map {
-      case (value, label) =>
-        RadioItem(
-          value = Some(value),
-          content = Text(label),
-          checked = false,
-          id = Some(s"selectTaxYear-$value")
-        )
+  def options(taxYears: List[(String, String)]): Seq[RadioItem] =
+    taxYears.map { case (value, label) =>
+      RadioItem(
+        value = Some(value),
+        content = Text(label),
+        checked = false,
+        id = Some(s"selectTaxYear-$value")
+      )
     }
-  }
 }

@@ -21,9 +21,9 @@ import play.api.data.FormError
 import play.api.libs.json.Json
 import support.BaseSpec
 import utils.TestUtil
-class SelectClientFormSpec extends BaseSpec with TestUtil{
+class SelectClientFormSpec extends BaseSpec with TestUtil {
 
-  lazy val nino: String =randomNino.toString()
+  lazy val nino: String    = randomNino.toString()
   private val maxChar: Int = 100
 
   "SelectClientForm" must {
@@ -34,7 +34,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData, maxChar)
-      val errors = validatedForm.errors
+      val errors        = validatedForm.errors
       errors shouldBe empty
     }
 
@@ -53,7 +53,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData, maxChar)
-      val errors = validatedForm.errors
+      val errors        = validatedForm.errors
       errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
 
@@ -63,7 +63,7 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData, maxChar)
-      val errors = validatedForm.errors
+      val errors        = validatedForm.errors
       errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
     }
 
@@ -73,7 +73,9 @@ class SelectClientFormSpec extends BaseSpec with TestUtil{
       )
 
       val validatedForm = selectClientForm.bind(postData, maxChar)
-      validatedForm.errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.invalid-format")))
+      validatedForm.errors shouldBe List(
+        FormError("clientId", List("employmenthistory.select.client.error.invalid-format"))
+      )
     }
   }
 }
