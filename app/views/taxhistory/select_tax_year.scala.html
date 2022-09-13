@@ -56,7 +56,8 @@
                         name = "selectTaxYear",
                         errorMessage = if(form("selectTaxYear").hasErrors){
                             Some(ErrorMessage(
-                                content = Text(messages("employmenthistory.select.tax.year.error.message"))
+                                content = Text(messages("employmenthistory.select.tax.year.error.message")),
+                                visuallyHiddenText = Some(messages("govukErrorMessage.visuallyHiddenText"))
                             ))
                         } else { None },
                         items = SelectTaxYear.options(taxYears)

@@ -54,7 +54,8 @@
                     errorMessage = if(sCForm("clientId").hasErrors){
                         Some(ErrorMessage(
                             attributes = Map("data-journey-click" -> s"search-page:error:clientId"),
-                            content = Text(messages(sCForm("clientId").errors.head.message))
+                            content = Text(messages(sCForm("clientId").errors.head.message)),
+                            visuallyHiddenText = Some(messages("govukErrorMessage.visuallyHiddenText"))
                         ))
                     } else { None },
                     attributes = Map("maxlength" -> "9")
