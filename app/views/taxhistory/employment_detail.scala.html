@@ -94,11 +94,6 @@
 
             <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.date.end")</dt>
             <dd class="govuk-body-s margin-inline-start">@employment.endDateFormatted.getOrElse("")</dd>
-
-        @if(!employment.isOccupationalPension) {
-            <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.status")</dt>
-                <dd class="govuk-body-s margin-inline-start">@ControllerUtils.getEmploymentStatus(employment)</dd>
-        }
     </dl>
 }
 

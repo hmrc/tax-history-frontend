@@ -46,25 +46,26 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     val end: String               = dateUtils.dateToFormattedString(LocalDate.now())
     val format: DateTimeFormatter = DateTimeFormatter.ofPattern("d MMMM y")
 
-    val currentTaxYear: Int                            = TaxYear.current.startYear
-    val nino: String                                   = TestUtil.randomNino.toString()
-    val taxYear                                        = 2016
-    val person: Person                                 = Person(Some(firstName), Some(surname), Some(false))
-    val clientName: String                             = person.getName.getOrElse(nino)
-    val incomeSourceNoDeductions: Option[IncomeSource] = Some(
-      IncomeSource(1, 1, None, List.empty, List.empty, "1100Y", None, 1, "")
-    )
+    val currentTaxYear: Int = TaxYear.current.startYear
+    val nino: String        = TestUtil.randomNino.toString()
+    val taxYear             = 2016
+    val person: Person      = Person(Some(firstName), Some(surname), Some(false))
+    val clientName: String  = person.getName.getOrElse(nino)
 
-    val deductions: List[TaDeduction]                                 =
+    val incomeSourceNoDeductions: Option[IncomeSource] =
+      Some(IncomeSource(1, 1, None, List.empty, List.empty, "1100Y", None, 1, ""))
+
+    val deductions: List[TaDeduction] =
       List(TaDeduction(1, "test", 1.0, Some(1.0)), TaDeduction(1, "test", 1.0, Some(1.0)))
-    val allowances: List[TaAllowance]                                 =
+
+    val allowances: List[TaAllowance] =
       List(TaAllowance(1, "test", 1.0, Some(1.0)), TaAllowance(1, "test", 1.0, Some(1.0)))
-    val incomeSourceWithDeductions: Option[IncomeSource]              = Some(
-      IncomeSource(1, 1, None, deductions, List.empty, "1100Y", None, 1, "")
-    )
-    val incomeSourceWithdeductionsAndAllowances: Option[IncomeSource] = Some(
-      IncomeSource(1, 1, None, deductions, allowances, "1100Y", None, 1, "")
-    )
+
+    val incomeSourceWithDeductions: Option[IncomeSource] =
+      Some(IncomeSource(1, 1, None, deductions, List.empty, "1100Y", None, 1, ""))
+
+    val incomeSourceWithDeductionsAndAllowances: Option[IncomeSource] =
+      Some(IncomeSource(1, 1, None, deductions, allowances, "1100Y", None, 1, ""))
 
     val taxCodeH2           = "#main-content > div > div > div > div > h2"
     val taxCodeAllowancesH3 = "#tax-code-allowances"
@@ -76,7 +77,6 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     val deductionsParagraph =
       "Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so " +
         "that the correct amount is repaid over the course of the year."
-
   }
 
   def createEmploymentViewDetail(
@@ -245,7 +245,9 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     }
 
     "show current" when {
+
       "employment is ongoing" in new ViewFixture {
+
         val view: HtmlFormat.Appendable = inject[employment_detail].apply(
           taxYear,
           Some(payAndTax),
@@ -255,8 +257,6 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
           None,
           createEmploymentViewDetail(false, employment.employerName)
         )
-
-        doc.getElementsMatchingOwnText(Messages("lbl.employment.status.current")).hasText shouldBe true
 
         doc.getElementsContainingOwnText(Messages("employmenthistory.company.benefit.caveat")).hasText shouldBe true
       }
@@ -284,7 +284,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       }
     }
 
-    "not show tax code breakdown " when {
+    "not show tax code breakdown" when {
       "employment details are for previous year" in new ViewFixture {
 
         val view: HtmlFormat.Appendable = inject[employment_detail].apply(
@@ -308,7 +308,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       }
     }
 
-    "Show tax code breakdown with deductions " when {
+    "show tax code breakdown with deductions" when {
       "employment details are for current year and there are deductions" in new ViewFixture {
 
         val view: HtmlFormat.Appendable = inject[employment_detail].apply(
@@ -342,7 +342,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       }
     }
 
-    "Show tax code breakdown without deductions and show no deductions text " when {
+    "show tax code breakdown without deductions and show no deductions text" when {
       "employment details are for current year and there are no deductions" in new ViewFixture {
 
         val view: HtmlFormat.Appendable = inject[employment_detail].apply(
@@ -372,7 +372,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       }
     }
 
-    "Not Show tax code, paye Refrence, payroll id, early year updates, or company benefits" when {
+    "not Show tax code, paye Refrence, payroll id, early year updates, or company benefits" when {
       "The employment is recievingJobseekersAllowance = true" in new ViewFixture {
 
         val view: HtmlFormat.Appendable = inject[employment_detail].apply(
@@ -408,7 +408,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       }
     }
 
-    "Show company benefit's P11D/forecast descriptor" when {
+    "show company benefit's P11D/forecast descriptor" when {
       "the company benefit's payment is forecast" in new ViewFixture {
         val companyBenefitForecast: CompanyBenefit = completeCBList.head.copy(isForecastBenefit = true)
         val view: HtmlFormat.Appendable            = inject[employment_detail].apply(
@@ -443,7 +443,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       }
     }
 
-    "Show student loans when data is available" in new ViewFixture {
+    "show student loans when data is available" in new ViewFixture {
 
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(
         taxYear,
@@ -459,7 +459,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       doc.getElementsMatchingOwnText("£111").hasText                                      shouldBe true
     }
 
-    "Not show student loans when data is available" in new ViewFixture {
+    "not show student loans when data is available" in new ViewFixture {
 
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(
         taxYear,
@@ -474,7 +474,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
       doc.getElementsMatchingOwnText(Messages("employmenthistory.student.loans")).hasText shouldBe false
     }
 
-    "Show alternate text when payAndTax is not defined" in new ViewFixture {
+    "show alternate text when payAndTax is not defined" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[employment_detail].apply(
         currentTaxYear,
         None,
@@ -507,37 +507,36 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
         .getElementsMatchingOwnText(Messages("employmenthistory.employment.details.no.benefits", "employer-1"))
         .hasText shouldBe true
     }
+
+    "totals for allowance and deduction have the correct values" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(
+        taxYear,
+        Some(payAndTax),
+        employment,
+        List.empty,
+        clientName,
+        incomeSourceWithDeductionsAndAllowances,
+        createEmploymentViewDetail(false, employment.employerName)
+      )
+      doc.getElementById("DeductionTotal").text shouldBe "£2"
+      doc.getElementById("AllowanceTotal").text shouldBe "£2"
+    }
+
+    "display navigation bar with correct links" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[employment_detail].apply(
+        taxYear,
+        Some(payAndTax),
+        employment,
+        List.empty,
+        clientName,
+        incomeSourceWithDeductionsAndAllowances,
+        createEmploymentViewDetail(false, employment.employerName)
+      )
+
+      doc.getElementById("nav-home").text         shouldBe Messages("nav.home")
+      doc.getElementById("nav-client").text       shouldBe Messages("nav.client")
+      doc.getElementById("nav-year").text         shouldBe Messages("nav.year")
+      doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
+    }
   }
-
-  "totals for allowance and deduction have the correct values" in new ViewFixture {
-    val view: HtmlFormat.Appendable = inject[employment_detail].apply(
-      taxYear,
-      Some(payAndTax),
-      employment,
-      List.empty,
-      clientName,
-      incomeSourceWithdeductionsAndAllowances,
-      createEmploymentViewDetail(false, employment.employerName)
-    )
-    doc.getElementById("DeductionTotal").text shouldBe "£2"
-    doc.getElementById("AllowanceTotal").text shouldBe "£2"
-  }
-
-  "display navigation bar with correct links" in new ViewFixture {
-    val view: HtmlFormat.Appendable = inject[employment_detail].apply(
-      taxYear,
-      Some(payAndTax),
-      employment,
-      List.empty,
-      clientName,
-      incomeSourceWithdeductionsAndAllowances,
-      createEmploymentViewDetail(false, employment.employerName)
-    )
-
-    doc.getElementById("nav-home").text         shouldBe Messages("nav.home")
-    doc.getElementById("nav-client").text       shouldBe Messages("nav.client")
-    doc.getElementById("nav-year").text         shouldBe Messages("nav.year")
-    doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
-  }
-
 }
