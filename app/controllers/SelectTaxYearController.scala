@@ -29,7 +29,6 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.time.TaxYear
-import utils.DateUtils
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -42,8 +41,7 @@ class SelectTaxYearController @Inject() (
   override val env: Environment,
   val cc: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
-  selectTaxYear: views.html.taxhistory.select_tax_year,
-  dateUtils: DateUtils
+  selectTaxYear: views.html.taxhistory.select_tax_year
 )(implicit val ec: ExecutionContext)
     extends BaseController(cc) {
 
@@ -55,8 +53,8 @@ class SelectTaxYearController @Inject() (
     taxYearList.map { taxYear =>
       taxYear.year.toString -> Messages(
         "employmenthistory.select.tax.year.option",
-        dateUtils.dateToFormattedString(TaxYear(taxYear.year).starts),
-        dateUtils.dateToFormattedString(TaxYear(taxYear.year).finishes)
+        TaxYear(taxYear.year).startYear.toString,
+        TaxYear(taxYear.year).finishYear.toString
       )
     }
 
@@ -69,17 +67,14 @@ class SelectTaxYearController @Inject() (
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       taxYearResponse.status match {
         case OK                                                      =>
-          print("i'm here 5")
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
           httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
-          print("i'm here 6")
           logger.warn(
             s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status"
           )
           handleHttpFailureResponse(status)
         case status if status >= INTERNAL_SERVER_ERROR               =>
-          print("i'm here 7")
           logger.error(
             s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Error calling taxHistory getTaxYears, received status $status"
           )
@@ -110,7 +105,7 @@ class SelectTaxYearController @Inject() (
     selectTaxYearForm
       .bindFromRequest()
       .fold(
-        formWithErrors ⇒
+        formWithErrors =>
           getNinoFromSession(request) match {
             case Some(nino) =>
               renderSelectTaxYearPage(nino, formWithErrors, BadRequest)

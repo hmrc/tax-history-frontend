@@ -64,6 +64,7 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
     }
 
     "show correct content on the page" in new ViewFixture {
+
       val options = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, options, name, nino)
@@ -74,19 +75,32 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
       doc
         .getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year.h1", s"${name.get}"))
         .hasText mustBe true
+    }
 
+    "show correct date content on the page" in new ViewFixture {
+
+      val options                     = List("2016" -> "2016 to 2017", "2015" -> "2015 to 2016")
+      val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, options, name, nino)
+
+      def radioLabel(i: Int): String =
+        s"#main-content > div > div > div > div > form > div > fieldset > div > div:nth-child($i) > label"
+
+      doc.select(radioLabel(1)).text() mustBe "2016 to 2017"
+      doc.select(radioLabel(2)).text() mustBe "2015 to 2016"
     }
 
     "show correct content on the page for form with error" in new ViewFixture {
       val options = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(invalidForm, options, name, nino)
-      val radioGroup: Elements        = doc.select("input[type='radio']")
+
+      val radioGroup: Elements = doc.select("input[type='radio']")
       radioGroup.size() must be(options.size)
+
       val inputRadio: Element = doc.getElementById("selectTaxYear-2016")
       inputRadio.attr("checked") shouldBe ""
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
 
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
       doc.getElementById("error-summary-title").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
       doc.getElementById("selectTaxYear-error").text contains Messages(
         "employmenthistory.select.tax.year.error.message"
@@ -94,6 +108,7 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
     }
 
     "display navigation bar with correct links" in new ViewFixture {
+
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, List.empty, name, nino)
       doc.getElementById("nav-home").text         shouldBe Messages("nav.home")
       doc.getElementById("nav-client").text       shouldBe Messages("nav.client")
