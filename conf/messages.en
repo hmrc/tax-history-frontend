@@ -151,8 +151,8 @@ tax.code.total.deductions=Total deductions
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Continue
-employmenthistory.select.client.title=Enter a client''s National Insurance number
-employmenthistory.select.client.heading=Enter a client''s National Insurance number
+employmenthistory.select.client.title=Enter your client''s National Insurance number
+employmenthistory.select.client.heading=Enter your client''s National Insurance number
 employmenthistory.select.client.clients.nino=Client National Insurance number
 employmenthistory.select.client.nino.hint=For example, QQ123456C
 employmenthistory.select.client.error.invalid-format.title=There is a problem

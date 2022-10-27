@@ -43,28 +43,29 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
       selectClientForm.bind(Json.obj("clientId" -> "123456#$&"), maxChars)
   }
 
+  val titleAndHeadingContent = "Enter your client's National Insurance number"
+
   "select_client view" should {
 
     "have the correct title when no form errors have occurred" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.title shouldBe expectedPageTitle(messages("employmenthistory.select.client.title"))
+      doc.title shouldBe expectedPageTitle(titleAndHeadingContent)
     }
 
     "have the correct title when form errors have occurred" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      doc.title shouldBe expectedErrorPageTitle(messages("employmenthistory.select.client.title"))
+      doc.title shouldBe expectedErrorPageTitle(titleAndHeadingContent)
     }
 
     "have the correct heading" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.select("h1").text() shouldBe Messages("employmenthistory.select.client.heading")
+      doc.select("h1").text() shouldBe titleAndHeadingContent
     }
 
     "display input field hint" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementsByClass("govuk-hint").get(0).text shouldBe Messages(
-        "employmenthistory.select.client.nino.hint"
-      )
+      doc.body.getElementsByClass("govuk-hint").get(0).text shouldBe
+        Messages("employmenthistory.select.client.nino.hint")
     }
 
     "display input field" in new ViewFixture {

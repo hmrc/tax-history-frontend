@@ -151,8 +151,8 @@ tax.code.total.deductions=Cyfanswm y didyniadau
 
 ################################ Select Client ####################################################
 employmenthistory.select.client.continue=Yn eich blaen
-employmenthistory.select.client.title=Nodwch rif Yswiriant Gwladol cleient
-employmenthistory.select.client.heading=Nodwch rif Yswiriant Gwladol cleient
+employmenthistory.select.client.title=Nodwch rif Yswiriant Gwladol eich cleient
+employmenthistory.select.client.heading=Nodwch rif Yswiriant Gwladol eich cleient
 employmenthistory.select.client.clients.nino=Rhif Yswiriant Gwladol cleient
 employmenthistory.select.client.nino.hint=Er enghraifft, QQ123456C
 employmenthistory.select.client.error.invalid-format.title=Mae problem wedi codi
