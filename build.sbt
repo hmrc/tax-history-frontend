@@ -36,10 +36,8 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     ),
-    scalacOptions ++= Seq(
-      "-P:silencer:pathFilters=target/.*",
-      s"-P:silencer:sourceRoots=${baseDirectory.value.getCanonicalPath}"
-    )
+    scalacOptions += "-Wconf:src=routes/.*:s",
+    scalacOptions += "-Wconf:cat=unused-imports&src=html/.*:s"
   )
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt test:scalafmt")

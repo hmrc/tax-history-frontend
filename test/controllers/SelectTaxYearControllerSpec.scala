@@ -17,12 +17,15 @@
 package controllers
 
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
-import org.scalatestplus.mockito.MockitoSugar
+import models.taxhistory.SelectTaxYear
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
 import play.api.http.Status
 import play.api.i18n.Messages
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -33,7 +36,6 @@ import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
-import utils.DateUtils
 import views.html.taxhistory.select_tax_year
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,7 +48,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
       val taxYear = 2015
 
-      val c = new SelectTaxYearController(
+      val controller = new SelectTaxYearController(
         mock[TaxHistoryConnector],
         mock[CitizenDetailsConnector],
         mock[AuthConnector],
@@ -54,12 +56,11 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
         environment,
         messagesControllerComponents,
         appConfig,
-        injected[select_tax_year],
-        injected[DateUtils]
+        injected[select_tax_year]
       )(stubControllerComponents().executionContext)
 
       when(
-        c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
           any[HeaderCarrier],
           any[ExecutionContext]
         )
@@ -70,26 +71,36 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
           )
         )
 
-      when(c.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
-      when(c.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
         .thenReturn(
           Future.successful(
             HttpResponse(OK, json = Json.toJson(List(IndividualTaxYear(taxYear, "uri1", "uri2", "uri3"))), Map.empty)
           )
         )
-      c
+      controller
     }
   }
 
   "SelectTaxYearController" must {
 
     "load select tax year page" in new LocalSetup {
+
+      private val maxChar: Int           = 100
+      val postData: JsObject             = Json.obj("selectTaxYear" -> "2015")
+      val validForm: Form[SelectTaxYear] = selectTaxYearForm.bind(postData, maxChar)
+      val name: Option[String]           = Some("Test Name")
+
+      val view: select_tax_year = injected[select_tax_year]
+
       val result: Future[Result] =
-        controller.getSelectTaxYearPage().apply(FakeRequest().withSession("USER_NINO" -> nino).withMethod("POST"))
-      status(result) shouldBe Status.OK
-      contentAsString(result) should include(Messages("employmenthistory.select.tax.year.title"))
+        controller.getSelectTaxYearPage().apply(fakeRequestWithNino.withMethod("POST"))
+
+      status(result)          shouldBe Status.OK
+      contentAsString(result) shouldBe
+        view(validForm, List("2015" -> "2015 to 2016"), name, nino)(fakeRequestWithNino, messages, appConfig).toString()
     }
 
     "redirect to technical error page when getTaxYears returns status internal server error" in new LocalSetup {
