@@ -44,44 +44,40 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
   trait LocalSetup extends MockitoSugar {
 
-    lazy val controller: SelectTaxYearController = {
+    val taxYear = 2015
 
-      val taxYear = 2015
+    lazy val controller: SelectTaxYearController = new SelectTaxYearController(
+      mock[TaxHistoryConnector],
+      mock[CitizenDetailsConnector],
+      mock[AuthConnector],
+      app.configuration,
+      environment,
+      messagesControllerComponents,
+      appConfig,
+      injected[select_tax_year]
+    )(stubControllerComponents().executionContext)
 
-      val controller = new SelectTaxYearController(
-        mock[TaxHistoryConnector],
-        mock[CitizenDetailsConnector],
-        mock[AuthConnector],
-        app.configuration,
-        environment,
-        messagesControllerComponents,
-        appConfig,
-        injected[select_tax_year]
-      )(stubControllerComponents().executionContext)
-
-      when(
-        controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-          any[HeaderCarrier],
-          any[ExecutionContext]
+    when(
+      controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    )
+      .thenReturn(
+        Future.successful(
+          new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
         )
       )
-        .thenReturn(
-          Future.successful(
-            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
-          )
-        )
 
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
+    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
-      when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(
-          Future.successful(
-            HttpResponse(OK, json = Json.toJson(List(IndividualTaxYear(taxYear, "uri1", "uri2", "uri3"))), Map.empty)
-          )
+    when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))
+      .thenReturn(
+        Future.successful(
+          HttpResponse(OK, json = Json.toJson(List(IndividualTaxYear(taxYear, "uri1", "uri2", "uri3"))), Map.empty)
         )
-      controller
-    }
+      )
   }
 
   "SelectTaxYearController" must {
