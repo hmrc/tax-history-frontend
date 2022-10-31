@@ -237,15 +237,20 @@
 }
 @taxCodeBreakdown() = {
     @if(incomeSource.isDefined && !employment.isOccupationalPension) {
-        <h2 class="govuk-heading-m">@messages("tax.code.heading")</h2>
-        <h2 class="govuk-heading-s no-bottom-margin">@messages("tax.code.subheading")</h2>
-        <h2 class="govuk-heading-l" id="tax-code">@{
-            incomeSource.get.taxCode
-        }@{
-            ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
-        }
-        </h2>
-        <h2 class="govuk-heading-m">@messages("tax.code.allowances")</h2>
+        <h2 class="govuk-heading-l">@messages("tax.code.heading")</h2>
+        <div class="issuedTaxCode">
+            <dt class>
+                @messages("tax.code.subheading")
+            </dt>
+            <dd class id="tax-code">
+                @{
+                    incomeSource.get.taxCode
+                }@{
+                    ControllerUtils.displayTaxCode(incomeSource.get.basisOperation)
+                }
+            </dd>
+        </div>
+        <h3 class="govuk-heading-m" id="tax-code-allowances">@messages("tax.code.allowances")</h3>
         <table class="govuk-table" id="tc-allowance-table">
             <thead class="govuk-table__head">
             <tr class="govuk-table__row">
@@ -276,7 +281,7 @@
             </tbody>
         </table>
         @if(incomeSource.get.deductions.nonEmpty) {
-            <h2 class="govuk-heading-m">@messages("tax.code.deductions")</h2>
+            <h3 class="govuk-heading-m" id="tax-code-deductions">@messages("tax.code.deductions")</h3>
             <p class="govuk-body">@messages("tax.code.caveat")</p>
             <table class="govuk-table" id="tc-deduction-table">
                 <thead class="govuk-table__head">

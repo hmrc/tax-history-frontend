@@ -52,7 +52,7 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     val person: Person                                 = Person(Some(firstName), Some(surname), Some(false))
     val clientName: String                             = person.getName.getOrElse(nino)
     val incomeSourceNoDeductions: Option[IncomeSource] = Some(
-      IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, "")
+      IncomeSource(1, 1, None, List.empty, List.empty, "1100Y", None, 1, "")
     )
 
     val deductions: List[TaDeduction]                                 =
@@ -60,11 +60,22 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     val allowances: List[TaAllowance]                                 =
       List(TaAllowance(1, "test", 1.0, Some(1.0)), TaAllowance(1, "test", 1.0, Some(1.0)))
     val incomeSourceWithDeductions: Option[IncomeSource]              = Some(
-      IncomeSource(1, 1, None, deductions, List.empty, "", None, 1, "")
+      IncomeSource(1, 1, None, deductions, List.empty, "1100Y", None, 1, "")
     )
     val incomeSourceWithdeductionsAndAllowances: Option[IncomeSource] = Some(
-      IncomeSource(1, 1, None, deductions, allowances, "", None, 1, "")
+      IncomeSource(1, 1, None, deductions, allowances, "1100Y", None, 1, "")
     )
+
+    val taxCodeH2           = "#main-content > div > div > div > div > h2"
+    val taxCodeAllowancesH3 = "#tax-code-allowances"
+    val taxCodeDeductionsH3 = "#tax-code-deductions"
+    val taxCodeSubheading   = "#main-content > div > div > div > div > div > dt"
+    val taxCodeNumber       = "#main-content > div > div > div > div > div > dd"
+    val deductionsP         = "#main-content > div > div > div > div > p"
+    val noDeductions        = "#main-content > div > div > div > div > span#no-deductions"
+    val deductionsParagraph =
+      "Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so " +
+        "that the correct amount is repaid over the course of the year."
 
   }
 
@@ -310,9 +321,22 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
           createEmploymentViewDetail(false, employment.employerName)
         )
 
-        doc.getElementsContainingOwnText(Messages("tax.code.heading", "")).hasText   shouldBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText    shouldBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.caveat")).hasText        shouldBe true
+        val expectedContent: Seq[(String, String)] =
+          Seq(
+            taxCodeH2           -> "Tax code breakdown",
+            taxCodeAllowancesH3 -> "Allowances",
+            taxCodeDeductionsH3 -> "Deductions",
+            taxCodeSubheading   -> "Latest tax code issued",
+            taxCodeNumber       -> "1100Y",
+            deductionsP         -> deductionsParagraph
+          )
+
+        expectedContent.foreach { case (cssSelector, desiredContent) =>
+          doc.select(cssSelector).text() shouldBe desiredContent
+        }
+
+        doc.getElementById("tax-code-allowances").tagName()                          shouldBe "h3"
+        doc.getElementById("tax-code-deductions").tagName()                          shouldBe "h3"
         doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText shouldBe false
 
       }
@@ -331,9 +355,19 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
           createEmploymentViewDetail(false, employment.employerName)
         )
 
-        doc.getElementsContainingOwnText(Messages("tax.code.heading", "")).hasText   shouldBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.subheading")).hasText    shouldBe true
-        doc.getElementsContainingOwnText(Messages("tax.code.no.deductions")).hasText shouldBe true
+        val expectedContent: Seq[(String, String)] =
+          Seq(
+            taxCodeH2           -> "Tax code breakdown",
+            taxCodeAllowancesH3 -> "Allowances",
+            taxCodeSubheading   -> "Latest tax code issued",
+            taxCodeNumber       -> "1100Y",
+            noDeductions        -> "There are no deductions."
+          )
+
+        expectedContent.foreach { case (cssSelector, desiredContent) =>
+          doc.select(cssSelector).text() shouldBe desiredContent
+        }
+        doc.getElementById("tax-code-allowances").tagName() shouldBe "h3"
 
       }
     }
@@ -505,4 +539,5 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     doc.getElementById("nav-year").text         shouldBe Messages("nav.year")
     doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
   }
+
 }
