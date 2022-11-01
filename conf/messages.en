@@ -160,6 +160,14 @@ employmenthistory.select.client.error.invalid-format=National Insurance number m
 employmenthistory.select.client.error.empty.title=There is a problem
 employmenthistory.select.client.error.empty=Enter a National Insurance number
 
+################################ Confirm Client Details ####################################################
+employmenthistory.confirm.details.title=Confirm your client''s details
+employmenthistory.confirm.details.heading=Confirm your client''s details
+employmenthistory.confirm.details.nino=National Insurance number
+employmenthistory.confirm.details.name=Name
+employmenthistory.confirm.details.confirm.and.continue=Confirm and continue
+employmenthistory.confirm.details.cancel=Cancel
+
 ################################ Employment Details ####################################################
 employmenthistory.employment.details.job.seekers.title=Client employment allowance record
 employmenthistory.employment.details.employment.title=Client employment record

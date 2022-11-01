@@ -160,6 +160,14 @@ employmenthistory.select.client.error.invalid-format=Mae’n rhaid i’r rhif Ys
 employmenthistory.select.client.error.empty.title=Mae problem wedi codi
 employmenthistory.select.client.error.empty=Nodwch rif Yswiriant Gwladol
 
+################################ Confirm Client Details ####################################################
+employmenthistory.confirm.details.title=Cadarnhewch fanylion eich cleient
+employmenthistory.confirm.details.heading=Cadarnhewch fanylion eich cleient
+employmenthistory.confirm.details.nino=Rhif Yswiriant Gwladol
+employmenthistory.confirm.details.name=Enw
+employmenthistory.confirm.details.confirm.and.continue=Cadarnhau ac yn eich blaen
+employmenthistory.confirm.details.cancel=Canslo
+
 ################################ Employment Details ####################################################
 employmenthistory.employment.details.job.seekers.title=Cofnod o lwfans cyflogaeth y cleient
 employmenthistory.employment.details.employment.title=Cofnod o gyflogaeth y cleient

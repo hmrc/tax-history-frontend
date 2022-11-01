@@ -17,21 +17,25 @@
 package controllers
 
 import config.AppConfig
-import form.SelectClientForm.selectClientForm
+import connectors.CitizenDetailsConnector
 import javax.inject.Inject
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
+import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.http.HeaderCarrier
+import views.html.taxhistory.confirm_details
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class SelectClientController @Inject() (
+class ConfirmDetailsController @Inject() (
   override val authConnector: AuthConnector,
+  val citizenDetailsConnector: CitizenDetailsConnector,
   override val config: Configuration,
   override val env: Environment,
   val cc: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
-  selectClient: views.html.taxhistory.select_client
+  confirmDetails: confirm_details
 )(implicit val ec: ExecutionContext)
     extends BaseController(cc) {
 
@@ -39,34 +43,23 @@ class SelectClientController @Inject() (
   val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  //TODO Remove this as it is only included to support legacy url
-  @Deprecated
-  def getLegacySelectClientPage: Action[AnyContent] = Action.async {
-    redirectToSelectClientPage
-  }
+  private def renderConfirmDetailsPage(nino: Nino)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)).flatMap {
+      case Left(citizenStatus) =>
+        redirectToClientErrorPage(citizenStatus)
+      case Right(person)       =>
+        Future.successful(Ok(confirmDetails(person.getName.getOrElse(nino.nino), nino.nino)))
+    }
 
-  val root: Action[AnyContent] = Action {
-    Redirect(routes.SelectClientController.getSelectClientPage())
-  }
-
-  def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-    authorisedAgent(AuthProviderAgents) {
-      Future.successful(Ok(selectClient(selectClientForm)))
+  def getConfirmDetailsPage: Action[AnyContent] = Action.async { implicit request =>
+    authorisedForAgent { nino =>
+      renderConfirmDetailsPage(nino)
     }
   }
 
-  def submitSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
-    selectClientForm
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(selectClient(formWithErrors))),
-        validFormData =>
-          authorisedAgent(AuthProviderAgents) {
-            Future.successful(
-              Redirect(routes.ConfirmDetailsController.getConfirmDetailsPage())
-                .addingToSession(ninoSessionKey -> s"${validFormData.clientId.toUpperCase}")
-            )
-          }
-      )
+  def submitConfirmDetailsPage: Action[AnyContent] = Action.async { implicit request =>
+    authorisedForAgent { _ =>
+      Future.successful(Redirect(routes.SelectTaxYearController.getSelectTaxYearPage()))
+    }
   }
 }

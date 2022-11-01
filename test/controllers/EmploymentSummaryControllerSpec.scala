@@ -24,7 +24,6 @@ import model.api._
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -45,7 +44,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
   lazy val taxYear: Int = 2016
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
 
     implicit val actorSystem: ActorSystem   = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)

@@ -16,14 +16,13 @@
 
 package controllers
 
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.Helpers._
 import support.{BaseSpec, ControllerSpec}
 import views.html.taxhistory.SignedOut
 
 class SignedOutControllerSpec extends ControllerSpec with BaseSpec {
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
     lazy val controller: SignedOutController = {
       val c = new SignedOutController(
         injected[SignedOut],

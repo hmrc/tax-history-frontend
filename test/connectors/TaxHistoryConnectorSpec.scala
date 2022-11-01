@@ -20,7 +20,6 @@ import java.util.UUID
 import model.api.EmploymentPaymentType.JobseekersAllowance
 import model.api._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito._
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
 import play.api.libs.json.{JsArray, JsValue, Json}

@@ -19,7 +19,6 @@ package controllers
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -39,7 +38,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec {
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
 
     lazy val taxYear: Int       = 2014
     lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
