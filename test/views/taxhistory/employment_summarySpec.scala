@@ -161,10 +161,9 @@ class employment_summarySpec extends GuiceAppSpec with BaseViewSpec with Constan
       allowances.foreach { al =>
         doc.getElementsContainingOwnText(messages(s"employmenthistory.al.${al.iabdType}")).hasText mustBe true
       }
-      val caveatParagraphs: String = doc.getElementsByClass("govuk-inset-text").text
+      val caveatParagraph: String = doc.getElementsByClass("govuk-inset-text").text
 
-      caveatParagraphs.contains(messages("employmenthistory.caveat.p1.text")) mustBe true
-      caveatParagraphs.contains(messages("employmenthistory.caveat.p2.text")) mustBe true
+      caveatParagraph.contains(messages("employmenthistory.caveat.p.text")) mustBe true
     }
 
     "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
