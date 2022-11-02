@@ -3,8 +3,6 @@ import sbt._
 
 object AppDependencies {
 
-  val silencerVersion = "1.7.12"
-
   private val compile = Seq(
     play.sbt.PlayImport.ws,
     "uk.gov.hmrc" %% "domain"                     % "8.1.0-play-28",
@@ -16,7 +14,7 @@ object AppDependencies {
     "uk.gov.hmrc" %% "tax-year"                   % "3.0.0"
   )
 
-  private val test: Seq[ModuleID]                 = Seq(
+  private val test: Seq[ModuleID] = Seq(
     "org.scalatest"          %% "scalatest"          % "3.2.14",
     "org.jsoup"               % "jsoup"              % "1.15.3",
     "com.typesafe.play"      %% "play-test"          % PlayVersion.current,
@@ -26,10 +24,5 @@ object AppDependencies {
     "com.vladsch.flexmark"    % "flexmark-all"       % "0.62.2"
   ).map(_ % "test, it")
 
-  private val silencerDependencies: Seq[ModuleID] = Seq(
-    "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full,
-    compilerPlugin("com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full)
-  )
-
-  def apply(): Seq[ModuleID] = compile ++ test ++ silencerDependencies
+  def apply(): Seq[ModuleID]      = compile ++ test
 }
