@@ -21,7 +21,6 @@ import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
 import models.taxhistory.SelectTaxYear
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.http.Status
 import play.api.i18n.Messages
@@ -42,7 +41,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec {
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
 
     val taxYear = 2015
 

@@ -20,7 +20,6 @@ import config.AppConfig
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.libs.json.JsValue
 import play.api.mvc.{MessagesControllerComponents, Result, Results}
@@ -38,7 +37,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures {
 
-  trait TestSetup extends MockitoSugar {
+  trait TestSetup {
 
     lazy val controller: Controller = {
       val controller = new Controller(

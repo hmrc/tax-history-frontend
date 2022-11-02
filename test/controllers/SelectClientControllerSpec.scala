@@ -18,7 +18,6 @@ package controllers
 
 import form.SelectClientForm.selectClientForm
 import org.mockito.ArgumentMatchers.any
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.http.Status
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
@@ -34,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
 
     lazy val controller: SelectClientController = {
 
@@ -67,7 +66,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
     "load select client page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
       val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
-      val expectedView                 = app.injector.instanceOf[select_client]
+      val expectedView: select_client  = app.injector.instanceOf[select_client]
       status(result) shouldBe Status.OK
       result rendersTheSameViewAs expectedView(selectClientForm)
     }
@@ -79,7 +78,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         "clientId" -> invalidTestNINO
       )
 
-      val result = controller
+      val result: Future[Result] = controller
         .submitSelectClientPage()
         .apply(
           FakeRequest()
@@ -95,12 +94,12 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         "clientId" -> nino
       )
 
-      val result =
+      val result: Future[Result] =
         controller
           .submitSelectClientPage()
           .apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*).withMethod("POST"))
       status(result)           shouldBe Status.SEE_OTHER
-      redirectLocation(result) shouldBe Some(routes.SelectTaxYearController.getSelectTaxYearPage().url)
+      redirectLocation(result) shouldBe Some(routes.ConfirmDetailsController.getConfirmDetailsPage().url)
     }
   }
 

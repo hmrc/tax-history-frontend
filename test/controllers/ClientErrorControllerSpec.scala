@@ -21,7 +21,6 @@ import akka.stream.Materializer
 import connectors.CitizenDetailsConnector
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
@@ -38,7 +37,7 @@ import scala.concurrent.Future
 
 class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
 
     implicit val actorSystem: ActorSystem   = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)

@@ -7,6 +7,8 @@ GET   /                                                   controllers.SelectClie
 GET   /agent/select-client                                controllers.SelectClientController.getLegacySelectClientPage()
 GET   /select-client                                      controllers.SelectClientController.getSelectClientPage()
 POST  /select-client                                      controllers.SelectClientController.submitSelectClientPage()
+GET   /select-client-confirm                              controllers.ConfirmDetailsController.getConfirmDetailsPage()
+POST  /select-client-confirm                              controllers.ConfirmDetailsController.submitConfirmDetailsPage()
 GET   /single-record/:taxYear/employments/:employmentId   controllers.EmploymentDetailController.getEmploymentDetails(employmentId:String, taxYear:Int)
 GET   /not-authorised                                     controllers.ClientErrorController.getNotAuthorised()
 GET   /no-agent-services-account                          controllers.ClientErrorController.getNoAgentServicesAccountPage()

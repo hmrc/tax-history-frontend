@@ -17,7 +17,6 @@
 package connectors
 
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.MockitoSugar
 import org.scalatest.concurrent.ScalaFutures
 import play.api.http.Status
 import play.api.libs.json.Json
@@ -36,7 +35,7 @@ class CitizenDetailsConnectorSpec extends TestUtil with ControllerFixture with B
   val nino: String = randomNino.toString()
   val url: String  = s"http://localhost:9337/citizen-details/$nino/designatory-details/basic"
 
-  trait LocalSetup extends MockitoSugar {
+  trait LocalSetup {
     lazy val connector = new CitizenDetailsConnector(appConfig, mockHttpClient)
   }
 
