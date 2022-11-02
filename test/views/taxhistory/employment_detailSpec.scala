@@ -70,8 +70,8 @@ class employment_detailSpec extends GuiceAppSpec with BaseViewSpec with Constant
     val taxCodeH2           = "#main-content > div > div > div > div > h2"
     val taxCodeAllowancesH3 = "#tax-code-allowances"
     val taxCodeDeductionsH3 = "#tax-code-deductions"
-    val taxCodeSubheading   = "#main-content > div > div > div > div > div > dt"
-    val taxCodeNumber       = "#main-content > div > div > div > div > div > dd"
+    val taxCodeSubheading   = "#main-content > div > div > div > div > div > dl > dt"
+    val taxCodeNumber       = "#main-content > div > div > div > div > div > dl > dd"
     val deductionsP         = "#main-content > div > div > div > div > p"
     val noDeductions        = "#main-content > div > div > div > div > span#no-deductions"
     val deductionsParagraph =

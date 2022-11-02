@@ -138,9 +138,22 @@ color : #6f777b;
 }
 
 .issuedTaxCode {
-  font-family: "GDS Transport", arial, sans-serif ; font-weight: bold; display: block ; text-align:right
+     line-height: normal;
+     margin-bottom: 0;
+}
+
+.issuedTaxCode dl {
+  margin: 0 0;
+}
+
+.issuedTaxCode dt {
+  font-size: 1rem;
 }
 
 .issuedTaxCode dd {
-  font-size: 2.4em
+  font-size: 2.4rem;
+}
+
+#tax-code-allowances {
+  padding-top: 0;
 }
