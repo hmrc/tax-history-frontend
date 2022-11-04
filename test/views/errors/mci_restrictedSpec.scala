@@ -45,11 +45,13 @@ class mci_restrictedSpec extends GuiceAppSpec with BaseViewSpec {
       doc.getElementById("back-link").text mustBe Messages("lbl.back")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.text")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.telephone")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.telephone.number")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.textphone")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.textphone.number")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.openingtimes")).hasText mustBe true
+      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.openingtimes.days")).hasText mustBe true
       doc.select("h1").text() mustBe Messages("employmenthistory.mci.restricted.header")
-      doc
-        .getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.select.client.link.text"))
-        .attr("href") mustBe "/tax-history/select-client"
+
     }
   }
 

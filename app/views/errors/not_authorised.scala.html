@@ -44,7 +44,6 @@
 
     @p{@messages("employmenthistory.not.authorised.text1", nino.getOrElse(""))}
     @p{@messages("employmenthistory.not.authorised.text2")}
-    @p{@messages("employmenthistory.not.authorised.text3")}
 
     @formHelper(action = Call("POST", postToInvitations)) {
         <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">

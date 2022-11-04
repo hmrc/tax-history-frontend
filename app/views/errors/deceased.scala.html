@@ -31,10 +31,10 @@
 
     @p{@messages("employmenthistory.deceased.text")}
 
-    <p class="govuk-body">
-        @link(controllers.routes.SelectClientController.getSelectClientPage().url,
-              messages("employmenthistory.deceased.select.client.link.text"),
-              Some("selectClient")
+    @p{@link(controllers.routes.SelectClientController.getSelectClientPage().url,
+            messages("employmenthistory.deceased.select.client.link.text"),
+            Some("selectClient")
         )
-    </p>
+    }
+
 }

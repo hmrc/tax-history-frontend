@@ -30,17 +30,11 @@
     <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.mci.restricted.header")</h1>
 
     @p{@messages("employmenthistory.mci.restricted.text")}
-
-    <ul class = "govuk-list govuk-list--bullet">
-        <li>@messages("employmenthistory.mci.restricted.telephone")</li>
-        <li>@messages("employmenthistory.mci.restricted.textphone")</li>
-    </ul>
-
-    <p class="govuk-body">
-        @link(controllers.routes.SelectClientController.getSelectClientPage().url,
-              messages("employmenthistory.mci.restricted.select.client.link.text"),
-              Some("selectClient")
-        )
-    </p>
+    @p{@messages("employmenthistory.mci.restricted.telephone")}
+    @p{@messages("employmenthistory.mci.restricted.telephone.number"), "govuk-!-font-weight-bold"}
+    @p{@messages("employmenthistory.mci.restricted.textphone")}
+    @p{@messages("employmenthistory.mci.restricted.textphone.number"), "govuk-!-font-weight-bold"}
+    @p{@messages("employmenthistory.mci.restricted.openingtimes")}
+    @p{@messages("employmenthistory.mci.restricted.openingtimes.days"), "govuk-!-font-weight-bold"}
 
 }
