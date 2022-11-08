@@ -30,11 +30,22 @@
     <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.mci.restricted.header")</h1>
 
     @p{@messages("employmenthistory.mci.restricted.text")}
-    @p{@messages("employmenthistory.mci.restricted.telephone")}
-    @p{@messages("employmenthistory.mci.restricted.telephone.number"), "govuk-!-font-weight-bold"}
-    @p{@messages("employmenthistory.mci.restricted.textphone")}
-    @p{@messages("employmenthistory.mci.restricted.textphone.number"), "govuk-!-font-weight-bold"}
-    @p{@messages("employmenthistory.mci.restricted.openingtimes")}
-    @p{@messages("employmenthistory.mci.restricted.openingtimes.days"), "govuk-!-font-weight-bold"}
+
+    <p class="govuk-body">
+        @messages("employmenthistory.mci.restricted.telephone")
+        <br>
+        <strong>@messages("employmenthistory.mci.restricted.telephone.number")</strong>
+    </p>
+    <p class="govuk-body">
+        @messages("employmenthistory.mci.restricted.textphone")
+        <br>
+        <strong>@messages("employmenthistory.mci.restricted.textphone.number")</strong>
+    </p>
+
+    <p class="govuk-body">
+        @messages("employmenthistory.mci.restricted.openingtimes")
+        <br>
+        <strong>@messages("employmenthistory.mci.restricted.openingtimes.days")</strong>
+    </p>
 
 }
