@@ -14,20 +14,17 @@
  * limitations under the License.
  *@
 
-@import models.taxhistory.SelectTaxYear
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits._
 @import config.AppConfig
 @import models.taxhistory.SelectTaxYear
+@import uk.gov.hmrc.time.TaxYear.current
 @import views.models.PageTitle
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
     formHelper: FormWithCSRF,
-    govukRadios : GovukRadios,
-    govukBackLink : GovukBackLink,
-    govukButton : GovukButton,
+    govukRadios: GovukRadios,
+    govukButton: GovukButton,
     errorSummary: helpers.errorSummary,
-    link: helpers.link,
     twoThirdsMainContent: TwoThirdsMainContent
 )
 
@@ -37,13 +34,17 @@
   nino:String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
+@currentTaxYearStart = @{
+    current.startYear.toString
+}
+
 @govukWrapper(PageTitle(messages("employmenthistory.select.tax.year.title"), form.hasErrors), backLink = Some(controllers.routes.ConfirmDetailsController.getConfirmDetailsPage().url)) {
 
     @twoThirdsMainContent {
 
         @formHelper(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
 
-            @errorSummary(form.errors)
+            @errorSummary(form.errors, Some(currentTaxYearStart))
 
             @govukRadios(Radios(
                 fieldset = Some(Fieldset(
@@ -64,8 +65,8 @@
                 items = SelectTaxYear.options(taxYears)
             ))
 
-        @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
+            @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
 
-      }
+        }
     }
 }
