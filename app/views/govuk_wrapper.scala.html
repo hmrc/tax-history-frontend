@@ -129,19 +129,22 @@
                     <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
                 </a>
             }
-            <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
+
+            @if(request.path.contains("record") || request.path.contains("/no-data/") || request.path.contains("tax-year") ) {
+                <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
+            }
 
             <ul class="hmrc-account-menu__main js-hidden">
-                @defining(request.path.contains("/tax-history/client-income-record") || request.path.contains("/tax-history/single-record") || request.path.contains("/tax-history/no-data")) { navigationCheck =>
-                        @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
-                            <li>
+                @defining(request.path.contains("record") || request.path.contains("/no-data/")) { navigationCheck =>
+                    @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
+                        <li>
                             <a id="nav-client" href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">@messages("nav.client")</a>
-                            </li>
-                        }
+                        </li>
+                    }
 
                     @if(navigationCheck) {
                         <li>
-                        <a id="nav-year" href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">@messages("nav.year")</a>
+                            <a id="nav-year" href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">@messages("nav.year")</a>
                         </li>
                     }
                 }

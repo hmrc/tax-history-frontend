@@ -28,7 +28,7 @@ import views.{BaseViewSpec, Fixture}
 class ConfirmDetailsViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
 
   implicit val request: Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "/tax-history/confirm-details").withCSRFToken
+    FakeRequest("GET", "/tax-history/select-client-confirm").withCSRFToken
 
   trait ViewFixture extends Fixture {
     val nino: String                = randomNino.toString()
