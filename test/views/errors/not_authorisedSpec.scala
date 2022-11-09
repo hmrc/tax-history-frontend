@@ -47,7 +47,6 @@ class not_authorisedSpec extends GuiceAppSpec with BaseViewSpec {
       doc.select("h1").text() mustBe Messages("employmenthistory.not.authorised.header")
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text1", nino.value)) should not be empty
       doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text2"))             should not be empty
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.text3"))             should not be empty
       doc
         .getElementsMatchingOwnText(Messages("employmenthistory.not.authorised.select.client.link.text"))
         .attr("href") mustBe "/tax-history/select-client"

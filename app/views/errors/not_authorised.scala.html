@@ -24,7 +24,8 @@
     formHelper: FormWithCSRF,
     p: helpers.p,
     govukButton : GovukButton,
-    link: helpers.link
+    link: helpers.link,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @(nino:Option[Nino])(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -38,29 +39,32 @@
 
 @govukWrapper(PageTitle(messages("employmenthistory.not.authorised.title")), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 
-    <h1 class="govuk-heading-xl" id="error-heading">
-        @messages("employmenthistory.not.authorised.header")
-    </h1>
+    @twoThirdsMainContent {
 
-    @p{@messages("employmenthistory.not.authorised.text1", nino.getOrElse(""))}
-    @p{@messages("employmenthistory.not.authorised.text2")}
-    @p{@messages("employmenthistory.not.authorised.text3")}
+        <h1 class="govuk-heading-xl" id="error-heading">
+            @messages("employmenthistory.not.authorised.header")
+        </h1>
 
-    @formHelper(action = Call("POST", postToInvitations)) {
-        <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
-        <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">
-        <input type="hidden" name="clientIdentifierType" id="clientIdentifierType" value="ni">
+        @p{@messages("employmenthistory.not.authorised.text1", nino.getOrElse(""))}
+        @p{@messages("employmenthistory.not.authorised.text2")}
 
-        @govukButton(Button(
-                        content = Text(messages("employmenthistory.not.authorised.invite.client.link.text")),
-                        name = Some("inviteClient")
-                    )
-        )
+        @formHelper(action = Call("POST", postToInvitations)) {
+            <input type="hidden" name="service" id="service" value="PERSONAL-INCOME-RECORD">
+            <input type="hidden" name="clientIdentifier" id="clientIdentifier" value="@nino.getOrElse("")">
+            <input type="hidden" name="clientIdentifierType" id="clientIdentifierType" value="ni">
+
+            @govukButton(Button(
+                    content = Text(messages("employmenthistory.not.authorised.invite.client.link.text")),
+                    name = Some("inviteClient")
+                )
+            )
+        }
+
+       <p class="govuk-body">
+            @link(controllers.routes.SelectClientController.getSelectClientPage().url,
+                  messages("employmenthistory.not.authorised.select.client.link.text"),
+                  Some("selectClient")
+            )
+       </p>
     }
-   <p class="govuk-body">
-        @link(controllers.routes.SelectClientController.getSelectClientPage().url,
-              messages("employmenthistory.not.authorised.select.client.link.text"),
-              Some("selectClient")
-        )
-   </p>
 }

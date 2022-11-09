@@ -27,7 +27,8 @@
     govukBackLink : GovukBackLink,
     govukButton : GovukButton,
     errorSummary: helpers.errorSummary,
-    link: helpers.link
+    link: helpers.link,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @(form: Form[SelectTaxYear],
@@ -38,35 +39,33 @@
 
 @govukWrapper(PageTitle(messages("employmenthistory.select.tax.year.title"), form.hasErrors), backLink = Some(controllers.routes.ConfirmDetailsController.getConfirmDetailsPage().url)) {
 
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-two-thirds">
-                @formHelper(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
+    @twoThirdsMainContent {
 
-                    @errorSummary(form.errors)
+        @formHelper(routes.SelectTaxYearController.submitSelectTaxYearPage()) {
 
-                    @govukRadios(Radios(
-                        fieldset = Some(Fieldset(
-                            legend = Some(Legend(
-                                content = Text(messages("employmenthistory.select.tax.year.h1")),
-                                classes = "govuk-fieldset__legend--xl",
-                                isPageHeading = true
-                            ))
-                        )),
-                        hint = None,
-                        name = "selectTaxYear",
-                        errorMessage = if(form("selectTaxYear").hasErrors){
-                            Some(ErrorMessage(
-                                content = Text(messages("employmenthistory.select.tax.year.error.message")),
-                                visuallyHiddenText = Some(messages("govukErrorMessage.visuallyHiddenText"))
-                            ))
-                        } else { None },
-                        items = SelectTaxYear.options(taxYears)
+            @errorSummary(form.errors)
+
+            @govukRadios(Radios(
+                fieldset = Some(Fieldset(
+                    legend = Some(Legend(
+                        content = Text(messages("employmenthistory.select.tax.year.h1")),
+                        classes = "govuk-fieldset__legend--xl",
+                        isPageHeading = true
                     ))
+                )),
+                hint = None,
+                name = "selectTaxYear",
+                errorMessage = if(form("selectTaxYear").hasErrors){
+                    Some(ErrorMessage(
+                        content = Text(messages("employmenthistory.select.tax.year.error.message")),
+                        visuallyHiddenText = Some(messages("govukErrorMessage.visuallyHiddenText"))
+                    ))
+                } else { None },
+                items = SelectTaxYear.options(taxYears)
+            ))
 
-                @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
+        @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
 
-              }
-
-        </div>
-    </div>
+      }
+    }
 }

@@ -20,27 +20,29 @@
 @this(
     govukWrapper: views.html.govuk_wrapper,
     p: helpers.p,
-    link: helpers.link
+    link: helpers.link,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @()(implicit request: Request[_], messages: Messages, config: AppConfig)
 
 @govukWrapper(PageTitle(messages("employmenthistory.mci.restricted.title")), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 
-    <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.mci.restricted.header")</h1>
+    @twoThirdsMainContent {
+        <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.mci.restricted.header")</h1>
 
-    @p{@messages("employmenthistory.mci.restricted.text")}
+        @p{@messages("employmenthistory.mci.restricted.text")}
 
-    <ul class = "govuk-list govuk-list--bullet">
-        <li>@messages("employmenthistory.mci.restricted.telephone")</li>
-        <li>@messages("employmenthistory.mci.restricted.textphone")</li>
-    </ul>
+        <p class="govuk-body">
+            @messages("employmenthistory.mci.restricted.telephone")
+            <br>
+            <strong>@messages("employmenthistory.mci.restricted.telephone.number")</strong>
+        </p>
 
-    <p class="govuk-body">
-        @link(controllers.routes.SelectClientController.getSelectClientPage().url,
-              messages("employmenthistory.mci.restricted.select.client.link.text"),
-              Some("selectClient")
-        )
-    </p>
-
+        <p class="govuk-body">
+            @messages("employmenthistory.mci.restricted.openingtimes")
+            <br>
+            <strong>@messages("employmenthistory.mci.restricted.openingtimes.days")</strong>
+        </p>
+    }
 }

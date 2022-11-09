@@ -21,7 +21,8 @@
 @this(
     govukWrapper: views.html.govuk_wrapper,
     link: helpers.link,
-    p: helpers.p
+    p: helpers.p,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @(person:Person,
@@ -31,30 +32,34 @@
 
 @govukWrapper(PageTitle(messages("employmenthistory.no.data.title")), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
 
-    <header class="hmrc-page-heading no-top-margin">
-        <h1 class="govuk-heading-xl no-bottom-margin" id="heading">@messages("employmenthistory.header")</h1>
-        <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
-            <span class="govuk-visually-hidden">This section relates to </span>
-            @person.getName.getOrElse(nino)
-        </p>
-        <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString) </span>
-    </header>
+    @twoThirdsMainContent {
 
-    @p(Html(messages("employmenthistory.no.data.header")), "govuk-caption-m", Some("pre-header-m"))
-    @p{@messages("employmenthistory.no.data.text")}
+        <header class="hmrc-page-heading no-top-margin">
+            <h1 class="govuk-heading-xl no-bottom-margin" id="heading">@messages("employmenthistory.header")</h1>
+            <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
+                <span class="govuk-visually-hidden">This section relates to </span>
+                @person.getName.getOrElse(nino)
+            </p>
+            <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString) </span>
+        </header>
 
-    <ul class="govuk-list govuk-list--bullet">
-        <li>
-            @link(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url,
-                  messages("employmenthistory.select.different.taxyear.link.lower"),
-                  Some("selectTaxYear")
-            )
-        </li>
-        <li>
-            @link(controllers.routes.SelectClientController.getSelectClientPage().url,
-                  messages("employmenthistory.no.data.select.client.link.text"),
-                  Some("selectClient")
-            )
-        </li>
-    </ul>
+        @p(Html(messages("employmenthistory.no.data.header")), "govuk-caption-m", Some("pre-header-m"))
+        @p{@messages("employmenthistory.no.data.text")}
+
+        <ul class="govuk-list govuk-list--bullet">
+            <li>
+                @link(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url,
+                      messages("employmenthistory.select.different.taxyear.link.lower"),
+                      Some("selectTaxYear")
+                )
+            </li>
+            <li>
+                @link(controllers.routes.SelectClientController.getSelectClientPage().url,
+                      messages("employmenthistory.no.data.select.client.link.text"),
+                      Some("selectClient")
+                )
+            </li>
+        </ul>
+
+    }
 }
