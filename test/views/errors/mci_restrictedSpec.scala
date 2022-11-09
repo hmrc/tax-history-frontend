@@ -46,8 +46,6 @@ class mci_restrictedSpec extends GuiceAppSpec with BaseViewSpec {
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.text")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.telephone")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.telephone.number")).hasText mustBe true
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.textphone")).hasText mustBe true
-      doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.textphone.number")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.openingtimes")).hasText mustBe true
       doc.getElementsMatchingOwnText(Messages("employmenthistory.mci.restricted.openingtimes.days")).hasText mustBe true
       doc.select("h1").text() mustBe Messages("employmenthistory.mci.restricted.header")

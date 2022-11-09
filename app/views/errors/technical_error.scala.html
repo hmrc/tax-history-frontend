@@ -19,13 +19,18 @@
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
-    p: helpers.p
+    p: helpers.p,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @govukWrapper(PageTitle(messages("employmenthistory.technical.error.title")), backLink = Some(appConfig.agentAccountHomePage)) {
 
-    <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.technical.error.header")</h1>
-    @p{@messages("employmenthistory.technical.error.message")}
+    @twoThirdsMainContent {
+
+        <h1 class="govuk-heading-xl" id="error-heading">@messages("employmenthistory.technical.error.header")</h1>
+        @p{@messages("employmenthistory.technical.error.message")}
+
+    }
 }

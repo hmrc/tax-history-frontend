@@ -18,15 +18,20 @@
 @import views.models.PageTitle
 
 @this(
-    govukWrapper: views.html.govuk_wrapper
+    govukWrapper: views.html.govuk_wrapper,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @()(implicit request:Request[_], messages: Messages, appConfig: AppConfig)
 
 @govukWrapper(title = PageTitle(messages("signedOut.title")), timeoutActive = false, signOut = false, backLink = None) {
-    <h1 class="govuk-heading-xl">@messages("signedOut.title")</h1>
 
-    <div>
-        <a class="govuk-button" role="button" href="@routes.EmploymentSummaryController.signIn">@messages("signedOut.signIn")</a>
-    </div>
+    @twoThirdsMainContent {
+
+        <h1 class="govuk-heading-xl">@messages("signedOut.title")</h1>
+
+        <div>
+            <a class="govuk-button" role="button" href="@routes.EmploymentSummaryController.signIn">@messages("signedOut.signIn")</a>
+        </div>
+    }
 }

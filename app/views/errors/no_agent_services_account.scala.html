@@ -19,13 +19,18 @@
 
 @this(
     govukWrapper: views.html.govuk_wrapper,
-    p: helpers.p
+    p: helpers.p,
+    twoThirdsMainContent: TwoThirdsMainContent
 )
 
 @()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @govukWrapper(PageTitle(messages("employmenthistory.no.agent.services.account.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("employmenthistory.no.agent.services.account.title")</h1>
-    @p{@messages("employmenthistory.no.agent.services.account.p1")}
+    @twoThirdsMainContent {
+
+        <h1 class="govuk-heading-xl">@messages("employmenthistory.no.agent.services.account.title")</h1>
+        @p{@messages("employmenthistory.no.agent.services.account.p1")}
+
+    }
 }
