@@ -101,7 +101,9 @@ class select_tax_yearSpec extends GuiceAppSpec with BaseViewSpec {
       inputRadio.attr("checked") shouldBe ""
 
       doc.getElementsMatchingOwnText(Messages("employmenthistory.select.tax.year")).hasText mustBe true
-      doc.getElementById("error-summary-title").text mustBe Messages("employmenthistory.select.tax.year.error.heading")
+      doc.getElementsByClass("govuk-error-summary__title").text mustBe Messages(
+        "employmenthistory.select.tax.year.error.heading"
+      )
       doc.getElementById("selectTaxYear-error").text contains Messages(
         "employmenthistory.select.tax.year.error.message"
       )

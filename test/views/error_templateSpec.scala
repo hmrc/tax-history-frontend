@@ -16,14 +16,12 @@
 
 package views
 
-import org.jsoup.nodes.Element
 import org.jsoup.select.Elements
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
-import play.twirl.api.{Html, HtmlFormat}
+import play.twirl.api.HtmlFormat
 import support.GuiceAppSpec
-import uk.gov.hmrc.urls.Link
 import views.html.error_template
 class error_templateSpec extends GuiceAppSpec with BaseViewSpec {
 
@@ -47,18 +45,6 @@ class error_templateSpec extends GuiceAppSpec with BaseViewSpec {
       foundMessage.size mustBe 1
       foundMessage.get(0).text() mustBe messageText
 
-    }
-
-    "include sidebar links" in new ViewFixture {
-      val link: Html                  = Link
-        .toExternalPage(id = Some("sidebar-link"), url = "http://www.google.com", value = Some("Back To Google"))
-        .toHtml
-      val view: HtmlFormat.Appendable = inject[error_template].apply(titleText, headingText, messageText, Some(link))
-
-      val sideBarLinks: Elements = doc.select("#sidebar-link")
-      sideBarLinks.size mustBe 1
-      val sideBarLink: Element   = sideBarLinks.get(0)
-      sideBarLink.text must include("Back To Google")
     }
   }
 

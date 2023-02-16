@@ -55,7 +55,7 @@ class EmploymentDetailController @Inject() (
     hc: HeaderCarrier,
     request: Request[_]
   ): Future[Result] =
-    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+    retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
       case Right(person)       =>
         taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>

@@ -16,7 +16,7 @@
 
 package model.api
 
-import model.api.EmploymentStatus.{Ceased, Live, PotentiallyCeased}
+import model.api.EmploymentStatus.{Ceased, Live, PotentiallyCeased, Unknown}
 import play.api.libs.json._
 import support.BaseSpec
 
@@ -24,15 +24,18 @@ class EmploymentStatusSpec extends BaseSpec {
 
   "EmploymentStatus" must {
     "read and write json successfully" in {
-      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Live))   shouldBe JsSuccess(
+      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Live))    shouldBe JsSuccess(
         Live
       )
-      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Ceased)) shouldBe JsSuccess(
+      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Ceased))  shouldBe JsSuccess(
         Ceased
       )
       EmploymentStatus.jsonReads.reads(
         EmploymentStatus.jsonWrites.writes(EmploymentStatus.PotentiallyCeased)
-      )                                                                                             shouldBe JsSuccess(PotentiallyCeased)
+      )                                                                                              shouldBe JsSuccess(PotentiallyCeased)
+      EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Unknown)) shouldBe JsSuccess(
+        Unknown
+      )
     }
 
     "throw error on invalid data" in {

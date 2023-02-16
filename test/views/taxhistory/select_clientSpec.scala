@@ -86,7 +86,7 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
 
     "display correct error message for invalid nino" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      doc.getElementById("error-summary-title").text mustBe Messages(
+      doc.getElementsByClass("govuk-error-summary__title").text mustBe Messages(
         "employmenthistory.select.client.error.invalid-format.title"
       )
       doc.getElementById("clientId-error").text contains Messages(

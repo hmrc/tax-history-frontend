@@ -87,7 +87,7 @@ class SelectTaxYearController @Inject() (
     request: Request[_]
   ): Future[Result] = {
     print("nino " + nino)
-    retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino)) flatMap {
+    retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) =>
         redirectToClientErrorPage(citizenStatus)
       case Right(p)            =>

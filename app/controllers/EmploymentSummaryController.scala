@@ -56,7 +56,7 @@ class EmploymentSummaryController @Inject() (
   def getTaxHistory(taxYear: Int): Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent { nino =>
       for {
-        maybePerson        <- retrieveCitizenDetails(nino, citizenDetailsConnector.getPersonDetails(nino))
+        maybePerson        <- retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino))
         taxHistoryResponse <- renderTaxHistoryPage(nino, maybePerson, taxYear)
       } yield taxHistoryResponse
     }

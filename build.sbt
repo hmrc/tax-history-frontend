@@ -1,7 +1,5 @@
-import sbt.Keys.resolvers
 import scoverage.ScoverageKeys
 import uk.gov.hmrc.DefaultBuildSettings.{defaultSettings, scalaSettings}
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin.publishingSettings
 import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 
 val appName = "tax-history-frontend"
@@ -16,13 +14,11 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies(),
     name := appName,
     PlayKeys.playDefaultPort := 9996,
-    publishingSettings,
     defaultSettings(),
     retrieveManaged := true,
-    resolvers += Resolver.jcenterRepo,
     ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
       ".*BuildInfo.*;.*helpers.*;.*Routes.*;controllers.ExampleController;controllers.testonly.TestOnlyController",
-    ScoverageKeys.coverageMinimumStmtTotal := 94,
+    ScoverageKeys.coverageMinimumStmtTotal := 95,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true
   )

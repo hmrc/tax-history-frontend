@@ -20,13 +20,11 @@ import controllers.auth.AgentAuth
 import models.taxhistory.Person
 import play.api.i18n.I18nSupport
 import play.api.mvc._
-import play.twirl.api.Html
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.~
 import uk.gov.hmrc.auth.core.{AuthorisationException, InsufficientEnrolments, MissingBearerToken}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
-import uk.gov.hmrc.urls.Link
 import utils.TaxHistoryLogger
 
 import javax.inject.Inject
@@ -48,9 +46,6 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   val serviceSignout: String
 
   lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
-
-  def logoutLink(implicit request: Request[_]): Html =
-    Link.toInternalPage(controllers.routes.EmploymentSummaryController.logout().url, Some("Sign out")).toHtml
 
   // todo : this needs to go with the rest of the session data
   val ninoSessionKey = "USER_NINO"
@@ -130,10 +125,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
         Redirect(controllers.routes.ClientErrorController.getTechnicalError())
     }
 
-  def retrieveCitizenDetails(
-    ninoField: Nino,
-    citizenDetailsResponse: Future[HttpResponse]
-  ): Future[Either[Int, Person]] = {
+  def retrieveCitizenDetails(citizenDetailsResponse: Future[HttpResponse]): Future[Either[Int, Person]] = {
     citizenDetailsResponse map { personResponse =>
       personResponse.status match {
         case OK     =>
