@@ -267,20 +267,20 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
     "The deceased flag is true" in new TestSetup {
       val json: JsValue    = loadFile("/json/model/api/personDeceasedTrue.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Left(GONE)
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Left(GONE)
     }
 
     "The deceased flag is false" in new TestSetup with ControllerFixture {
       val json: JsValue    = loadFile("/json/model/api/personDeceasedFalse.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person.get)
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person.get)
     }
 
     "The deceased flag is not given" in new TestSetup {
       val json: JsValue    = loadFile("/json/model/api/personDeceasedNoValue.json")
       val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
       val person           = Person(Some("first name"), Some("second name"), None)
-      await(controller.retrieveCitizenDetails(randomNino, Future(hr))) shouldBe Right(person)
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person)
     }
   }
 
