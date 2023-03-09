@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import controllers.BaseController
 import model.api._
 import models.taxhistory.Person
 import play.api.i18n.Messages

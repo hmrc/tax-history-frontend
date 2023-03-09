@@ -10,8 +10,10 @@ lazy val microservice = Project(appName, file("."))
   .settings(
     majorVersion := 3,
     scalaSettings,
-    scalaVersion := "2.12.16",
+    scalaVersion := "2.13.10",
     libraryDependencies ++= AppDependencies(),
+    // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
+    libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
     name := appName,
     PlayKeys.playDefaultPort := 9996,
     defaultSettings(),

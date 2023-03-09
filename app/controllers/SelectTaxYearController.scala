@@ -18,6 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import controllers.BaseController
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
 import models.taxhistory.SelectTaxYear

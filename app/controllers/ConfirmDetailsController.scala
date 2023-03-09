@@ -18,7 +18,7 @@ package controllers
 
 import config.AppConfig
 import connectors.CitizenDetailsConnector
-import javax.inject.Inject
+import controllers.BaseController
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -26,6 +26,7 @@ import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.HeaderCarrier
 import views.html.taxhistory.confirm_details
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class ConfirmDetailsController @Inject() (
