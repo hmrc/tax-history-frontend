@@ -33,7 +33,7 @@ class technical_errorSpec extends GuiceAppSpec with BaseViewSpec {
 
     "have correct title, heading and GA page view event" in new Fixture {
 
-      val view: HtmlFormat.Appendable = inject[technical_error].apply
+      val view: HtmlFormat.Appendable = inject[technical_error].apply()
 
       doc.title mustBe expectedPageTitle(messages("employmenthistory.technical.error.title"))
       doc.getElementById("back-link").attr("href").contains(appConfig.agentAccountHomePage) mustBe true

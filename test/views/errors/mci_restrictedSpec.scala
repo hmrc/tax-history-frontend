@@ -38,7 +38,7 @@ class mci_restrictedSpec extends GuiceAppSpec with BaseViewSpec {
 
     "have correct title and heading page view event" in new ViewFixture {
 
-      val view: HtmlFormat.Appendable = inject[mci_restricted].apply
+      val view: HtmlFormat.Appendable = inject[mci_restricted].apply()
 
       doc.title mustBe expectedPageTitle(messages("employmenthistory.mci.restricted.title"))
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"
