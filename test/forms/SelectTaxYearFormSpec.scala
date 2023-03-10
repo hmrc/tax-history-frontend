@@ -17,6 +17,7 @@
 package forms
 
 import form.SelectTaxYearForm.selectTaxYearForm
+import models.taxhistory.SelectTaxYear
 import play.api.data.FormError
 import play.api.libs.json.Json
 import support.BaseSpec
@@ -36,6 +37,15 @@ class SelectTaxYearFormSpec extends BaseSpec with TestUtil {
       val validatedForm = selectTaxYearForm.bind(postData, maxChar)
       val errors        = validatedForm.errors
       errors shouldBe empty
+    }
+
+    "return the correct result when filled" in {
+      val postData      = Json.obj(
+        "selectTaxYear" -> "2016"
+      )
+      val validatedForm = selectTaxYearForm.bind(postData, maxChar)
+
+      selectTaxYearForm.fill(SelectTaxYear(Some("2016"))) shouldBe validatedForm
     }
 
     "return an invalid length error when no tax year is selected" in {

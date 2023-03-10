@@ -70,6 +70,14 @@ class EmploymentPaymentTypeSpec extends BaseSpec {
       format.reads(JsNumber(bigDec)) shouldBe a[JsError]
     }
 
+    "extract the names" in {
+      unapply(OccupationalPension)           shouldBe Some("OccupationalPension")
+      unapply(JobseekersAllowance)           shouldBe Some("JobseekersAllowance")
+      unapply(IncapacityBenefit)             shouldBe Some("IncapacityBenefit")
+      unapply(EmploymentAndSupportAllowance) shouldBe Some("EmploymentAndSupportAllowance")
+      unapply(Unknown)                       shouldBe Some("Unknown")
+    }
+
   }
 
 }

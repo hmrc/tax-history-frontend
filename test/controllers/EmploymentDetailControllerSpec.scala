@@ -19,7 +19,6 @@ package controllers
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import play.api.http.Status
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
@@ -109,14 +108,14 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       contentAsString(result) should include("first name second name")
 
     }
 
     "redirect to /select-client page when there is no nino in session" in new LocalSetup {
       val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest)
-      status(result)           shouldBe Status.SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
     }
 
@@ -130,7 +129,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.EmploymentSummaryController.getTaxHistory(taxYear).url)
     }
 
@@ -143,7 +142,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
@@ -156,7 +155,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
@@ -170,7 +169,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.employment.details.employment.title"))
     }
 
@@ -180,11 +179,11 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(Status.INTERNAL_SERVER_ERROR, "")))
+        .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
 
@@ -194,11 +193,11 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(Status.BAD_REQUEST, "")))
+        .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
     }
 
@@ -208,12 +207,35 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
           any[HeaderCarrier]
         )
       )
-        .thenReturn(Future.successful(HttpResponse(Status.SEE_OTHER, "")))
+        .thenReturn(Future.successful(HttpResponse(SEE_OTHER, "")))
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ClientErrorController.getTechnicalError().url)
+    }
+
+    "show deceased error page when retrieveCitizenDetails returns Gone" in new LocalSetup {
+
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(GONE, "")))
+
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getDeceased().url)
+    }
+
+    "show no data available error page when retrieveCitizenDetails returns Locked" in new LocalSetup {
+
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier])).thenReturn(
+        Future.successful(HttpResponse(LOCKED, ""))
+      )
+
+      val result: Future[Result] =
+        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
+      status(result) shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.ClientErrorController.getMciRestricted().url)
     }
   }
 }

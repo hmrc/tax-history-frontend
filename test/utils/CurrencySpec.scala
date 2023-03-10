@@ -73,5 +73,21 @@ class CurrencySpec extends PlaySpec {
     "add extra 0 when there is 1 number after the decimal point" in {
       Currency(BigDecimal(101.1)).toString must be("£101.10")
     }
+
+    "convert BigDecimal to Currency value successfully when using fromBD" in {
+      Currency.fromBD(100.55) must be(Currency(BigDecimal(100.55)))
+    }
+
+    "convert Int to Currency value successfully when using fromBD" in {
+      Currency.fromInt(3) must be(Currency(BigDecimal(3.00)))
+    }
+
+    "convert Currency to Double value successfully when using currencyToDouble" in {
+      Currency.currencyToDouble(Currency(BigDecimal(100.55))) must be(100.55.doubleValue())
+    }
+
+    "convert Currency to Float value successfully when using currencyToFloat" in {
+      Currency.currencyToFloat(Currency(BigDecimal(100.55))) must be(100.55.floatValue())
+    }
   }
 }

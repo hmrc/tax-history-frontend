@@ -17,6 +17,7 @@
 package forms
 
 import form.SelectClientForm.selectClientForm
+import models.taxhistory.SelectClient
 import play.api.data.FormError
 import play.api.libs.json.Json
 import support.BaseSpec
@@ -36,6 +37,15 @@ class SelectClientFormSpec extends BaseSpec with TestUtil {
       val validatedForm = selectClientForm.bind(postData, maxChar)
       val errors        = validatedForm.errors
       errors shouldBe empty
+    }
+
+    "return the correct result when filled" in {
+      val postData      = Json.obj(
+        "clientId" -> nino
+      )
+      val validatedForm = selectClientForm.bind(postData, maxChar)
+
+      selectClientForm.fill(SelectClient(nino)) shouldBe validatedForm
     }
 
     "return an invalid length error when no nino is entered" in {

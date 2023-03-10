@@ -18,7 +18,6 @@ package controllers
 
 import form.SelectClientForm.selectClientForm
 import org.mockito.ArgumentMatchers.any
-import play.api.http.Status
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -67,7 +66,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
       implicit val request: Request[_] = FakeRequest()
       val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
       val expectedView: select_client  = app.injector.instanceOf[select_client]
-      status(result) shouldBe Status.OK
+      status(result) shouldBe OK
       result rendersTheSameViewAs expectedView(selectClientForm)
     }
 
@@ -85,7 +84,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
             .withFormUrlEncodedBody(invalidSelectClientForm: _*)
             .withMethod("POST")
         )
-      status(result) shouldBe Status.BAD_REQUEST
+      status(result) shouldBe BAD_REQUEST
     }
 
     "successfully redirect to next page when valid nino is supplied as input" in new LocalSetup {
@@ -98,8 +97,15 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         controller
           .submitSelectClientPage()
           .apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*).withMethod("POST"))
-      status(result)           shouldBe Status.SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ConfirmDetailsController.getConfirmDetailsPage().url)
+    }
+
+    "successfully redirects to itself" in new LocalSetup {
+      val result: Future[Result] = controller.root()(fakeRequest)
+
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
     }
   }
 
