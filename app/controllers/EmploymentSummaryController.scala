@@ -79,7 +79,7 @@ class EmploymentSummaryController @Inject() (
     taxHistoryConnector
       .getEmploymentsAndPensions(ninoField, taxYear)
       .flatMap { empResponse =>
-        empResponse.status match {
+        (empResponse.status: @unchecked) match {
           case OK                                                      =>
             val employments: List[Employment] = getEmploymentsFromResponse(empResponse)
               .filterNot(emp => emp.employerName.equalsIgnoreCase(noRecordHeld))

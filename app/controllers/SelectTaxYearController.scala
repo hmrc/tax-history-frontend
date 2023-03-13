@@ -66,7 +66,7 @@ class SelectTaxYearController @Inject() (
     clientName: Option[String]
   )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
-      taxYearResponse.status match {
+      (taxYearResponse.status: @unchecked) match {
         case OK                                                      =>
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
           httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))

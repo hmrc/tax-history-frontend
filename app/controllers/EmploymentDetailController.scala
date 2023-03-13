@@ -58,7 +58,7 @@ class EmploymentDetailController @Inject() (
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
       case Right(person)       =>
         taxHistoryConnector.getEmployment(nino, taxYear, employmentId) flatMap { empDetailsResponse =>
-          empDetailsResponse.status match {
+          (empDetailsResponse.status: @unchecked) match {
             case OK                                                      =>
               loadEmploymentDetailsPage(empDetailsResponse, nino, taxYear, employmentId, person)
             case NOT_FOUND                                               =>
