@@ -24,7 +24,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import views.Strings.TextHelpers
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 trait Fixture extends Matchers {

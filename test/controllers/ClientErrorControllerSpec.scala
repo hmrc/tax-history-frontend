@@ -120,5 +120,45 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
       status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.technical.error.title"))
     }
+
+    "redirect to select client page" when {
+      "there is no nino in session" in new LocalSetup {
+        val taxYear: Int           = 2017
+        val result: Future[Result] = controller.getNoData(taxYear).apply(FakeRequest())
+
+        status(result)           shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
+      }
+    }
+
+    "redirect to technical error page" when {
+      "500 is returned from citizenDetailsConnector" in new LocalSetup {
+        val taxYear: Int = 2017
+        when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+          .thenReturn(
+            Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, ""))
+          )
+
+        val result: Future[Result] = controller.getNoData(taxYear).apply(fakeRequestWithNino)
+
+        status(result)           shouldBe SEE_OTHER
+        redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
+      }
+    }
+
+    "return an exception when a query string 'issue' is present in the request" in new LocalSetup {
+      val result: Exception = intercept[Exception] {
+        controller
+          .getNotAuthorised()
+          .apply(
+            FakeRequest(
+              method = "GET",
+              path = "/path?issue=test"
+            ).withSession("USER_NINO" -> nino)
+          )
+      }
+
+      result.getMessage shouldBe "Invalid Form Data was submitted to Fast-Track Authorisations"
+    }
   }
 }

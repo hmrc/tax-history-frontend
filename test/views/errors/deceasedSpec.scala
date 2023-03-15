@@ -33,7 +33,7 @@ class deceasedSpec extends GuiceAppSpec with BaseViewSpec {
 
     "have correct title and heading page view" in new Fixture {
 
-      val view: HtmlFormat.Appendable = inject[deceased].apply
+      val view: HtmlFormat.Appendable = inject[deceased].apply()
 
       doc.title mustBe expectedPageTitle(messages("employmenthistory.deceased.title"))
       doc.getElementById("back-link").attr("href") mustBe "/tax-history/select-client"

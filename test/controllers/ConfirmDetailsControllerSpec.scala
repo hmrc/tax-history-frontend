@@ -64,7 +64,7 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
 
   "ConfirmDetailsController" must {
 
-    "successfully load confirm details page when citizen details returns 200 OK" in new Setup {
+    "successfully load confirm details page with name when citizen details returns 200 OK" in new Setup {
       implicit val request: Request[_] = fakeRequest
 
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
@@ -72,6 +72,23 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
 
       val result: Future[Result] = controller.getConfirmDetailsPage()(fakeRequestWithNino)
       val expectedView: Html     = inject[confirm_details].apply(name, nino)
+
+      status(result) shouldBe OK
+      result.rendersTheSameViewAs(expectedView)
+    }
+
+    "successfully load confirm details page with no name when citizen details returns 200 OK" in new Setup {
+      implicit val request: Request[_] = fakeRequest
+
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            HttpResponse(status = OK, json = Json.toJson(Person(None, None, Some(false))), headers = Map.empty)
+          )
+        )
+
+      val result: Future[Result] = controller.getConfirmDetailsPage()(fakeRequestWithNino)
+      val expectedView: Html     = inject[confirm_details].apply(nino, nino)
 
       status(result) shouldBe OK
       result.rendersTheSameViewAs(expectedView)

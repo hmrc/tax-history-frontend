@@ -20,12 +20,10 @@ import config.AppConfig
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.any
 import org.scalatest.concurrent.ScalaFutures
-import play.api.http.Status
 import play.api.libs.json.JsValue
 import play.api.mvc.{MessagesControllerComponents, Result, Results}
 import play.api.test.Helpers._
 import play.api.{Configuration, Environment}
-import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -81,7 +79,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controller.appConfig.agentSubscriptionStart)
     }
 
@@ -100,7 +98,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url
       )
@@ -114,14 +112,14 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         )
       )
         .thenReturn(
-          Future.successful(new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Individual), Enrolments(Set())))
+          Future.successful(new ~[Option[AffinityGroup], Enrolments](None, Enrolments(Set())))
         )
 
       val result: Future[Result] = controller.authorisedForAgent(_ => Future.successful(Results.Ok("test")))(
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
         controllers.routes.ClientErrorController.getNoAgentServicesAccountPage().url
       )
@@ -140,7 +138,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
@@ -157,7 +155,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
@@ -174,7 +172,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
@@ -191,7 +189,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result).get should include("/bas-gateway/sign-in")
     }
 
@@ -208,34 +206,42 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
         hc,
         fakeRequest.withSession("USER_NINO" -> nino)
       )
-      status(result) shouldBe Status.SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
   }
 
   "show not found error page when 404 returned from connector" in new TestSetup {
     val taxYear                = 2017
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.NOT_FOUND, Some(taxYear)))
-    status(result)           shouldBe Status.SEE_OTHER
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(NOT_FOUND, Some(taxYear)))
+    status(result)           shouldBe SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(taxYear).url)
   }
 
   "show not authorised error page when 401 returned from connector" in new TestSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.UNAUTHORIZED))
-    status(result)           shouldBe Status.SEE_OTHER
+    val result: Future[Result] = Future(controller.handleHttpFailureResponse(UNAUTHORIZED))
+    status(result)           shouldBe SEE_OTHER
     redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
   }
 
-  "show technical error page when any response other than 200, 401, 404 returned from connector" in new TestSetup {
-    val result: Future[Result] = Future(controller.handleHttpFailureResponse(Status.INTERNAL_SERVER_ERROR))
-    status(result)           shouldBe Status.SEE_OTHER
-    redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
+  "show technical error page" when {
+    "404 with no taxYear is returned from connector" in new TestSetup {
+      val result: Future[Result] = Future(controller.handleHttpFailureResponse(NOT_FOUND, None))
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
+    }
+
+    "any response other than 200, 401, 404 returned from connector" in new TestSetup {
+      val result: Future[Result] = Future(controller.handleHttpFailureResponse(INTERNAL_SERVER_ERROR))
+      status(result)           shouldBe SEE_OTHER
+      redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
+    }
   }
 
   "Sign out" must {
     "redirect to feed back survey link" in new TestSetup {
       val result: Future[Result] = controller.logout()(fakeRequest)
-      status(result)           shouldBe Status.SEE_OTHER
+      status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controller.appConfig.serviceSignOut)
     }
 
@@ -262,25 +268,30 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
     }
   }
 
-  "retrieveCitizenDetails" when {
+  "retrieveCitizenDetails" should {
 
-    "The deceased flag is true" in new TestSetup {
+    "return Left(GONE) when the deceased flag is true" in new TestSetup {
       val json: JsValue    = loadFile("/json/model/api/personDeceasedTrue.json")
-      val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
+      val hr: HttpResponse = HttpResponse(OK, json = json, Map.empty)
       await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Left(GONE)
     }
 
-    "The deceased flag is false" in new TestSetup with ControllerFixture {
+    "return Right(person) when the deceased flag is false" in new TestSetup {
       val json: JsValue    = loadFile("/json/model/api/personDeceasedFalse.json")
-      val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person.get)
+      val hr: HttpResponse = HttpResponse(OK, json = json, Map.empty)
+      val person: Person   = Person(Some("first name"), Some("second name"), Some(false))
+      await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person)
     }
 
-    "The deceased flag is not given" in new TestSetup {
+    "return Right(person) when the deceased flag is not given" in new TestSetup {
       val json: JsValue    = loadFile("/json/model/api/personDeceasedNoValue.json")
-      val hr: HttpResponse = HttpResponse(Status.OK, json = json, Map.empty)
-      val person           = Person(Some("first name"), Some("second name"), None)
+      val hr: HttpResponse = HttpResponse(OK, json = json, Map.empty)
+      val person: Person   = Person(Some("first name"), Some("second name"), None)
       await(controller.retrieveCitizenDetails(Future(hr))) shouldBe Right(person)
+    }
+
+    "return Left(BAD_REQUEST) when there is an exception" in new TestSetup {
+      await(controller.retrieveCitizenDetails(Future.failed(new Exception))) shouldBe Left(BAD_REQUEST)
     }
   }
 
