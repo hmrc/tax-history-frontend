@@ -16,7 +16,6 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import views.html.helper.CSPNonce
 @import views.models.PageTitle
 
 @this(
@@ -33,10 +32,14 @@
     hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
 )
 
-@(title: PageTitle, beforeContentHtml: Option[Html] = None, researchBannerUrl: Option[String] = None,
+@(
+    title: PageTitle,
+    beforeContentHtml: Option[Html] = None,
+    researchBannerUrl: Option[String] = None,
     signOut: Boolean = true,
     timeoutActive: Boolean = true,
-    backLink: Option[String]= None)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
+    backLink: Option[String]= None,
+)(mainContent: Html)(implicit request: Request[_], messages: Messages, appConfig: config.AppConfig)
 
 @head ={
     <meta name="format-detection" content="telephone=no" />
@@ -68,7 +71,7 @@
         @hmrcLanguageSelectHelper()
     }
     @if(signOut){
-        @backLink.fold(govukBackLink(BackLink(href = "javascript:history.back()", content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))(link=> govukBackLink(BackLink(href = link, content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link"))))
+        @govukBackLink(BackLink(href = backLink.fold("#")(customUrl => customUrl), content = Text("Back"), attributes = Map("id" -> "back-link")))
     }
 }
 
@@ -158,12 +161,10 @@
 @govukTemplate(
     htmlLang = Some(messages.lang.code),
     pageTitle = Some(title.fullTitle()),
-    headBlock = Some(hmrcHead(
-        nonce = CSPNonce.get,
-        headBlock = Some(head))),
+    headBlock = Some(hmrcHead(headBlock = Some(head))),
     headerBlock = header,
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
     mainClasses = Some("govuk-main-wrapper--auto-spacing"),
-    bodyEndBlock = Some(hmrcScripts(nonce = CSPNonce.get))
+    bodyEndBlock = Some(hmrcScripts())
 )(content)

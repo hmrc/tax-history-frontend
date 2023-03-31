@@ -42,75 +42,127 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     lazy val taxYear: Int       = 2014
     lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
 
-    lazy val controller: EmploymentDetailController = {
-      val c = new EmploymentDetailController(
-        mock[TaxHistoryConnector],
-        mock[CitizenDetailsConnector],
-        mock[AuthConnector],
-        app.configuration,
-        environment,
-        messagesControllerComponents,
-        injected[employment_detail],
-        dateUtils
-      )(stubControllerComponents().executionContext, appConfig)
+    val controller = new EmploymentDetailController(
+      taxHistoryConnector = mock[TaxHistoryConnector],
+      citizenDetailsConnector = mock[CitizenDetailsConnector],
+      authConnector = mock[AuthConnector],
+      config = app.configuration,
+      env = environment,
+      cc = messagesControllerComponents,
+      employmentDetail = injected[employment_detail],
+      dateUtils = dateUtils
+    )(stubControllerComponents().executionContext, appConfig)
 
-      val incomeSource = Some(new IncomeSource(1, 1, None, List.empty, List.empty, "", None, 1, ""))
-
-      when(
-        c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-          any[HeaderCarrier],
-          any[ExecutionContext]
+    val incomeSource =
+      Some(
+        IncomeSource(
+          employmentId = 1,
+          employmentType = 1,
+          actualPUPCodedInCYPlusOneTaxYear = None,
+          deductions = List.empty,
+          allowances = List.empty,
+          taxCode = "",
+          basisOperation = None,
+          employmentTaxDistrictNumber = 1,
+          employmentPayeRef = ""
         )
       )
-        .thenReturn(
-          Future.successful(
-            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
-          )
-        )
 
-      when(
-        c.taxHistoryConnector.getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+    when(
+      controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    )
+      .thenReturn(
+        Future.successful(
+          new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
+        )
+      )
+
+    when(
+      controller.taxHistoryConnector
+        .getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
           any[HeaderCarrier]
         )
-      )
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTax), Map.empty)))
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTax), Map.empty)))
 
-      when(
-        c.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+    when(
+      controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+        any[HeaderCarrier]
+      )
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employment), Map.empty)))
+
+    when(
+      controller.taxHistoryConnector
+        .getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
           any[HeaderCarrier]
         )
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(companyBenefits), Map.empty)))
+
+    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
+
+    when(
+      controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+        any[HeaderCarrier]
       )
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employment), Map.empty)))
-
-      when(
-        c.taxHistoryConnector.getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
-        )
-      )
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(companyBenefits), Map.empty)))
-
-      when(c.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
-
-      when(
-        c.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
-        )
-      )
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
-
-      c
-    }
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
   }
 
   "EmploymentDetailController" must {
+
+    "calling .recoverWithEmptyDefault()" when {
+
+      "A Future(value) throws an exception, catch the exception and return the given value" in new LocalSetup {
+
+        val actual =
+          await(
+            Future(throw new Exception("Hello")).recoverWith(controller.recoverWithEmptyDefault("", Some(5)))
+          )
+
+        val expected = await(Future(Some(5)))
+
+        actual shouldBe expected
+      }
+    }
+
+    "calling .getPayAndTax()" when {
+
+      "the StudentLoanFlagFeature is DISABLED" should {
+
+        "return a PayAndTax() with no studentLoan" in new LocalSetup {
+
+          val actual   = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString, false))
+          val expected = Some(payAndTax.copy(studentLoan = None))
+
+          actual shouldBe expected
+        }
+      }
+
+      "the StudentLoanFlagFeature is ENABLED" should {
+
+        "return the original PayAndTax() with a studentLoan of 1337" in new LocalSetup {
+
+          val actual   = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString, true))
+          val expected = Some(payAndTax)
+
+          actual shouldBe expected
+        }
+      }
+
+    }
+
     "successfully load Employment details page" in new LocalSetup {
 
       val result: Future[Result] =
         controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
       status(result) shouldBe OK
       contentAsString(result) should include("first name second name")
-
     }
 
     "redirect to /select-client page when there is no nino in session" in new LocalSetup {

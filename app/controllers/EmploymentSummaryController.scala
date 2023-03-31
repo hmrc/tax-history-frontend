@@ -150,16 +150,24 @@ class EmploymentSummaryController @Inject() (
         List.empty
     }
 
-  private def getStatePensionsFromResponse(statePensionResponse: HttpResponse)(implicit messages: Messages) =
+  private[controllers] def getStatePensionsFromResponse(
+    statePensionResponse: HttpResponse
+  )(implicit messages: Messages): Option[StatePension] =
     statePensionResponse.status match {
       case OK     =>
         statePensionResponse.json
           .asOpt[StatePension]
-          .fold(None: Option[StatePension])(statePension => Some(dateUtils.formatStatePensionStartDate(statePension)))
+          .map(statePension => dateUtils.formatStatePensionStartDate(statePension))
       case status =>
         logger.info(s"State Pension Status: $status")
         None
     }
+
+  private def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
+    payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))
+
+  private def pickTaxTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
+    payAndTax.taxTotalIncludingEYU.getOrElse(BigDecimal(0))
 
   private[controllers] def buildIncomeTotals(
     allEmployments: List[Employment],
@@ -171,33 +179,31 @@ class EmploymentSummaryController @Inject() (
         matchedRecord.exists(_.isOccupationalPension)
       }
 
-      def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
-        payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))
-      def pickTaxTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal        =
-        payAndTax.taxTotalIncludingEYU.getOrElse(BigDecimal(0))
-
       val employmentsPayAndTax: Seq[PayAndTax] = employments.map(_._2)
       val pensionsPayAndTax: Seq[PayAndTax]    = pensions.map(_._2)
 
-      val employmentIncomeAndTax = allPayAndTax.map(tupleEmploymentIdAndPayTax =>
-        EmploymentIncomeAndTax(
-          tupleEmploymentIdAndPayTax._1,
-          pickTaxablePayTotalIncludingEYU(tupleEmploymentIdAndPayTax._2),
-          pickTaxTotalIncludingEYU(tupleEmploymentIdAndPayTax._2)
+      val employmentIncomeAndTax: List[EmploymentIncomeAndTax] =
+        allPayAndTax.map(tupleEmploymentIdAndPayTax =>
+          EmploymentIncomeAndTax(
+            employmentId = tupleEmploymentIdAndPayTax._1,
+            income = pickTaxablePayTotalIncludingEYU(tupleEmploymentIdAndPayTax._2),
+            tax = pickTaxTotalIncludingEYU(tupleEmploymentIdAndPayTax._2)
+          )
         )
-      )
 
-      Future successful Some(
-        TotalIncome(
-          employmentIncomeAndTax,
-          employmentTaxablePayTotalIncludingEYU = employmentsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
-          pensionTaxablePayTotalIncludingEYU = pensionsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
-          employmentTaxTotalIncludingEYU = employmentsPayAndTax.map(pickTaxTotalIncludingEYU).sum,
-          pensionTaxTotalIncludingEYU = pensionsPayAndTax.map(pickTaxTotalIncludingEYU).sum
+      Future.successful(
+        Some(
+          TotalIncome(
+            employmentIncomeAndTax = employmentIncomeAndTax,
+            employmentTaxablePayTotalIncludingEYU = employmentsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
+            pensionTaxablePayTotalIncludingEYU = pensionsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
+            employmentTaxTotalIncludingEYU = employmentsPayAndTax.map(pickTaxTotalIncludingEYU).sum,
+            pensionTaxTotalIncludingEYU = pensionsPayAndTax.map(pickTaxTotalIncludingEYU).sum
+          )
         )
       )
     } else {
-      Future successful None
+      Future.successful(None)
     }
   } recover { case e =>
     logger.error(s"[EmploymentSummaryController][buildIncomeTotals] buildIncomeTotals failed with ${e.getMessage}")

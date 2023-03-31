@@ -30,7 +30,7 @@ import utils.TestUtil
 import views.html.taxhistory.select_client
 import views.{BaseViewSpec, Fixture}
 
-class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
+class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
 
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/select-client").withCSRFToken
   private val maxChars                                  = 100
@@ -49,57 +49,59 @@ class select_clientSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec wit
 
     "have the correct title when no form errors have occurred" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.title shouldBe expectedPageTitle(titleAndHeadingContent)
+      document(view).title shouldBe expectedPageTitle(titleAndHeadingContent)
     }
 
     "have the correct title when form errors have occurred" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      doc.title shouldBe expectedErrorPageTitle(titleAndHeadingContent)
+      document(view).title shouldBe expectedErrorPageTitle(titleAndHeadingContent)
     }
 
     "have the correct heading" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.select("h1").text() shouldBe titleAndHeadingContent
+      document(view).select("h1").text() shouldBe titleAndHeadingContent
     }
 
     "display input field hint" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementsByClass("govuk-hint").get(0).text shouldBe
+      document(view).body.getElementsByClass("govuk-hint").get(0).text shouldBe
         Messages("employmenthistory.select.client.nino.hint")
     }
 
     "display input field" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementById("clientId").attr("type") shouldBe "text"
+      document(view).body.getElementById("clientId").attr("type") shouldBe "text"
     }
 
     "limit input length to no more than 9 characters" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementById("clientId").attr("maxlength") shouldBe "9"
+      document(view).body.getElementById("clientId").attr("maxlength") shouldBe "9"
     }
 
     "display continue button" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.body.getElementById("continueButton").text      shouldBe Messages("employmenthistory.select.client.continue")
-      doc.body.getElementById("continueButton").className shouldBe "govuk-button"
+      document(view).body.getElementById("continueButton").text      shouldBe Messages(
+        "employmenthistory.select.client.continue"
+      )
+      document(view).body.getElementById("continueButton").className shouldBe "govuk-button"
     }
 
     "display correct error message for invalid nino" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      doc.getElementsByClass("govuk-error-summary__title").text mustBe Messages(
+      document(view).getElementsByClass("govuk-error-summary__title").text mustBe Messages(
         "employmenthistory.select.client.error.invalid-format.title"
       )
-      doc.getElementById("clientId-error").text contains Messages(
+      document(view).getElementById("clientId-error").text contains Messages(
         "employmenthistory.select.client.error.invalid-format"
       )
     }
 
     "display navigation bar with correct links" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      doc.getElementById("nav-home").text         shouldBe Messages("nav.home")
+      document(view).getElementById("nav-home").text         shouldBe Messages("nav.home")
       validateConditionalContent("nav-client")
       validateConditionalContent("nav-year")
-      doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
+      document(view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }
 }

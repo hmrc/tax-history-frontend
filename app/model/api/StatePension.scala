@@ -19,8 +19,8 @@ package model.api
 import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.time.TaxYear
 
-import java.time.{Instant, LocalDate, ZoneOffset}
 import java.time.temporal.ChronoUnit
+import java.time.{Instant, LocalDate, ZoneOffset}
 
 case class StatePension(
   grossAmount: BigDecimal,
@@ -30,24 +30,23 @@ case class StatePension(
   startDateFormatted: Option[String] = None
 ) {
 
+  lazy val weeklyAmount: BigDecimal = grossAmount / 52
+
   def getAmountReceivedTillDate(taxYear: Int): Option[BigDecimal] =
     paymentFrequency match {
-      case Some(1) => //Weekly
-        if (TaxYear.current.currentYear == taxYear) {
-          startDate.flatMap { start =>
-            val noOfWeeksTillDate    =
-              ChronoUnit.WEEKS.between(start, Instant.now().atOffset(ZoneOffset.UTC).toLocalDate).toInt
-            val noOfPaymentsTillDate =
-              noOfWeeksTillDate + 1 //noOfWeeksTillDate comes out as one less than the no of payments
-            Some(noOfPaymentsTillDate * weeklyAmount)
-          }
-        } else {
-          Some(grossAmount)
-        }
-      case _       => Some(grossAmount)
-    }
+      case Some(1) if TaxYear.current.currentYear == taxYear =>
+        //Weekly
+        startDate.flatMap { start =>
+          val noOfWeeksTillDate =
+            ChronoUnit.WEEKS.between(start, Instant.now().atOffset(ZoneOffset.UTC).toLocalDate).toInt
 
-  lazy val weeklyAmount: BigDecimal = grossAmount / 52
+          val noOfPaymentsTillDate =
+            noOfWeeksTillDate + 1 //noOfWeeksTillDate comes out as one less than the no of payments
+
+          Some(noOfPaymentsTillDate * weeklyAmount)
+        }
+      case _                                                 => Some(grossAmount)
+    }
 }
 
 object StatePension {

@@ -17,11 +17,11 @@
 package views
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.{Document, Element}
+import org.jsoup.nodes.Element
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
-import play.twirl.api.HtmlFormat
+import play.twirl.api.{Html, HtmlFormat}
 import views.Strings.TextHelpers
 
 import scala.jdk.CollectionConverters._
@@ -31,20 +31,18 @@ trait Fixture extends Matchers {
 
   def view: HtmlFormat.Appendable
 
-  lazy val html: String          = view.body
-  lazy val doc: Document         = Jsoup.parse(html)
-  lazy val form: Element         = doc.getElementsByTag("form").first()
-  lazy val heading: Element      = doc.getElementsByTag("h1").first()
-  lazy val subHeading: Element   = doc.getElementsByClass("heading-secondary").first()
-  lazy val errorSummary: Element = doc.getElementsByClass("amls-error-summary").first()
+  def document(html: Html) = Jsoup.parse(html.toString())
+
+  lazy val form: Element    = document(view).getElementsByTag("form").first()
+  lazy val heading: Element = document(view).getElementsByTag("h1").first()
 
   def validateParagraphizedContent(messageKey: String)(implicit messages: Messages): Unit =
     for (p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala)
-      doc.body().toString must include(p.text())
+      document(view).body().toString must include(p.text())
 
   def validateConditionalContent(id: String): Assertion                                   =
     Try {
-      doc.getElementById(id).text
+      document(view).getElementById(id).text
     } match {
       case Success(_) => fail()
       case Failure(_) => succeed

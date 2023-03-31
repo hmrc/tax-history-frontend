@@ -17,7 +17,7 @@
 package support.fixtures
 
 import model.api.EmploymentPaymentType.OccupationalPension
-import model.api.{Allowance, CompanyBenefit, Employment, EmploymentStatus, PayAndTax, StatePension, TaxAccount}
+import model.api._
 import models.taxhistory.Person
 
 import java.time.LocalDate
@@ -25,6 +25,7 @@ import java.util.UUID
 
 trait ControllerFixture {
   // scalastyle:off magic.number
+
   val person: Option[Person] = Some(Person(Some("first name"), Some("second name"), Some(false)))
 
   val employment: Employment = Employment(
@@ -47,16 +48,18 @@ trait ControllerFixture {
     CompanyBenefit(cbUUID, "CarFuelBenefit", 1000, isForecastBenefit = true)
   )
 
-  val payAndTax = PayAndTax(
-    taxablePayTotal = Some(4896.80),
-    taxablePayTotalIncludingEYU = Some(4896.80),
-    taxTotal = Some(979.36),
-    taxTotalIncludingEYU = Some(979.36),
-    studentLoan = None,
-    studentLoanIncludingEYU = None,
-    paymentDate = Some(LocalDate.parse("2016-02-20")),
-    earlierYearUpdates = List.empty
-  )
+  val payAndTax =
+    PayAndTax(
+      payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      taxablePayTotal = Some(4896.80),
+      taxablePayTotalIncludingEYU = Some(4896.80),
+      taxTotal = Some(979.36),
+      taxTotalIncludingEYU = Some(979.36),
+      studentLoan = Some(1337),
+      studentLoanIncludingEYU = None,
+      paymentDate = Some(LocalDate.parse("2016-02-20")),
+      earlierYearUpdates = List()
+    )
 
   val allowance: Allowance = Allowance(
     allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),

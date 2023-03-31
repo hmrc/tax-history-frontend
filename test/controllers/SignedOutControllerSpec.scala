@@ -23,15 +23,12 @@ import views.html.taxhistory.SignedOut
 class SignedOutControllerSpec extends ControllerSpec with BaseSpec {
 
   trait LocalSetup {
-    lazy val controller: SignedOutController = {
-      val c = new SignedOutController(
-        injected[SignedOut],
-        messagesControllerComponents,
-        appConfig,
-        stubControllerComponents().executionContext
-      )
-      c
-    }
+    lazy val controller = new SignedOutController(
+      injected[SignedOut],
+      messagesControllerComponents,
+      appConfig,
+      stubControllerComponents().executionContext
+    )
   }
 
   "keepAlive" must {
