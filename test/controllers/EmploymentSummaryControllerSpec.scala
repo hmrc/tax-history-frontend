@@ -46,60 +46,59 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
   trait LocalSetup {
 
-    implicit val actorSystem: ActorSystem   = ActorSystem("test")
+    implicit val actorSystem: ActorSystem = ActorSystem("test")
     implicit val materializer: Materializer = Materializer(actorSystem)
 
-    lazy val controller: EmploymentSummaryController = {
+    lazy val controller = new EmploymentSummaryController(
+      mock[TaxHistoryConnector],
+      mock[CitizenDetailsConnector],
+      mock[AuthConnector],
+      app.configuration,
+      environment,
+      messagesControllerComponents,
+      appConfig,
+      injected[employment_summary],
+      dateUtils
+    )(stubControllerComponents().executionContext)
 
-      val c = new EmploymentSummaryController(
-        mock[TaxHistoryConnector],
-        mock[CitizenDetailsConnector],
-        mock[AuthConnector],
-        app.configuration,
-        environment,
-        messagesControllerComponents,
-        appConfig,
-        injected[employment_summary],
-        dateUtils
-      )(stubControllerComponents().executionContext)
-
-      when(
-        c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-          any[HeaderCarrier],
-          any[ExecutionContext]
+    when(
+      controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+        any[HeaderCarrier],
+        any[ExecutionContext]
+      )
+    )
+      .thenReturn(
+        Future.successful(
+          new~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
         )
       )
-        .thenReturn(
-          Future.successful(
-            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
-          )
-        )
 
-      when(c.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employments), Map.empty)))
+    when(
+      controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier])
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employments), Map.empty)))
 
-      when(c.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(allowances), Map.empty)))
+    when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(allowances), Map.empty)))
 
-      when(c.taxHistoryConnector.getTaxAccount(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(taxAccount), Map.empty)))
+    when(controller.taxHistoryConnector.getTaxAccount(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(taxAccount), Map.empty)))
 
-      when(c.taxHistoryConnector.getStatePension(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(statePension), Map.empty)))
+    when(controller.taxHistoryConnector.getStatePension(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(statePension), Map.empty)))
 
-      when(c.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
+    when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
 
-      when(c.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
-      c
-    }
+    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
   }
 
   "GET /tax-history" should {
+
     "return 200" in new LocalSetup {
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
@@ -111,7 +110,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(noEmployment :: employments), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)           shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) shouldNot include("No record held")
     }
 
@@ -120,7 +119,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.arr(), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
@@ -129,7 +128,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
@@ -138,7 +137,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
@@ -147,7 +146,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
       contentAsString(result) should include(Messages("employmenthistory.error.no-record"))
     }
@@ -157,7 +156,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxRandomUUID), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
+      status(result) shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
@@ -166,7 +165,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
@@ -175,7 +174,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(LOCKED, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getMciRestricted().url)
     }
 
@@ -185,7 +184,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(deceasedPerson), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getDeceased().url)
     }
 
@@ -197,7 +196,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       )
 
       val result: Future[Result] = controller.getTaxHistory(taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNotAuthorised().url)
     }
 
@@ -211,13 +210,13 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       )
 
       val result: Future[Result] = controller.getTaxHistory(taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getTechnicalError().url)
     }
 
     "show select client page when no nino has been set in session" in new LocalSetup {
       val result: Future[Result] = controller.getTaxHistory(taxYear)(fakeRequest)
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
@@ -228,7 +227,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.toJson(employments), Map.empty)))
 
       val result = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)           shouldBe SEE_OTHER
+      status(result) shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(taxYear).url)
     }
   }
@@ -248,26 +247,68 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
   }
 
   // scalastyle:off magic.number
+
+  "getStatePensionsFromResponse" when {
+
+    "HttpResponse is OK(200)" should {
+
+      "return state pension as json with formatted date" in new LocalSetup {
+        val actual =
+          controller.getStatePensionsFromResponse(HttpResponse(OK, json = Json.toJson(statePension), Map.empty))
+
+        val expected = Some(StatePension(100, "test", None, None, None))
+        actual shouldBe expected
+      }
+    }
+
+    "HttpResponse is NOT OK(200)" should {
+
+      "return None" in new LocalSetup {
+        val actual = controller.getStatePensionsFromResponse(HttpResponse.apply(BAD_REQUEST, ""))
+        val expected = None
+        actual shouldBe expected
+      }
+    }
+  }
+
   "buildIncomeTotals" should {
-    val empl1      = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
-    val empl2      = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
-    val payAndTax1 = PayAndTax(
-      payAndTaxId = empl1.employmentId,
-      taxablePayTotal = Some(1),
-      taxablePayTotalIncludingEYU = Some(100),
-      taxTotal = Some(1000),
-      taxTotalIncludingEYU = Some(10000),
-      studentLoan = None,
-      studentLoanIncludingEYU = None,
-      paymentDate = None,
-      earlierYearUpdates = Nil
-    )
-    val payAndTax2 = PayAndTax(
-      payAndTaxId = empl2.employmentId,
+
+    val empl1 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
+    val empl2 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
+    val empl3 = employment.copy(employmentId = UUID.randomUUID(), employmentPaymentType = None)
+
+    val payAndTax1 =
+      PayAndTax(
+        payAndTaxId = empl1.employmentId,
+        taxablePayTotal = Some(1),
+        taxablePayTotalIncludingEYU = Some(100),
+        taxTotal = Some(1000),
+        taxTotalIncludingEYU = Some(10000),
+        studentLoan = None,
+        studentLoanIncludingEYU = None,
+        paymentDate = None,
+        earlierYearUpdates = Nil
+      )
+
+    val payAndTax2 =
+      PayAndTax(
+        payAndTaxId = empl2.employmentId,
+        taxablePayTotal = Some(2),
+        taxablePayTotalIncludingEYU = Some(200),
+        taxTotal = Some(2000),
+        taxTotalIncludingEYU = Some(20000),
+        studentLoan = None,
+        studentLoanIncludingEYU = None,
+        paymentDate = None,
+        earlierYearUpdates = Nil
+      )
+
+    val payAndTax3 = PayAndTax(
+      payAndTaxId = empl3.employmentId,
       taxablePayTotal = Some(2),
-      taxablePayTotalIncludingEYU = Some(200),
-      taxTotal = Some(2000),
-      taxTotalIncludingEYU = Some(20000),
+      taxablePayTotalIncludingEYU = None,
+      taxTotal = None,
+      taxTotalIncludingEYU = None,
       studentLoan = None,
       studentLoanIncludingEYU = None,
       paymentDate = None,
@@ -275,43 +316,58 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     )
 
     "return Taxable Pay Totals and Tax Totals that are sums of all employment's Totals including Earlier Year Updates" in {
-      val ctrlr       = injected[EmploymentSummaryController]
-      val totalIncome = await(
-        ctrlr.buildIncomeTotals(
-          List(empl1, empl2),
-          List(empl1.employmentId.toString -> payAndTax1, empl2.employmentId.toString -> payAndTax2)
-        )
-      )
 
-      val expectedTaxablePayTotal =
-        payAndTax1.taxablePayTotalIncludingEYU.get + payAndTax2.taxablePayTotalIncludingEYU.get
-      val expectedTaxTotal        = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
-      totalIncome shouldBe Some(
-        TotalIncome(
-          employmentIncomeAndTax = List(
-            EmploymentIncomeAndTax(
-              empl1.employmentId.toString,
-              payAndTax1.taxablePayTotalIncludingEYU.get,
-              payAndTax1.taxTotalIncludingEYU.get
-            ),
-            EmploymentIncomeAndTax(
-              empl2.employmentId.toString,
-              payAndTax2.taxablePayTotalIncludingEYU.get,
-              payAndTax2.taxTotalIncludingEYU.get
+      val controller = injected[EmploymentSummaryController]
+      val actualTotalIncome =
+        await(
+          controller.buildIncomeTotals(
+            List(empl1, empl2, empl3),
+            List(
+              empl1.employmentId.toString -> payAndTax1,
+              empl2.employmentId.toString -> payAndTax2,
+              empl3.employmentId.toString -> payAndTax3
             )
-          ),
-          employmentTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
-          employmentTaxTotalIncludingEYU = expectedTaxTotal,
-          pensionTaxablePayTotalIncludingEYU = BigDecimal(0),
-          pensionTaxTotalIncludingEYU = BigDecimal(0)
+          )
         )
-      )
+
+      val expectedTaxablePayTotal = 300
+
+      val expectedTaxTotal = 30000
+
+      val expectedTotalIncome =
+        Some(
+          TotalIncome(
+            employmentIncomeAndTax = List(
+              EmploymentIncomeAndTax(
+                employmentId = empl1.employmentId.toString,
+                income = 100,
+                tax = 10000
+              ),
+              EmploymentIncomeAndTax(
+                employmentId = empl2.employmentId.toString,
+                income = 200,
+                tax = 20000
+              ),
+              EmploymentIncomeAndTax(
+                employmentId = empl3.employmentId.toString,
+                income = 0,
+                tax = 0
+              )
+            ),
+            employmentTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
+            employmentTaxTotalIncludingEYU = expectedTaxTotal,
+            pensionTaxablePayTotalIncludingEYU = BigDecimal(0),
+            pensionTaxTotalIncludingEYU = BigDecimal(0)
+          )
+        )
+
+      actualTotalIncome shouldBe expectedTotalIncome
     }
 
     "return Taxable Pay Totals and Tax Totals that are sums of all pensions's Totals including Earlier Year Updates" in {
-      val ctrlr       = injected[EmploymentSummaryController]
+      val controller = injected[EmploymentSummaryController]
       val totalIncome = await(
-        ctrlr.buildIncomeTotals(
+        controller.buildIncomeTotals(
           List(
             empl1.copy(employmentPaymentType = Some(OccupationalPension)),
             empl2.copy(employmentPaymentType = Some(OccupationalPension))
@@ -322,7 +378,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
       val expectedTaxablePayTotal =
         payAndTax1.taxablePayTotalIncludingEYU.get + payAndTax2.taxablePayTotalIncludingEYU.get
-      val expectedTaxTotal        = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
+      val expectedTaxTotal = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
       totalIncome shouldBe Some(
         TotalIncome(
           employmentIncomeAndTax = List(
@@ -346,8 +402,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return None if there's no employments and no PayAndTax details" in {
-      val ctrlr = injected[EmploymentSummaryController]
-      await(ctrlr.buildIncomeTotals(Nil, Nil)) shouldBe None
+      val controller = injected[EmploymentSummaryController]
+      await(controller.buildIncomeTotals(Nil, Nil)) shouldBe None
     }
   }
 }

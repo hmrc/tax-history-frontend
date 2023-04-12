@@ -26,12 +26,9 @@
  message: String,
  gaEventId:Option[String]=None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
-
 @mainContent = {
   <h1 class="govuk-heading-xl" id="error-heading">@heading</h1>
-  @if(message){
     @p(content = Html(message), id = Some("error-message"))
-  }
 }
 
 @govukWrapper(PageTitle(pageTitle)) {

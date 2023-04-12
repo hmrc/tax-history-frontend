@@ -39,17 +39,17 @@ class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
 
     "have the correct title" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      doc.title shouldBe expectedPageTitle(messages("signedOut.title"))
+      document(view).title shouldBe expectedPageTitle(messages("signedOut.title"))
     }
 
     "have the correct heading" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      doc.select("h1").text() shouldBe messages("signedOut.title")
+      document(view).select("h1").text() shouldBe messages("signedOut.title")
     }
 
     "have the correct signIn link references" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      val aRefText: Element           = doc.select(s"a[href=$href]").first()
+      val aRefText: Element           = document(view).select(s"a[href=$href]").first()
       aRefText.text.trim() mustBe linkText.trim
     }
 

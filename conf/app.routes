@@ -4,7 +4,6 @@
 GET   /assets/*file                                       controllers.Assets.versioned(path="/public", file: Asset)
 # Map static resources from the /public folder to the /assets URL path
 GET   /                                                   controllers.SelectClientController.root()
-GET   /agent/select-client                                controllers.SelectClientController.getLegacySelectClientPage()
 GET   /select-client                                      controllers.SelectClientController.getSelectClientPage()
 POST  /select-client                                      controllers.SelectClientController.submitSelectClientPage()
 GET   /select-client-confirm                              controllers.ConfirmDetailsController.getConfirmDetailsPage()

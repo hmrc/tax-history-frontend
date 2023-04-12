@@ -19,6 +19,7 @@ package views.models
 import play.api.i18n.Messages
 
 case class PageTitle(title: String, formErrorsExist: Boolean = false) {
+
   def fullTitle()(implicit messages: Messages): String = {
     val standardTitle = s"$title - ${messages("lbl.service.title")} - GOV.UK"
     val errorTitle    = s"${messages("lbl.error")}: $standardTitle"

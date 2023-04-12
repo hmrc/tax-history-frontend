@@ -23,7 +23,7 @@ import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 @Singleton
-class AppConfig @Inject() (servicesConfig: ServicesConfig) {
+class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
 
   lazy val authBaseUrl                            = new URL(servicesConfig.baseUrl("auth"))
   lazy val citizenDetailsBaseUrl                  = new URL(servicesConfig.baseUrl("citizen-details"))

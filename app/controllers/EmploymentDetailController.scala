@@ -84,18 +84,24 @@ class EmploymentDetailController @Inject() (
     }
   }
 
-  private def getPayAndTax(nino: Nino, taxYear: Int, employmentId: String)(implicit
+  private[controllers] def getPayAndTax(
+    nino: Nino,
+    taxYear: Int,
+    employmentId: String,
+    turnOnStudentLoanFlagTest: Boolean = true
+  )(implicit
     hc: HeaderCarrier,
     messages: Messages
   ): Future[Option[PayAndTax]] =
     taxHistoryConnector
       .getPayAndTaxDetails(nino, taxYear, employmentId)
       .map { payAndTaxResponse =>
+        def result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
+
         payAndTaxResponse.status match {
-          case NOT_FOUND => None
-          case _         =>
-            val result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
-            if (appConfig.studentLoanFlag) Some(result) else Some(result.copy(studentLoan = None))
+          case NOT_FOUND                                                   => None
+          case _ if appConfig.studentLoanFlag && turnOnStudentLoanFlagTest => Some(result)
+          case _                                                           => Some(result.copy(studentLoan = None))
         }
       }
       .recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
@@ -113,20 +119,20 @@ class EmploymentDetailController @Inject() (
       }
       .recoverWith(recoverWithEmptyDefault("getCompanyBenefits", List.empty))
 
-  private def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
+  private[controllers] def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
     hc: HeaderCarrier
   ): Future[Option[IncomeSource]] =
     taxHistoryConnector
       .getIncomeSource(nino, taxYear, employmentId)
-      .map { iSResponse =>
-        iSResponse.status match {
+      .map { isResponse =>
+        isResponse.status match {
           case NOT_FOUND => None
-          case _         => Some(iSResponse.json.as[IncomeSource])
+          case _         => Some(isResponse.json.as[IncomeSource])
         }
       }
       .recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
 
-  private def recoverWithEmptyDefault[U](
+  private[controllers] def recoverWithEmptyDefault[U](
     connectorMethodName: String,
     emptyValue: U
   ): PartialFunction[Throwable, Future[U]] = { case e =>

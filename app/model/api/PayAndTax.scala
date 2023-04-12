@@ -16,11 +16,11 @@
 
 package model.api
 
-import java.util.UUID
 import play.api.libs.json.Json
 import utils.LocalDateFormat
 
 import java.time.LocalDate
+import java.util.UUID
 
 case class PayAndTax(
   payAndTaxId: UUID = UUID.randomUUID(),

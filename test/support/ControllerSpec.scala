@@ -17,7 +17,6 @@
 package support
 
 import org.mockito.MockitoSugar
-import play.api.i18n.MessagesApi
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -30,28 +29,28 @@ import scala.concurrent.Future
 
 trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with MockitoSugar {
 
-  lazy val nino: String                                             = randomNino.toString
+  lazy val nino: String = randomNino.toString
+
   lazy val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest().withSession("USER_NINO" -> nino)
 
-  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/").withSession(
-    SessionKeys.sessionId -> "SessionId",
-    SessionKeys.authToken -> "Token"
-  )
-
-  lazy val newEnrolments = Set(
-    Enrolment(
-      key = "HMRC-AS-AGENT",
-      identifiers = Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
-      state = "",
-      delegatedAuthRule = None
+  override lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "/").withSession(
+      SessionKeys.sessionId -> "SessionId",
+      SessionKeys.authToken -> "Token"
     )
-  )
 
-  implicit val messagesApi: MessagesApi
+  lazy val newEnrolments =
+    Set(
+      Enrolment(
+        key = "HMRC-AS-AGENT",
+        identifiers = Seq(EnrolmentIdentifier("AgentReferenceNumber", "TestArn")),
+        state = "",
+        delegatedAuthRule = None
+      )
+    )
 
   implicit class ViewMatcherHelper(result: Future[Result]) {
     def rendersTheSameViewAs(expected: Html): Unit =
       contentAsString(result) shouldEqual (expected.toString)
   }
-
 }

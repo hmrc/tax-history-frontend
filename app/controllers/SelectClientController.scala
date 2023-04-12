@@ -39,12 +39,6 @@ class SelectClientController @Inject() (
   val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  //TODO Remove this as it is only included to support legacy url
-  @Deprecated
-  def getLegacySelectClientPage: Action[AnyContent] = Action.async {
-    redirectToSelectClientPage
-  }
-
   val root: Action[AnyContent] = Action {
     Redirect(routes.SelectClientController.getSelectClientPage())
   }

@@ -26,8 +26,8 @@ import org.scalatest.wordspec.AnyWordSpecLike
 import org.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Environment
-import play.api.mvc.MessagesControllerComponents
-import play.api.test.Injecting
+import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
+import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext
@@ -56,5 +56,7 @@ trait BaseSpec
 
   implicit val actorSystem: ActorSystem   = ActorSystem("test")
   implicit val materializer: Materializer = Materializer(actorSystem)
+
+  lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/foo")
 
 }

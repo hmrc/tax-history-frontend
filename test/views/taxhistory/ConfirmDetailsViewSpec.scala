@@ -31,46 +31,64 @@ class ConfirmDetailsViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpe
     FakeRequest("GET", "/tax-history/select-client-confirm").withCSRFToken
 
   trait ViewFixture extends Fixture {
-    val nino: String                = randomNino.toString()
-    val name: String                = "Hazel Young"
-    val view: HtmlFormat.Appendable = inject[confirm_details].apply(name, nino)
+    val nino: String                               = randomNino.toString()
+    val name: String                               = "Hazel Young"
+    val view: HtmlFormat.Appendable                = inject[confirm_details].apply(name, nino)
+    val viewHtmlViaRender: HtmlFormat.Appendable   =
+      inject[confirm_details].render(name, nino, fakeRequest, messages, appConfig)
+    val viewHtmlViaFunction: HtmlFormat.Appendable =
+      inject[confirm_details].f(name, nino)(fakeRequest, messages, appConfig)
   }
 
   "Confirm Details view" should {
 
+    "view .render()" should {
+      "render correctly with correct heading" in new ViewFixture {
+        document(viewHtmlViaRender).title             shouldBe expectedPageTitle("Confirm your client's details")
+        document(viewHtmlViaRender).select("h1").text shouldBe "Confirm your client's details"
+      }
+    }
+
+    "view .f()" when {
+      "supplied the correct parameters create the view with correct heading" in new ViewFixture {
+        document(viewHtmlViaFunction).title           shouldBe expectedPageTitle("Confirm your client's details")
+        document(viewHtmlViaRender).select("h1").text shouldBe "Confirm your client's details"
+      }
+    }
+
     "display the correct title" in new ViewFixture {
-      doc.title shouldBe expectedPageTitle("Confirm your client's details")
+      document(view).title shouldBe expectedPageTitle("Confirm your client's details")
     }
 
     "display the correct heading" in new ViewFixture {
-      doc.select("h1").text shouldBe "Confirm your client's details"
+      document(view).select("h1").text shouldBe "Confirm your client's details"
     }
 
     "display the correct client's name details" in new ViewFixture {
-      doc.getElementById("client-details").child(0).child(0).text shouldBe "Name"
-      doc.getElementById("client-details").child(0).child(1).text shouldBe name
+      document(view).getElementById("client-details").child(0).child(0).text shouldBe "Name"
+      document(view).getElementById("client-details").child(0).child(1).text shouldBe name
     }
 
     "display the correct client's nino details" in new ViewFixture {
-      doc.getElementById("client-details").child(1).child(0).text shouldBe "National Insurance number"
-      doc.getElementById("client-details").child(1).child(1).text shouldBe nino
+      document(view).getElementById("client-details").child(1).child(0).text shouldBe "National Insurance number"
+      document(view).getElementById("client-details").child(1).child(1).text shouldBe nino
     }
 
     "display confirm and continue button" in new ViewFixture {
-      doc.getElementById("confirm-and-continue-button").text      shouldBe "Confirm and continue"
-      doc.getElementById("confirm-and-continue-button").className shouldBe "govuk-button"
+      document(view).getElementById("confirm-and-continue-button").text      shouldBe "Confirm and continue"
+      document(view).getElementById("confirm-and-continue-button").className shouldBe "govuk-button"
     }
 
     "display cancel link" in new ViewFixture {
-      doc.getElementById("cancel-link").text      shouldBe "Cancel"
-      doc.getElementById("cancel-link").className shouldBe "govuk-link"
+      document(view).getElementById("cancel-link").text      shouldBe "Cancel"
+      document(view).getElementById("cancel-link").className shouldBe "govuk-link"
     }
 
     "display navigation bar with correct links" in new ViewFixture {
-      doc.getElementById("nav-home").text         shouldBe "Agent services home"
+      document(view).getElementById("nav-home").text         shouldBe "Agent services home"
       validateConditionalContent("nav-client")
       validateConditionalContent("nav-year")
-      doc.getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
+      document(view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }
 }
