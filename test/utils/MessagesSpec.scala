@@ -108,26 +108,30 @@ class MessagesSpec extends GuiceAppSpec {
 
   private def toArgArray(msg: String) = msg.split("\\{|\\}").map(_.trim()).filter(isInteger)
 
-  private def countArgs(msg: String) = toArgArray(msg).size
+  private def countArgs(msg: String) = toArgArray(msg).length
 
   private def listArgs(msg: String) = toArgArray(msg).mkString
 
-  private def assertNonEmptyValuesForDefaultMessages() = assertNonEmptyNonTemporaryValues("Default", englishMessageKeys)
+  private def assertNonEmptyValuesForDefaultMessages(): Unit =
+    assertNonEmptyNonTemporaryValues("Default", englishMessageKeys)
 
-  private def assertNonEmptyValuesForwelshMessagesKeys() = assertNonEmptyNonTemporaryValues("Welsh", welshMessagesKeys)
+  private def assertNonEmptyValuesForwelshMessagesKeys(): Unit =
+    assertNonEmptyNonTemporaryValues("Welsh", welshMessagesKeys)
 
-  private def assertCorrectUseOfQuotesForDefaultMessages() = assertCorrectUseOfQuotes("Default", englishMessageKeys)
+  private def assertCorrectUseOfQuotesForDefaultMessages(): Unit =
+    assertCorrectUseOfQuotes("Default", englishMessageKeys)
 
-  private def assertCorrectUseOfQuotesForwelshMessagesKeys() = assertCorrectUseOfQuotes("Welsh", welshMessagesKeys)
+  private def assertCorrectUseOfQuotesForwelshMessagesKeys(): Unit =
+    assertCorrectUseOfQuotes("Welsh", welshMessagesKeys)
 
-  private def assertNonEmptyNonTemporaryValues(label: String, messages: Map[String, String]) = messages.foreach {
+  private def assertNonEmptyNonTemporaryValues(label: String, messages: Map[String, String]): Unit = messages.foreach {
     case (key: String, value: String) =>
       withClue(s"In $label, there is an empty value for the key:[$key][$value]") {
         value.trim.isEmpty mustBe false
       }
   }
 
-  private def assertCorrectUseOfQuotes(label: String, messages: Map[String, String]) = messages.foreach {
+  private def assertCorrectUseOfQuotes(label: String, messages: Map[String, String]): Unit = messages.foreach {
     case (key: String, value: String) =>
       withClue(s"In $label, there is an unescaped or invalid quote:[$key][$value]") {
         MatchSingleQuoteOnly.findFirstIn(value).isDefined mustBe false

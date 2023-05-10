@@ -17,7 +17,7 @@
 package views
 
 import org.jsoup.Jsoup
-import org.jsoup.nodes.Element
+import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers
 import play.api.i18n.Messages
@@ -31,7 +31,7 @@ trait Fixture extends Matchers {
 
   def view: HtmlFormat.Appendable
 
-  def document(html: Html) = Jsoup.parse(html.toString())
+  def document(html: Html): Document = Jsoup.parse(html.toString())
 
   lazy val form: Element    = document(view).getElementsByTag("form").first()
   lazy val heading: Element = document(view).getElementsByTag("h1").first()

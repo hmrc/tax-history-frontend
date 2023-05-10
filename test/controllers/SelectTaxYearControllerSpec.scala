@@ -144,7 +144,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
       val taxYear2016 = 2016
 
-      val validSelectTaxYearForm = Seq(
+      val validSelectTaxYearForm: Seq[(String, String)] = Seq(
         "selectTaxYear" -> "2016"
       )
 
@@ -162,7 +162,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
     }
 
     "redirect to select client page when there is no nino in session and submission made with invalid data" in new LocalSetup {
-      val invalidSelectTaxYearForm = Seq(
+      val invalidSelectTaxYearForm: Seq[(String, String)] = Seq(
         "selectTaxYear" -> ""
       )
 
@@ -179,7 +179,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
     }
 
     "fail submission on invalid data" in new LocalSetup {
-      val validSelectTaxYearForm = Seq(
+      val validSelectTaxYearForm: Seq[(String, String)] = Seq(
         "selectTaxYear" -> ""
       )
 
@@ -196,7 +196,7 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
     }
 
     "redirect to technical error page when getTaxYears return error on submission" in new LocalSetup {
-      val validSelectTaxYearForm = Seq(
+      val validSelectTaxYearForm: Seq[(String, String)] = Seq(
         "selectTaxYear" -> ""
       )
       when(controller.taxHistoryConnector.getTaxYears(argEq(Nino(nino)))(any[HeaderCarrier]))

@@ -17,6 +17,7 @@
 package views.errors
 
 import models.taxhistory.Person
+import org.jsoup.nodes.Element
 import play.api.i18n.Messages
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.CSRFTokenHelper.CSRFRequest
@@ -54,9 +55,9 @@ class NoDataSpec extends GuiceAppSpec with BaseViewSpec {
       }
 
       "have the correct header section" in new NoDataFixture {
-        val preHeaderElement           = document(view).getElementById("pre-header")
-        val preHeaderWithoutHiddenText = preHeaderElement.ownText()
-        val preHeader                  = preHeaderElement.text()
+        val preHeaderElement: Element          = document(view).getElementById("pre-header")
+        val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+        val preHeader: String                  = preHeaderElement.text()
 
         heading.text() mustBe messages("employmenthistory.header")
         preHeaderWithoutHiddenText mustBe s"$firstName $surname"
@@ -80,9 +81,9 @@ class NoDataSpec extends GuiceAppSpec with BaseViewSpec {
       }
 
       "have the correct header section" in new NoDataFixture {
-        val preHeaderElement           = document(viewHtmlViaRender).getElementById("pre-header")
-        val preHeaderWithoutHiddenText = preHeaderElement.ownText()
-        val preHeader                  = preHeaderElement.text()
+        val preHeaderElement: Element          = document(viewHtmlViaRender).getElementById("pre-header")
+        val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+        val preHeader: String                  = preHeaderElement.text()
 
         heading.text() mustBe messages("employmenthistory.header")
         preHeaderWithoutHiddenText mustBe s"$firstName $surname"
@@ -106,9 +107,9 @@ class NoDataSpec extends GuiceAppSpec with BaseViewSpec {
       }
 
       "have the correct header section" in new NoDataFixture {
-        val preHeaderElement           = document(viewHtmlViaFunction).getElementById("pre-header")
-        val preHeaderWithoutHiddenText = preHeaderElement.ownText()
-        val preHeader                  = preHeaderElement.text()
+        val preHeaderElement: Element          = document(viewHtmlViaFunction).getElementById("pre-header")
+        val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+        val preHeader: String                  = preHeaderElement.text()
 
         heading.text() mustBe messages("employmenthistory.header")
         preHeaderWithoutHiddenText mustBe s"$firstName $surname"

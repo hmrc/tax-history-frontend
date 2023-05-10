@@ -43,12 +43,12 @@ trait ControllerFixture {
 
   val cbUUID: UUID = UUID.randomUUID()
 
-  val companyBenefits = List(
+  val companyBenefits: List[CompanyBenefit] = List(
     CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1), isForecastBenefit = true),
     CompanyBenefit(cbUUID, "CarFuelBenefit", 1000, isForecastBenefit = true)
   )
 
-  val payAndTax =
+  val payAndTax: PayAndTax =
     PayAndTax(
       payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
       taxablePayTotal = Some(4896.80),
@@ -74,18 +74,18 @@ trait ControllerFixture {
     actualPUPCodedInCYPlusOneTaxYear = Some(400)
   )
 
-  val employments = List(
+  val employments: List[Employment] = List(
     employment,
     employment.copy(
       employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
       employmentPaymentType = Some(OccupationalPension)
     )
   )
-  val allowances  = List(allowance)
+  val allowances: List[Allowance]   = List(allowance)
 
   val statePension: StatePension = StatePension(100, "test")
 
-  val payAndTaxFixedUUID = Map(
+  val payAndTaxFixedUUID: Map[String, PayAndTax] = Map(
     "01318d7c-bcd9-47e2-8c38-551e7ccdfae3" ->
       PayAndTax(
         payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -112,7 +112,7 @@ trait ControllerFixture {
       )
   )
 
-  val payAndTaxRandomUUID = Map(
+  val payAndTaxRandomUUID: Map[String, PayAndTax] = Map(
     UUID.randomUUID().toString ->
       PayAndTax(
         taxablePayTotal = Some(4896.80),

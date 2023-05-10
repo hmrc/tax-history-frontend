@@ -49,7 +49,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         companyBenefits = List.empty,
         clientNameOrNino = clientName,
         incomeSource = None,
-        employmentViewDetail = createEmploymentViewDetail(false, incomeName = employment.employerName)
+        employmentViewDetail = createEmploymentViewDetail(isPension = false, incomeName = employment.employerName)
       )(request, messages, appConfig)
 
     val firstName                 = "testFirstName"
@@ -79,14 +79,14 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
     val incomeSourceWithDeductionsAndAllowances: Option[IncomeSource] =
       Some(IncomeSource(1, 1, None, deductions, allowances, "1100Y", None, 1, ""))
 
-    val taxCodeH2           = "#main-content > div > div > div > div > h2"
-    val taxCodeAllowancesH3 = "#tax-code-allowances"
-    val taxCodeDeductionsH3 = "#tax-code-deductions"
-    val taxCodeSubheading   = "#main-content > div > div > div > div > div > dl > dt"
-    val taxCodeNumber       = "#main-content > div > div > div > div > div > dl > dd"
-    val deductionsP         = "#main-content > div > div > div > div > p"
-    val noDeductions        = "#main-content > div > div > div > div > span#no-deductions"
-    val deductionsParagraph =
+    val taxCodeH2                   = "#main-content > div > div > div > div > h2"
+    val taxCodeAllowancesH3         = "#tax-code-allowances"
+    val taxCodeDeductionsH3         = "#tax-code-deductions"
+    val taxCodeSubheading           = "#main-content > div > div > div > div > div > dl > dt"
+    val taxCodeNumber               = "#main-content > div > div > div > div > div > dl > dd"
+    val deductionsP                 = "#main-content > div > div > div > div > p"
+    val noDeductions                = "#main-content > div > div > div > div > span#no-deductions"
+    val deductionsParagraph: String =
       "Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so " +
         "that the correct amount is repaid over the course of the year."
   }
@@ -111,7 +111,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
             List.empty,
             clientName,
             None,
-            createEmploymentViewDetail(false, incomeName = employment.employerName),
+            createEmploymentViewDetail(isPension = false, incomeName = employment.employerName),
             fakeRequest,
             messages,
             appConfig
@@ -131,7 +131,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           List.empty,
           clientName,
           None,
-          createEmploymentViewDetail(false, incomeName = employment.employerName)
+          createEmploymentViewDetail(isPension = false, incomeName = employment.employerName)
         )(request, messages, appConfig)
 
         document(viewHtmlViaFunction).title shouldBe expectedPageTitle("Client employment record")
@@ -148,12 +148,12 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           companyBenefits = List.empty,
           clientNameOrNino = clientName,
           incomeSource = None,
-          employmentViewDetail = createEmploymentViewDetail(false, incomeName = employment.employerName)
+          employmentViewDetail = createEmploymentViewDetail(isPension = false, incomeName = employment.employerName)
         )(request, messages, appConfig)
 
-      val preHeaderElement           = document(view).getElementById("pre-header")
-      val preHeaderWithoutHiddenText = preHeaderElement.ownText()
-      val preHeader                  = preHeaderElement.text()
+      val preHeaderElement: Element          = document(view).getElementById("pre-header")
+      val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+      val preHeader: String                  = preHeaderElement.text()
 
       document(view).title                                                      shouldBe expectedPageTitle("Client employment record")
       preHeaderWithoutHiddenText mustBe s"$firstName $surname"
@@ -172,12 +172,12 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         None,
-        createEmploymentViewDetail(true, incomeName = employment.employerName)
+        createEmploymentViewDetail(isPension = true, incomeName = employment.employerName)
       )(request, messages, appConfig)
 
-      val preHeaderElement           = document(view).getElementById("pre-header")
-      val preHeaderWithoutHiddenText = preHeaderElement.ownText()
-      val preHeader                  = preHeaderElement.text()
+      val preHeaderElement: Element          = document(view).getElementById("pre-header")
+      val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+      val preHeader: String                  = preHeaderElement.text()
 
       document(view).title                                                      shouldBe expectedPageTitle("Client pension record")
       preHeaderWithoutHiddenText mustBe s"$firstName $surname"
@@ -195,7 +195,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       // scalastyle:off magic.number
@@ -227,7 +227,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       val startDate: Element  =
@@ -260,7 +260,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
@@ -290,7 +290,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         completeCBList,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view)
@@ -319,7 +319,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           completeCBList,
           clientName,
           None,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         document(view)
@@ -343,7 +343,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           List.empty,
           clientName,
           None,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         val taxablePay: Element = document(view).getElementById("pay-and-tax-table").child(0).child(1)
@@ -363,7 +363,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           completeCBList,
           clientName,
           None,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         document(view).getElementsContainingOwnText("Tax code breakdown").hasText     shouldBe false
@@ -393,7 +393,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           completeCBList,
           clientName,
           incomeSourceWithDeductions,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         val expectedContent: Seq[(String, String)] =
@@ -428,7 +428,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           completeCBList,
           clientName,
           incomeSourceNoDeductions,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         val expectedContent: Seq[(String, String)] =
@@ -460,7 +460,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
             companyBenefits = completeCBList,
             clientNameOrNino = clientName,
             incomeSource = None,
-            employmentViewDetail = createEmploymentViewDetail(true, employment.employerName)
+            employmentViewDetail = createEmploymentViewDetail(isPension = true, employment.employerName)
           )(request, messages, appConfig)
 
         document(view)
@@ -506,7 +506,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           List(companyBenefitForecast),
           clientName,
           None,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         val cbTable: Element = document(view).getElementById("cb-table")
@@ -525,7 +525,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           List(companyBenefitActual),
           clientName,
           None,
-          createEmploymentViewDetail(false, employment.employerName)
+          createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
         val cbTable: Element = document(view).getElementById("cb-table")
@@ -543,7 +543,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         completeCBList,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view).getElementsMatchingOwnText("Student loan repaid").hasText shouldBe true
@@ -559,7 +559,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         completeCBList,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view).getElementsMatchingOwnText("Student loan repaid").hasText shouldBe false
@@ -573,7 +573,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         completeCBList,
         clientName,
         incomeSourceNoDeductions,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view)
@@ -592,7 +592,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         None,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view)
@@ -609,7 +609,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         incomeSourceWithDeductionsAndAllowances,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view).getElementById("DeductionTotal").text shouldBe "£2"
@@ -625,7 +625,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         List.empty,
         clientName,
         incomeSourceWithDeductionsAndAllowances,
-        createEmploymentViewDetail(false, employment.employerName)
+        createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
       document(view).getElementById("nav-home").text         shouldBe "Agent services home"

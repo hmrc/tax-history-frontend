@@ -31,7 +31,7 @@ class PageTitleSpec extends GuiceAppSpec with BaseViewSpec {
     }
 
     "return a title with error pre text and title post text when form errors are present" in {
-      val pageTitle = PageTitle(title, true)
+      val pageTitle = PageTitle(title, formErrorsExist = true)
       pageTitle.fullTitle() shouldBe s"${messages("lbl.error")}: $title $postTitleText"
     }
   }

@@ -23,8 +23,8 @@ import java.util.UUID
 
 class TotalIncomeSpec extends TestUtil with BaseSpec {
 
-  private val employmentId    = UUID.randomUUID()
-  private val employment      = Employment(
+  private val employmentId                            = UUID.randomUUID()
+  private val employment                              = Employment(
     employmentId,
     startDate = None,
     payeReference = "paye-1",
@@ -34,8 +34,9 @@ class TotalIncomeSpec extends TestUtil with BaseSpec {
     employmentPaymentType = None
   )
   // scalastyle:off magic.number
-  val employmentAndIncomeTax1 = EmploymentIncomeAndTax(employmentId.toString, BigDecimal(10), BigDecimal(5))
-  private val totalIncome     = TotalIncome(
+  val employmentAndIncomeTax1: EmploymentIncomeAndTax =
+    EmploymentIncomeAndTax(employmentId.toString, BigDecimal(10), BigDecimal(5))
+  private val totalIncome                             = TotalIncome(
     employmentIncomeAndTax = List(employmentAndIncomeTax1),
     employmentTaxablePayTotalIncludingEYU = BigDecimal(10),
     pensionTaxablePayTotalIncludingEYU = BigDecimal(10),

@@ -61,11 +61,11 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     }
 
     "display a client name as a pre header" in new ViewFixture {
-      val view: HtmlFormat.Appendable =
+      val view: HtmlFormat.Appendable        =
         inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
-      val preHeaderElement            = document(view).getElementById("pre-header")
-      val preHeaderWithoutHiddenText  = preHeaderElement.ownText()
-      val preHeader                   = preHeaderElement.text()
+      val preHeaderElement: Element          = document(view).getElementById("pre-header")
+      val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+      val preHeader: String                  = preHeaderElement.text()
 
       preHeaderWithoutHiddenText mustBe s"$firstName $surname"
       preHeader mustBe s"This section relates to $firstName $surname"
@@ -79,11 +79,11 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     "display a nino as a pre header" when {
       preHeaderScenarios foreach { scenario =>
         scenario._1 in new ViewFixture {
-          val view: HtmlFormat.Appendable = inject[employment_summary]
+          val view: HtmlFormat.Appendable        = inject[employment_summary]
             .apply(nino, cyMinus1, employments, allowances, scenario._2, taxAccount, None, None, now)
-          val preHeaderElement            = document(view).getElementById("pre-header")
-          val preHeaderWithoutHiddenText  = preHeaderElement.ownText()
-          val preHeader                   = preHeaderElement.text()
+          val preHeaderElement: Element          = document(view).getElementById("pre-header")
+          val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
+          val preHeader: String                  = preHeaderElement.text()
 
           preHeaderWithoutHiddenText mustBe nino
           preHeader mustBe s"This section relates to $nino"
@@ -379,13 +379,13 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
   }
 
   "Show correct total amounts for two employers and one pension" in new ViewFixture {
-    val employer1: Employment       =
+    val employer1: Employment                    =
       emp1.copy(employmentPaymentType = Some(JobseekersAllowance), employmentId = UUID.randomUUID())
-    val employer2: Employment       = emp1.copy(employmentPaymentType = None, employmentId = UUID.randomUUID())
-    val pension: Employment         =
+    val employer2: Employment                    = emp1.copy(employmentPaymentType = None, employmentId = UUID.randomUUID())
+    val pension: Employment                      =
       emp1.copy(employmentPaymentType = Some(OccupationalPension), employmentId = UUID.randomUUID())
-    val employmentWithPensions      = List(employer1, employer2, pension)
-    val incomeTotals: TotalIncome   = totalIncome.copy(employmentIncomeAndTax =
+    val employmentWithPensions: List[Employment] = List(employer1, employer2, pension)
+    val incomeTotals: TotalIncome                = totalIncome.copy(employmentIncomeAndTax =
       List(
         // scalastyle:off magic.number
         EmploymentIncomeAndTax(employer1.employmentId.toString, BigDecimal(100), BigDecimal(50)),
@@ -394,7 +394,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
         // scalastyle:on magic.number
       )
     )
-    val view: HtmlFormat.Appendable =
+    val view: HtmlFormat.Appendable              =
       inject[employment_summary]
         .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(incomeTotals), now)
 

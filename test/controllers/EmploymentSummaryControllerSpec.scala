@@ -226,7 +226,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.toJson(employments), Map.empty)))
 
-      val result = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
+      val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(taxYear).url)
     }
@@ -253,10 +253,10 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     "HttpResponse is OK(200)" should {
 
       "return state pension as json with formatted date" in new LocalSetup {
-        val actual =
+        val actual: Option[StatePension] =
           controller.getStatePensionsFromResponse(HttpResponse(OK, json = Json.toJson(statePension), Map.empty))
 
-        val expected = Some(StatePension(100, "test", None, None, None))
+        val expected: Some[StatePension] = Some(StatePension(100, "test", None, None, None))
         actual shouldBe expected
       }
     }
@@ -264,8 +264,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     "HttpResponse is NOT OK(200)" should {
 
       "return None" in new LocalSetup {
-        val actual   = controller.getStatePensionsFromResponse(HttpResponse.apply(BAD_REQUEST, ""))
-        val expected = None
+        val actual: Option[StatePension] = controller.getStatePensionsFromResponse(HttpResponse.apply(BAD_REQUEST, ""))
+        val expected: None.type          = None
         actual shouldBe expected
       }
     }

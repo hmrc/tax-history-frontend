@@ -28,9 +28,8 @@ object Strings {
     def convert(input: String): String
   }
 
-  implicit val defaultLineBreakConverter: LineBreakConverter = new LineBreakConverter {
-    override def convert(input: String): String = input.replaceAll("""\s*\n\s*""", "</p><p>")
-  }
+  implicit val defaultLineBreakConverter: LineBreakConverter = (input: String) =>
+    input.replaceAll("""\s*\n\s*""", "</p><p>")
 
   implicit class TextHelpers(s: String) {
     def convertLineBreaks(implicit converter: LineBreakConverter): String = converter.convert(s)

@@ -29,7 +29,7 @@ class AllowanceSpec extends TestUtil with BaseSpec {
     amount = BigDecimal(12.00)
   )
 
-  lazy val allowanceList = List(allowance1)
+  lazy val allowanceList: List[Allowance] = List(allowance1)
 
   "Allowance" should {
 

@@ -65,7 +65,7 @@ class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
 
     "show correct content on the page" in new ViewFixture {
 
-      val options = List("2016" -> "value", "2015" -> "value1")
+      val options: List[(String, String)] = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, options, name, nino)
       val radioGroup: Elements        = document(view).select("input[type='radio']")
@@ -79,8 +79,8 @@ class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
 
     "show correct date content on the page" in new ViewFixture {
 
-      val options                     = List("2016" -> "2016 to 2017", "2015" -> "2015 to 2016")
-      val view: HtmlFormat.Appendable = inject[select_tax_year].apply(validForm, options, name, nino)
+      val options: List[(String, String)] = List("2016" -> "2016 to 2017", "2015" -> "2015 to 2016")
+      val view: HtmlFormat.Appendable     = inject[select_tax_year].apply(validForm, options, name, nino)
 
       def radioLabel(i: Int): String =
         s"#main-content > div > div > div > div > form > div > fieldset > div > div:nth-child($i) > label"
@@ -90,7 +90,7 @@ class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
     }
 
     "show correct content on the page for form with error" in new ViewFixture {
-      val options = List("2016" -> "value", "2015" -> "value1")
+      val options: List[(String, String)] = List("2016" -> "value", "2015" -> "value1")
 
       val view: HtmlFormat.Appendable = inject[select_tax_year].apply(invalidForm, options, name, nino)
 

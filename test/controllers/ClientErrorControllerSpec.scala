@@ -73,7 +73,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
     "get Mci restricted page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
       val result: Future[Result]       = controller.getMciRestricted().apply(FakeRequest())
-      val expectedView                 = app.injector.instanceOf[mci_restricted]
+      val expectedView: mci_restricted = app.injector.instanceOf[mci_restricted]
       status(result) shouldBe OK
 
       result rendersTheSameViewAs expectedView()
@@ -100,7 +100,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
     "get deceased page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
       val result: Future[Result]       = controller.getDeceased().apply(FakeRequest())
-      val expectedView                 = app.injector.instanceOf[deceased]
+      val expectedView: deceased       = app.injector.instanceOf[deceased]
       status(result) shouldBe OK
 
       result rendersTheSameViewAs expectedView()
