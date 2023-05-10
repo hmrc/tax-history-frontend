@@ -239,14 +239,16 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
       val incomeTax: Element  =
         document(view).getElementById("pay-and-tax-table").child(0).child(1)
 
-      document(view).getElementsContainingText(employment.worksNumber).hasText                          shouldBe false
-      document(view).getElementsContainingText(
-        ControllerUtils.getEmploymentStatus(employment)
-      ).hasText shouldBe false
-      startDate.text                                                                                      should include(employment.startDate.get.format(format))
-      endDate.text                                                                                        should include(employment.endDate.get.format(format))
-      taxablePay.text                                                                                     should include("£4,906.80")
-      incomeTax.text                                                                                      should include("£1,007.34")
+      document(view).getElementsContainingText(employment.worksNumber).hasText shouldBe false
+      document(view)
+        .getElementsContainingText(
+          ControllerUtils.getEmploymentStatus(employment)
+        )
+        .hasText                                                               shouldBe false
+      startDate.text                                                             should include(employment.startDate.get.format(format))
+      endDate.text                                                               should include(employment.endDate.get.format(format))
+      taxablePay.text                                                            should include("£4,906.80")
+      incomeTax.text                                                             should include("£1,007.34")
     }
 
     "have correct Earlier Year Update details" in new ViewFixture {

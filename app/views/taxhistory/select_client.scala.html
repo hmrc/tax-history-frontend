@@ -58,8 +58,7 @@
                         content = Text(messages(sCForm("clientId").errors.head.message)),
                         visuallyHiddenText = Some(messages("govukErrorMessage.visuallyHiddenText"))
                     ))
-                } else { None },
-                attributes = Map("maxlength" -> "9")
+                } else { None }
             ))
 
             @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))
