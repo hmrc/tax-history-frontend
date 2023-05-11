@@ -39,6 +39,16 @@ class SelectClientFormSpec extends BaseSpec with TestUtil {
       errors shouldBe empty
     }
 
+    "return no errors with valid data(white spaces)" in {
+      val postData = Json.obj(
+        "clientId" -> s"   $nino   "
+      )
+
+      val validatedForm = selectClientForm.bind(postData, maxChar)
+      val errors        = validatedForm.errors
+      errors shouldBe empty
+    }
+
     "return the correct result when filled" in {
       val postData      = Json.obj(
         "clientId" -> nino
@@ -51,6 +61,15 @@ class SelectClientFormSpec extends BaseSpec with TestUtil {
     "return an invalid length error when no nino is entered" in {
       val postData = Json.obj(
         "clientId" -> ""
+      )
+
+      val validatedForm = selectClientForm.bind(postData, maxChar)
+      validatedForm.errors shouldBe List(FormError("clientId", List("employmenthistory.select.client.error.empty")))
+    }
+
+    "return an invalid length error when nino has only white spaces" in {
+      val postData = Json.obj(
+        "clientId" -> "   "
       )
 
       val validatedForm = selectClientForm.bind(postData, maxChar)

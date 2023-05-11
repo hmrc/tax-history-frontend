@@ -73,11 +73,6 @@ class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec 
       document(view).body.getElementById("clientId").attr("type") shouldBe "text"
     }
 
-    "limit input length to no more than 9 characters" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).body.getElementById("clientId").attr("maxlength") shouldBe "9"
-    }
-
     "display continue button" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
       document(view).body.getElementById("continueButton").text      shouldBe Messages(

@@ -86,15 +86,13 @@ class SelectTaxYearController @Inject() (
   private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)(implicit
     hc: HeaderCarrier,
     request: Request[_]
-  ): Future[Result] = {
-    print("nino " + nino)
+  ): Future[Result] =
     retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) =>
         redirectToClientErrorPage(citizenStatus)
       case Right(p)            =>
         fetchTaxYearsAndRenderPage(form, httpStatus, nino, p.getName)
     }
-  }
 
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent { nino =>

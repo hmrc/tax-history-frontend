@@ -73,7 +73,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
     "return Status: 400 when invalid data is entered" in new LocalSetup {
       val invalidTestNINO = "9999999999999999"
 
-      val invalidSelectClientForm = Seq(
+      val invalidSelectClientForm: Seq[(String, String)] = Seq(
         "clientId" -> invalidTestNINO
       )
 
@@ -89,7 +89,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
     "successfully redirect to next page when valid nino is supplied as input" in new LocalSetup {
 
-      val validSelectClientForm = Seq(
+      val validSelectClientForm: Seq[(String, String)] = Seq(
         "clientId" -> nino
       )
 

@@ -123,8 +123,8 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
     }
 
     "fetch Employment details from backend" in new LocalSetup {
-      val url          = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/pay-and-tax"
-      lazy val eyuList = List(
+      val url                                   = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/pay-and-tax"
+      lazy val eyuList: List[EarlierYearUpdate] = List(
         EarlierYearUpdate(
           earlierYearUpdateId = UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
           taxablePayEYU = BigDecimal(123.45),
@@ -180,8 +180,8 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
     }
 
     "fetch Tax years from backend" in new LocalSetup {
-      val url      = s"http://localhost:9997/tax-history/$nino/tax-years"
-      val taxYears =
+      val url                               = s"http://localhost:9997/tax-history/$nino/tax-years"
+      val taxYears: List[IndividualTaxYear] =
         List(
           IndividualTaxYear(taxYear2015, "uri1", "uri2", "uri3"),
           IndividualTaxYear(taxYear2015, "uri1", "uri2", "uri3")
@@ -316,7 +316,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
     "fetch getAllPayAndTax data from the backend" in new LocalSetup {
       val url = s"http://localhost:9997/tax-history/$nino/2017/all-pay-and-tax"
 
-      val payAndTax = PayAndTax(
+      val payAndTax: PayAndTax = PayAndTax(
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
         taxablePayTotal = Some(BigDecimal(1234567.89)),
         taxablePayTotalIncludingEYU = Some(BigDecimal(2345678.90)),
@@ -335,7 +335,7 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
         )
       )
 
-      val allPayAndTaxResponse = Map("first" -> payAndTax)
+      val allPayAndTaxResponse: Map[String, PayAndTax] = Map("first" -> payAndTax)
 
       when(
         mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(

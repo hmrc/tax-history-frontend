@@ -53,7 +53,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
       dateUtils = dateUtils
     )(stubControllerComponents().executionContext, appConfig)
 
-    val incomeSource =
+    val incomeSource: Some[IncomeSource] =
       Some(
         IncomeSource(
           employmentId = 1,
@@ -119,13 +119,13 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "calling .recoverWithEmptyDefault()" when {
 
       "A Future(value) throws an exception, catch the exception and return the given value" in new LocalSetup {
-
-        val actual =
+        private val inputValue = Some(5)
+        val actual: Some[Int]  =
           await(
-            Future(throw new Exception("Hello")).recoverWith(controller.recoverWithEmptyDefault("", Some(5)))
+            Future(throw new Exception("Hello")).recoverWith(controller.recoverWithEmptyDefault("", inputValue))
           )
 
-        val expected = await(Future(Some(5)))
+        val expected: Some[Int] = await(Future(inputValue))
 
         actual shouldBe expected
       }
@@ -137,8 +137,10 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
         "return a PayAndTax() with no studentLoan" in new LocalSetup {
 
-          val actual   = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString, false))
-          val expected = Some(payAndTax.copy(studentLoan = None))
+          val actual: Option[PayAndTax] = await(
+            controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString, turnOnStudentLoanFlagTest = false)
+          )
+          val expected: Some[PayAndTax] = Some(payAndTax.copy(studentLoan = None))
 
           actual shouldBe expected
         }
@@ -148,8 +150,8 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
         "return the original PayAndTax() with a studentLoan of 1337" in new LocalSetup {
 
-          val actual   = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString, true))
-          val expected = Some(payAndTax)
+          val actual: Option[PayAndTax] = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString))
+          val expected: Some[PayAndTax] = Some(payAndTax)
 
           actual shouldBe expected
         }

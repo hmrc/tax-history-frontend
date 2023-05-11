@@ -19,18 +19,21 @@ package form
 import models.taxhistory.SelectClient
 import play.api.data.Form
 import play.api.data.Forms.{mapping, text}
-import uk.gov.hmrc.domain.Nino
+import uk.gov.hmrc.domain.Nino.isValid
 
 object SelectClientForm {
+
+  private val normaliseText: String => String = str => str.replaceAll("\\s", "")
+
   val selectClientForm: Form[SelectClient] =
     Form(
       mapping(
         "clientId" -> text
+          .transform(normaliseText, identity[String])
+          .transform(_.toUpperCase, identity[String])
           .verifying("employmenthistory.select.client.error.empty", _.nonEmpty)
-          .verifying(
-            "employmenthistory.select.client.error.invalid-format",
-            text => text.isEmpty || Nino.isValid(text.toUpperCase)
-          )
+          .verifying("employmenthistory.select.client.error.invalid-format", text => text.isEmpty || isValid(text))
       )(SelectClient.apply)(SelectClient.unapply)
     )
+
 }

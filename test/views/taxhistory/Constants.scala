@@ -115,10 +115,10 @@ trait Constants {
     pensionTaxTotalIncludingEYU = BigDecimal(400)
   )
 
-  val employments               = List(emp1, emp2, emp3, emp4)
-  val employmentWithPensions    = List(emp1, emp2, pension)
-  val employmentsNoPensions     = List(emp2, emp3, emp4)
-  val employmentWithPensionOnly = List(pension)
+  val employments: List[Employment]               = List(emp1, emp2, emp3, emp4)
+  val employmentWithPensions: List[Employment]    = List(emp1, emp2, pension)
+  val employmentsNoPensions: List[Employment]     = List(emp2, emp3, emp4)
+  val employmentWithPensionOnly: List[Employment] = List(pension)
 
   val allowance1: Allowance = Allowance(
     allowanceId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
@@ -136,8 +136,8 @@ trait Constants {
     amount = BigDecimal(32.00)
   )
 
-  val allowances      = List(allowance1, allowance2, allowance3)
-  val allowancesNoEYA = List(allowance1, allowance2)
+  val allowances: List[Allowance]      = List(allowance1, allowance2, allowance3)
+  val allowancesNoEYA: List[Allowance] = List(allowance1, allowance2)
 
   val oDR                            = "101.01"
   val uA                             = "202.00"
@@ -168,7 +168,7 @@ trait Constants {
     receivedDateFormatted = Some("21 May 2016")
   )
 
-  val eyuList = List(eyu1, eyu2)
+  val eyuList: List[EarlierYearUpdate] = List(eyu1, eyu2)
 
   val payAndTax: PayAndTax = PayAndTax(
     taxablePayTotal = Some(4896.80),
@@ -205,7 +205,7 @@ trait Constants {
 
   val uuid: UUID = UUID.randomUUID()
 
-  val completeCBList = List(
+  val completeCBList: List[CompanyBenefit] = List(
     CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00, isForecastBenefit = true),
     CompanyBenefit(uuid, "CarFuelBenefit", 1000, isForecastBenefit = true),
     CompanyBenefit(uuid, "MedicalInsurance", 1000.00, isForecastBenefit = true),

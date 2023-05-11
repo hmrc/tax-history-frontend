@@ -39,11 +39,11 @@ class StatePensionSpec extends GuiceAppSpec {
 
     "amountTillDate for current tax year, weekly payment" in {
 
-      val startDate: LocalDate = LocalDate.now().withYear(currentTaxYear)
-
-      val sp: StatePension =
+      val startDate: LocalDate  = LocalDate.now().withYear(currentTaxYear)
+      val grossAmountInput: Int = 5200
+      val sp: StatePension      =
         StatePension(
-          grossAmount = 5200,
+          grossAmount = grossAmountInput,
           typeDescription = "test",
           paymentFrequency = Some(1),
           startDate = Some(startDate),

@@ -39,7 +39,7 @@ trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with Mocki
       SessionKeys.authToken -> "Token"
     )
 
-  lazy val newEnrolments =
+  lazy val newEnrolments: Set[Enrolment] =
     Set(
       Enrolment(
         key = "HMRC-AS-AGENT",
@@ -51,6 +51,6 @@ trait ControllerSpec extends GuiceAppSpec with BaseSpec with TestUtil with Mocki
 
   implicit class ViewMatcherHelper(result: Future[Result]) {
     def rendersTheSameViewAs(expected: Html): Unit =
-      contentAsString(result) shouldEqual (expected.toString)
+      contentAsString(result) shouldEqual expected.toString
   }
 }
