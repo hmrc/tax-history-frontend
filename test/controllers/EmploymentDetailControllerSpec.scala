@@ -119,13 +119,14 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "calling .recoverWithEmptyDefault()" when {
 
       "A Future(value) throws an exception, catch the exception and return the given value" in new LocalSetup {
-        private val inputValue = Some(5)
-        val actual: Some[Int]  =
+        private val inputValue    = 5
+        private val inputValueOpt = Some(inputValue)
+        val actual: Some[Int]     =
           await(
-            Future(throw new Exception("Hello")).recoverWith(controller.recoverWithEmptyDefault("", inputValue))
+            Future(throw new Exception("Hello")).recoverWith(controller.recoverWithEmptyDefault("", inputValueOpt))
           )
 
-        val expected: Some[Int] = await(Future(inputValue))
+        val expected: Some[Int] = await(Future(inputValueOpt))
 
         actual shouldBe expected
       }
