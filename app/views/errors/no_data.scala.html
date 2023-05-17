@@ -35,7 +35,7 @@
     @twoThirdsMainContent {
 
         <header class="hmrc-page-heading no-top-margin">
-            <h1 class="govuk-heading-xl no-bottom-margin" id="heading">@messages("employmenthistory.header")</h1>
+            <h1 class="govuk-heading-xl no-bottom-margin" id="heading">@messages("employmenthistory.no.data.header")</h1>
             <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
                 <span class="govuk-visually-hidden">This section relates to </span>
                 @person.getName.getOrElse(nino)
@@ -43,7 +43,6 @@
             <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYears.toString, (taxYears+1).toString) </span>
         </header>
 
-        @p(Html(messages("employmenthistory.no.data.header")), "govuk-caption-m", Some("pre-header-m"))
         @p{@messages("employmenthistory.no.data.text")}
 
         <ul class="govuk-list govuk-list--bullet">

@@ -59,7 +59,7 @@ class NoDataSpec extends GuiceAppSpec with BaseViewSpec {
         val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
         val preHeader: String                  = preHeaderElement.text()
 
-        heading.text() mustBe messages("employmenthistory.header")
+        heading.text() mustBe messages("employmenthistory.no.data.header")
         preHeaderWithoutHiddenText mustBe s"$firstName $surname"
         preHeader mustBe s"This section relates to $firstName $surname"
       }
@@ -85,7 +85,7 @@ class NoDataSpec extends GuiceAppSpec with BaseViewSpec {
         val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
         val preHeader: String                  = preHeaderElement.text()
 
-        heading.text() mustBe messages("employmenthistory.header")
+        heading.text() mustBe messages("employmenthistory.no.data.header")
         preHeaderWithoutHiddenText mustBe s"$firstName $surname"
         preHeader mustBe s"This section relates to $firstName $surname"
       }
@@ -111,7 +111,7 @@ class NoDataSpec extends GuiceAppSpec with BaseViewSpec {
         val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
         val preHeader: String                  = preHeaderElement.text()
 
-        heading.text() mustBe messages("employmenthistory.header")
+        heading.text() mustBe messages("employmenthistory.no.data.header")
         preHeaderWithoutHiddenText mustBe s"$firstName $surname"
         preHeader mustBe s"This section relates to $firstName $surname"
       }
