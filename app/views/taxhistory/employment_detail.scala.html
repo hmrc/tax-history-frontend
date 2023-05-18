@@ -81,8 +81,8 @@
 
     <dl class="govuk-summary-list">
         @if(!employment.isJobseekersAllowance) {
-                <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.paye.reference")</dt>
-                <dd class="govuk-body-s margin-inline-start">@employment.payeReference</dd>
+            <dt class="govuk-body-s govuk-!-font-weight-bold no-bottom-margin">@messages("lbl.paye.reference")</dt>
+            <dd class="govuk-body-s margin-inline-start">@employment.payeReference</dd>
 
         }
         @if(!employment.isOccupationalPension && !employment.isJobseekersAllowance) {
@@ -100,23 +100,34 @@
 @payments() = {
     @payAndTaxOpt match {
         case Some(payAndTax) => {
-            <table class="govuk-table" id="pay-and-tax-table">
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header">@messages("lbl.taxable.income")</th>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">@payAndTax.taxablePayTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))</td>
-                </tr>
-
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__header">@messages("lbl.income.tax")</th>
-                    <td class="govuk-table__cell govuk-table__cell--numeric">@payAndTax.taxTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))</td>
-                </tr>
+            <dl class="govuk-summary-list govuk-!-margin-bottom-9" id="pay-and-tax-list">
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-!-font-weight-bold">
+                        @messages("lbl.taxable.income")
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="taxable-income">
+                        @payAndTax.taxablePayTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
+                    </dd>
+                </div>
+                <div class="govuk-summary-list__row">
+                    <dt class="govuk-summary-list__key govuk-!-font-weight-bold">
+                        @messages("lbl.income.tax")
+                    </dt>
+                    <dd class="govuk-summary-list__value" id="income-tax-paid">
+                        @payAndTax.taxTotalIncludingEYU.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
+                    </dd>
+                </div>
                 @for(studentLoan <- payAndTax.studentLoanIncludingEYU) {
-                    <tr class="govuk-table__row">
-                        <th class="govuk-table__header">@messages("employmenthistory.student.loans")</th>
-                        <td class="govuk-table__cell  govuk-table__cell--numeric">@Currency(studentLoan)</td>
-                    </tr>
+                    <div class="govuk-summary-list__row">
+                        <dt class="govuk-summary-list__key govuk-!-font-weight-bold">
+                            @messages("employmenthistory.student.loans")
+                        </dt>
+                        <dd class="govuk-summary-list__value">
+                            @Currency(studentLoan)
+                        </dd>
+                    </div>
                 }
-            </table>
+            </dl>
         }
         case None => {
             <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, employment.startDateFormatted.getOrElse(""))</p>
