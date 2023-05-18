@@ -101,17 +101,15 @@
 
     <div class="govuk-tabs__panel" id="income-records">
         @if(employments.exists(!_.isOccupationalPension)) {
-        <h2 id="EmploymentDetails" class="govuk-heading-l">@messages("employmenthistory.table.header.employment")</h2>
             @employmentTable
         } else {
             <h2 class="govuk-heading-l no-top-margin">@messages("employmenthistory.employment.records")</h2>
             <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
         }
 
-        <h2 id = "Pensions" class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
+        <h2 class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
         @if(employments.exists(_.isOccupationalPension)) {
-            <h3 class="govuk-heading-m">@messages("employmenthistory.table.header.pensions.private")</h3>
-                    @pensionTable
+            @pensionTable
         } else {
             <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
         }
@@ -146,11 +144,11 @@
     }
     @if(!isCurrentYear) {
         <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="underpaid-tax-and-debts">
-            <h2 id = "UnderpaidTaxAndDebts" class="govuk-heading-l">@messages("employmenthistory.tax-account.header")</h2>
             @if(taxAccount.nonEmpty) {
                 @taxAccountTable
             } else {
-                <p id="no-tax-account" class="govuk-body">@messages("employmenthistory.tax-account.empty.text")</p>
+            <h2 class="govuk-heading-l">@messages("employmenthistory.tax-account.header")</h2>
+            <p id="no-tax-account" class="govuk-body">@messages("employmenthistory.tax-account.empty.text")</p>
             }
         </div>
     }
@@ -160,6 +158,7 @@
 
 @employmentTable ={
     <table id="employment-table" class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--l">@messages("employmenthistory.employment.records")</caption>
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">@messages("lbl.employer")</th>
@@ -211,6 +210,7 @@
 
 @pensionTable ={
     <table id="pension-table" class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--m">@messages("employmenthistory.table.header.pensions.private")</caption>
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">@messages("lbl.provider")</th>
@@ -257,6 +257,7 @@
     </div>
 
     <table id="allowanceTable" class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--l govuk-visually-hidden">@messages("employmenthistory.allowance.heading")</caption>
         <thead class="govuk-table__head">
             <tr class="govuk-table__row">
                 <th scope="col" class="govuk-table__header">@messages("lbl.allowance")</th>
@@ -290,6 +291,7 @@
 
 @taxAccountTable={
     <table id="taxAccountTable" class="govuk-table">
+        <caption class="govuk-table__caption govuk-table__caption--l">@messages("employmenthistory.tax-account.header")</caption>
         <thead class="govuk-table__head">
         <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">@messages("employmenthistory.tax-account.type-of-underpayment-or-debt")</th>
