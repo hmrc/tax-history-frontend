@@ -33,6 +33,13 @@ trait Fixture extends Matchers {
 
   def document(html: Html): Document = Jsoup.parse(html.toString())
 
+  def attributes(element: Element): Map[String, String] = element.attributes
+    .iterator()
+    .asScala
+    .toList
+    .map(attr => attr.getKey -> attr.getValue)
+    .toMap
+
   lazy val form: Element    = document(view).getElementsByTag("form").first()
   lazy val heading: Element = document(view).getElementsByTag("h1").first()
 

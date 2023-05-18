@@ -94,7 +94,11 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
 
       status(result)          shouldBe OK
       contentAsString(result) shouldBe
-        view(validForm, List("2015" -> "2015 to 2016"), name, nino)(fakeRequestWithNino, messages, appConfig).toString()
+        view(validForm, List("2015" -> "2015 to 2016"), noSelectedTaxYear, name, nino)(
+          fakeRequestWithNino,
+          messages,
+          appConfig
+        ).toString()
     }
 
     "redirect to technical error page when getTaxYears returns status internal server error" in new LocalSetup {

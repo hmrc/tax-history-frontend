@@ -19,6 +19,8 @@ package support
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import config.AppConfig
+import controllers.TaxHistorySessionKeys
+import models.taxhistory.SelectTaxYear
 import org.scalatest._
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.matchers.should.Matchers
@@ -29,6 +31,7 @@ import play.api.Environment
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
 import play.api.test.{FakeRequest, Injecting}
 import uk.gov.hmrc.http.HeaderCarrier
+import utils.TestUtil
 
 import scala.concurrent.ExecutionContext
 import scala.reflect.ClassTag
@@ -41,7 +44,9 @@ trait BaseSpec
     with MockitoSugar
     with PatienceConfiguration
     with BeforeAndAfterEach
-    with Injecting { this: Suite =>
+    with Injecting
+    with TestUtil
+    with TaxHistorySessionKeys { this: Suite =>
 
   implicit val hc: HeaderCarrier = HeaderCarrier()
 
@@ -58,5 +63,16 @@ trait BaseSpec
   implicit val materializer: Materializer = Materializer(actorSystem)
 
   lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] = FakeRequest("GET", "/foo")
+
+  lazy val nino: String           = randomNino.toString
+  lazy val invalidTaxYear: String = "1999"
+
+  lazy val fakeRequestWithNino: FakeRequest[AnyContentAsEmpty.type]           = FakeRequest()
+    .withSession(ninoSessionKey -> nino)
+  lazy val fakeRequestWithTaxYear: FakeRequest[AnyContentAsEmpty.type]        = FakeRequest()
+    .withSession(taxYearSessionKey -> invalidTaxYear)
+  lazy val fakeRequestWithTaxYearAndNino: FakeRequest[AnyContentAsEmpty.type] = FakeRequest()
+    .withSession(ninoSessionKey -> nino, taxYearSessionKey -> invalidTaxYear)
+  lazy val noSelectedTaxYear: SelectTaxYear                                   = SelectTaxYear(None)
 
 }
