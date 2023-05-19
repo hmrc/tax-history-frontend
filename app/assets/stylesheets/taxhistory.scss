@@ -157,3 +157,25 @@ color : #6f777b;
 #tax-code-allowances {
   padding-top: 0;
 }
+
+@media only screen and (min-width: 227px) and (max-width: 640px) {
+  #pay-and-tax-list dd {
+    text-align: right;
+    word-wrap: normal;
+  }
+
+  #pay-and-tax-list dt {
+    float: left;
+    clear: left;
+  }
+}
+
+@media only screen and (min-width: 641px) {
+  #pay-and-tax-list dd {
+    text-align: right;
+  }
+
+  #pay-and-tax-list dt {
+    width: 40%;
+  }
+}

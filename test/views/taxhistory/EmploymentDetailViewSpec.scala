@@ -208,15 +208,17 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
       val endDate: Element       =
         document(view).getElementById("employment-data-desktop").child(1).child(7)
 
-      val taxablePay: Element = document(view).getElementById("pay-and-tax-table").child(0).child(0)
-      val incomeTax: Element  = document(view).getElementById("pay-and-tax-table").child(0).child(1)
+      val taxableIncome: Element =
+        document(view).getElementById("taxable-income")
+      val incomeTaxPaid: Element =
+        document(view).getElementById("income-tax-paid")
 
       payeReference.text should include(employment.payeReference)
       payrollId.text     should include(employment.worksNumber)
       startDate.text     should include(employment.startDateFormatted.get)
       endDate.text       should include(employment.endDateFormatted.get)
-      taxablePay.text    should include("£4,906.80")
-      incomeTax.text     should include("£1,007.34")
+      taxableIncome.text should include("£4,906.80")
+      incomeTaxPaid.text should include("£1,007.34")
     }
 
     "not have payroll ID and status for a pension" in new ViewFixture {
@@ -230,14 +232,14 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
-      val startDate: Element  =
+      val startDate: Element     =
         document(view).getElementById("employment-data-desktop").child(1).child(3)
-      val endDate: Element    =
+      val endDate: Element       =
         document(view).getElementById("employment-data-desktop").child(1).child(5)
-      val taxablePay: Element =
-        document(view).getElementById("pay-and-tax-table").child(0).child(0)
-      val incomeTax: Element  =
-        document(view).getElementById("pay-and-tax-table").child(0).child(1)
+      val taxableIncome: Element =
+        document(view).getElementById("taxable-income")
+      val incomeTaxPaid: Element =
+        document(view).getElementById("income-tax-paid")
 
       document(view).getElementsContainingText(employment.worksNumber).hasText shouldBe false
       document(view)
@@ -247,8 +249,8 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         .hasText                                                               shouldBe false
       startDate.text                                                             should include(employment.startDate.get.format(format))
       endDate.text                                                               should include(employment.endDate.get.format(format))
-      taxablePay.text                                                            should include("£4,906.80")
-      incomeTax.text                                                             should include("£1,007.34")
+      taxableIncome.text                                                         should include("£4,906.80")
+      incomeTaxPaid.text                                                         should include("£1,007.34")
     }
 
     "have correct Earlier Year Update details" in new ViewFixture {
@@ -346,9 +348,10 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           createEmploymentViewDetail(isPension = false, employment.employerName)
         )(request, messages, appConfig)
 
-        val taxablePay: Element = document(view).getElementById("pay-and-tax-table").child(0).child(1)
+        val taxableIncome: Element =
+          document(view).getElementById("taxable-income")
 
-        taxablePay.text should include(Messages("No data available"))
+        taxableIncome.text should include(Messages("No data available"))
       }
     }
 
