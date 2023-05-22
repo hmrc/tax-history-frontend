@@ -1,10 +1,7 @@
-import scoverage.ScoverageKeys
-import uk.gov.hmrc.DefaultBuildSettings._
-
 val appName = "tax-history-frontend"
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(SbtAutoBuildPlugin, play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     majorVersion := 3,
@@ -12,15 +9,14 @@ lazy val microservice = Project(appName, file("."))
     libraryDependencies ++= AppDependencies(),
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
-    name := appName,
     PlayKeys.playDefaultPort := 9996,
-    defaultSettings(),
-    retrieveManaged := true,
-    ScoverageKeys.coverageExcludedPackages := "<empty>;Reverse.*;.*AuthService.*;modgiels/.data/..*;controllers.auth.*;filters.*;forms.*;config.*;" +
-      ".*BuildInfo.*;.*helpers.*;.*Routes.*;controllers.testonly.TestOnlyController",
-    ScoverageKeys.coverageMinimumStmtTotal := 98,
-    ScoverageKeys.coverageFailOnMinimum := true,
-    ScoverageKeys.coverageHighlighting := true
+    retrieveManaged := true
+  )
+  .settings(
+    coverageExcludedPackages := "<empty>;.*helpers.*;.*Routes.*;",
+    coverageMinimumStmtTotal := 99,
+    coverageFailOnMinimum := true,
+    coverageHighlighting := true
   )
   .settings(
     TwirlKeys.templateImports ++= Seq(
