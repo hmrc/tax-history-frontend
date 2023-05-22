@@ -73,6 +73,19 @@ class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec 
       document(view).body.getElementById("clientId").attr("type") shouldBe "text"
     }
 
+    "display input field without data in session" in new ViewFixture {
+      val view: HtmlFormat.Appendable =
+        inject[select_client].apply(validForm)(fakeRequestWithTaxYear, messages, appConfig)
+      document(view).body.getElementById("clientId").attr("type") shouldBe "text"
+      document(view).body.getElementById("clientId").text()       shouldBe ""
+    }
+
+    "display input field with data in session" in new ViewFixture {
+      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)(fakeRequestWithNino, messages, appConfig)
+      document(view).body.getElementById("clientId").attr("type")  shouldBe "text"
+      document(view).body.getElementById("clientId").attr("value") shouldBe nino
+    }
+
     "display continue button" in new ViewFixture {
       val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
       document(view).body.getElementById("continueButton").text      shouldBe Messages(

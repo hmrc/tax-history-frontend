@@ -18,11 +18,12 @@ package controllers
 
 import config.AppConfig
 import form.SelectClientForm.selectClientForm
-import javax.inject.Inject
+import models.taxhistory.SelectClient
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class SelectClientController @Inject() (
@@ -45,7 +46,9 @@ class SelectClientController @Inject() (
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedAgent(AuthProviderAgents) {
-      Future.successful(Ok(selectClient(selectClientForm)))
+      val sessionNino = getNinoFromSession(request).map(_.nino).getOrElse("")
+      val filledForm  = selectClientForm.fill(SelectClient(clientId = sessionNino)).discardingErrors
+      Future.successful(Ok(selectClient(filledForm)))
     }
   }
 

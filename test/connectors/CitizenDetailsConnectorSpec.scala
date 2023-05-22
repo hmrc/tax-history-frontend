@@ -32,8 +32,7 @@ class CitizenDetailsConnectorSpec extends TestUtil with ControllerFixture with B
 
   val mockHttpClient: HttpClient = mock[HttpClient]
 
-  val nino: String = randomNino.toString()
-  val url: String  = s"http://localhost:9337/citizen-details/$nino/designatory-details/basic"
+  val url: String = s"http://localhost:9337/citizen-details/$nino/designatory-details/basic"
 
   trait LocalSetup {
     lazy val connector = new CitizenDetailsConnector(appConfig, mockHttpClient)

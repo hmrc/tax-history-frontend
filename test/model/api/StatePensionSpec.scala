@@ -18,7 +18,6 @@ package model.api
 
 import support.GuiceAppSpec
 import uk.gov.hmrc.time.TaxYear
-import utils.TestUtil
 
 import java.math.MathContext
 import java.time.temporal.ChronoUnit
@@ -26,7 +25,6 @@ import java.time.{Instant, LocalDate, ZoneOffset}
 
 class StatePensionSpec extends GuiceAppSpec {
 
-  val nino: String        = TestUtil.randomNino.toString()
   val currentTaxYear: Int = TaxYear.current.currentYear
   val cyMinus1: Int       = TaxYear.current.previous.currentYear
   val cyPlus1: Int        = TaxYear.current.next.currentYear

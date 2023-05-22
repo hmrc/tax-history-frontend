@@ -17,7 +17,7 @@
 package controllers
 
 import controllers.auth.AgentAuth
-import models.taxhistory.Person
+import models.taxhistory.{Person, SelectTaxYear}
 import play.api.i18n.I18nSupport
 import play.api.mvc._
 import uk.gov.hmrc.auth.core.authorise.Predicate
@@ -33,7 +33,8 @@ import scala.concurrent.{ExecutionContext, Future}
 abstract class BaseController @Inject() (cc: MessagesControllerComponents)(implicit ec: ExecutionContext)
     extends AgentAuth(cc)
     with I18nSupport
-    with TaxHistoryLogger {
+    with TaxHistoryLogger
+    with TaxHistorySessionKeys {
 
   /**
     * The URI to direct to for login.
@@ -46,9 +47,6 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   val serviceSignout: String
 
   lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
-
-  // todo : this needs to go with the rest of the session data
-  val ninoSessionKey = "USER_NINO"
 
   def logout(): Action[AnyContent] = Action.async {
     logger.info("Sign out of the service")
@@ -146,6 +144,9 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
 
   def getNinoFromSession(request: Request[_]): Option[Nino] =
     request.session.get(ninoSessionKey).map(Nino(_))
+
+  def getTaxYearFromSession(request: Request[_]): SelectTaxYear =
+    SelectTaxYear(request.session.get(taxYearSessionKey))
 
   def redirectToSelectClientPage: Future[Result] =
     Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))

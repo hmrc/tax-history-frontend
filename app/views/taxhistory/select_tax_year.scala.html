@@ -30,6 +30,7 @@
 
 @(form: Form[SelectTaxYear],
   taxYears:List[(String, String)],
+  taxYearFromSession: SelectTaxYear,
   clientName:Option[String],
   nino:String
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
@@ -62,7 +63,7 @@
                         visuallyHiddenText = Some(messages("govukErrorMessage.visuallyHiddenText"))
                     ))
                 } else { None },
-                items = SelectTaxYear.options(taxYears)
+                items = SelectTaxYear.options(taxYears, taxYearFromSession)
             ))
 
             @govukButton(Button(content = Text(messages("lbl.continue")), attributes = Map("id" -> "continueButton")))

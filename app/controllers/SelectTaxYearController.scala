@@ -69,7 +69,7 @@ class SelectTaxYearController @Inject() (
       (taxYearResponse.status: @unchecked) match {
         case OK                                                      =>
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-          httpStatus(selectTaxYear(form, taxYears, clientName, nino.toString))
+          httpStatus(selectTaxYear(form, taxYears, getTaxYearFromSession(request), clientName, nino.toString))
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
           logger.warn(
             s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status"
@@ -113,11 +113,10 @@ class SelectTaxYearController @Inject() (
           },
         validFormData =>
           authorisedForAgent { _ =>
+            val taxYear = validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt
             Future.successful(
-              Redirect(
-                routes.EmploymentSummaryController
-                  .getTaxHistory(validFormData.taxYear.getOrElse(throw new NoSuchElementException()).toInt)
-              )
+              Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear))
+                .addingToSession(taxYearSessionKey -> taxYear.toString)
             )
           }
       )

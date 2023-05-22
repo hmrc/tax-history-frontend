@@ -24,7 +24,6 @@ import support.BaseSpec
 import utils.TestUtil
 class SelectClientFormSpec extends BaseSpec with TestUtil {
 
-  lazy val nino: String    = randomNino.toString()
   private val maxChar: Int = 100
 
   "SelectClientForm" must {
