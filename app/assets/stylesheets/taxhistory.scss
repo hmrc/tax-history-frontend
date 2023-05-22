@@ -43,11 +43,11 @@ table tr.border-none td {
 
 @media all and (max-width: 959px) {
   .deskContent {display:block;}
-  .phoneContent {display:none;}
+  .phoneContent {display:block;}
 }
 
 @media all and (max-width: 640px) {
-  .deskContent {display:none;}
+  .deskContent {display:block;}
   .phoneContent {display:block;}
   .sidebar-padding-right {padding-right: 0px;}
   .blue-top {border-top: 10px solid #005EA5;}
