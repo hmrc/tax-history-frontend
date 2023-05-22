@@ -60,7 +60,7 @@ class GovUkWrapperViewSpec extends GuiceAppSpec with BaseViewSpec {
 
   private def document(view: HtmlFormat.Appendable): Document = Jsoup.parse(view.toString())
 
-  private def renderViewTest(method: String, view: HtmlFormat.Appendable): Unit = {
+  private def renderViewTest(method: String, view: HtmlFormat.Appendable): Unit =
     s"$method" should {
       "display the correct title" in {
         document(view).title shouldBe expectedPageTitle("page title")
@@ -70,15 +70,13 @@ class GovUkWrapperViewSpec extends GuiceAppSpec with BaseViewSpec {
         document(view).select("h1").text() shouldBe "page heading"
       }
     }
-  }
 
-  private def languageTest(scenario: String, language: String, view: HtmlFormat.Appendable): Unit = {
+  private def languageTest(scenario: String, language: String, view: HtmlFormat.Appendable): Unit =
     s"$scenario" should {
       s"render the html lang as $language" in {
         document(view).select("html").attr("lang") shouldBe language
       }
     }
-  }
 
   "GovUkWrapperView" when {
     renderViewTest(".apply", viewViaApply())
