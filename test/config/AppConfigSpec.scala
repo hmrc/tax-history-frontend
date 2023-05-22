@@ -62,7 +62,7 @@ class AppConfigSpec extends BaseSpec {
       }
 
       "loginContinue" in {
-        appConfig.loginContinue shouldBe "http://localhost:9996/tax-history/agent/select-client"
+        appConfig.loginContinue shouldBe "http://localhost:9996/tax-history/select-client"
       }
 
       "betaFeedbackUrl" in {

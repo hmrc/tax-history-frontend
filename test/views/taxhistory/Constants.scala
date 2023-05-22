@@ -16,12 +16,12 @@
 
 package views.taxhistory
 
-import java.util.UUID
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import model.api._
 import models.taxhistory.Person
 
 import java.time.LocalDate
+import java.util.UUID
 
 trait Constants {
 
@@ -30,94 +30,111 @@ trait Constants {
   val startDateFormatted   = "21 January 2016"
   val endDateFormatted     = "1 January 2017"
 
-  val emp1: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = Some(startDate),
-    endDate = Some(endDate),
-    startDateFormatted = Some(startDateFormatted),
-    endDateFormatted = Some(endDateFormatted),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = Some(OccupationalPension),
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
+  val emp1LiveOccupationalPension: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Paye 1",
+      employerName = "Employer 1",
+      startDate = Some(startDate),
+      endDate = Some(endDate),
+      startDateFormatted = Some(startDateFormatted),
+      endDateFormatted = Some(endDateFormatted),
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = Some(OccupationalPension),
+      employmentStatus = EmploymentStatus.Live,
+      worksNumber = "00191048716"
+    )
 
-  val emp2: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-2",
-    employerName = "employer-2",
-    startDate = Some(startDate),
-    endDate = None,
-    startDateFormatted = Some(startDateFormatted),
-    endDateFormatted = Some("Ongoing"),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
+  val emp2Live: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Paye 2",
+      employerName = "Employer 2",
+      startDate = Some(startDate),
+      endDate = None,
+      startDateFormatted = Some(startDateFormatted),
+      endDateFormatted = Some("Ongoing"),
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = None,
+      employmentStatus = EmploymentStatus.Live,
+      worksNumber = "00191048716"
+    )
 
-  val emp3: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-2",
-    employerName = "employer-2",
-    startDate = Some(startDate),
-    startDateFormatted = Some(startDateFormatted),
-    endDateFormatted = Some("Ongoing"),
-    endDate = None,
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Ceased,
-    worksNumber = "00191048716"
-  )
+  val emp3Ceased: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Paye 3",
+      employerName = "Employer 3",
+      startDate = Some(startDate),
+      startDateFormatted = Some(startDateFormatted),
+      endDateFormatted = Some("Ongoing"),
+      endDate = None,
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = None,
+      employmentStatus = EmploymentStatus.Ceased,
+      worksNumber = "00191048716"
+    )
 
-  val emp4: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-3",
-    employerName = "employer-3",
-    startDate = Some(startDate),
-    endDate = None,
-    startDateFormatted = Some(startDateFormatted),
-    endDateFormatted = Some("No record"),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Unknown,
-    worksNumber = "00191048716"
-  )
+  val emp4UnknownEmploymentStatus: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Paye 4",
+      employerName = "Employer 4",
+      startDate = Some(startDate),
+      endDate = None,
+      startDateFormatted = Some(startDateFormatted),
+      endDateFormatted = Some("No record"),
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = None,
+      employmentStatus = EmploymentStatus.Unknown,
+      worksNumber = "00191048716"
+    )
 
-  val pension: Employment      = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-3",
-    employerName = "employer-3",
-    startDate = Some(startDate),
-    endDate = None,
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = Some(OccupationalPension),
-    employmentStatus = EmploymentStatus.Unknown,
-    worksNumber = "00191048716"
-  )
+  val pension: Employment      =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Paye 5",
+      employerName = "Employer 5",
+      startDate = Some(startDate),
+      endDate = None,
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = Some(OccupationalPension),
+      employmentStatus = EmploymentStatus.Unknown,
+      worksNumber = "00191048716"
+    )
   // scalastyle:off magic.number
-  val totalIncome: TotalIncome = TotalIncome(
-    employmentIncomeAndTax = List(
-      EmploymentIncomeAndTax(emp2.employmentId.toString, BigDecimal(100), BigDecimal(300)),
-      EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(100), BigDecimal(200)),
-      EmploymentIncomeAndTax(emp1.employmentId.toString, BigDecimal(100), BigDecimal(200))
-    ),
-    employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
-    pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
-    employmentTaxTotalIncludingEYU = BigDecimal(300),
-    pensionTaxTotalIncludingEYU = BigDecimal(400)
-  )
+  val totalIncome: TotalIncome =
+    TotalIncome(
+      employmentIncomeAndTax = List(
+        EmploymentIncomeAndTax(emp2Live.employmentId.toString, BigDecimal(100), BigDecimal(300)),
+        EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(100), BigDecimal(200)),
+        EmploymentIncomeAndTax(emp1LiveOccupationalPension.employmentId.toString, BigDecimal(100), BigDecimal(200))
+      ),
+      employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
+      pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
+      employmentTaxTotalIncludingEYU = BigDecimal(300),
+      pensionTaxTotalIncludingEYU = BigDecimal(400)
+    )
 
-  val employments: List[Employment]               = List(emp1, emp2, emp3, emp4)
-  val employmentWithPensions: List[Employment]    = List(emp1, emp2, pension)
-  val employmentsNoPensions: List[Employment]     = List(emp2, emp3, emp4)
+  val employments: List[Employment] =
+    List(emp1LiveOccupationalPension, emp2Live, emp3Ceased, emp4UnknownEmploymentStatus)
+
+  val employmentsWithJobseekers: List[Employment] =
+    List(
+      emp1LiveOccupationalPension,
+      emp1LiveOccupationalPension.copy(employmentPaymentType = Some(JobseekersAllowance)),
+      emp2Live,
+      emp3Ceased,
+      emp4UnknownEmploymentStatus
+    )
+
+  val employmentWithPensions: List[Employment]    = List(emp1LiveOccupationalPension, emp2Live, pension)
+  val employmentsNoPensions: List[Employment]     = List(emp2Live, emp3Ceased, emp4UnknownEmploymentStatus)
   val employmentWithPensionOnly: List[Employment] = List(pension)
 
   val allowance1: Allowance = Allowance(
@@ -146,62 +163,68 @@ trait Constants {
     TaxAccount(UUID.randomUUID(), Some(BigDecimal(oDR)), Some(BigDecimal(uA)), Some(BigDecimal(aPC)))
   )
 
-  val statePension: StatePension = StatePension(
-    grossAmount = 1.0,
-    typeDescription = "test",
-    paymentFrequency = None,
-    startDate = Some(LocalDate.of(2000, 12, 30))
-  )
+  val statePension: StatePension =
+    StatePension(
+      grossAmount = 1.0,
+      typeDescription = "test",
+      paymentFrequency = None,
+      startDate = Some(LocalDate.of(2000, 12, 30))
+    )
 
-  val eyu1: EarlierYearUpdate = EarlierYearUpdate(
-    taxablePayEYU = 0,
-    taxEYU = 8.99,
-    studentLoanEYU = Some(10.0),
-    receivedDate = startDate,
-    receivedDateFormatted = Some(startDateFormatted)
-  )
+  val eyu1: EarlierYearUpdate =
+    EarlierYearUpdate(
+      taxablePayEYU = 0,
+      taxEYU = 8.99,
+      studentLoanEYU = Some(10.0),
+      receivedDate = startDate,
+      receivedDateFormatted = Some(startDateFormatted)
+    )
 
-  val eyu2: EarlierYearUpdate = EarlierYearUpdate(
-    taxablePayEYU = 10,
-    taxEYU = 18.99,
-    receivedDate = LocalDate.parse("2016-05-21"),
-    receivedDateFormatted = Some("21 May 2016")
-  )
+  val eyu2: EarlierYearUpdate =
+    EarlierYearUpdate(
+      taxablePayEYU = 10,
+      taxEYU = 18.99,
+      receivedDate = LocalDate.parse("2016-05-21"),
+      receivedDateFormatted = Some("21 May 2016")
+    )
 
   val eyuList: List[EarlierYearUpdate] = List(eyu1, eyu2)
 
-  val payAndTax: PayAndTax = PayAndTax(
-    taxablePayTotal = Some(4896.80),
-    taxablePayTotalIncludingEYU = Some(4906.80),
-    taxTotal = Some(979.36),
-    taxTotalIncludingEYU = Some(1007.34),
-    studentLoan = Some(101.00),
-    studentLoanIncludingEYU = Some(111.0),
-    paymentDate = Some(LocalDate.parse("2016-02-20")),
-    earlierYearUpdates = eyuList
-  )
+  val payAndTax: PayAndTax =
+    PayAndTax(
+      taxablePayTotal = Some(4896.80),
+      taxablePayTotalIncludingEYU = Some(4906.80),
+      taxTotal = Some(979.36),
+      taxTotalIncludingEYU = Some(1007.34),
+      studentLoan = Some(101.00),
+      studentLoanIncludingEYU = Some(111.0),
+      paymentDate = Some(LocalDate.parse("2016-02-20")),
+      earlierYearUpdates = eyuList
+    )
 
-  val payAndTaxNoTotal: PayAndTax = PayAndTax(
-    taxablePayTotal = None,
-    taxablePayTotalIncludingEYU = None,
-    taxTotal = None,
-    taxTotalIncludingEYU = None,
-    studentLoan = Some(101.00),
-    studentLoanIncludingEYU = Some(101.0),
-    paymentDate = Some(LocalDate.parse("2016-02-20")),
-    earlierYearUpdates = List.empty
-  )
+  val payAndTaxNoTotal: PayAndTax =
+    PayAndTax(
+      taxablePayTotal = None,
+      taxablePayTotalIncludingEYU = None,
+      taxTotal = None,
+      taxTotalIncludingEYU = None,
+      studentLoan = Some(101.00),
+      studentLoanIncludingEYU = Some(101.0),
+      paymentDate = Some(LocalDate.parse("2016-02-20")),
+      earlierYearUpdates = List.empty
+    )
 
-  val payAndTaxNoStudentLoan: PayAndTax = PayAndTax(
-    taxablePayTotal = Some(4896.80),
-    taxablePayTotalIncludingEYU = Some(4906.80),
-    taxTotal = Some(979.36),
-    taxTotalIncludingEYU = Some(1007.34),
-    studentLoan = None,
-    studentLoanIncludingEYU = None,
-    paymentDate = Some(LocalDate.parse("2016-02-20")),
-    earlierYearUpdates = eyuList
-  )
+  val payAndTaxNoStudentLoan: PayAndTax =
+    PayAndTax(
+      taxablePayTotal = Some(4896.80),
+      taxablePayTotalIncludingEYU = Some(4906.80),
+      taxTotal = Some(979.36),
+      taxTotalIncludingEYU = Some(1007.34),
+      studentLoan = None,
+      studentLoanIncludingEYU = None,
+      paymentDate = Some(LocalDate.parse("2016-02-20")),
+      earlierYearUpdates = eyuList
+    )
 
   val uuid: UUID = UUID.randomUUID()
 
@@ -236,43 +259,46 @@ trait Constants {
     CompanyBenefit(uuid, "NonCashBenefit", 1000.00, isForecastBenefit = true)
   )
 
-  val employment: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "Payroll ID",
-    employerName = "employer-1",
-    startDate = Some(startDate),
-    endDate = Some(endDate),
-    startDateFormatted = Some(startDateFormatted),
-    endDateFormatted = Some(endDateFormatted),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
+  val employment: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Payroll ID",
+      employerName = "employer-1",
+      startDate = Some(startDate),
+      endDate = Some(endDate),
+      startDateFormatted = Some(startDateFormatted),
+      endDateFormatted = Some(endDateFormatted),
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = None,
+      employmentStatus = EmploymentStatus.Live,
+      worksNumber = "00191048716"
+    )
 
-  val employmentWithJobseekers: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = Some(startDate),
-    endDate = Some(endDate),
-    companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
-    payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
-    employmentPaymentType = Some(JobseekersAllowance),
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
+  val employmentWithJobseekers: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "paye-1",
+      employerName = "employer-1",
+      startDate = Some(startDate),
+      endDate = Some(endDate),
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = Some(JobseekersAllowance),
+      employmentStatus = EmploymentStatus.Live,
+      worksNumber = "00191048716"
+    )
 
-  val employmentNoEndDate: Employment = Employment(
-    employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-    payeReference = "paye-1",
-    employerName = "employer-1",
-    startDate = Some(startDate),
-    employmentPaymentType = None,
-    employmentStatus = EmploymentStatus.Live,
-    worksNumber = "00191048716"
-  )
+  val employmentNoEndDate: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "paye-1",
+      employerName = "employer-1",
+      startDate = Some(startDate),
+      employmentPaymentType = None,
+      employmentStatus = EmploymentStatus.Live,
+      worksNumber = "00191048716"
+    )
 
   val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 

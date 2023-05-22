@@ -92,8 +92,10 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     }
 
     "display correct heading" in new ViewFixture {
+
       val view: HtmlFormat.Appendable =
         inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
+
       heading.text() mustBe messages("employmenthistory.header")
 
       document(view).getElementById("taxYearRange").text must be(
@@ -101,33 +103,71 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       )
     }
 
-    "display employments" in new ViewFixture {
-      val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
+    "have a table of employments and" should {
 
-      val viewDetailsElements: Element = document(view).getElementById("view-link-employment-0")
-      viewDetailsElements.html must include(
-        "<span aria-hidden=\"true\">" + messages("employmenthistory.view") + "</span> " +
-          "<span class=\"govuk-visually-hidden\">" + messages(
-            "employmenthistory.view.record.hidden",
-            s"$firstName $surname",
-            "employer-2"
-          ) + "</span>"
-      )
+      def viewLinkSpan(linkMessage: String, visuallyHiddenMessage: String) =
+        "<span aria-hidden=\"true\">" + linkMessage + "</span> " +
+          "<span class=\"govuk-visually-hidden\">" + visuallyHiddenMessage + "</span>"
 
-      val viewDetailsElementsNoRecord: Element = document(view).getElementById("view-employment-2")
-      viewDetailsElementsNoRecord.html must include(messages("lbl.none"))
+      "for first employment with JobSeeker's, display view link correct content" in new ViewFixture {
 
-      val viewPensionElements: Element = document(view).getElementById("view-pension-0")
-      viewPensionElements.attr("href") mustBe "/tax-history/single-record"
-      viewPensionElements.html must include(
-        "<span aria-hidden=\"true\">" + messages("employmenthistory.view") + "</span> " +
-          "<span class=\"govuk-visually-hidden\">" + messages(
-            "employmenthistory.view.record.hidden",
-            s"$firstName $surname",
-            "employer-1"
-          ) + "</span>"
-      )
+        val view: HtmlFormat.Appendable =
+          inject[employment_summary]
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+
+        val viewDetailsElement1: Element = document(view).getElementById("view-link-employment-0")
+
+        viewDetailsElement1.html must
+          include(
+            viewLinkSpan("View", "View Jobseeker's Allowance employment record")
+          )
+      }
+
+      "for second employment NO JobSeeker's, display view link correct content" in new ViewFixture {
+
+        val view: HtmlFormat.Appendable =
+          inject[employment_summary]
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+
+        val viewDetailsElement2: Element = document(view).getElementById("view-link-employment-1")
+
+        viewDetailsElement2.html must include(
+          viewLinkSpan("View", "View Employer 2 employment record")
+        )
+      }
+
+      "for third employment Ceased, display Action 'None' since there is no view link" in new ViewFixture {
+
+        val view: HtmlFormat.Appendable =
+          inject[employment_summary]
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+
+        val viewDetailsElementsNoRecord: Element =
+          document(view).getElementById("view-employment-3")
+
+        viewDetailsElementsNoRecord.html must include("None")
+      }
+    }
+
+    "have a table for pensions and" should {
+
+      def viewLinkSpan(linkMessage: String, visuallyHiddenMessage: String) =
+        "<span aria-hidden=\"true\">" + linkMessage + "</span> " +
+          "<span class=\"govuk-visually-hidden\">" + visuallyHiddenMessage + "</span>"
+
+      "for pensions section, display correct content" in new ViewFixture {
+
+        val view: HtmlFormat.Appendable =
+          inject[employment_summary]
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+
+        val viewPensionElements: Element = document(view).getElementById("view-pension-0")
+
+        viewPensionElements.attr("href") mustBe "/tax-history/single-record"
+
+        viewPensionElements.html must
+          include(viewLinkSpan("View", "View Employer 1 pension record"))
+      }
     }
 
     "have correct employment content" in new ViewFixture {
@@ -138,7 +178,9 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       document(view)
         .getElementsMatchingOwnText(messages("employmenthistory.table.header.employment"))
         .hasText mustBe true
+
       document(view).getElementsMatchingOwnText(messages("employmenthistory.table.header.pensions")).hasText mustBe true
+
       employments.foreach { emp =>
         document(view).getElementsContainingOwnText(emp.employerName).hasText mustBe true
         document(view)
@@ -168,6 +210,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
           .getElementsContainingOwnText(messages(s"employmenthistory.al.${al.iabdType}"))
           .hasText mustBe true
       }
+
       val caveatParagraph: String = document(view).getElementsByClass("govuk-inset-text").text
 
       caveatParagraph.contains(messages("employmenthistory.caveat.p.text")) mustBe true
@@ -380,10 +423,17 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Show correct total amounts for two employers and one pension" in new ViewFixture {
     val employer1: Employment                    =
-      emp1.copy(employmentPaymentType = Some(JobseekersAllowance), employmentId = UUID.randomUUID())
-    val employer2: Employment                    = emp1.copy(employmentPaymentType = None, employmentId = UUID.randomUUID())
+      emp1LiveOccupationalPension.copy(
+        employmentPaymentType = Some(JobseekersAllowance),
+        employmentId = UUID.randomUUID()
+      )
+    val employer2: Employment                    =
+      emp1LiveOccupationalPension.copy(employmentPaymentType = None, employmentId = UUID.randomUUID())
     val pension: Employment                      =
-      emp1.copy(employmentPaymentType = Some(OccupationalPension), employmentId = UUID.randomUUID())
+      emp1LiveOccupationalPension.copy(
+        employmentPaymentType = Some(OccupationalPension),
+        employmentId = UUID.randomUUID()
+      )
     val employmentWithPensions: List[Employment] = List(employer1, employer2, pension)
     val incomeTotals: TotalIncome                = totalIncome.copy(employmentIncomeAndTax =
       List(

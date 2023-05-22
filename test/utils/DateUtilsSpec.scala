@@ -50,90 +50,90 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
     }
 
     "format dates abbreviating the month correctly for an employment object" in {
-      val formattedEmployment = dateUtils.formatEmploymentDatesAbbrMonth(emp1)
+      val formattedEmployment = dateUtils.formatEmploymentDatesAbbrMonth(emp1LiveOccupationalPension)
       formattedEmployment.startDateFormatted.get mustBe "21 Jan 2016"
       formattedEmployment.endDateFormatted.get mustBe "1 Jan 2017"
 
-      val formattedEmploymentWelsh = dateUtils.formatEmploymentDatesAbbrMonth(emp1)(welshMessages)
+      val formattedEmploymentWelsh = dateUtils.formatEmploymentDatesAbbrMonth(emp1LiveOccupationalPension)(welshMessages)
       formattedEmploymentWelsh.startDateFormatted.get mustBe "21 Ion 2016"
       formattedEmploymentWelsh.endDateFormatted.get mustBe "1 Ion 2017"
     }
 
     "format dates correctly for an employment object" in {
-      val formattedEmployment = dateUtils.formatEmploymentDates(emp1)
+      val formattedEmployment = dateUtils.formatEmploymentDates(emp1LiveOccupationalPension)
       formattedEmployment.startDateFormatted.get mustBe "21 January 2016"
       formattedEmployment.endDateFormatted.get mustBe "1 January 2017"
 
-      val formattedEmploymentWelsh = dateUtils.formatEmploymentDates(emp1)(welshMessages)
+      val formattedEmploymentWelsh = dateUtils.formatEmploymentDates(emp1LiveOccupationalPension)(welshMessages)
       formattedEmploymentWelsh.startDateFormatted.get mustBe "21 Ionawr 2016"
       formattedEmploymentWelsh.endDateFormatted.get mustBe "1 Ionawr 2017"
     }
 
     "return noRecord for start date given no start date" in {
-      dateUtils.formatEmploymentDates(emp1.copy(startDate = None)).startDateFormatted.get mustBe "No record"
+      dateUtils.formatEmploymentDates(emp1LiveOccupationalPension.copy(startDate = None)).startDateFormatted.get mustBe "No record"
 
       dateUtils
-        .formatEmploymentDates(emp1.copy(startDate = None))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(startDate = None))(welshMessages)
         .startDateFormatted
         .get mustBe "Dim cofnod"
     }
 
     "return noRecord for end date given a potentially ceased status" in {
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.PotentiallyCeased))
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.PotentiallyCeased))
         .endDateFormatted
         .get mustBe "No record"
 
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.PotentiallyCeased))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.PotentiallyCeased))(welshMessages)
         .endDateFormatted
         .get mustBe "Dim cofnod"
     }
 
     "return end date given an unknown status" in {
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Unknown))
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Unknown))
         .endDateFormatted
         .get mustBe "1 January 2017"
 
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Unknown))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Unknown))(welshMessages)
         .endDateFormatted
         .get mustBe "1 Ionawr 2017"
     }
 
     "return noRecord for end date given an unknown status and no end date" in {
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None))
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None))
         .endDateFormatted
         .get mustBe "No record"
 
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None))(welshMessages)
         .endDateFormatted
         .get mustBe "Dim cofnod"
     }
 
     "return end date given a live status" in {
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Live))
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Live))
         .endDateFormatted
         .get mustBe "1 January 2017"
 
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Live))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Live))(welshMessages)
         .endDateFormatted
         .get mustBe "1 Ionawr 2017"
     }
 
     "return ongoing for end date given a live status and no end date" in {
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Live, endDate = None))
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Live, endDate = None))
         .endDateFormatted
         .get mustBe "Ongoing"
 
       dateUtils
-        .formatEmploymentDates(emp1.copy(employmentStatus = EmploymentStatus.Live, endDate = None))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Live, endDate = None))(welshMessages)
         .endDateFormatted
         .get mustBe "Parhaus"
     }

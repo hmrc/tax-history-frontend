@@ -184,7 +184,7 @@
                             <td class="govuk-table__cell"  data-label="@messages("lbl.actions")">
                                 <a class="govuk-link" href="/tax-history/single-record@employment.employmentURI" id=@{s"view-link-employment-${index}"}>
                                     <span aria-hidden="true">@messages("employmenthistory.view")</span>
-                                    <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName, ControllerUtils.isJobSeekerAllowance(employment))</span>
+                                        <span class="govuk-visually-hidden">@messages("employmenthistory.view.employment.record.link.hidden", ControllerUtils.isJobSeekerAllowance(employment))</span>
                                 </a>
                             </td>
                         } else {
@@ -234,7 +234,7 @@
                         <td class="govuk-table__cell"  data-label="@messages("lbl.actions")">
                             <a class="govuk-link" href="/tax-history/single-record@employment.employmentURI" id=@{s"view-pension-${index}"}>
                                 <span aria-hidden="true">@messages("employmenthistory.view")</span>
-                                <span class="govuk-visually-hidden">@messages("employmenthistory.view.record.hidden",getName,employment.employerName)</span>
+                                <span class="govuk-visually-hidden">@messages("employmenthistory.view.pension.link.hidden", employment.employerName)</span>
                             </a>
                         </td>
                     </tr>
