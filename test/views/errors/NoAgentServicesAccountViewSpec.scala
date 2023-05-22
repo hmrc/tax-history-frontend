@@ -17,52 +17,65 @@
 package views.errors
 
 import play.twirl.api.HtmlFormat
-import support.{BaseSpec, GuiceAppSpec}
-import utils.TestUtil
+import support.GuiceAppSpec
 import views.html.errors.no_agent_services_account
 import views.{BaseViewSpec, Fixture}
 
-class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
+class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
 
-  trait ViewFixture extends Fixture {
-    val view: HtmlFormat.Appendable                = inject[no_agent_services_account].apply()(fakeRequest, messages, appConfig)
-    val viewHtmlViaRender: HtmlFormat.Appendable   =
-      inject[no_agent_services_account].render(fakeRequest, messages, appConfig)
-    val viewHtmlViaFunction: HtmlFormat.Appendable =
-      inject[no_agent_services_account].f()(fakeRequest, messages, appConfig)
+  private val titleAndHeadingContent: String = "Your agent business does not have an agent services account"
+  private val pContent: String               =
+    "If you are authorised to act on behalf of your agent business, you can create an agent services account."
+
+  private val viewHtmlViaApply: HtmlFormat.Appendable    =
+    inject[no_agent_services_account].apply()(fakeRequest, messages, appConfig)
+  private val viewHtmlViaRender: HtmlFormat.Appendable   =
+    inject[no_agent_services_account].render(fakeRequest, messages, appConfig)
+  private val viewHtmlViaFunction: HtmlFormat.Appendable =
+    inject[no_agent_services_account].f()(fakeRequest, messages, appConfig)
+
+  private class ViewFixture(renderedView: HtmlFormat.Appendable) extends Fixture {
+    val view: HtmlFormat.Appendable = renderedView
   }
 
-  val titleAndHeadingContent = "Your agent business does not have an Agent Services account"
-  val p1Content              = "If you are authorised to act on their behalf, you can create an account now."
+  "NoAgentServicesAccountView" when {
+    def test(method: String, view: HtmlFormat.Appendable): Unit =
+      s"$method" should {
+        "have the correct title" in new ViewFixture(view) {
+          document(view).title shouldBe expectedPageTitle(titleAndHeadingContent)
+        }
 
-  "NoAgentServicesAccountView" should {
+        "have the correct heading" in new ViewFixture(view) {
+          document(view).select("h1").text() shouldBe titleAndHeadingContent
+        }
 
-    "have the correct title when no form errors have occurred" in new ViewFixture {
-      document(view).title shouldBe expectedPageTitle(titleAndHeadingContent)
-    }
+        "have the correct p element content" in new ViewFixture(view) {
+          document(view).select("#main-content > div > div > div > div > p").text() shouldBe pContent
+        }
 
-    "have the correct heading" in new ViewFixture {
-      document(view).select("h1").text() shouldBe titleAndHeadingContent
-    }
+        "have the correct a element content" in new ViewFixture(view) {
+          document(view)
+            .select(
+              "#main-content > div > div > div > div > p > a"
+            )
+            .text() shouldBe "create an agent services account"
+        }
 
-    "have the correct p element content" in new ViewFixture {
-      document(view).select("#main-content > div > div > div > div > p").text() shouldBe p1Content
-    }
-
-    "view .render()" should {
-      "render correctly" in new ViewFixture {
-        document(viewHtmlViaRender).title                                                      shouldBe expectedPageTitle(titleAndHeadingContent)
-        document(viewHtmlViaRender).select("h1").text()                                        shouldBe titleAndHeadingContent
-        document(viewHtmlViaRender).select("#main-content > div > div > div > div > p").text() shouldBe p1Content
+        "have the correct a element link" in new ViewFixture(view) {
+          document(view)
+            .select(
+              "#main-content > div > div > div > div > p > a"
+            )
+            .attr("href") shouldBe "https://www.gov.uk/guidance/get-an-hmrc-agent-services-account"
+        }
       }
-    }
 
-    "view .f()" when {
-      "supplied the correct parameters create the view" in new ViewFixture {
-        document(viewHtmlViaFunction).title                                                      shouldBe expectedPageTitle(titleAndHeadingContent)
-        document(viewHtmlViaFunction).select("h1").text()                                        shouldBe titleAndHeadingContent
-        document(viewHtmlViaFunction).select("#main-content > div > div > div > div > p").text() shouldBe p1Content
-      }
-    }
+    val input: Seq[(String, HtmlFormat.Appendable)] = Seq(
+      (".apply", viewHtmlViaApply),
+      (".render", viewHtmlViaRender),
+      (".f", viewHtmlViaFunction)
+    )
+
+    input.foreach(args => (test _).tupled(args))
   }
 }

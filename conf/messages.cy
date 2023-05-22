@@ -238,7 +238,8 @@ employmenthistory.technical.error.title=Nid yw’r gwasanaeth ar gael
 employmenthistory.technical.error.header=Nid yw’r gwasanaeth ar gael
 employmenthistory.technical.error.message=Rydym yn cael problemau technegol, felly ni fyddwch yn gallu defnyddio’r gwasanaeth ar hyn o bryd. Rhowch gynnig arall arni yn nes ymlaen.
 employmenthistory.no.agent.services.account.title=Nid oes cyfrif gwasanaethau asiant gan eich busnes asiant
-employmenthistory.no.agent.services.account.p1=Os oes gennych awdurdod i weithredu ar ei ran, gallwch greu cyfrif nawr.
+employmenthistory.no.agent.services.account.p=Os ydych wedi’ch awdurdodi i weithredu ar ran eich busnes asiant, gallwch
+employmenthistory.no.agent.services.account.link.text=creu cyfrif gwasanaethau asiant
 
 # General Messages
 # Error messages for digital services

@@ -31,8 +31,10 @@ import uk.gov.hmrc.auth.core.{AffinityGroup, AuthConnector, Enrolments}
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
 import views.html.taxhistory.employment_detail
-
 import java.util.UUID
+
+import models.taxhistory.Person
+
 import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec {
@@ -160,12 +162,25 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
     }
 
-    "successfully load Employment details page" in new LocalSetup {
+    "successfully load Employment details page with name when citizen details returns 200 OK with a person with name" in new LocalSetup {
+      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequestWithNino)
 
-      val result: Future[Result] =
-        controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe OK
+      status(result)        shouldBe OK
       contentAsString(result) should include("first name second name")
+    }
+
+    "successfully load confirm details page with nino when citizen details returns 200 OK with a person with no name" in new LocalSetup {
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        .thenReturn(
+          Future.successful(
+            HttpResponse(status = OK, json = Json.toJson(Person(None, None, Some(false))), headers = Map.empty)
+          )
+        )
+
+      val result: Future[Result] = controller.getEmploymentDetails(employmentId.toString, taxYear)(fakeRequestWithNino)
+
+      status(result)        shouldBe OK
+      contentAsString(result) should include(nino)
     }
 
     "redirect to /select-client page when there is no nino in session" in new LocalSetup {

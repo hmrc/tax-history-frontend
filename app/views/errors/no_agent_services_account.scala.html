@@ -20,6 +20,7 @@
 @this(
     govukWrapper: views.html.govuk_wrapper,
     p: helpers.p,
+    link: helpers.link,
     twoThirdsMainContent: TwoThirdsMainContent
 )
 
@@ -28,9 +29,7 @@
 @govukWrapper(PageTitle(messages("employmenthistory.no.agent.services.account.title"))) {
 
     @twoThirdsMainContent {
-
         <h1 class="govuk-heading-xl">@messages("employmenthistory.no.agent.services.account.title")</h1>
-        @p{@messages("employmenthistory.no.agent.services.account.p1")}
-
+        @p{@messages("employmenthistory.no.agent.services.account.p") @link("https://www.gov.uk/guidance/get-an-hmrc-agent-services-account", messages("employmenthistory.no.agent.services.account.link.text")).}
     }
 }

@@ -30,28 +30,49 @@ class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
   implicit val request: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "/tax-history/we-signed-you-out").withCSRFToken
 
-  trait ViewFixture extends Fixture {
-    val href: String     = "/tax-history/sign-in"
-    val linkText: String = messages("signedOut.signIn")
+  private val viewViaApply: HtmlFormat.Appendable = injected[SignedOut].apply()(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
+
+  private val viewViaRender: HtmlFormat.Appendable = injected[SignedOut].render(
+    request = request,
+    messages = messages,
+    appConfig = appConfig
+  )
+
+  private val viewViaF: HtmlFormat.Appendable = injected[SignedOut].f()(fakeRequest, messages, appConfig)
+
+  private class ViewFixture(renderedView: HtmlFormat.Appendable) extends Fixture {
+    val view: HtmlFormat.Appendable = renderedView
+    val href: String                = "/tax-history/sign-in"
+    val linkText: String            = "Sign in"
   }
 
-  "signedOutView" must {
+  "SignedOutView" when {
+    def test(method: String, view: HtmlFormat.Appendable): Unit =
+      s"$method" should {
+        "have the correct title" in new ViewFixture(view) {
+          document(view).title shouldBe expectedPageTitle("For your security, we signed you out")
+        }
 
-    "have the correct title" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      document(view).title shouldBe expectedPageTitle(messages("signedOut.title"))
-    }
+        "have the correct heading" in new ViewFixture(view) {
+          document(view).select("h1").text() shouldBe "For your security, we signed you out"
+        }
 
-    "have the correct heading" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      document(view).select("h1").text() shouldBe messages("signedOut.title")
-    }
+        "have the correct signIn link references" in new ViewFixture(view) {
+          val aRefText: Element = document(view).select(s"a[href=$href]").first()
+          aRefText.text.trim() mustBe linkText
+        }
+      }
 
-    "have the correct signIn link references" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[SignedOut].apply()
-      val aRefText: Element           = document(view).select(s"a[href=$href]").first()
-      aRefText.text.trim() mustBe linkText.trim
-    }
+    val input: Seq[(String, HtmlFormat.Appendable)] = Seq(
+      (".apply", viewViaApply),
+      (".render", viewViaRender),
+      (".f", viewViaF)
+    )
 
+    input.foreach(args => (test _).tupled(args))
   }
 }

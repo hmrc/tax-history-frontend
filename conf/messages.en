@@ -237,8 +237,9 @@ employmenthistory.no.data.select.client.link.text=enter another client''s Nation
 employmenthistory.technical.error.title=Service unavailable
 employmenthistory.technical.error.header=Service unavailable
 employmenthistory.technical.error.message=We''re experiencing technical problems, so you won''t be able to use the service at the moment. Try again later.
-employmenthistory.no.agent.services.account.title=Your agent business does not have an Agent Services account
-employmenthistory.no.agent.services.account.p1=If you are authorised to act on their behalf, you can create an account now.
+employmenthistory.no.agent.services.account.title=Your agent business does not have an agent services account
+employmenthistory.no.agent.services.account.p=If you are authorised to act on behalf of your agent business, you can
+employmenthistory.no.agent.services.account.link.text=create an agent services account
 
 # General Messages
 # Error messages for digital services
