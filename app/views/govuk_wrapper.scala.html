@@ -76,11 +76,8 @@
 }
 
 @content = {
-    <div class="govuk-grid-row">
-        <div class="govuk-grid-column-full govuk-width-container">
-            @mainContent
-        </div>
-    </div>
+
+    @mainContent
 
     <div class="govuk-!-font-size-19">
         @hmrcReportTechnicalIssueHelper()
@@ -165,6 +162,6 @@
     headerBlock = header,
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
-    mainClasses = Some("govuk-main-wrapper--auto-spacing"),
+    mainClasses = Some("govuk-width-container"),
     bodyEndBlock = Some(hmrcScripts())
 )(content)

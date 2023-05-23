@@ -38,35 +38,33 @@
 @govukWrapper(PageTitle(employmentViewDetail.title), backLink = Some(controllers.routes.EmploymentSummaryController.getTaxHistory(taxYear).url)) {
 
 <div class="govuk-grid-row">
-    <div class="govuk-grid-column-two-thirds">
-        <header class="hmrc-page-heading no-top-margin">
-            <h1 class="govuk-heading-xl no-bottom-margin">
-                @employmentViewDetail.heading
-            </h1>
-            <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
-                <span class="govuk-visually-hidden">This section relates to </span>
-                @clientNameOrNino
-            </p>
-            <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear + 1).toString)</span>
-        </header>
-        @payments()
+<div class="govuk-grid-column-two-thirds">
+    <header class="hmrc-page-heading no-top-margin">
+        <h1 class="govuk-heading-xl no-bottom-margin">
+            @employmentViewDetail.heading
+        </h1>
+        <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
+            <span class="govuk-visually-hidden">This section relates to </span>
+            @clientNameOrNino
+        </p>
+        <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear + 1).toString)</span>
+    </header>
 
-        @if(!employment.isJobseekersAllowance) {
-            @earlierYearUpdates()
+    @payments()
 
-            @companyBenefitsInfo()
-
-            @taxCodeBreakdown()
-        }
-
-    </div>
-    <div class="govuk-grid-column-one-third">
-        <section class="section subsection">
-            <section class="employment-summary deskContent govuk-section-break" id="details-bar-desktop">
-                <div class="no-top-margin" id="employment-data-desktop">@employmentDetails()</div>
-            </section>
+    @if(!employment.isJobseekersAllowance) {
+        @earlierYearUpdates()
+        @companyBenefitsInfo()
+        @taxCodeBreakdown()
+    }
+</div>
+<div class="govuk-grid-column-one-third">
+    <section class="section subsection">
+        <section class="employment-summary deskContent govuk-section-break" id="details-bar-desktop">
+            <div class="no-top-margin" id="employment-data-desktop">@employmentDetails()</div>
         </section>
-    </div>
+    </section>
+</div>
 </div>
 }
 

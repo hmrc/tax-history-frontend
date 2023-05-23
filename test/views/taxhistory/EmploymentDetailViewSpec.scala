@@ -79,13 +79,13 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
     val incomeSourceWithDeductionsAndAllowances: Option[IncomeSource] =
       Some(IncomeSource(1, 1, None, deductions, allowances, "1100Y", None, 1, ""))
 
-    val taxCodeH2                   = "#main-content > div > div > div > div > h2"
+    val taxCodeH2                   = "#main-content > div > div > h2"
     val taxCodeAllowancesH3         = "#tax-code-allowances"
     val taxCodeDeductionsH3         = "#tax-code-deductions"
-    val taxCodeSubheading           = "#main-content > div > div > div > div > div > dl > dt"
-    val taxCodeNumber               = "#main-content > div > div > div > div > div > dl > dd"
-    val deductionsP                 = "#main-content > div > div > div > div > p"
-    val noDeductions                = "#main-content > div > div > div > div > span#no-deductions"
+    val taxCodeSubheading           = "#main-content > div > div > div > dl > dt"
+    val taxCodeNumber               = "#main-content > div > div > div > dl > dd"
+    val deductionsP                 = "#main-content > div > div > p"
+    val noDeductions                = "#main-content > div > div > span#no-deductions"
     val deductionsParagraph: String =
       "Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so " +
         "that the correct amount is repaid over the course of the year."
