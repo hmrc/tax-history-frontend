@@ -20,9 +20,7 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.{Document, Element}
 import org.scalatest.Assertion
 import org.scalatest.matchers.must.Matchers
-import play.api.i18n.Messages
 import play.twirl.api.{Html, HtmlFormat}
-import views.Strings.TextHelpers
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
@@ -40,14 +38,9 @@ trait Fixture extends Matchers {
     .map(attr => attr.getKey -> attr.getValue)
     .toMap
 
-  lazy val form: Element    = document(view).getElementsByTag("form").first()
   lazy val heading: Element = document(view).getElementsByTag("h1").first()
 
-  def validateParagraphizedContent(messageKey: String)(implicit messages: Messages): Unit =
-    for (p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala)
-      document(view).body().toString must include(p.text())
-
-  def validateConditionalContent(id: String): Assertion                                   =
+  def validateConditionalContent(id: String): Assertion =
     Try {
       document(view).getElementById(id).text
     } match {

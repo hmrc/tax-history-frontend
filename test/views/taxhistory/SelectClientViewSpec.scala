@@ -19,97 +19,115 @@ package views.taxhistory
 import form.SelectClientForm.selectClientForm
 import models.taxhistory.SelectClient
 import play.api.data.Form
-import play.api.i18n.Messages
-import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.{AnyContentAsEmpty, Request}
 import play.api.test.CSRFTokenHelper.CSRFRequest
 import play.api.test.FakeRequest
 import play.twirl.api.HtmlFormat
-import support.{BaseSpec, GuiceAppSpec}
-import utils.TestUtil
+import support.GuiceAppSpec
 import views.html.taxhistory.select_client
 import views.{BaseViewSpec, Fixture}
 
-class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
+class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec {
 
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/select-client").withCSRFToken
-  private val maxChars                                  = 100
 
-  trait ViewFixture extends Fixture {
-    lazy val nino: String                          = randomNino.toString()
-    val postData: JsObject                         = Json.obj("clientId" -> nino)
-    val validForm: Form[SelectClient]              = selectClientForm.bind(postData, maxChars)
-    val invalidFormWrongFormat: Form[SelectClient] =
-      selectClientForm.bind(Json.obj("clientId" -> "123456#$&"), maxChars)
+  private val titleAndHeadingContent: String  = "Enter your client's National Insurance number"
+  private val validForm: Form[SelectClient]   = selectClientForm.bind(Map("clientId" -> nino))
+  private val invalidForm: Form[SelectClient] = selectClientForm.bind(Map("clientId" -> "123456#$&"))
+
+  private def viewViaApply(form: Form[SelectClient] = validForm): HtmlFormat.Appendable =
+    injected[select_client].apply(form)(
+      request = request,
+      messages = messages,
+      appConfig = appConfig
+    )
+
+  private def viewViaRender(form: Form[SelectClient] = validForm): HtmlFormat.Appendable =
+    injected[select_client].render(
+      sCForm = form,
+      request = request,
+      messages = messages,
+      appConfig = appConfig
+    )
+
+  private def viewViaF(form: Form[SelectClient] = validForm): HtmlFormat.Appendable =
+    injected[select_client].f(form)(fakeRequest, messages, appConfig)
+
+  private class ViewFixture(renderedView: HtmlFormat.Appendable = viewViaApply()) extends Fixture {
+    val view: HtmlFormat.Appendable = renderedView
   }
 
-  val titleAndHeadingContent = "Enter your client's National Insurance number"
+  "SelectClientView" when {
+    def test(method: String, validFormView: HtmlFormat.Appendable, invalidFormView: HtmlFormat.Appendable): Unit =
+      s"$method" should {
+        "have the correct title when no form errors have occurred" in new ViewFixture(validFormView) {
+          document(view).title shouldBe expectedPageTitle(titleAndHeadingContent)
+        }
 
-  "select_client view" should {
+        "have the correct title when form errors have occurred" in new ViewFixture(invalidFormView) {
+          document(view).title shouldBe expectedErrorPageTitle(titleAndHeadingContent)
+        }
 
-    "have the correct title when no form errors have occurred" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).title shouldBe expectedPageTitle(titleAndHeadingContent)
-    }
+        "have the correct heading when no form errors have occurred" in new ViewFixture(validFormView) {
+          heading.text() shouldBe titleAndHeadingContent
+        }
 
-    "have the correct title when form errors have occurred" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      document(view).title shouldBe expectedErrorPageTitle(titleAndHeadingContent)
-    }
+        "have the correct heading when form errors have occurred" in new ViewFixture(invalidFormView) {
+          heading.text() shouldBe titleAndHeadingContent
+        }
+      }
 
-    "have the correct heading" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).select("h1").text() shouldBe titleAndHeadingContent
-    }
+    val input: Seq[(String, HtmlFormat.Appendable, HtmlFormat.Appendable)] = Seq(
+      (".apply", viewViaApply(), viewViaApply(invalidForm)),
+      (".render", viewViaRender(), viewViaRender(invalidForm)),
+      (".f", viewViaF(), viewViaF(invalidForm))
+    )
 
-    "display input field hint" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).body.getElementsByClass("govuk-hint").get(0).text shouldBe
-        Messages("employmenthistory.select.client.nino.hint")
-    }
+    input.foreach(args => (test _).tupled(args))
 
-    "display input field" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).body.getElementById("clientId").attr("type") shouldBe "text"
-    }
+    ".apply" should {
+      "display input field hint" in new ViewFixture {
+        document(view).body.getElementsByClass("govuk-hint").get(0).text shouldBe "For example, QQ123456C"
+      }
 
-    "display input field without data in session" in new ViewFixture {
-      val view: HtmlFormat.Appendable =
-        inject[select_client].apply(validForm)(fakeRequestWithTaxYear, messages, appConfig)
-      document(view).body.getElementById("clientId").attr("type") shouldBe "text"
-      document(view).body.getElementById("clientId").text()       shouldBe ""
-    }
+      "display input field without data in session" in new ViewFixture {
+        override val view: HtmlFormat.Appendable =
+          inject[select_client].apply(validForm)(fakeRequest, messages, appConfig)
 
-    "display input field with data in session" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)(fakeRequestWithNino, messages, appConfig)
-      document(view).body.getElementById("clientId").attr("type")  shouldBe "text"
-      document(view).body.getElementById("clientId").attr("value") shouldBe nino
-    }
+        document(view).body.getElementById("clientId").attr("type") shouldBe "text"
+        document(view).body.getElementById("clientId").text()       shouldBe ""
+      }
 
-    "display continue button" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).body.getElementById("continueButton").text      shouldBe Messages(
-        "employmenthistory.select.client.continue"
-      )
-      document(view).body.getElementById("continueButton").className shouldBe "govuk-button"
-    }
+      "display input field with data in session" in new ViewFixture {
+        override val view: HtmlFormat.Appendable =
+          inject[select_client].apply(validForm)(fakeRequestWithNino, messages, appConfig)
 
-    "display correct error message for invalid nino" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(invalidFormWrongFormat)
-      document(view).getElementsByClass("govuk-error-summary__title").text mustBe Messages(
-        "employmenthistory.select.client.error.invalid-format.title"
-      )
-      document(view).getElementById("clientId-error").text contains Messages(
-        "employmenthistory.select.client.error.invalid-format"
-      )
-    }
+        document(view).body.getElementById("clientId").attr("type")  shouldBe "text"
+        document(view).body.getElementById("clientId").attr("value") shouldBe nino
+      }
 
-    "display navigation bar with correct links" in new ViewFixture {
-      val view: HtmlFormat.Appendable = inject[select_client].apply(validForm)
-      document(view).getElementById("nav-home").text         shouldBe Messages("nav.home")
-      validateConditionalContent("nav-client")
-      validateConditionalContent("nav-year")
-      document(view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
+      "display continue button" in new ViewFixture {
+        document(view).body.getElementById("continueButton").text      shouldBe "Continue"
+        document(view).body.getElementById("continueButton").className shouldBe "govuk-button"
+      }
+
+      "display correct error message for invalid nino" in new ViewFixture {
+        override val view: HtmlFormat.Appendable = inject[select_client].apply(invalidForm)
+
+        document(view).getElementsByClass("govuk-error-summary__title").text mustBe "There is a problem"
+        document(view)
+          .getElementById(
+            "clientId-error"
+          )
+          .text shouldBe "Error: National Insurance number must be 2 letters, 6 numbers, then A, B, C or D"
+      }
+
+      "display navigation bar with correct links" in new ViewFixture {
+        document(view).getElementById("nav-home").text         shouldBe "Agent services home"
+        validateConditionalContent("nav-client")
+        validateConditionalContent("nav-year")
+        document(view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
+      }
     }
   }
 }

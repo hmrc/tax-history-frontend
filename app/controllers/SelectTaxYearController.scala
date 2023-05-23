@@ -17,7 +17,7 @@
 package controllers
 
 import config.AppConfig
-import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import connectors.TaxHistoryConnector
 import controllers.BaseController
 import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
@@ -36,7 +36,6 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectTaxYearController @Inject() (
   val taxHistoryConnector: TaxHistoryConnector,
-  val citizenDetailsConnector: CitizenDetailsConnector,
   override val authConnector: AuthConnector,
   override val config: Configuration,
   override val env: Environment,
@@ -62,14 +61,13 @@ class SelectTaxYearController @Inject() (
   private def fetchTaxYearsAndRenderPage(
     form: Form[SelectTaxYear],
     httpStatus: Status,
-    nino: Nino,
-    clientName: Option[String]
+    nino: Nino
   )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       (taxYearResponse.status: @unchecked) match {
         case OK                                                      =>
           val taxYears = getTaxYears(taxYearResponse.json.as[List[IndividualTaxYear]])
-          httpStatus(selectTaxYear(form, taxYears, getTaxYearFromSession(request), clientName, nino.toString))
+          httpStatus(selectTaxYear(form, taxYears, getTaxYearFromSession(request)))
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
           logger.warn(
             s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status"
@@ -83,20 +81,9 @@ class SelectTaxYearController @Inject() (
       }
     }
 
-  private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)(implicit
-    hc: HeaderCarrier,
-    request: Request[_]
-  ): Future[Result] =
-    retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
-      case Left(citizenStatus) =>
-        redirectToClientErrorPage(citizenStatus)
-      case Right(p)            =>
-        fetchTaxYearsAndRenderPage(form, httpStatus, nino, p.getName)
-    }
-
   def getSelectTaxYearPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedForAgent { nino =>
-      renderSelectTaxYearPage(nino, selectTaxYearForm, Ok)
+      fetchTaxYearsAndRenderPage(selectTaxYearForm, Ok, nino)
     }
   }
 
@@ -105,11 +92,8 @@ class SelectTaxYearController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors =>
-          getNinoFromSession(request) match {
-            case Some(nino) =>
-              renderSelectTaxYearPage(nino, formWithErrors, BadRequest)
-            case None       =>
-              Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
+          authorisedForAgent { nino =>
+            fetchTaxYearsAndRenderPage(formWithErrors, BadRequest, nino)
           },
         validFormData =>
           authorisedForAgent { _ =>

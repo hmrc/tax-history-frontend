@@ -25,47 +25,45 @@ class AppConfigSpec extends BaseSpec {
 
   implicit val rq: FakeRequest[_] = FakeRequest()
 
-  "Application configuration" when {
-
-    "contains correct configured values" must {
-
-      "authBaseUrl" in {
+  "AppConfig" should {
+    "return correct configured values" when {
+      ".authBaseUrl" in {
         appConfig.authBaseUrl shouldBe new URL("http://localhost:8500")
       }
 
-      "citizenDetailsBaseUrl" in {
+      ".citizenDetailsBaseUrl" in {
         appConfig.citizenDetailsBaseUrl shouldBe new URL("http://localhost:9337")
       }
 
-      "taxHistoryBaseUrl" in {
+      ".taxHistoryBaseUrl" in {
         appConfig.taxHistoryBaseUrl shouldBe new URL("http://localhost:9997")
       }
 
-      "serviceSignOut" in {
+      ".serviceSignOut" in {
         appConfig.serviceSignOut shouldBe "http://localhost:9514/feedback-survey/?origin=AGENTINDIV"
       }
 
-      "agentAccountHomePage" in {
+      ".agentAccountHomePage" in {
         appConfig.agentAccountHomePage shouldBe "http://localhost:9401/agent-services-account"
       }
 
-      "agentSubscriptionStart" in {
+      ".agentSubscriptionStart" in {
         appConfig.agentSubscriptionStart shouldBe "http://localhost:9437/agent-subscription/start"
       }
 
-      "loginUrl" in {
+      ".loginUrl" in {
         appConfig.loginUrl shouldBe "http://localhost:9025/auth-login-stub/gg-sign-in"
       }
 
-      "logoutUrl" in {
+      ".logoutUrl" in {
         appConfig.logoutUrl shouldBe "http://localhost:9025/gg/sign-out"
       }
 
-      "loginContinue" in {
-        appConfig.loginContinue shouldBe "http://localhost:9996/tax-history/agent/select-client"
+      ".loginContinue" in {
+        appConfig.loginContinue shouldBe "http://localhost:9996/tax-history/select-client"
       }
 
-      "betaFeedbackUrl" in {
+      ".betaFeedbackUrl" in {
         appConfig.betaFeedbackUrl shouldBe "http://localhost:9250/contact/beta-feedback"
       }
 
@@ -73,31 +71,29 @@ class AppConfigSpec extends BaseSpec {
         appConfig.betaFeedbackUnauthenticatedUrl shouldBe "http://localhost:9250/contact/beta-feedback-unauthenticated"
       }
 
-      "agentInvitation" in {
+      ".agentInvitation" in {
         appConfig.agentInvitation shouldBe "http://localhost:9448/invitations/agents/"
       }
 
-      "agentInvitationFastTrack" in {
+      ".agentInvitationFastTrack" in {
         appConfig.agentInvitationFastTrack shouldBe "http://localhost:9448/invitations/agents/fast-track"
       }
 
-      "studentLoanFlag" in {
+      ".studentLoanFlag" in {
         appConfig.studentLoanFlag shouldBe true
       }
 
-      "companyBenefitsFlag" in {
+      ".companyBenefitsFlag" in {
         appConfig.companyBenefitsFlag shouldBe true
       }
 
-      "eyaWhatsThisFlag" in {
+      ".eyaWhatsThisFlag" in {
         appConfig.eyaWhatsThisFlag shouldBe true
       }
 
-      "gtmContainer" in {
+      ".gtmContainer" in {
         appConfig.gtmContainer shouldBe "c"
       }
-
     }
   }
-
 }

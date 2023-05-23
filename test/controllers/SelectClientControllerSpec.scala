@@ -21,6 +21,7 @@ import org.mockito.ArgumentMatchers.any
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
+import play.twirl.api.Html
 import support.{BaseSpec, ControllerSpec}
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
@@ -32,42 +33,37 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
-  trait LocalSetup {
+  private trait LocalSetup {
 
-    lazy val controller: SelectClientController = {
+    lazy val controller: SelectClientController = new SelectClientController(
+      mock[AuthConnector],
+      app.configuration,
+      environment,
+      messagesControllerComponents,
+      appConfig,
+      injected[select_client]
+    )(stubControllerComponents().executionContext)
 
-      val c = new SelectClientController(
-        mock[AuthConnector],
-        app.configuration,
-        environment,
-        messagesControllerComponents,
-        appConfig,
-        injected[select_client]
-      )(stubControllerComponents().executionContext)
-
-      when(
-        c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-          any[HeaderCarrier],
-          any[ExecutionContext]
-        )
+    when(
+      controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
+        any[HeaderCarrier],
+        any[ExecutionContext]
       )
-        .thenReturn(
-          Future.successful(
-            new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
-          )
-        )
-      c
-    }
+    ).thenReturn(
+      Future.successful(
+        new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
+      )
+    )
   }
 
   "SelectClientController" must {
-
     "load select client page" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
       val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
-      val expectedView: select_client  = app.injector.instanceOf[select_client]
+      val expectedView: Html           = injected[select_client].apply(selectClientForm)
+
       status(result) shouldBe OK
-      result rendersTheSameViewAs expectedView(selectClientForm)
+      result.rendersTheSameViewAs(expectedView)
     }
 
     "return Status: 400 when invalid data is entered" in new LocalSetup {
@@ -84,11 +80,11 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
             .withFormUrlEncodedBody(invalidSelectClientForm: _*)
             .withMethod("POST")
         )
+
       status(result) shouldBe BAD_REQUEST
     }
 
     "successfully redirect to next page when valid nino is supplied as input" in new LocalSetup {
-
       val validSelectClientForm: Seq[(String, String)] = Seq(
         "clientId" -> nino
       )
@@ -97,16 +93,16 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         controller
           .submitSelectClientPage()
           .apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*).withMethod("POST"))
+
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ConfirmDetailsController.getConfirmDetailsPage().url)
     }
 
-    "successfully redirects to itself" in new LocalSetup {
+    "successfully redirect to itself" in new LocalSetup {
       val result: Future[Result] = controller.root()(fakeRequest)
 
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.SelectClientController.getSelectClientPage().url)
     }
   }
-
 }

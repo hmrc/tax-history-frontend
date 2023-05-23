@@ -30,9 +30,7 @@
 
 @(form: Form[SelectTaxYear],
   taxYears:List[(String, String)],
-  taxYearFromSession: SelectTaxYear,
-  clientName:Option[String],
-  nino:String
+  taxYearFromSession: SelectTaxYear
 )(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
 
 @currentTaxYearStart = @{

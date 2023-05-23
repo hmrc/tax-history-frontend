@@ -38,27 +38,75 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
   implicit val request: Request[AnyContentAsEmpty.type] =
     FakeRequest("GET", "/tax-history/client-income-record").withCSRFToken
 
-  val firstName   = "testFirstName"
-  val surname     = "testSurname"
-  val now: String = dateUtils.dateToFormattedString(LocalDate.now())
+  val firstName: String   = "testFirstName"
+  val surname: String     = "testSurname"
+  val now: String         = dateUtils.dateToFormattedString(LocalDate.now())
+  val currentTaxYear: Int = TaxYear.current.currentYear
+  val cyMinus1: Int       = TaxYear.current.previous.currentYear
+  val cyMinus2: Int       = TaxYear.current.previous.currentYear - 1
+  val grossAmount: Int    = 100
+  val taxYear: Int        = 2016
+
+  val viewViaApply: HtmlFormat.Appendable =
+    inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
+
+  private val viewViaRender: HtmlFormat.Appendable = injected[employment_summary].render(
+    nino,
+    currentTaxYear,
+    employments,
+    allowances,
+    person,
+    None,
+    None,
+    None,
+    now,
+    fakeRequest,
+    messages,
+    appConfig
+  )
+
+  private val viewViaF: HtmlFormat.Appendable = injected[employment_summary].f(
+    nino,
+    currentTaxYear,
+    employments,
+    allowances,
+    person,
+    None,
+    None,
+    None,
+    now
+  )(fakeRequest, messages, appConfig)
 
   trait ViewFixture extends Fixture {
-    val nino: String           = TestUtil.randomNino.toString()
-    val currentTaxYear: Int    = TaxYear.current.currentYear
-    val cyMinus1: Int          = TaxYear.current.previous.currentYear
-    val cyMinus2: Int          = TaxYear.current.previous.currentYear - 1
     val person: Option[Person] = Some(Person(Some(firstName), Some(surname), Some(false)))
-    val grossAmount: Int       = 100
-    val taxYear: Int           = 2016
   }
 
-  "employment_summary view" must {
-
-    "have the correct title" in new ViewFixture {
-      val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
-      document(view).title mustBe expectedPageTitle(messages("employmenthistory.title"))
+  private def renderViewTitleAndHeadingTest(method: String, renderedView: HtmlFormat.Appendable): Unit = {
+    "have the correct title" when {
+      s"$method" in new ViewFixture {
+        val view: HtmlFormat.Appendable = renderedView
+        document(view).title mustBe expectedPageTitle("Income record")
+      }
     }
+
+    "have correct heading" when {
+      s"$method" in new ViewFixture {
+        val view: HtmlFormat.Appendable = renderedView
+        heading.text() shouldBe "Income record"
+
+        document(view)
+          .getElementById(
+            "taxYearRange"
+          )
+          .text shouldBe s"Tax year 6 April ${currentTaxYear.toString} to 5 April ${(currentTaxYear + 1).toString}"
+      }
+    }
+  }
+
+  "EmploymentSummaryView" must {
+    renderViewTitleAndHeadingTest(".apply", viewViaApply)
+    renderViewTitleAndHeadingTest(".render", viewViaRender)
+    renderViewTitleAndHeadingTest(".f", viewViaF)
 
     "display a client name as a pre header" in new ViewFixture {
       val view: HtmlFormat.Appendable        =
@@ -89,16 +137,6 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
           preHeader mustBe s"This section relates to $nino"
         }
       }
-    }
-
-    "display correct heading" in new ViewFixture {
-      val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
-      heading.text() mustBe messages("employmenthistory.header")
-
-      document(view).getElementById("taxYearRange").text must be(
-        messages("employmenthistory.taxyear", currentTaxYear.toString, (currentTaxYear + 1).toString)
-      )
     }
 
     "display employments" in new ViewFixture {
