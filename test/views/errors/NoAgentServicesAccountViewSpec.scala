@@ -50,13 +50,13 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
         }
 
         "have the correct p element content" in new ViewFixture(view) {
-          document(view).select("#main-content > div > div > div > div > p").text() shouldBe pContent
+          document(view).select("#main-content > div > div > p").text() shouldBe pContent
         }
 
         "have the correct a element content" in new ViewFixture(view) {
           document(view)
             .select(
-              "#main-content > div > div > div > div > p > a"
+              "#main-content > div > div > p> a"
             )
             .text() shouldBe "create an agent services account"
         }
@@ -64,7 +64,7 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
         "have the correct a element link" in new ViewFixture(view) {
           document(view)
             .select(
-              "#main-content > div > div > div > div > p > a"
+              "#main-content > div > div > p> a"
             )
             .attr("href") shouldBe "https://www.gov.uk/guidance/get-an-hmrc-agent-services-account"
         }

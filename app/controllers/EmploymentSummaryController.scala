@@ -97,15 +97,15 @@ class EmploymentSummaryController @Inject() (
             } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals)).map { dataResponse =>
               Ok(
                 employmentSummary(
-                  ninoField.nino,
-                  taxYear,
-                  employments,
-                  getAllowancesFromResponse(allowancesResponse = dataResponse._1),
-                  person,
-                  getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
-                  getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
+                  nino = ninoField.nino,
+                  taxYear = taxYear,
+                  employments = employments,
+                  allowances = getAllowancesFromResponse(allowancesResponse = dataResponse._1),
+                  person = person,
+                  taxAccount = getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
+                  statePension = getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
                   incomeTotals = dataResponse._4,
-                  dateUtils.nowDateFormatted
+                  formattedNowDate = dateUtils.nowDateFormatted
                 )
               )
             }

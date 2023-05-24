@@ -126,7 +126,7 @@ class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
       val view: HtmlFormat.Appendable     = inject[select_tax_year].apply(validForm, options, noSelectedTaxYear, name, nino)
 
       def radioLabel(i: Int): String =
-        s"#main-content > div > div > div > div > form > div > fieldset > div > div:nth-child($i) > label"
+        s"#main-content > div > div > form > div > fieldset > div > div:nth-child($i) > label"
 
       document(view).select(radioLabel(1)).text() mustBe "2016 to 2017"
       document(view).select(radioLabel(2)).text() mustBe "2015 to 2016"

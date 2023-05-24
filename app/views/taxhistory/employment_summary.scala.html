@@ -50,110 +50,109 @@
 
 @govukWrapper(PageTitle(messages("employmenthistory.title")), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
 
-<header class="hmrc-page-heading no-top-margin">
-    <h1 class="govuk-heading-xl no-bottom-margin" id="header">@messages("employmenthistory.header")</h1>
-    <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
-        <span class="govuk-visually-hidden">This section relates to </span>
-        @getName
-    </p>
-    <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString) </span>
-</header>
+    <header class="hmrc-page-heading no-top-margin">
+        <h1 class="govuk-heading-xl no-bottom-margin" id="header">@messages("employmenthistory.header")</h1>
+        <p id="pre-header" class="hmrc-caption govuk-caption-l govuk-!-padding-bottom-1">
+            <span class="govuk-visually-hidden">This section relates to</span>
+            @getName
+        </p>
+        <span class="govuk-heading-m" id="taxYearRange">@messages("employmenthistory.taxyear", taxYear.toString, (taxYear+1).toString)</span>
+    </header>
 
-<div class="govuk-inset-text govuk-!-margin-bottom-9 no-top-margin">
-    @p(Html(messages("employmenthistory.caveat.p.text")), id = Some("disclaimer"))
-</div>
-
-<div class="govuk-tabs" data-module="govuk-tabs">
-
-    <ul class="govuk-tabs__list" role="tablist">
-
-        <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
-            @link(
-                link = "#income-records",
-                messageKey = messages("employmenthistory.employment.summary.tab.1"),
-                classes = "govuk-tabs__tab",
-                id = Some("tab1")
-            )
-        </li>
-
-        @if(!isCurrentYear) {
-        <li class="govuk-tabs__list-item">
-            @link(
-                link = "#allowances",
-                messageKey = messages("employmenthistory.employment.summary.tab.2"),
-                classes = "govuk-tabs__tab",
-                id = Some("tab2")
-            )
-        </li>
-        }
-
-        @if(taxYear == TaxYear.current.previous.currentYear) {
-        <li class="govuk-tabs__list-item">
-            @link(
-                link = "#underpaid-tax-and-debts",
-                messageKey = messages("employmenthistory.employment.summary.tab.3"),
-                classes = "govuk-tabs__tab",
-                id = Some("tab3")
-            )
-        </li>
-        }
-    </ul>
-
-    <div class="govuk-tabs__panel" id="income-records">
-        @if(employments.exists(!_.isOccupationalPension)) {
-            @employmentTable
-        } else {
-            <h2 class="govuk-heading-l no-top-margin">@messages("employmenthistory.employment.records")</h2>
-            <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
-        }
-
-        <h2 class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
-        @if(employments.exists(_.isOccupationalPension)) {
-            @pensionTable
-        } else {
-            <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
-        }
-
-        @statePension.map { sp =>
-            <h3 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h3>
-            <div class = "govuk-grid-row">
-                <div class = "govuk-grid-column-two-thirds">
-                    @if(TaxYear.current.currentYear == taxYear) {
-                        @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted.getOrElse(""))}
-                        @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
-                    } else {
-                        @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
-                    }
-                </div>
-                <div class ="govuk-grid-column-one-third"></div>
-            </div>
-        }
-
+    <div class="govuk-inset-text govuk-!-margin-bottom-9 no-top-margin">
+        @p(Html(messages("employmenthistory.caveat.p.text")), id = Some("disclaimer"))
     </div>
 
-    @if(!isCurrentYear) {
-        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="allowances">
-            <h2 id = "AllowancesHeader" class="govuk-heading-l">@messages("employmenthistory.allowance.heading")</h2>
+    <div class="govuk-tabs" data-module="govuk-tabs">
 
-            @if(allowances.nonEmpty) {
-                @allowanceTable
-            } else {
-                <p id="no-allowances" class="govuk-caption-m">@messages("employmenthistory.allowance.no-allowances")</p>
+        <ul class="govuk-tabs__list" role="tablist">
+
+            <li class="govuk-tabs__list-item govuk-tabs__list-item--selected">
+                @link(
+                    link = "#income-records",
+                    messageKey = messages("employmenthistory.employment.summary.tab.1"),
+                    classes = "govuk-tabs__tab",
+                    id = Some("tab1")
+                )
+            </li>
+
+            @if(!isCurrentYear) {
+                <li class="govuk-tabs__list-item">
+                    @link(
+                        link = "#allowances",
+                        messageKey = messages("employmenthistory.employment.summary.tab.2"),
+                        classes = "govuk-tabs__tab",
+                        id = Some("tab2")
+                    )
+                </li>
             }
+
+            @if(taxYear == TaxYear.current.previous.currentYear) {
+                <li class="govuk-tabs__list-item">
+                    @link(
+                        link = "#underpaid-tax-and-debts",
+                        messageKey = messages("employmenthistory.employment.summary.tab.3"),
+                        classes = "govuk-tabs__tab",
+                        id = Some("tab3")
+                    )
+                </li>
+            }
+        </ul>
+
+        <div class="govuk-tabs__panel " id="income-records">
+            @if(employments.exists(!_.isOccupationalPension)) {
+
+                    @employmentTable
+            } else {
+                <h2 class="govuk-heading-l no-top-margin">@messages("employmenthistory.employment.records")</h2>
+                <p class="govuk-caption-m" id="no-benefits">@messages("employmenthistory.no.employments")</p>
+            }
+
+            <h2  class="govuk-heading-l">@messages("employmenthistory.table.header.pensions")</h2>
+                @if(employments.exists(_.isOccupationalPension)) {
+
+                            @pensionTable
+                } else {
+                    <p id="no-pensions" class="govuk-caption-m">@messages("employmenthistory.no.pensions")</p>
+                }
+
+                @statePension.map { sp =>
+                    <h3 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h3>
+                    <div class = "govuk-grid-row">
+                        <div class = "govuk-grid-column-two-thirds">
+                            @if(TaxYear.current.currentYear == taxYear) {
+                                @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted.getOrElse(""))}
+                                @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
+                            } else {
+                                @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                            }
+                        </div>
+                        <div class ="govuk-grid-column-one-third"></div>
+                    </div>
+                }
         </div>
-    }
-    @if(!isCurrentYear) {
-        <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="underpaid-tax-and-debts">
-            @if(taxAccount.nonEmpty) {
+        @if(!isCurrentYear) {
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="allowances">
+                <h2 id = "AllowancesHeader" class="govuk-heading-l">@messages("employmenthistory.allowance.heading")</h2>
+                @if(allowances.nonEmpty) {
+                    @allowanceTable
+                } else {
+                    <p id="no-allowances" class="govuk-caption-m">@messages("employmenthistory.allowance.no-allowances")</p>
+                }
+            </div>
+        }
+        @if(!isCurrentYear) {
+            <div class="govuk-tabs__panel govuk-tabs__panel--hidden" id="underpaid-tax-and-debts">
+                @if(taxAccount.nonEmpty) {
                 @taxAccountTable
             } else {
-            <h2 class="govuk-heading-l">@messages("employmenthistory.tax-account.header")</h2>
-            <p id="no-tax-account" class="govuk-body">@messages("employmenthistory.tax-account.empty.text")</p>
-            }
-        </div>
-    }
+            <h2  class="govuk-heading-l">@messages("employmenthistory.tax-account.header")</h2>
 
-</div>
+                 <p id="no-tax-account" class="govuk-body">@messages("employmenthistory.tax-account.empty.text")</p>
+                }
+            </div>
+        }
+    </div>
 }
 
 @employmentTable ={
