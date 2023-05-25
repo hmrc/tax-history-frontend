@@ -155,42 +155,46 @@
                 <div class="govuk-details__text">
                     <p>@messages("employmenthistory.eyu.caveat")</p>
                     @if(payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.nonEmpty) {
-                        <table class="govuk-table" id="eyu-pay-or-tax-table">
-                            <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.pay")</th>
-                                <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.tax")</th>
-                                <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.date.received")</th>
-                            </tr>
-                            </thead>
-                            <tbody class="govuk-table__body">
-                            @payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map { cb =>
-                            <tr class="govuk-table__row">
-                                <td class="govuk-table__cell">@Currency.withPositive(cb.taxablePayEYU)</td>
-                                <td class="govuk-table__cell">@Currency.withPositive(cb.taxEYU)</td>
-                                <td class="govuk-table__cell">@cb.receivedDateFormatted.getOrElse("")</td>
-                            </tr>
-                            }
-                            </tbody>
-                        </table>
+                        <div class="responsive-table-wrapper">
+                            <table class="govuk-table" id="eyu-pay-or-tax-table">
+                                <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.pay")</th>
+                                    <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.tax")</th>
+                                    <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.date.received")</th>
+                                </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                @payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map { cb =>
+                                <tr class="govuk-table__row">
+                                    <td class="govuk-table__cell">@Currency.withPositive(cb.taxablePayEYU)</td>
+                                    <td class="govuk-table__cell">@Currency.withPositive(cb.taxEYU)</td>
+                                    <td class="govuk-table__cell">@cb.receivedDateFormatted.getOrElse("")</td>
+                                </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                     @if(payAndTax.earlierYearUpdatesWithStudentLoans.nonEmpty) {
-                        <table class="govuk-table" id="eyu-student-loan-table">
-                            <thead class="govuk-table__head">
-                            <tr class="govuk-table__row">
-                                <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.studentloan")</th>
-                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("employmenthistory.eyu.date.received")</th>
-                            </tr>
-                            </thead>
-                            <tbody class="govuk-table__body">
-                            @payAndTax.earlierYearUpdatesWithStudentLoans.map { cb =>
-                            <tr class="govuk-table__row">
-                                <th class="govuk-table__header">@Currency.withPositive(cb.studentLoanEYU.getOrElse(BigDecimal(0.0)))</th>
-                                <td class="govuk-table__cell govuk-table__cell--numeric">@cb.receivedDateFormatted.getOrElse("")</td>
-                            </tr>
-                            }
-                            </tbody>
-                        </table>
+                        <div class="responsive-table-wrapper">
+                            <table class="govuk-table" id="eyu-student-loan-table">
+                                <thead class="govuk-table__head">
+                                <tr class="govuk-table__row">
+                                    <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.studentloan")</th>
+                                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("employmenthistory.eyu.date.received")</th>
+                                </tr>
+                                </thead>
+                                <tbody class="govuk-table__body">
+                                @payAndTax.earlierYearUpdatesWithStudentLoans.map { cb =>
+                                <tr class="govuk-table__row">
+                                    <th class="govuk-table__header">@Currency.withPositive(cb.studentLoanEYU.getOrElse(BigDecimal(0.0)))</th>
+                                    <td class="govuk-table__cell govuk-table__cell--numeric">@cb.receivedDateFormatted.getOrElse("")</td>
+                                </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
                     }
                 </div>
             </details>
@@ -205,35 +209,36 @@
             <div>
                 <p class="govuk-body">@messages("employmenthistory.company.benefit.caveat")</p>
             </div>
-
-            <table class="govuk-table" id="cb-table">
-                <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">@messages("employmenthistory.employment.details.benefit")</th>
-                        <th scope="col" class="govuk-table__header">@if(appConfig.companyBenefitsFlag) {
-                            @messages("lbl.source")
-                            }
-                        </th>
-                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.amount")</th>
-                    </tr>
-                </thead>
-                <tbody class="govuk-table__body">
-                    @companyBenefits.map { cb =>
+            <div class="responsive-table-wrapper">
+                <table class="govuk-table" id="cb-table">
+                    <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header">@messages(s"employmenthistory.cb.${cb.iabdType}")</th>
-                            <td class="govuk-table__cell">@if(appConfig.companyBenefitsFlag) {
-                                @if(cb.isForecastBenefit) {
-                                @messages("employmenthistory.cb.forecast")
-                                } else {
-                                @messages("employmenthistory.cb.P11D")
+                            <th scope="col" class="govuk-table__header">@messages("employmenthistory.employment.details.benefit")</th>
+                            <th scope="col" class="govuk-table__header">@if(appConfig.companyBenefitsFlag) {
+                                @messages("lbl.source")
                                 }
-                                }
-                            </td>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(cb.amount)</td>
+                            </th>
+                            <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.amount")</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @companyBenefits.map { cb =>
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header">@messages(s"employmenthistory.cb.${cb.iabdType}")</th>
+                                <td class="govuk-table__cell">@if(appConfig.companyBenefitsFlag) {
+                                    @if(cb.isForecastBenefit) {
+                                    @messages("employmenthistory.cb.forecast")
+                                    } else {
+                                    @messages("employmenthistory.cb.P11D")
+                                    }
+                                    }
+                                </td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(cb.amount)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         } else {
             <p id="no-benefits" class="govuk-body">@messages("employmenthistory.employment.details.no.benefits", employment.employerName)</p>
         }
@@ -257,73 +262,77 @@
             </dl>
         </div>
         <h3 class="govuk-heading-m" id="tax-code-allowances">@messages("tax.code.allowances")</h3>
-        <table class="govuk-table" id="tc-allowance-table">
-            <thead class="govuk-table__head">
-            <tr class="govuk-table__row">
-                <th scope="col" class="govuk-table__header">@messages("tax.code.allowance.type")</th>
-                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("tax.code.allowance")</th>
-            </tr>
-            </thead>
-            <tbody class="govuk-table__body">
-                @incomeSource.get.allowances.map { iSAllowance =>
-                    <tr class="govuk-table__row">
-                        <td class="govuk-table__cell">@{
-                            ControllerUtils.sentenceCase(iSAllowance.npsDescription)
-                            }
-                        </td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric">@{
-                            Currency(iSAllowance.amount)
-                            }
-                        </td>
-                    </tr>
-                }
-                <tr class="govuk-table__row">
-                    <th class="govuk-table__cell">@messages("tax.code.total.allowances")</th>
-                    <td class="govuk-table__cell govuk-table__cell--numeric" id="AllowanceTotal">@{
-                        Currency(incomeSource.get.allowances.map(_.amount).sum)
-                        }
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        @if(incomeSource.get.deductions.nonEmpty) {
-            <h3 class="govuk-heading-m" id="tax-code-deductions">@messages("tax.code.deductions")</h3>
-            <p class="govuk-body">@messages("tax.code.caveat")</p>
-            <table class="govuk-table" id="tc-deduction-table">
+        <div class="responsive-table-wrapper">
+            <table class="govuk-table" id="tc-allowance-table">
                 <thead class="govuk-table__head">
-                    <tr class="govuk-table__row">
-                        <th scope="col" class="govuk-table__header">@messages("tax.code.deduction.type")</th>
-                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("tax.code.source.amount")</th>
-                        <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("tax.code.deduction")</th>
-                    </tr>
+                <tr class="govuk-table__row">
+                    <th scope="col" class="govuk-table__header">@messages("tax.code.allowance.type")</th>
+                    <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("tax.code.allowance")</th>
+                </tr>
                 </thead>
                 <tbody class="govuk-table__body">
-                    @incomeSource.get.deductions.map { iSDeductions =>
+                    @incomeSource.get.allowances.map { iSAllowance =>
                         <tr class="govuk-table__row">
                             <td class="govuk-table__cell">@{
-                                ControllerUtils.sentenceCase(iSDeductions.npsDescription)
+                                ControllerUtils.sentenceCase(iSAllowance.npsDescription)
                                 }
                             </td>
                             <td class="govuk-table__cell govuk-table__cell--numeric">@{
-                                Currency.fromOptionBD(ControllerUtils.displaySource(iSDeductions.sourceAmount, iSDeductions.amount))
-                                }
-                            </td>
-                            <td class="govuk-table__cell govuk-table__cell--numeric">@{
-                                Currency(iSDeductions.amount)
+                                Currency(iSAllowance.amount)
                                 }
                             </td>
                         </tr>
                     }
                     <tr class="govuk-table__row">
-                        <th class="govuk-table__cell">@messages("tax.code.total.deductions")</th>
-                        <td class="govuk-table__cell govuk-table__cell--numeric"></td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" id="DeductionTotal">@{
-                            Currency(incomeSource.get.deductions.map(_.amount).sum)
+                        <th class="govuk-table__cell">@messages("tax.code.total.allowances")</th>
+                        <td class="govuk-table__cell govuk-table__cell--numeric" id="AllowanceTotal">@{
+                            Currency(incomeSource.get.allowances.map(_.amount).sum)
                             }
                         </td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+        @if(incomeSource.get.deductions.nonEmpty) {
+            <h3 class="govuk-heading-m" id="tax-code-deductions">@messages("tax.code.deductions")</h3>
+            <p class="govuk-body">@messages("tax.code.caveat")</p>
+            <div class="responsive-table-wrapper">
+                <table class="govuk-table" id="tc-deduction-table">
+                    <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th scope="col" class="govuk-table__header">@messages("tax.code.deduction.type")</th>
+                            <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("tax.code.source.amount")</th>
+                            <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("tax.code.deduction")</th>
+                        </tr>
+                    </thead>
+                    <tbody class="govuk-table__body">
+                        @incomeSource.get.deductions.map { iSDeductions =>
+                            <tr class="govuk-table__row">
+                                <td class="govuk-table__cell">@{
+                                    ControllerUtils.sentenceCase(iSDeductions.npsDescription)
+                                    }
+                                </td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric">@{
+                                    Currency.fromOptionBD(ControllerUtils.displaySource(iSDeductions.sourceAmount, iSDeductions.amount))
+                                    }
+                                </td>
+                                <td class="govuk-table__cell govuk-table__cell--numeric">@{
+                                    Currency(iSDeductions.amount)
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__cell">@messages("tax.code.total.deductions")</th>
+                            <td class="govuk-table__cell govuk-table__cell--numeric"></td>
+                            <td class="govuk-table__cell govuk-table__cell--numeric" id="DeductionTotal">@{
+                                Currency(incomeSource.get.deductions.map(_.amount).sum)
+                                }
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         } else {
             <span id="no-deductions" class="govuk-heading-m">@messages("tax.code.no.deductions")</span>
         }
