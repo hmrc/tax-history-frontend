@@ -12,6 +12,8 @@ lazy val microservice = Project(appName, file("."))
     PlayKeys.playDefaultPort := 9996,
     retrieveManaged := true
   )
+  // To resolve dependency clash between flexmark v0.64.4+ and play-language to run accessibility tests, remove when versions align
+  .settings(dependencyOverrides += "com.ibm.icu" % "icu4j" % "69.1")
   .settings(
     coverageExcludedPackages := "<empty>;.*helpers.*;.*Routes.*;",
     coverageMinimumStmtTotal := 99,
