@@ -105,7 +105,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
     "have a table of employments and" should {
 
-      def viewLinkSpan(linkMessage: String, visuallyHiddenMessage: String) =
+      def viewLinkSpan(linkMessage: String, visuallyHiddenMessage: String): String =
         "<span aria-hidden=\"true\">" + linkMessage + "</span> " +
           "<span class=\"govuk-visually-hidden\">" + visuallyHiddenMessage + "</span>"
 
@@ -151,7 +151,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
     "have a table for pensions and" should {
 
-      def viewLinkSpan(linkMessage: String, visuallyHiddenMessage: String) =
+      def viewLinkSpan(linkMessage: String, visuallyHiddenMessage: String): String =
         "<span aria-hidden=\"true\">" + linkMessage + "</span> " +
           "<span class=\"govuk-visually-hidden\">" + visuallyHiddenMessage + "</span>"
 
