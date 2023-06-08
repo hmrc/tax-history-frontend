@@ -16,8 +16,7 @@
 
 import config.AppConfig
 import form.{SelectClientForm, SelectTaxYearForm}
-import model.api.EmploymentStatus.Live
-import model.api.{Allowance, CompanyBenefit, Employment}
+import model.api._
 import models.taxhistory.{SelectClient, SelectTaxYear}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
@@ -28,13 +27,36 @@ import views.html._
 import views.html.errors._
 import views.html.taxhistory._
 import views.models.EmploymentViewDetail
+import views.taxhistory.Constants
 
-class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
+class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Constants {
 
-  private val appConfig: AppConfig                      = app.injector.instanceOf[AppConfig]
-  implicit val arbitraryAppConfig: Arbitrary[AppConfig] = fixed(appConfig)
+  private val appConfig: AppConfig = app.injector.instanceOf[AppConfig]
+  private val selectTaxYear: SelectTaxYear = SelectTaxYear(Some("2016"))
 
-  implicit val arbitrarySelectClientInput: Arbitrary[Form[SelectClient]] = fixed(SelectClientForm.selectClientForm)
+  implicit val arbAppConfig: Arbitrary[AppConfig]         = fixed(appConfig)
+  override implicit val arbAsciiString: Arbitrary[String] = fixed("/")
+
+  implicit val arbEmployment: Arbitrary[Employment]                     = fixed(employment)
+  implicit val arbStatePension: Arbitrary[StatePension]                 = fixed(statePension)
+  implicit val arbSelectTaxYear: Arbitrary[SelectTaxYear]               = fixed(selectTaxYear)
+  implicit val arbNino: Arbitrary[Nino]                                 = fixed(Nino("AM242413B"))
+  implicit val arbPayAndTax: Arbitrary[PayAndTax]                       = fixed(payAndTax)
+  implicit val arbEmploymentViewDetail: Arbitrary[EmploymentViewDetail] = fixed(
+    EmploymentViewDetail.apply(isJobseekersAllowance = true, isOccupationalPension = true, "income")(messages)
+  )
+
+  implicit val arbListOfEmployments: Arbitrary[List[Employment]]         = fixed(List(employment))
+  implicit val arbListOfAllowances: Arbitrary[List[Allowance]]           = fixed(List(allowance1, allowance2))
+  implicit val arbListOfCompanyBenefits: Arbitrary[List[CompanyBenefit]] = fixed(
+    List(companyBenefits)
+  )
+  implicit val arbListOfTaxYears: Arbitrary[List[(String, String)]]      = fixed(List("selectTaxYear" -> "2016"))
+
+  implicit val arbSelectClientForm: Arbitrary[Form[SelectClient]] = fixed(SelectClientForm.selectClientForm)
+  implicit val arbTaxYearForm: Arbitrary[Form[SelectTaxYear]]     = fixed(
+    SelectTaxYearForm.selectTaxYearForm.fill(selectTaxYear)
+  )
 
   override def renderViewByClass: PartialFunction[Any, Html] = {
     case error_template: error_template                       => render(error_template)
@@ -42,80 +64,19 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec {
     case mci_restricted: mci_restricted                       => render(mci_restricted)
     case no_agent_services_account: no_agent_services_account => render(no_agent_services_account)
     case no_data: no_data                                     => render(no_data)
-    case not_authorised: not_authorised                       =>
-      not_authorised.render(
-        nino = Some(Nino("AM242413B")),
-        appConfig = appConfig,
-        request = fakeRequest,
-        messages = messages
-      )
+    case not_authorised: not_authorised                       => render(not_authorised)
     case technical_error: technical_error                     => render(technical_error)
     case signedOut: SignedOut                                 => render(signedOut)
     case confirm_details: confirm_details                     => render(confirm_details)
-    case employment_detail: employment_detail                 =>
-      employment_detail.render(
-        taxYear = 2023,
-        payAndTaxOpt = None,
-        employment = Employment(
-          payeReference = "paye",
-          employerName = "employer",
-          employmentPaymentType = None,
-          startDate = None,
-          employmentStatus = Live,
-          worksNumber = "1"
-        ),
-        companyBenefits =
-          List(CompanyBenefit(iabdType = "allowanceType", amount = BigDecimal(1), isForecastBenefit = true)),
-        clientNameOrNino = "AM242413B",
-        incomeSource = None,
-        employmentViewDetail = EmploymentViewDetail("heading", "title"),
-        request = fakeRequest,
-        messages = messages,
-        appConfig = appConfig
-      )
-    case employment_summary: employment_summary               =>
-      employment_summary.render(
-        nino = "AM242413B",
-        taxYear = 2023,
-        employments = List(
-          Employment(
-            payeReference = "paye",
-            employerName = "employer",
-            employmentPaymentType = None,
-            startDate = None,
-            employmentStatus = Live,
-            worksNumber = "1"
-          )
-        ),
-        allowances = List(Allowance(iabdType = "1", amount = 1)),
-        person = None,
-        taxAccount = None,
-        statePension = None,
-        incomeTotals = None,
-        formattedNowDate = "25 January 2015",
-        request = fakeRequest,
-        messages = messages,
-        appConfig = appConfig
-      )
+    case employment_detail: employment_detail                 => render(employment_detail)
+    case employment_summary: employment_summary               => render(employment_summary)
     case select_client: select_client                         => render(select_client)
-    case select_tax_year: select_tax_year                     =>
-      select_tax_year.render(
-        form = SelectTaxYearForm.selectTaxYearForm,
-        taxYears = List("selectTaxYear" -> "2016"),
-        taxYearFromSession = SelectTaxYear(None),
-        clientName = None,
-        nino = "AM242413B",
-        request = fakeRequest,
-        messages = messages,
-        appConfig = appConfig
-      )
-
+    case select_tax_year: select_tax_year                     => render(select_tax_year)
   }
 
   override def viewPackageName: String = "views.html"
 
-  override def layoutClasses: Seq[Class[_]] = Seq(classOf[govuk_wrapper])
+  override def layoutClasses: Seq[Class[govuk_wrapper]] = Seq(classOf[govuk_wrapper])
 
   runAccessibilityTests()
-
 }
