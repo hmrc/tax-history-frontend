@@ -302,4 +302,7 @@ trait Constants {
 
   val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
+  val companyBenefits: CompanyBenefit =
+    CompanyBenefit(iabdType = "allowanceType", amount = BigDecimal(1), isForecastBenefit = true)
+
 }
