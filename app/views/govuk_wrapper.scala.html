@@ -71,7 +71,7 @@
         @hmrcLanguageSelectHelper()
     }
     @if(signOut){
-        @govukBackLink(BackLink(href = backLink.fold("#")(customUrl => customUrl), content = Text("Back"), attributes = Map("id" -> "back-link")))
+        @govukBackLink(BackLink(href = backLink.fold("#")(customUrl => customUrl), content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link")))
     }
 }
 
