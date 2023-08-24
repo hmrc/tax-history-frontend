@@ -16,9 +16,9 @@
 
 package model.api
 
-import java.util.UUID
+import play.api.libs.json.{Json, OFormat}
 
-import play.api.libs.json.Json
+import java.util.UUID
 
 case class CompanyBenefit(
   companyBenefitId: UUID = UUID.randomUUID(),
@@ -29,5 +29,5 @@ case class CompanyBenefit(
 )
 
 object CompanyBenefit {
-  implicit val formats = Json.format[CompanyBenefit]
+  implicit val formats: OFormat[CompanyBenefit] = Json.format[CompanyBenefit]
 }

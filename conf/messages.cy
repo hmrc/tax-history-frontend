@@ -242,22 +242,6 @@ employmenthistory.no.agent.services.account.title=Nid oes cyfrif gwasanaethau as
 employmenthistory.no.agent.services.account.p=Os ydych wedi’ch awdurdodi i weithredu ar ran eich busnes asiant, gallwch
 employmenthistory.no.agent.services.account.link.text=creu cyfrif gwasanaethau asiant
 
-# General Messages
-# Error messages for digital services
-global.error.400.title=Cais gwallus – 400
-global.error.400.heading=Cais gwallus
-global.error.400.message=Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
-global.error.403.title=Gwaharddwyd – 403
-global.error.403.heading=Mae’n ddrwg gennym – nid ydych wedi’ch awdurdodi i fynd yn eich blaen.
-global.error.passcode.title=Gwaharddwyd – 403
-global.error.passcode.heading=Mae’n ddrwg gennym – nid ydych wedi’ch awdurdodi i fynd yn eich blaen.
-global.error.404.title=Heb ddod o hyd i’r dudalen – 404
-global.error.404.heading=Ni ellir dod o hyd i’r dudalen hon
-global.error.404.message=Gwiriwch eich bod wedi nodi’r cyfeiriad gwe cywir.
-global.error.500.title=Mae’n ddrwg gennym. Mae anawsterau technegol wedi codi – 500
-global.error.500.heading=Mae’n ddrwg gennym. Mae anawsterau technegol wedi codi
-global.error.500.message=Rhowch gynnig arall arni mewn ychydig o funudau.
-
 #********************************************************************
 # timeout text
 #********************************************************************

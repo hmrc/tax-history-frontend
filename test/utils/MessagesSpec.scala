@@ -106,11 +106,11 @@ class MessagesSpec extends GuiceAppSpec {
 
   private def isInteger(s: String): Boolean = s forall Character.isDigit
 
-  private def toArgArray(msg: String) = msg.split("\\{|\\}").map(_.trim()).filter(isInteger)
+  private def toArgArray(msg: String): Array[String] = msg.split("\\{|\\}").map(_.trim()).filter(isInteger)
 
-  private def countArgs(msg: String) = toArgArray(msg).length
+  private def countArgs(msg: String): Int = toArgArray(msg).length
 
-  private def listArgs(msg: String) = toArgArray(msg).mkString
+  private def listArgs(msg: String): String = toArgArray(msg).mkString
 
   private def assertNonEmptyValuesForDefaultMessages(): Unit =
     assertNonEmptyNonTemporaryValues("Default", englishMessageKeys)
@@ -139,10 +139,10 @@ class MessagesSpec extends GuiceAppSpec {
       }
   }
 
-  private def listMissingMessageKeys(header: String, missingKeys: Set[String]) =
+  private def listMissingMessageKeys(header: String, missingKeys: Set[String]): String =
     missingKeys.toList.sorted.mkString(header + displayLine, "\n", displayLine)
 
-  private lazy val displayLine = "\n" + ("@" * 42) + "\n"
+  private lazy val displayLine: String = "\n" + ("@" * 42) + "\n"
 
   private lazy val englishMessageKeys: Map[String, String] = getExpectedMessages("en")
 
@@ -151,7 +151,7 @@ class MessagesSpec extends GuiceAppSpec {
 
   private lazy val welshMessagesKeys: Map[String, String] = getExpectedMessages("cy") -- defaultMessageKeys
 
-  private def getExpectedMessages(languageCode: String) =
+  private def getExpectedMessages(languageCode: String): Map[String, String] =
     messagesApi.messages.getOrElse(languageCode, throw new Exception(s"Missing messages for $languageCode"))
 
   private def mismatchingKeys(defaultKeySet: Set[String], welshKeySet: Set[String]) = {

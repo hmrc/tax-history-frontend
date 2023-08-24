@@ -16,11 +16,11 @@
 
 package model.api
 
-import java.util.UUID
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.LocalDateFormat
 
 import java.time.LocalDate
+import java.util.UUID
 
 case class EarlierYearUpdate(
   earlierYearUpdateId: UUID = UUID.randomUUID(),
@@ -32,5 +32,5 @@ case class EarlierYearUpdate(
 )
 
 object EarlierYearUpdate extends LocalDateFormat {
-  implicit val formats = Json.format[EarlierYearUpdate]
+  implicit val formats: OFormat[EarlierYearUpdate] = Json.format[EarlierYearUpdate]
 }

@@ -16,7 +16,7 @@
 
 package model.api
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.LocalDateFormat
 
 import java.time.LocalDate
@@ -41,5 +41,5 @@ case class PayAndTax(
 }
 
 object PayAndTax extends LocalDateFormat {
-  implicit val formats = Json.format[PayAndTax]
+  implicit val formats: OFormat[PayAndTax] = Json.format[PayAndTax]
 }

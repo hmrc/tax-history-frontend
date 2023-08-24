@@ -242,22 +242,6 @@ employmenthistory.no.agent.services.account.title=Your agent business does not h
 employmenthistory.no.agent.services.account.p=If you are authorised to act on behalf of your agent business, you can
 employmenthistory.no.agent.services.account.link.text=create an agent services account
 
-# General Messages
-# Error messages for digital services
-global.error.400.title=Bad request - 400
-global.error.400.heading=Bad request
-global.error.400.message=Please check that you have entered the correct web address.
-global.error.403.title=Forbidden - 403
-global.error.403.heading=Sorry, you haven''t been authorised to proceed.
-global.error.passcode.title=Forbidden - 403
-global.error.passcode.heading=Sorry, you haven''t been authorised to proceed.
-global.error.404.title=Page not found - 404
-global.error.404.heading=This page can''t be found
-global.error.404.message=Please check that you have entered the correct web address.
-global.error.500.title=Sorry, we are experiencing technical difficulties - 500
-global.error.500.heading=Sorry, we''re experiencing technical difficulties
-global.error.500.message=Please try again in a few minutes.
-
 #********************************************************************
 # timeout text
 #********************************************************************
