@@ -48,7 +48,7 @@ This automatically generates sample data for this Agent.
 Set the "Credential Strength" to **Strong** and record the **ARN** number (AgentReferenceNumber) under the heading "Principal enrolments" assigned to this user.
 ```example: QARN8691038```
 
-Press Update and continue.
+Press Update to continue.
 
 ### Create Client user
 
@@ -64,7 +64,7 @@ This automatically generates sample data for this Client.
 Set the "Credential Strength" to **Strong** and record the **NINO** (or edit to a custom NINO to include more test data [see here](#checking-the-added-client-data)).
 ```example: AM242413B```
 
-Press Update and continue. 
+Press Update to continue. 
 
 
 ### Create the relationship between Agent and Client
