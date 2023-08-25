@@ -16,18 +16,18 @@
 
 package model.api
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 case class TaDeduction(`type`: Int, npsDescription: String, amount: BigDecimal, sourceAmount: Option[BigDecimal])
 
 object TaDeduction {
-  implicit val formats = Json.format[TaDeduction]
+  implicit val formats: OFormat[TaDeduction] = Json.format[TaDeduction]
 }
 
 case class TaAllowance(`type`: Int, npsDescription: String, amount: BigDecimal, sourceAmount: Option[BigDecimal])
 
 object TaAllowance {
-  implicit val formats = Json.format[TaAllowance]
+  implicit val formats: OFormat[TaAllowance] = Json.format[TaAllowance]
 }
 
 case class IncomeSource(
@@ -43,5 +43,5 @@ case class IncomeSource(
 )
 
 object IncomeSource {
-  implicit val formats = Json.format[IncomeSource]
+  implicit val formats: OFormat[IncomeSource] = Json.format[IncomeSource]
 }

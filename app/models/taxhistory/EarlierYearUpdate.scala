@@ -16,7 +16,7 @@
 
 package models.taxhistory
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import utils.LocalDateFormat
 
 import java.time.LocalDate
@@ -28,5 +28,5 @@ case class EarlierYearUpdate(
 )
 
 object EarlierYearUpdate extends LocalDateFormat {
-  implicit val format = Json.format[EarlierYearUpdate]
+  implicit val format: OFormat[EarlierYearUpdate] = Json.format[EarlierYearUpdate]
 }
