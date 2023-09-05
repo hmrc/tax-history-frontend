@@ -29,6 +29,17 @@ or to run tests+coverage+scalafmt+scalastyle run:
 ./run_all_tests.sh
 ```
 
+## Accessibility Tests
+
+### Prerequisites
+Have node installed on your machine
+
+### Execute tests
+To run the tests locally, simply run:
+```bash
+sbt clean A11y/test
+```
+
 The landing page URL for the service is: http://localhost:9996/tax-history/select-client [[staging](https://www.staging.tax.service.gov.uk/tax-history/select-client)]
 
 You will need an Agent account to sign-in [see Create Agent user](#create-agent-user).
