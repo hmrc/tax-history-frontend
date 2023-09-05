@@ -24,3 +24,8 @@ tmp
 bin
 .bsp
 .idea
+.metals/
+.vscode/
+project/metals.sbt
+.bloop/
+project/.bloop/
