@@ -53,14 +53,6 @@ class AppConfigSpec extends BaseSpec {
         appConfig.agentSubscriptionStart shouldBe "http://localhost:9437/agent-subscription/start"
       }
 
-      "loginUrl" in {
-        appConfig.loginUrl shouldBe "http://localhost:9025/auth-login-stub/gg-sign-in"
-      }
-
-      "logoutUrl" in {
-        appConfig.logoutUrl shouldBe "http://localhost:9025/gg/sign-out"
-      }
-
       "loginContinue" in {
         appConfig.loginContinue shouldBe "http://localhost:9996/tax-history/select-client"
       }
@@ -71,10 +63,6 @@ class AppConfigSpec extends BaseSpec {
 
       "betaFeedbackUnauthenticatedUrl" in {
         appConfig.betaFeedbackUnauthenticatedUrl shouldBe "http://localhost:9250/contact/beta-feedback-unauthenticated"
-      }
-
-      "agentInvitation" in {
-        appConfig.agentInvitation shouldBe "http://localhost:9448/invitations/agents/"
       }
 
       "agentInvitationFastTrack" in {
