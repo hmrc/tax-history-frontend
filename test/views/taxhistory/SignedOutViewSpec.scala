@@ -54,15 +54,15 @@ class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
     def test(method: String, view: HtmlFormat.Appendable): Unit =
       s"$method" should {
         "have the correct title" in new ViewFixture(view) {
-          document(view).title shouldBe expectedPageTitle("For your security, we signed you out")
+          document(this.view).title shouldBe expectedPageTitle("For your security, we signed you out")
         }
 
         "have the correct heading" in new ViewFixture(view) {
-          document(view).select("h1").text() shouldBe "For your security, we signed you out"
+          document(this.view).select("h1").text() shouldBe "For your security, we signed you out"
         }
 
         "have the correct signIn link references" in new ViewFixture(view) {
-          val aRefText: Element = document(view).select(s"a[href=$href]").first()
+          val aRefText: Element = document(this.view).select(s"a[href=$href]").first()
           aRefText.text.trim() mustBe linkText
         }
       }
