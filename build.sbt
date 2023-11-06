@@ -5,7 +5,7 @@ lazy val microservice = Project(appName, file("."))
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     majorVersion := 3,
-    scalaVersion := "2.13.11",
+    scalaVersion := "2.13.12",
     libraryDependencies ++= AppDependencies(),
     // To resolve a bug with version 2.x.x of the scoverage plugin - https://github.com/sbt/sbt/issues/6997
     libraryDependencySchemes += "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always,
@@ -27,6 +27,7 @@ lazy val microservice = Project(appName, file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._"
     ),
     scalacOptions ++= Seq(
+      "-feature",
       "-Wconf:src=routes/.*:s",
       "-Wconf:cat=unused-imports&src=views/.*:s"
     )

@@ -250,7 +250,7 @@
         <div class="govuk-body govuk-!-text-align-right issuedTaxCode">
             <dl>
                 <dt class="govuk-!-font-weight-bold">
-                    @messages("tax.code.subheading")
+                    @ControllerUtils.displayTaxCodeHeading(taxYear, employment.employmentStatus, employment.endDate)
                 </dt>
                 <dd class="govuk-!-font-weight-bold" id="tax-code">
                     @{

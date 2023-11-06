@@ -440,7 +440,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
             taxCodeH2           -> "Tax code breakdown",
             taxCodeAllowancesH3 -> "Allowances",
             taxCodeDeductionsH3 -> "Deductions",
-            taxCodeSubheading   -> "Latest tax code issued",
+            taxCodeSubheading   -> "Last tax code issued",
             taxCodeNumber       -> "1100Y",
             deductionsP         -> deductionsParagraph
           )
@@ -474,7 +474,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           Seq(
             taxCodeH2           -> "Tax code breakdown",
             taxCodeAllowancesH3 -> "Allowances",
-            taxCodeSubheading   -> "Latest tax code issued",
+            taxCodeSubheading   -> "Last tax code issued",
             taxCodeNumber       -> "1100Y",
             noDeductions        -> "There are no deductions."
           )

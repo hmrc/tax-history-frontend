@@ -136,7 +136,8 @@ employmenthistory.al.EarlierYearsAdjustment=EYA Addasiad Blynyddoedd Cynnar
 
 ################################ Tax Codes ####################################################
 tax.code.heading=Dadansoddiad o god treth
-tax.code.subheading=Cod treth diweddaraf a gyhoeddwyd
+tax.code.subheading.ongoing.employment=Cod treth diweddaraf a anfonwyd
+tax.code.subheading.previous.or.terminated.employment=Cod treth diwethaf a anfonwyd
 tax.code.caveat=Pan fo swm yn ddyledus i CThEM, cyfrifir didyniad i addasu’r cod treth fel bod y swm cywir yn cael ei ad-dalu yn ystod y flwyddyn.
 tax.code.allowance=Lwfans
 tax.code.deduction=Didyniad

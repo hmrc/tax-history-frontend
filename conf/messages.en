@@ -136,7 +136,8 @@ employmenthistory.al.EarlierYearsAdjustment=Earlier years adjustment (EYA)
 
 ################################ Tax Codes ####################################################
 tax.code.heading=Tax code breakdown
-tax.code.subheading=Latest tax code issued
+tax.code.subheading.ongoing.employment=Latest tax code issued
+tax.code.subheading.previous.or.terminated.employment=Last tax code issued
 tax.code.caveat=Where an amount is owed to HMRC, a deduction is calculated to adjust the tax code so that the correct amount is repaid over the course of the year.
 tax.code.allowance=Allowance
 tax.code.deduction=Deduction

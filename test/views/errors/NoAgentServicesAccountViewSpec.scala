@@ -42,19 +42,19 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
     def test(method: String, view: HtmlFormat.Appendable): Unit =
       s"$method" should {
         "have the correct title" in new ViewFixture(view) {
-          document(view).title shouldBe expectedPageTitle(titleAndHeadingContent)
+          document(this.view).title shouldBe expectedPageTitle(titleAndHeadingContent)
         }
 
         "have the correct heading" in new ViewFixture(view) {
-          document(view).select("h1").text() shouldBe titleAndHeadingContent
+          document(this.view).select("h1").text() shouldBe titleAndHeadingContent
         }
 
         "have the correct p element content" in new ViewFixture(view) {
-          document(view).select("#main-content > div > div > p").text() shouldBe pContent
+          document(this.view).select("#main-content > div > div > p").text() shouldBe pContent
         }
 
         "have the correct a element content" in new ViewFixture(view) {
-          document(view)
+          document(this.view)
             .select(
               "#main-content > div > div > p> a"
             )
@@ -62,7 +62,7 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
         }
 
         "have the correct a element link" in new ViewFixture(view) {
-          document(view)
+          document(this.view)
             .select(
               "#main-content > div > div > p> a"
             )

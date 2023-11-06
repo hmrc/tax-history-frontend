@@ -18,6 +18,9 @@ package utils
 
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
+import uk.gov.hmrc.time.TaxYear
+
+import java.time.LocalDate
 
 object ControllerUtils {
 
@@ -41,6 +44,20 @@ object ControllerUtils {
 
   def displaySource(sourceAmount: Option[BigDecimal], amount: BigDecimal): Option[BigDecimal] =
     if (sourceAmount.contains(amount)) None else sourceAmount
+
+  def displayTaxCodeHeading(taxYear: Int, employmentStatus: EmploymentStatus, employmentEndDate: Option[LocalDate])(
+    implicit messages: Messages
+  ): String =
+    if (TaxYear.current.startYear == taxYear && employmentStatus != EmploymentStatus.Ceased) {
+      employmentEndDate match {
+        case Some(date) if date.isAfter(LocalDate.now())  => messages("tax.code.subheading.ongoing.employment")
+        case Some(date) if date.isBefore(LocalDate.now()) =>
+          messages("tax.code.subheading.previous.or.terminated.employment")
+        case _                                            => messages("tax.code.subheading.ongoing.employment")
+      }
+    } else {
+      messages("tax.code.subheading.previous.or.terminated.employment")
+    }
 
   def displayTaxCode(basisOperation: Option[Int]): Option[String] =
     basisOperation match {

@@ -16,7 +16,7 @@
 
 package controllers.auth
 
-import play.api.mvc.{AnyContent, MessagesControllerComponents, Request, Result}
+import play.api.mvc.{MessagesControllerComponents, Result}
 import uk.gov.hmrc.auth.core.AuthProvider.GovernmentGateway
 import uk.gov.hmrc.auth.core._
 import uk.gov.hmrc.auth.core.retrieve.v2.Retrievals._
@@ -25,8 +25,6 @@ import uk.gov.hmrc.play.bootstrap.config.AuthRedirects
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
 
 import scala.concurrent.Future
-
-trait AgentAuthTrait
 
 abstract class AgentAuth(cc: MessagesControllerComponents)
     extends FrontendController(cc)
@@ -50,14 +48,11 @@ abstract class AgentAuth(cc: MessagesControllerComponents)
       .find(_.key equals "HMRC-AS-AGENT")
       .flatMap(_.identifiers.find(_.key equals "AgentReferenceNumber").map(_.value))
 
-  type AfiActionWithArn = Request[AnyContent] => Future[Result]
   lazy val affinityGroupAllEnrolls: Retrieval[Option[AffinityGroup] ~ Enrolments] = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment                                       = Enrolment("HMRC-AS-AGENT")
     .withDelegatedAuthRule("afi-auth")
 
   lazy val AuthProviderAgents: AuthProviders = AuthProviders(GovernmentGateway)
   val isAnAgent: Boolean                     = true
-  val isAuthorisedForPAYE                    = true
-  val isNotAuthorisedForPAYE                 = false
 
 }
