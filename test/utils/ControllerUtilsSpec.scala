@@ -19,6 +19,7 @@ package utils
 import model.api.{Employment, EmploymentStatus}
 import play.api.i18n.Messages
 import support.GuiceAppSpec
+import uk.gov.hmrc.time.TaxYear
 import views.taxhistory.Constants
 
 import java.time.LocalDate
@@ -266,5 +267,61 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
     "return the term Jobseeker''s Allowance if employmentPaymentType is JobseekersAllowance" in {
       ControllerUtils.isJobSeekerAllowance(employmentWithJobseekers) shouldBe Messages("employmenthistory.job.seekers")
     }
+  }
+
+  "ControllerUtils - displayTaxCodeHeading" must {
+    val previous = "Last tax code issued"
+    val ongoing  = "Latest tax code issued"
+
+    val currentTaxYearTC = List(
+      //Live
+      (TaxYear.current.startYear, EmploymentStatus.Live, Some(LocalDate.now().minusDays(1)), previous),
+      (TaxYear.current.startYear, EmploymentStatus.Live, Some(LocalDate.now().plusDays(2)), ongoing),
+      (TaxYear.current.startYear, EmploymentStatus.Live, None, ongoing),
+      //PotentiallyCeased
+      (TaxYear.current.startYear, EmploymentStatus.PotentiallyCeased, Some(LocalDate.now().minusDays(1)), previous),
+      (TaxYear.current.startYear, EmploymentStatus.PotentiallyCeased, Some(LocalDate.now().plusDays(2)), ongoing),
+      (TaxYear.current.startYear, EmploymentStatus.PotentiallyCeased, None, ongoing),
+      //Ceased
+      (TaxYear.current.startYear, EmploymentStatus.Ceased, Some(LocalDate.now().minusDays(1)), previous),
+      (TaxYear.current.startYear, EmploymentStatus.Ceased, Some(LocalDate.now().plusDays(2)), previous),
+      (TaxYear.current.startYear, EmploymentStatus.Ceased, None, previous),
+      //Unknown
+      (TaxYear.current.startYear, EmploymentStatus.Unknown, Some(LocalDate.now().minusDays(1)), previous),
+      (TaxYear.current.startYear, EmploymentStatus.Unknown, Some(LocalDate.now().plusDays(2)), ongoing),
+      (TaxYear.current.startYear, EmploymentStatus.Unknown, None, ongoing)
+    ).sortBy(_._4).reverse
+
+    currentTaxYearTC.foreach { case (taxYear, employmentStatus, employmentEndDate, expectedMessage) =>
+      s"return '$expectedMessage' message when the tax year is $taxYear and the employment status is $employmentStatus and end date is $employmentEndDate" in {
+        ControllerUtils.displayTaxCodeHeading(taxYear, employmentStatus, employmentEndDate) shouldBe expectedMessage
+      }
+    }
+
+    val yearsBack = 5
+    val statuses  =
+      List(EmploymentStatus.Live, EmploymentStatus.PotentiallyCeased, EmploymentStatus.Ceased, EmploymentStatus.Unknown)
+
+    val previousTaxYearsTC =
+      statuses.flatMap(status =>
+        (1 to yearsBack).map(back =>
+          (TaxYear.current.back(back).startYear, status, Some(LocalDate.now().minusDays(1).minusYears(back)), previous)
+        )
+      ) ++
+        statuses.flatMap(status =>
+          (1 to yearsBack).map(back =>
+            (TaxYear.current.back(back).startYear, status, Some(LocalDate.now().plusDays(2).minusYears(back)), previous)
+          )
+        ) ++
+        statuses.flatMap(status =>
+          (1 to yearsBack).map(back => (TaxYear.current.back(back).startYear, status, None, previous))
+        )
+
+    previousTaxYearsTC.foreach { case (taxYear, employmentStatus, employmentEndDate, expectedMessage) =>
+      s"return '$expectedMessage' message when the tax year is $taxYear and the employment status is $employmentStatus and end date is $employmentEndDate" in {
+        ControllerUtils.displayTaxCodeHeading(taxYear, employmentStatus, employmentEndDate) shouldBe expectedMessage
+      }
+    }
+
   }
 }
