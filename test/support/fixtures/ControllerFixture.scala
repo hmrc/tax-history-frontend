@@ -19,6 +19,7 @@ package support.fixtures
 import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
+import uk.gov.hmrc.time.TaxYear
 
 import java.time.LocalDate
 import java.util.UUID
@@ -44,8 +45,24 @@ trait ControllerFixture {
   val cbUUID: UUID = UUID.randomUUID()
 
   val companyBenefits: List[CompanyBenefit] = List(
-    CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1), isForecastBenefit = true),
-    CompanyBenefit(cbUUID, "CarFuelBenefit", 1000, isForecastBenefit = true)
+    CompanyBenefit(
+      companyBenefitId = cbUUID,
+      iabdType = "EmployerProvidedServices",
+      amount = 1000.00,
+      source = Some(1),
+      captureDate = Some("5/04/2022"),
+      taxYear = TaxYear(2022),
+      isForecastBenefit = true
+    ),
+    CompanyBenefit(
+      companyBenefitId = cbUUID,
+      iabdType = "CarFuelBenefit",
+      amount = 1000.00,
+      source = Some(1),
+      captureDate = Some("5/04/2022"),
+      taxYear = TaxYear(2022),
+      isForecastBenefit = true
+    )
   )
 
   val payAndTax: PayAndTax =

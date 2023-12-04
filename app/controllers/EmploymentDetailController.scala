@@ -152,9 +152,9 @@ class EmploymentDetailController @Inject() (
   )(implicit hc: HeaderCarrier, request: Request[_]) = {
     val employment = dateUtils.formatEmploymentDates(empResponse.json.as[Employment])
     for {
-      payAndTax       <- getPayAndTax(nino, taxYear, employmentId)
-      companyBenefits <- getCompanyBenefits(nino, taxYear, employmentId)
-      incomeSource    <- getIncomeSource(nino, taxYear, employmentId)
+      payAndTax                             <- getPayAndTax(nino, taxYear, employmentId)
+      companyBenefits: List[CompanyBenefit] <- getCompanyBenefits(nino, taxYear, employmentId)
+      incomeSource                          <- getIncomeSource(nino, taxYear, employmentId)
     } yield {
       val employmentViewDetail = EmploymentViewDetail(
         employment.isJobseekersAllowance,

@@ -16,10 +16,11 @@
 
 package model.api
 
-import java.util.UUID
-
 import support.BaseSpec
+import uk.gov.hmrc.time.TaxYear
 import utils.TestUtil
+
+import java.util.UUID
 
 class CompanyBenefitSpec extends TestUtil with BaseSpec {
 
@@ -28,6 +29,8 @@ class CompanyBenefitSpec extends TestUtil with BaseSpec {
     iabdType = "companyBenefitType",
     amount = BigDecimal(12.00),
     source = Some(3),
+    captureDate = Some("5/04/2022"),
+    taxYear = TaxYear(2022),
     isForecastBenefit = true
   )
 
@@ -35,7 +38,14 @@ class CompanyBenefitSpec extends TestUtil with BaseSpec {
 
     "generate companyBenefitId when none is supplied" in {
       val comBenefit =
-        CompanyBenefit(iabdType = "otherCompanyBenefitType", amount = BigDecimal(10.00), isForecastBenefit = true)
+        CompanyBenefit(
+          iabdType = "otherCompanyBenefitType",
+          amount = BigDecimal(10.00),
+          source = None,
+          captureDate = Some("5/04/2022"),
+          taxYear = TaxYear(2022),
+          isForecastBenefit = true
+        )
       comBenefit.companyBenefitId.toString.nonEmpty shouldBe true
       comBenefit.companyBenefitId                  shouldNot be(companyBenefit.companyBenefitId)
     }
