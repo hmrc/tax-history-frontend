@@ -44,8 +44,20 @@ trait ControllerFixture {
   val cbUUID: UUID = UUID.randomUUID()
 
   val companyBenefits: List[CompanyBenefit] = List(
-    CompanyBenefit(cbUUID, "EmployerProvidedServices", 1000.00, Some(1), isForecastBenefit = true),
-    CompanyBenefit(cbUUID, "CarFuelBenefit", 1000, isForecastBenefit = true)
+    CompanyBenefit(
+      companyBenefitId = cbUUID,
+      iabdType = "EmployerProvidedServices",
+      amount = 1000.00,
+      source = Some(1),
+      isForecastBenefit = true
+    ),
+    CompanyBenefit(
+      companyBenefitId = cbUUID,
+      iabdType = "CarFuelBenefit",
+      amount = 1000.00,
+      source = Some(1),
+      isForecastBenefit = true
+    )
   )
 
   val payAndTax: PayAndTax =

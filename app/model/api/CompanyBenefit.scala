@@ -29,5 +29,6 @@ case class CompanyBenefit(
 )
 
 object CompanyBenefit {
+
   implicit val formats: OFormat[CompanyBenefit] = Json.format[CompanyBenefit]
 }
