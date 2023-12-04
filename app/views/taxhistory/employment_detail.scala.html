@@ -226,11 +226,11 @@
                             <tr class="govuk-table__row">
                                 <th class="govuk-table__header">@messages(s"employmenthistory.cb.${cb.iabdType}")</th>
                                 <td class="govuk-table__cell">@if(appConfig.companyBenefitsFlag) {
-                                    @if(cb.isForecastBenefit) {
-                                    @messages("employmenthistory.cb.forecast")
-                                    } else {
-                                    @messages("employmenthistory.cb.P11D")
-                                    }
+                                        @if(cb.isForecastBenefit) {
+                                            @messages("employmenthistory.cb.forecast")
+                                        } else {
+                                            @messages("employmenthistory.cb.P11D")
+                                        }
                                     }
                                 </td>
                                 <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(cb.amount)</td>

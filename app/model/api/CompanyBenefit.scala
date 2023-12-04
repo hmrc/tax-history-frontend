@@ -17,6 +17,7 @@
 package model.api
 
 import play.api.libs.json.{Json, OFormat}
+import uk.gov.hmrc.time.TaxYear
 
 import java.util.UUID
 
@@ -25,9 +26,14 @@ case class CompanyBenefit(
   iabdType: String,
   amount: BigDecimal,
   source: Option[Int] = None,
+  captureDate: Option[String],
+  taxYear: TaxYear,
   isForecastBenefit: Boolean
 )
 
 object CompanyBenefit {
+
+  implicit val formatTaxYear: OFormat[TaxYear] = Json.format[TaxYear]
+
   implicit val formats: OFormat[CompanyBenefit] = Json.format[CompanyBenefit]
 }

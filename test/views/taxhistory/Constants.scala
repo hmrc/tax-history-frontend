@@ -19,6 +19,7 @@ package views.taxhistory
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
 import model.api._
 import models.taxhistory.Person
+import uk.gov.hmrc.time.TaxYear
 
 import java.time.LocalDate
 import java.util.UUID
@@ -228,35 +229,46 @@ trait Constants {
 
   val uuid: UUID = UUID.randomUUID()
 
+  val companyBenefit =
+    CompanyBenefit(
+      companyBenefitId = uuid,
+      iabdType = "EmployerProvidedServices",
+      amount = 1000.00,
+      source = None,
+      captureDate = Some("5/04/2022"),
+      taxYear = TaxYear(2022),
+      isForecastBenefit = true
+    )
+
   val completeCBList: List[CompanyBenefit] = List(
-    CompanyBenefit(uuid, "EmployerProvidedServices", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "CarFuelBenefit", 1000, isForecastBenefit = true),
-    CompanyBenefit(uuid, "MedicalInsurance", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "CarBenefit", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "TelephoneBenefit", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "ServiceBenefit", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "TaxableExpenseBenefit", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "VanBenefit", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "VanFuelBenefit", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "BeneficialLoan", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "TotalBenefitInKind", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "Accommodation", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "Assets", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "AssetTransfer", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "EducationalService", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "Entertaining", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "ExpensesPay", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "Mileage", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "NonQualifyingRelocationExpense", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "OtherItems", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "PaymentEmployeesBehalf", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "PersonalIncidentExpenses", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "QualifyingRelocationExpenses", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "EmployerProvidedProfessionalSubscription", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "IncomeTaxPaidNotDeductedFromDirectorsRemuneration", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "TravelAndSubsistence", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "VoucherAndCreditCards", 1000.00, isForecastBenefit = true),
-    CompanyBenefit(uuid, "NonCashBenefit", 1000.00, isForecastBenefit = true)
+    companyBenefit,
+    companyBenefit.copy(iabdType = "CarFuelBenefit"),
+    companyBenefit.copy(iabdType = "MedicalInsurance"),
+    companyBenefit.copy(iabdType = "CarBenefit"),
+    companyBenefit.copy(iabdType = "TelephoneBenefit"),
+    companyBenefit.copy(iabdType = "ServiceBenefit"),
+    companyBenefit.copy(iabdType = "TaxableExpenseBenefit"),
+    companyBenefit.copy(iabdType = "VanBenefit"),
+    companyBenefit.copy(iabdType = "VanFuelBenefit"),
+    companyBenefit.copy(iabdType = "BeneficialLoan"),
+    companyBenefit.copy(iabdType = "TotalBenefitInKind"),
+    companyBenefit.copy(iabdType = "Accommodation"),
+    companyBenefit.copy(iabdType = "Assets"),
+    companyBenefit.copy(iabdType = "AssetTransfer"),
+    companyBenefit.copy(iabdType = "EducationalService"),
+    companyBenefit.copy(iabdType = "Entertaining"),
+    companyBenefit.copy(iabdType = "ExpensesPay"),
+    companyBenefit.copy(iabdType = "Mileage"),
+    companyBenefit.copy(iabdType = "NonQualifyingRelocationExpense"),
+    companyBenefit.copy(iabdType = "OtherItems"),
+    companyBenefit.copy(iabdType = "PaymentEmployeesBehalf"),
+    companyBenefit.copy(iabdType = "PersonalIncidentExpenses"),
+    companyBenefit.copy(iabdType = "QualifyingRelocationExpenses"),
+    companyBenefit.copy(iabdType = "EmployerProvidedProfessionalSubscription"),
+    companyBenefit.copy(iabdType = "IncomeTaxPaidNotDeductedFromDirectorsRemuneration"),
+    companyBenefit.copy(iabdType = "TravelAndSubsistence"),
+    companyBenefit.copy(iabdType = "VoucherAndCreditCards"),
+    companyBenefit.copy(iabdType = "NonCashBenefit")
   )
 
   val employment: Employment =
@@ -303,6 +315,13 @@ trait Constants {
   val person: Option[Person] = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
   val companyBenefits: CompanyBenefit =
-    CompanyBenefit(iabdType = "allowanceType", amount = BigDecimal(1), isForecastBenefit = true)
+    CompanyBenefit(
+      iabdType = "allowanceType",
+      amount = BigDecimal(1),
+      source = None,
+      captureDate = Some("5/04/2022"),
+      taxYear = TaxYear(2022),
+      isForecastBenefit = true
+    )
 
 }
