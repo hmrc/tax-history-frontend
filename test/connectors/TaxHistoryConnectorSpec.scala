@@ -16,7 +16,6 @@
 
 package connectors
 
-import java.util.UUID
 import model.api.EmploymentPaymentType.JobseekersAllowance
 import model.api._
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
@@ -29,6 +28,7 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
 import utils.TestUtil
 
 import java.time.LocalDate
+import java.util.UUID
 import scala.concurrent.{ExecutionContext, Future}
 
 class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
@@ -104,7 +104,13 @@ class TaxHistoryConnectorSpec extends TestUtil with BaseSpec with ScalaFutures {
     "fetch company benefits for Employment details" in new LocalSetup {
       val url                             = s"http://localhost:9997/tax-history/$nino/2014/employments/${employmentId.toString}/company-benefits"
       val companyBenefits: CompanyBenefit =
-        CompanyBenefit(UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"), "", 200.00, isForecastBenefit = true)
+        CompanyBenefit(
+          companyBenefitId = UUID.fromString("c9923a63-4208-4e03-926d-7c7c88adc7ee"),
+          iabdType = "",
+          amount = 200.00,
+          source = None,
+          isForecastBenefit = true
+        )
 
       when(
         mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(

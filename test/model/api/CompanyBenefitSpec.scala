@@ -16,10 +16,10 @@
 
 package model.api
 
-import java.util.UUID
-
 import support.BaseSpec
 import utils.TestUtil
+
+import java.util.UUID
 
 class CompanyBenefitSpec extends TestUtil with BaseSpec {
 
@@ -35,7 +35,12 @@ class CompanyBenefitSpec extends TestUtil with BaseSpec {
 
     "generate companyBenefitId when none is supplied" in {
       val comBenefit =
-        CompanyBenefit(iabdType = "otherCompanyBenefitType", amount = BigDecimal(10.00), isForecastBenefit = true)
+        CompanyBenefit(
+          iabdType = "otherCompanyBenefitType",
+          amount = BigDecimal(10.00),
+          source = None,
+          isForecastBenefit = true
+        )
       comBenefit.companyBenefitId.toString.nonEmpty shouldBe true
       comBenefit.companyBenefitId                  shouldNot be(companyBenefit.companyBenefitId)
     }
