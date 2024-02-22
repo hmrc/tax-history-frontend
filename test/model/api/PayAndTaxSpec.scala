@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,7 +61,7 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
         taxTotal = Some(BigDecimal(2856.44)),
         taxTotalIncludingEYU = Some(BigDecimal(3013.99)),
         studentLoan = Some(1254.00),
-        studentLoanIncludingEYU = Some(2023.21),
+        studentLoanIncludingEYU = Some(2024.21),
         paymentDate = Some(LocalDate.parse("2016-02-20")),
         earlierYearUpdates = List(
           EarlierYearUpdate(
