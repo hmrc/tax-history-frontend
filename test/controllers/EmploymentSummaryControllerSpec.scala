@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.Messages
 import play.api.libs.json.Json

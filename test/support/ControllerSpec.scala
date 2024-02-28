@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 HM Revenue & Customs
+ * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package support
 
-import org.mockito.MockitoSugar
 import play.api.mvc.{AnyContentAsEmpty, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -26,7 +25,7 @@ import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-trait ControllerSpec extends GuiceAppSpec with BaseSpec with MockitoSugar {
+trait ControllerSpec extends GuiceAppSpec with BaseSpec {
 
   override lazy val fakeRequest: FakeRequest[AnyContentAsEmpty.type] =
     FakeRequest("GET", "/").withSession(

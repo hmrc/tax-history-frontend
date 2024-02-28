@@ -2,22 +2,19 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlayVersion: String = "7.23.0"
+  private val bootstrapPlayVersion: String = "8.4.0"
 
   private val compile: Seq[ModuleID] = Seq(
     play.sbt.PlayImport.ws,
-    "uk.gov.hmrc" %% "bootstrap-frontend-play-28" % bootstrapPlayVersion,
-    "uk.gov.hmrc" %% "play-frontend-hmrc"         % "7.29.0-play-28",
-    "uk.gov.hmrc" %% "domain"                     % "8.3.0-play-28",
-    "uk.gov.hmrc" %% "tax-year"                   % "3.3.0"
+    "uk.gov.hmrc" %% "bootstrap-frontend-play-30" % bootstrapPlayVersion,
+    "uk.gov.hmrc" %% "play-frontend-hmrc-play-30" % "8.5.0",
+    "uk.gov.hmrc" %% "domain-play-30"             % "9.0.0",
+    "uk.gov.hmrc" %% "tax-year"                   % "4.0.0"
   )
 
   private val test: Seq[ModuleID] = Seq(
-    "uk.gov.hmrc"         %% "bootstrap-test-play-28"  % bootstrapPlayVersion,
-    "org.scalatest"       %% "scalatest"               % "3.2.17",
-    "org.jsoup"            % "jsoup"                   % "1.17.1",
-    "org.mockito"         %% "mockito-scala-scalatest" % "1.17.30",
-    "com.vladsch.flexmark" % "flexmark-all"            % "0.64.8"
+    "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapPlayVersion,
+    "org.jsoup"    % "jsoup"                  % "1.17.2"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID]      = compile ++ test
