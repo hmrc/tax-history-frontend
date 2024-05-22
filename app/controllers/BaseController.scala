@@ -46,7 +46,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
     */
   val serviceSignout: String
 
-  lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
+  private lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 
   def logout(): Action[AnyContent] = Action.async {
     logger.info("Sign out of the service")

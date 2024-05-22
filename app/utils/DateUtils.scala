@@ -54,10 +54,10 @@ class DateUtils @Inject() (languageUtils: LanguageUtils) {
 
   def dateToFormattedString(date: LocalDate)(implicit messages: Messages): String = languageUtils.Dates.formatDate(date)
 
-  def dateToFormattedAbbrMonthString(date: LocalDate)(implicit messages: Messages): String =
+  private def dateToFormattedAbbrMonthString(date: LocalDate)(implicit messages: Messages): String =
     languageUtils.Dates.formatDateAbbrMonth(date)
 
-  def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
+  private def noRecord(implicit messages: Messages): String = messages("lbl.date.no-record")
 
   def formatStartDate(employment: Employment, dateFormat: LocalDate => String)(implicit messages: Messages): String =
     employment.startDate.fold(noRecord)(date => dateFormat(date))
