@@ -23,7 +23,7 @@ To run the tests for the application, you can run:
 sbt test
 ```
 
-or to run tests+coverage+scalafmt+scalastyle run:
+or to format and check the code style, compile the code, runs tests with coverage, performs accessibility tests with report, generate a coverage report, and check for dependency updates:
 
 ```bash
 ./run_all_tests.sh
@@ -34,8 +34,8 @@ or to run tests+coverage+scalafmt+scalastyle run:
 ### Prerequisites
 Have node installed on your machine
 
-### Execute tests
-To run the tests locally, simply run:
+### Execute accessibility tests
+To run the ally tests locally, simply run:
 ```bash
 sbt clean A11y/test
 ```
