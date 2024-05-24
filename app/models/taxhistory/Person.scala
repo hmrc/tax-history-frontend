@@ -31,6 +31,6 @@ case class Person(firstName: Option[String], lastName: Option[String], deceased:
 object Person {
   implicit val formats: OFormat[Person] = Json.format[Person]
 
-  def uppercaseToTitleCase(s: String): String =
+  private def uppercaseToTitleCase(s: String): String =
     if (!s.exists(_.isLower)) s.toLowerCase.capitalize else s
 }
