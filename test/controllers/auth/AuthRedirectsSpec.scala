@@ -16,48 +16,40 @@
 
 package controllers.auth
 
-import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.matchers.should.Matchers
-import org.scalatest.wordspec.AnyWordSpec
-import play.api.http.HeaderNames
-import play.api.mvc.Result
 import play.api.{Configuration, Environment, Mode}
+import play.api.http.HeaderNames.LOCATION
+import play.api.http.Status.SEE_OTHER
+import play.api.mvc.Result
 import play.test.WithApplication
+import support.BaseSpec
 
 import java.io.File
 
-class AuthRedirectsSpec extends AnyWordSpec with ScalaFutures with Matchers {
+class AuthRedirectsSpec extends BaseSpec {
 
   trait Dev {
-    val mode = Mode.Dev
+    val mode: Mode = Mode.Dev
   }
 
   trait Prod {
-    val mode = Mode.Prod
+    val mode: Mode = Mode.Prod
   }
 
   trait BaseUri {
-    val ggLoginService = "http://localhost:9553"
-    val ggLoginPath    = "/bas-gateway/sign-in"
-
-    val ivService = "http://localhost:9938"
-    val ivPath    = "/mdtp/uplift"
-
-    val strideService = "http://localhost:9041"
-    val stridePath    = "/stride/sign-in"
+    val ggLoginService: String = "http://localhost:9553"
+    val ggLoginPath: String    = "/bas-gateway/sign-in"
   }
 
   trait Setup extends WithApplication with BaseUri {
-
     def mode: Mode
 
     def extraConfig: Map[String, Any] = Map()
 
     trait TestRedirects extends AuthRedirects {
 
-      val env = Environment(new File("."), getClass.getClassLoader, mode)
+      val env: Environment = Environment(new File("."), getClass.getClassLoader, mode)
 
-      val config = Configuration.from(
+      val config: Configuration = Configuration.from(
         Map(
           "appName"  -> "app",
           "run.mode" -> mode.toString
@@ -68,73 +60,51 @@ class AuthRedirectsSpec extends AnyWordSpec with ScalaFutures with Matchers {
     object Redirect extends TestRedirects
 
     def validate(redirect: Result)(expectedLocation: String): Unit = {
-      redirect.header.status                        shouldBe 303
-      redirect.header.headers(HeaderNames.LOCATION) shouldBe expectedLocation
+      redirect.header.status            shouldBe SEE_OTHER
+      redirect.header.headers(LOCATION) shouldBe expectedLocation
     }
   }
 
-  "redirect with defaults from config" should {
-    "redirect to GG login in Dev" in new Setup with Dev {
-      validate(Redirect.toGGLogin("/continue"))(
-        expectedLocation = s"$ggLoginService$ggLoginPath?continue_url=%2Fcontinue&origin=app"
-      )
-    }
-
-    "redirect to GG login in Prod" in new Setup with Prod {
-      validate(Redirect.toGGLogin("/continue"))(
-        expectedLocation = s"$ggLoginPath?continue_url=%2Fcontinue&origin=app"
-      )
-    }
-
-    "redirect to stride auth in Dev without failureURL" in new Setup with Dev {
-      validate(Redirect.toStrideLogin("/success"))(
-        expectedLocation = s"$strideService$stridePath?successURL=%2Fsuccess&origin=app"
-      )
-    }
-
-    "redirect to stride auth in Dev with failureURL" in new Setup with Dev {
-      validate(Redirect.toStrideLogin("/success", Some("/failure")))(
-        expectedLocation = s"$strideService$stridePath?successURL=%2Fsuccess&origin=app&failureURL=%2Ffailure"
-      )
-    }
-
-    "redirect to stride auth in Prod without failureURL" in new Setup with Prod {
-      validate(Redirect.toStrideLogin("/success"))(expectedLocation = s"$stridePath?successURL=%2Fsuccess&origin=app")
-    }
-
-    "redirect to stride auth in Prod with failureURL" in new Setup with Prod {
-      validate(Redirect.toStrideLogin("/success", Some("/failure")))(
-        expectedLocation = s"$stridePath?successURL=%2Fsuccess&origin=app&failureURL=%2Ffailure"
-      )
-    }
-
-    "allow to override the host defaults" in new Setup with Dev {
-      override def extraConfig: Map[String, String] =
-        Map("Dev.external-url.bas-gateway-frontend.host" -> "http://localhost:9999")
-
-      validate(Redirect.toGGLogin("/continue"))(
-        expectedLocation = s"http://localhost:9999$ggLoginPath?continue_url=%2Fcontinue&origin=app"
-      )
-    }
-
-    "allow to override the origin default in configuration" in new Setup with Dev {
-
-      override def extraConfig: Map[String, String] = Map("sosOrigin" -> "customOrigin")
-
-      validate(Redirect.toGGLogin("/continue"))(
-        expectedLocation = s"$ggLoginService$ggLoginPath?continue_url=%2Fcontinue&origin=customOrigin"
-      )
-    }
-
-    "allow to override the origin default in code" in new Setup with Dev {
-
-      object CustomRedirect extends TestRedirects {
-        override val origin = "customOrigin"
+  "AuthRedirects" when {
+    "redirecting with defaults from config" should {
+      "redirect to GG login in Dev" in new Setup with Dev {
+        validate(Redirect.toGGLogin("/continue"))(
+          expectedLocation = s"$ggLoginService$ggLoginPath?continue_url=%2Fcontinue&origin=app"
+        )
       }
 
-      validate(CustomRedirect.toGGLogin("/continue"))(
-        expectedLocation = s"$ggLoginService$ggLoginPath?continue_url=%2Fcontinue&origin=customOrigin"
-      )
+      "redirect to GG login in Prod" in new Setup with Prod {
+        validate(Redirect.toGGLogin("/continue"))(
+          expectedLocation = s"$ggLoginPath?continue_url=%2Fcontinue&origin=app"
+        )
+      }
+
+      "allow to override the host defaults" in new Setup with Dev {
+        override def extraConfig: Map[String, String] =
+          Map("Dev.external-url.bas-gateway-frontend.host" -> "http://localhost:9999")
+
+        validate(Redirect.toGGLogin("/continue"))(
+          expectedLocation = s"http://localhost:9999$ggLoginPath?continue_url=%2Fcontinue&origin=app"
+        )
+      }
+
+      "allow to override the origin default in configuration" in new Setup with Dev {
+        override def extraConfig: Map[String, String] = Map("sosOrigin" -> "customOrigin")
+
+        validate(Redirect.toGGLogin("/continue"))(
+          expectedLocation = s"$ggLoginService$ggLoginPath?continue_url=%2Fcontinue&origin=customOrigin"
+        )
+      }
+
+      "allow to override the origin default in code" in new Setup with Dev {
+        object CustomRedirect extends TestRedirects {
+          override val origin = "customOrigin"
+        }
+
+        validate(CustomRedirect.toGGLogin("/continue"))(
+          expectedLocation = s"$ggLoginService$ggLoginPath?continue_url=%2Fcontinue&origin=customOrigin"
+        )
+      }
     }
   }
 }

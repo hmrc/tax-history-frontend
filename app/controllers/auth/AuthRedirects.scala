@@ -20,12 +20,10 @@ import play.api.mvc.Result
 import play.api.mvc.Results.Redirect
 import play.api.{Configuration, Environment, Mode}
 
-//TODO try to remove this trait as it is used only to build login URL
-// copy pasted from https://github.com/hmrc/bootstrap-play/blob/236897a17b5919d1353cc5695af9e2bd78a5ef28/bootstrap-common-play-28/src/main/scala/uk/gov/hmrc/play/bootstrap/config/AuthRedirects.scala
 trait AuthRedirects {
 
-  /* Since this is a library for Play >= 2.5 we avoid depending on global configuration/environment
-   * and thus do not depend on the play-config API which still uses the deprecated globals. */
+  /* Taken from bootstrap-play library and modified for Play >= 2.5 to avoid depending on global configuration/environment
+   * and thus not depend on the play-config API which still uses the deprecated globals. */
 
   def config: Configuration
 
@@ -41,20 +39,15 @@ trait AuthRedirects {
     }
 
   private val hostDefaults: Map[String, String] = Map(
-    "Dev.external-url.bas-gateway-frontend.host"           -> "http://localhost:9553",
-    "Dev.external-url.citizen-auth-frontend.host"          -> "http://localhost:9029",
-    "Dev.external-url.identity-verification-frontend.host" -> "http://localhost:9938",
-    "Dev.external-url.stride-auth-frontend.host"           -> "http://localhost:9041"
+    "Dev.external-url.bas-gateway-frontend.host" -> "http://localhost:9553"
   )
 
-  private def host(service: String): String = {
-    val key = s"$envPrefix.external-url.$service.host"
+  private def host(): String = {
+    val key = s"$envPrefix.external-url.bas-gateway-frontend.host"
     config.getOptional[String](key).orElse(hostDefaults.get(key)).getOrElse("")
   }
 
-  private def ggLoginUrl: String = host("bas-gateway-frontend") + "/bas-gateway/sign-in"
-
-  private def strideLoginUrl: String = host("stride-auth-frontend") + "/stride/sign-in"
+  private def ggLoginUrl: String = host() + "/bas-gateway/sign-in"
 
   private final lazy val defaultOrigin: String =
     config
@@ -72,14 +65,4 @@ trait AuthRedirects {
         "origin"       -> Seq(origin)
       )
     )
-
-  def toStrideLogin(successUrl: String, failureUrl: Option[String] = None): Result =
-    Redirect(
-      strideLoginUrl,
-      Map(
-        "successURL" -> Seq(successUrl),
-        "origin"     -> Seq(origin)
-      ) ++ failureUrl.map(f => Map("failureURL" -> Seq(f))).getOrElse(Map())
-    )
-
 }
