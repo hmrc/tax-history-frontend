@@ -48,8 +48,8 @@ class MessagesSpec extends GuiceAppSpec {
     }
     "not have the same messages" in {
       val same = englishMessageKeys.keys.collect({
-        case key if englishMessageKeys.get(key) == welshMessagesKeys.get(key) =>
-          (key, englishMessageKeys.get(key))
+        case messageKey if englishMessageKeys.get(messageKey) == welshMessagesKeys.get(messageKey) =>
+          (messageKey, englishMessageKeys.get(messageKey))
       })
 
       // 94% of app needs to be translated into Welsh. 94% allows for:
@@ -67,39 +67,43 @@ class MessagesSpec extends GuiceAppSpec {
       assertCorrectUseOfQuotesForwelshMessagesKeys()
     }
     "have a resolvable message for keys which take args" in {
-      val englishWithArgsMsgKeys = englishMessageKeys collect { case (key, value) if countArgs(value) > 0 => key }
-      val welshWithArgsMsgKeys   = welshMessagesKeys collect { case (key, value) if countArgs(value) > 0 => key }
+      val englishWithArgsMsgKeys = englishMessageKeys collect {
+        case (messageKey, messageValue) if countArgs(messageValue) > 0 => messageKey
+      }
+      val welshWithArgsMsgKeys   = welshMessagesKeys collect {
+        case (messageKey, messageValue) if countArgs(messageValue) > 0 => messageKey
+      }
       val missingFromEnglish     = englishWithArgsMsgKeys.toList diff welshWithArgsMsgKeys.toList
       val missingFromWelsh       = welshWithArgsMsgKeys.toList diff englishWithArgsMsgKeys.toList
-      // scalastyle:off regex
-      missingFromEnglish foreach { key =>
-        println(s"Key which has arguments in English but not in Welsh: $key")
+
+      withClue(mismatchingKeys(missingFromEnglish.toSet, missingFromWelsh.toSet)) {
+        assert(missingFromEnglish equals missingFromWelsh)
       }
-      missingFromWelsh foreach { key =>
-        println(s"Key which has arguments in Welsh but not in English: $key")
-      }
-      // scalastyle:on regex
+
       englishWithArgsMsgKeys.size mustBe welshWithArgsMsgKeys.size
     }
     "have the same args in the same order for all keys which take args" in {
       val englishWithArgsMsgKeysAndArgList = englishMessageKeys collect {
-        case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
+        case (messageKey, messageValue) if countArgs(messageValue) > 0 => (messageKey, listArgs(messageValue))
       }
       val welshWithArgsMsgKeysAndArgList   = welshMessagesKeys collect {
-        case (key, value) if countArgs(value) > 0 => (key, listArgs(value))
+        case (messageKey, messageValue) if countArgs(messageValue) > 0 => (messageKey, listArgs(messageValue))
       }
       val mismatchedArgSequences           = englishWithArgsMsgKeysAndArgList collect {
-        case (key, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(key) =>
-          (key, engArgSeq, welshWithArgsMsgKeysAndArgList(key))
+        case (messageKey, engArgSeq) if engArgSeq != welshWithArgsMsgKeysAndArgList(messageKey) =>
+          (messageKey, engArgSeq, welshWithArgsMsgKeysAndArgList(messageKey))
       }
-      // scalastyle:off regex
-      mismatchedArgSequences foreach { case (key, engArgSeq, welshArgSeq) =>
-        println(
-          s"key which has different arguments or order of arguments between English and Welsh: " +
-            s"$key -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
-        )
+
+      withClue(
+        mismatchedArgSequences
+          .map { case (messageKey, engArgSeq, welshArgSeq) =>
+            s"Keys with argument inconsistencies: $messageKey -- English arg seq=$engArgSeq and Welsh arg seq=$welshArgSeq"
+          }
+          .mkString("\n")
+      ) {
+        mismatchedArgSequences mustBe empty
       }
-      // scalastyle:on regex
+
       mismatchedArgSequences.size mustBe 0
     }
   }
@@ -125,17 +129,17 @@ class MessagesSpec extends GuiceAppSpec {
     assertCorrectUseOfQuotes("Welsh", welshMessagesKeys)
 
   private def assertNonEmptyNonTemporaryValues(label: String, messages: Map[String, String]): Unit = messages.foreach {
-    case (key: String, value: String) =>
-      withClue(s"In $label, there is an empty value for the key:[$key][$value]") {
-        value.trim.isEmpty mustBe false
+    case (messageKey: String, messageValue: String) =>
+      withClue(s"In $label, there is an empty value for the key:[$messageKey][$messageValue]") {
+        messageValue.trim.isEmpty mustBe false
       }
   }
 
   private def assertCorrectUseOfQuotes(label: String, messages: Map[String, String]): Unit = messages.foreach {
-    case (key: String, value: String) =>
-      withClue(s"In $label, there is an unescaped or invalid quote:[$key][$value]") {
-        MatchSingleQuoteOnly.findFirstIn(value).isDefined mustBe false
-        MatchBacktickQuoteOnly.findFirstIn(value).isDefined mustBe false
+    case (messageKey: String, messageValue: String) =>
+      withClue(s"In $label, there is an unescaped or invalid quote:[$messageKey][$messageValue]") {
+        MatchSingleQuoteOnly.findFirstIn(messageValue).isDefined mustBe false
+        MatchBacktickQuoteOnly.findFirstIn(messageValue).isDefined mustBe false
       }
   }
 

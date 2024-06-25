@@ -1,10 +1,10 @@
 val appName = "tax-history-frontend"
 
-ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / majorVersion := 3
 
 lazy val microservice = Project(appName, file("."))
-  .enablePlugins(play.sbt.PlayScala, SbtDistributablesPlugin)
+  .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
     libraryDependencies ++= AppDependencies(),
