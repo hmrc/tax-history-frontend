@@ -16,55 +16,70 @@
 
 package connectors
 
-import java.net.URL
-
 import config.AppConfig
-import javax.inject.{Inject, Singleton}
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps}
+import uk.gov.hmrc.http.HttpReads.Implicits._
 
+import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class TaxHistoryConnector @Inject() (val appConfig: AppConfig, httpClient: HttpClient)(implicit ec: ExecutionContext) {
+class TaxHistoryConnector @Inject() (val appConfig: AppConfig, httpClient: HttpClientV2)(implicit
+  ec: ExecutionContext
+) {
 
-  implicit val httpReads: HttpReads[HttpResponse] = (method: String, url: String, response: HttpResponse) => response
-
-  private val taxHistoryUrl = new URL(appConfig.taxHistoryBaseUrl, "/tax-history")
+  private val taxHistoryUrl                                                      = s"${appConfig.taxHistoryBaseUrl}/tax-history"
+  private def employmentsUrl(nino: Nino, taxYear: Int)                           = s"$taxHistoryUrl/$nino/$taxYear/employments"
+  private def allowancesUrl(nino: Nino, taxYear: Int)                            = s"$taxHistoryUrl/$nino/$taxYear/allowances"
+  private def companyBenefitsUrl(nino: Nino, taxYear: Int, employmentId: String) =
+    s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/company-benefits"
+  private def payAndTaxUrl(nino: Nino, taxYear: Int, employmentId: String)       =
+    s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/pay-and-tax"
+  private def getEmploymentUrl(nino: Nino, taxYear: Int, employmentId: String)   =
+    s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId"
+  private def taxYearsUrl(nino: Nino)                                            = s"$taxHistoryUrl/$nino/tax-years"
+  private def taxAccountUrl(nino: Nino, taxYear: Int)                            = s"$taxHistoryUrl/$nino/$taxYear/tax-account"
+  private def statePensionUrl(nino: Nino, taxYear: Int)                          = s"$taxHistoryUrl/$nino/$taxYear/state-pension"
+  private def incomeSourceUrl(nino: Nino, taxYear: Int, employmentId: String)    =
+    s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/income-source"
+  private def allPayAndTaxUrl(nino: Nino, taxYear: Int)                          = s"$taxHistoryUrl/$nino/$taxYear/all-pay-and-tax"
 
   def getEmploymentsAndPensions(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments")
+    httpClient.get(url"${employmentsUrl(nino, taxYear)}").execute[HttpResponse]
 
   def getAllowances(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/allowances")
+    httpClient.get(url"${allowancesUrl(nino, taxYear)}").execute[HttpResponse]
 
   def getCompanyBenefits(nino: Nino, taxYear: Int, employmentId: String)(implicit
     hc: HeaderCarrier
   ): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/company-benefits")
+    httpClient.get(url"${companyBenefitsUrl(nino, taxYear, employmentId)}").execute[HttpResponse]
 
   def getPayAndTaxDetails(nino: Nino, taxYear: Int, employmentId: String)(implicit
     hc: HeaderCarrier
   ): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/pay-and-tax")
+    httpClient.get(url"${payAndTaxUrl(nino, taxYear, employmentId)}").execute[HttpResponse]
 
   def getEmployment(nino: Nino, taxYear: Int, employmentId: String)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId")
+    httpClient.get(url"${getEmploymentUrl(nino, taxYear, employmentId)}").execute[HttpResponse]
 
   def getTaxYears(nino: Nino)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/tax-years")
+    httpClient.get(url"${taxYearsUrl(nino)}").execute[HttpResponse]
 
   def getTaxAccount(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/tax-account")
+    httpClient.get(url"${taxAccountUrl(nino, taxYear)}").execute[HttpResponse]
 
   def getStatePension(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/state-pension")
+    httpClient.get(url"${statePensionUrl(nino, taxYear)}").execute[HttpResponse]
 
   def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
     hc: HeaderCarrier
   ): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/employments/$employmentId/income-source")
+    httpClient.get(url"${incomeSourceUrl(nino, taxYear, employmentId)}").execute[HttpResponse]
 
   def getAllPayAndTax(nino: Nino, taxYear: Int)(implicit hc: HeaderCarrier): Future[HttpResponse] =
-    httpClient.GET[HttpResponse](s"$taxHistoryUrl/$nino/$taxYear/all-pay-and-tax")
+    httpClient.get(url"${allPayAndTaxUrl(nino, taxYear)}").execute[HttpResponse]
+
 }

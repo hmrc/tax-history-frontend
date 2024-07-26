@@ -14,32 +14,30 @@
  * limitations under the License.
  */
 
-import com.google.inject.name.Named
 import config.AppConfig
+import controllers.auth.AuthRedirects
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.Request
+import play.api.mvc.RequestHeader
 import play.api.{Configuration, Environment}
 import play.twirl.api.Html
-import uk.gov.hmrc.play.audit.http.connector.AuditConnector
 import uk.gov.hmrc.play.bootstrap.frontend.http.FrontendErrorHandler
-import controllers.auth.AuthRedirects
 
 import javax.inject.{Inject, Singleton}
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ErrorHandler @Inject() (
   val env: Environment,
-  val auditConnector: AuditConnector,
   val messagesApi: MessagesApi,
-  errorTemplate: views.html.error_template,
-  @Named("appName") val appName: String
-)(implicit val config: Configuration, val appConfig: AppConfig)
+  errorTemplate: views.html.error_template
+)(implicit val config: Configuration, val appConfig: AppConfig, val ec: ExecutionContext)
     extends FrontendErrorHandler
     with I18nSupport
     with AuthRedirects {
 
   override def standardErrorTemplate(pageTitle: String, heading: String, message: String)(implicit
-    request: Request[_]
-  ): Html =
-    errorTemplate(pageTitle, heading, message)
+    request: RequestHeader
+  ): Future[Html] =
+    Future.successful(errorTemplate(pageTitle, heading, message))
+
 }

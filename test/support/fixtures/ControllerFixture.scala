@@ -24,7 +24,6 @@ import java.time.LocalDate
 import java.util.UUID
 
 trait ControllerFixture {
-  // scalastyle:off magic.number
 
   val person: Option[Person] = Some(Person(Some("first name"), Some("second name"), Some(false)))
 

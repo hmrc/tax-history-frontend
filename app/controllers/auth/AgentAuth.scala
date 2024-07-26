@@ -31,8 +31,7 @@ abstract class AgentAuth(cc: MessagesControllerComponents)
     with AuthorisedFunctions
     with AuthRedirects {
 
-  /**
-    * The url to redirect to.
+  /** The url to redirect to.
     */
   val agentSubscriptionStart: String
 

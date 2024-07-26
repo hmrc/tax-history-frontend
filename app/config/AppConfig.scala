@@ -18,16 +18,15 @@ package config
 
 import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
-import java.net.URL
 import javax.inject.{Inject, Singleton}
 import scala.util.Try
 
 @Singleton
 class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
 
-  lazy val authBaseUrl                            = new URL(servicesConfig.baseUrl("auth"))
-  lazy val citizenDetailsBaseUrl                  = new URL(servicesConfig.baseUrl("citizen-details"))
-  lazy val taxHistoryBaseUrl                      = new URL(servicesConfig.baseUrl("tax-history"))
+  lazy val authBaseUrl: String                    = servicesConfig.baseUrl("auth")
+  lazy val citizenDetailsBaseUrl: String          = servicesConfig.baseUrl("citizen-details")
+  lazy val taxHistoryBaseUrl: String              = servicesConfig.baseUrl("tax-history")
   lazy val contactHost: String                    = Try(servicesConfig.getString("contact-frontend.host")).toOption.getOrElse("")
   lazy val serviceSignOut: String                 = servicesConfig.getString("service-signout.url")
   lazy val agentAccountHomePage: String           = servicesConfig.getString("external-url.agent-account-home-page.url")

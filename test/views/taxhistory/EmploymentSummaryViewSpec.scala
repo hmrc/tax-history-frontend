@@ -437,11 +437,9 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     val employmentWithPensions: List[Employment] = List(employer1, employer2, pension)
     val incomeTotals: TotalIncome                = totalIncome.copy(employmentIncomeAndTax =
       List(
-        // scalastyle:off magic.number
         EmploymentIncomeAndTax(employer1.employmentId.toString, BigDecimal(100), BigDecimal(50)),
         EmploymentIncomeAndTax(employer2.employmentId.toString, BigDecimal(20), BigDecimal(30)),
         EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(70), BigDecimal(20))
-        // scalastyle:on magic.number
       )
     )
     val view: HtmlFormat.Appendable              =

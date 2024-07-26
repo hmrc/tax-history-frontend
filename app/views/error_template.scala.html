@@ -23,8 +23,7 @@
 
 @(pageTitle: String,
  heading: String,
- message: String,
- gaEventId:Option[String]=None)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+ message: String)(implicit request: RequestHeader, messages: Messages, appConfig: AppConfig)
 
 @mainContent = {
   <h1 class="govuk-heading-xl" id="error-heading">@heading</h1>

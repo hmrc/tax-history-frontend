@@ -1,9 +1,7 @@
-val appName = "tax-history-frontend"
-
 ThisBuild / scalaVersion := "2.13.14"
 ThisBuild / majorVersion := 3
 
-lazy val microservice = Project(appName, file("."))
+lazy val microservice = Project("tax-history-frontend", file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
   .disablePlugins(JUnitXmlReportPlugin)
   .settings(
@@ -28,4 +26,3 @@ lazy val microservice = Project(appName, file("."))
   )
 
 addCommandAlias("scalafmtAll", "all scalafmtSbt scalafmt Test/scalafmt")
-addCommandAlias("scalastyleAll", "all scalastyle Test/scalastyle")

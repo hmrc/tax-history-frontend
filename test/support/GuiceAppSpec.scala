@@ -17,6 +17,7 @@
 package support
 
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
+import org.mockito.Mockito.mock
 import play.api.Application
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
@@ -30,9 +31,13 @@ class GuiceAppSpec extends BaseSpec {
   protected val bindModules: Seq[GuiceableModule] = Seq()
 
   implicit override lazy val app: Application = new GuiceApplicationBuilder()
-    .overrides(bind[TaxHistoryConnector].toInstance(mock[TaxHistoryConnector]))
-    .overrides(bind[CitizenDetailsConnector].toInstance(mock[CitizenDetailsConnector]))
-    .overrides(bind[DateUtils].toInstance(mock[DateUtils]))
+    .configure(
+      "metrics.enabled"  -> false,
+      "auditing.enabled" -> false
+    )
+    .overrides(bind[TaxHistoryConnector].toInstance(mock(classOf[TaxHistoryConnector])))
+    .overrides(bind[CitizenDetailsConnector].toInstance(mock(classOf[CitizenDetailsConnector])))
+    .overrides(bind[DateUtils].toInstance(mock(classOf[DateUtils])))
     .build()
 
   implicit val messagesApi: MessagesApi = app.injector.instanceOf[MessagesApi]

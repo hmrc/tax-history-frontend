@@ -20,7 +20,7 @@ import connectors.CitizenDetailsConnector
 import routes._
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 import play.api.libs.json.Json
 import play.api.mvc.{Request, Result}
 import play.api.test.Helpers._
@@ -42,8 +42,8 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
     val person: Person = Person(Some("Hazel"), Some("Young"), Some(false))
 
     lazy val controller: ConfirmDetailsController = new ConfirmDetailsController(
-      authConnector = mock[AuthConnector],
-      citizenDetailsConnector = mock[CitizenDetailsConnector],
+      authConnector = mock(classOf[AuthConnector]),
+      citizenDetailsConnector = mock(classOf[CitizenDetailsConnector]),
       config = app.configuration,
       env = environment,
       cc = messagesControllerComponents,

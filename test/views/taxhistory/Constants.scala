@@ -107,7 +107,6 @@ trait Constants {
       employmentStatus = EmploymentStatus.Unknown,
       worksNumber = "00191048716"
     )
-  // scalastyle:off magic.number
   val totalIncome: TotalIncome =
     TotalIncome(
       employmentIncomeAndTax = List(

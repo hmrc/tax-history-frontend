@@ -33,7 +33,6 @@ class TotalIncomeSpec extends TestUtil with BaseSpec {
     worksNumber = "1",
     employmentPaymentType = None
   )
-  // scalastyle:off magic.number
   val employmentAndIncomeTax1: EmploymentIncomeAndTax =
     EmploymentIncomeAndTax(employmentId.toString, BigDecimal(10), BigDecimal(5))
   private val totalIncome                             = TotalIncome(
@@ -43,7 +42,6 @@ class TotalIncomeSpec extends TestUtil with BaseSpec {
     employmentTaxTotalIncludingEYU = BigDecimal(10),
     pensionTaxTotalIncludingEYU = BigDecimal(10)
   )
-  // scalastyle:on magic.number
 
   "TotalIncome" should {
 

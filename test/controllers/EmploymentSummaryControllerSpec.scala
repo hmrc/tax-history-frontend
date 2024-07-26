@@ -23,7 +23,7 @@ import model.api.EmploymentPaymentType.OccupationalPension
 import model.api._
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.Messages
 import play.api.libs.json.Json
@@ -51,9 +51,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     implicit val materializer: Materializer = Materializer(actorSystem)
 
     lazy val controller = new EmploymentSummaryController(
-      mock[TaxHistoryConnector],
-      mock[CitizenDetailsConnector],
-      mock[AuthConnector],
+      mock(classOf[TaxHistoryConnector]),
+      mock(classOf[CitizenDetailsConnector]),
+      mock(classOf[AuthConnector]),
       app.configuration,
       environment,
       messagesControllerComponents,
@@ -246,8 +246,6 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       status(result) shouldBe SEE_OTHER
     }
   }
-
-  // scalastyle:off magic.number
 
   "getStatePensionsFromResponse" when {
 

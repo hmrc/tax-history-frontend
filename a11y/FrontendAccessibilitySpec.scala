@@ -20,6 +20,7 @@ import model.api._
 import models.taxhistory.{SelectClient, SelectTaxYear}
 import org.scalacheck.Arbitrary
 import play.api.data.Form
+import play.api.mvc.RequestHeader
 import play.twirl.api.Html
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.scalatestaccessibilitylinter.views.AutomaticAccessibilitySpec
@@ -37,6 +38,7 @@ class FrontendAccessibilitySpec extends AutomaticAccessibilitySpec with Constant
   implicit val arbAppConfig: Arbitrary[AppConfig]         = fixed(appConfig)
   override implicit val arbAsciiString: Arbitrary[String] = fixed("/")
 
+  implicit val arbRequestHeader: Arbitrary[RequestHeader]                            = fixed(fakeRequest)
   implicit val arbEmployment: Arbitrary[Employment]                     = fixed(employment)
   implicit val arbStatePension: Arbitrary[StatePension]                 = fixed(statePension)
   implicit val arbSelectTaxYear: Arbitrary[SelectTaxYear]               = fixed(selectTaxYear)
