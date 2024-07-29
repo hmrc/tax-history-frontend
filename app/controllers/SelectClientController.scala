@@ -46,8 +46,10 @@ class SelectClientController @Inject() (
 
   def getSelectClientPage: Action[AnyContent] = Action.async { implicit request =>
     authorisedAgent(AuthProviderAgents) {
-      val sessionNino = getNinoFromSession(request).map(_.nino).getOrElse("")
-      val filledForm  = selectClientForm.fill(SelectClient(clientId = sessionNino)).discardingErrors
+      val sessionNino = getNinoFromSession(request).map(_.nino)
+      val filledForm  = sessionNino
+        .map(nino => selectClientForm.fill(SelectClient(clientId = nino)).discardingErrors)
+        .getOrElse(selectClientForm)
       Future.successful(Ok(selectClient(filledForm)))
     }
   }

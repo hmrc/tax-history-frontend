@@ -217,7 +217,6 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
       }
     }
   }
-  // scalastyle:off magic.number
   "ControllerUtils - displaySource "       must {
     "return none when both source amount and amount are the same" in {
       val sourceAmount: Option[BigDecimal] = Some(1)
@@ -251,7 +250,6 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
       ControllerUtils.displayTaxCode(None)            shouldBe None
     }
   }
-  // scalastyle:on magic.number
 
   "ControllerUtils - sentenceCase " must {
     "return the input with the first letter capitalised and the rest lower case" in {

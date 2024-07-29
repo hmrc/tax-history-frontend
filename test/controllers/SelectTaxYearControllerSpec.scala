@@ -21,7 +21,7 @@ import form.SelectTaxYearForm.selectTaxYearForm
 import model.api.IndividualTaxYear
 import models.taxhistory.SelectTaxYear
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.libs.json.{JsObject, Json}
@@ -46,9 +46,9 @@ class SelectTaxYearControllerSpec extends ControllerSpec with ControllerFixture 
     val taxYear = 2015
 
     lazy val controller: SelectTaxYearController = new SelectTaxYearController(
-      mock[TaxHistoryConnector],
-      mock[CitizenDetailsConnector],
-      mock[AuthConnector],
+      mock(classOf[TaxHistoryConnector]),
+      mock(classOf[CitizenDetailsConnector]),
+      mock(classOf[AuthConnector]),
       app.configuration,
       environment,
       messagesControllerComponents,

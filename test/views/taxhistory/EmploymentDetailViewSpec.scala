@@ -198,7 +198,6 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         createEmploymentViewDetail(isPension = false, employment.employerName)
       )(request, messages, appConfig)
 
-      // scalastyle:off magic.number
       val payeReference: Element =
         document(view).getElementById("employment-data-desktop").child(1).child(2)
       val payrollId: Element     =

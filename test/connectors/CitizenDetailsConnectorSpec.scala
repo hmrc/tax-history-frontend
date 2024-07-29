@@ -16,46 +16,26 @@
 
 package connectors
 
-import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito.when
-import org.scalatest.concurrent.ScalaFutures
+import models.taxhistory.Person
 import play.api.http.Status
 import play.api.libs.json.Json
-import support.BaseSpec
-import support.fixtures.ControllerFixture
 import uk.gov.hmrc.domain.Nino
-import uk.gov.hmrc.http.{HeaderCarrier, HttpClient, HttpReads, HttpResponse}
-import utils.TestUtil
+import uk.gov.hmrc.http.HttpResponse
 
-import scala.concurrent.{ExecutionContext, Future}
+class CitizenDetailsConnectorSpec extends BaseConnectorSpec {
 
-class CitizenDetailsConnectorSpec extends TestUtil with ControllerFixture with BaseSpec with ScalaFutures {
-
-  val mockHttpClient: HttpClient = mock[HttpClient]
-
-  val url: String = s"http://localhost:9337/citizen-details/$nino/designatory-details/basic"
-
-  trait LocalSetup {
-    lazy val connector = new CitizenDetailsConnector(appConfig, mockHttpClient)
-  }
+  lazy val connector         = new CitizenDetailsConnector(appConfig, mockHttpClient)
+  val person: Option[Person] = Some(Person(Some("first name"), Some("second name"), Some(false)))
 
   "CitizenDetailsConnector" should {
 
-    "fetch firstName and lastName of user based on nino" in new LocalSetup {
-      when(
-        mockHttpClient.GET[HttpResponse](argEq(url), any(), any())(
-          any[HttpReads[HttpResponse]],
-          any[HeaderCarrier],
-          any[ExecutionContext]
-        )
-      )
-        .thenReturn(Future.successful(HttpResponse(Status.OK, json = Json.toJson(person), Map.empty)))
+    "fetch firstName and lastName of user based on nino" in {
+      mockExecuteMethod(Json.toJson(person).toString(), Status.OK)
 
       val result: HttpResponse = connector.getPersonDetails(Nino(nino)).futureValue
 
       result.status shouldBe Status.OK
       result.json   shouldBe Json.toJson(Some(person))
-
     }
   }
 

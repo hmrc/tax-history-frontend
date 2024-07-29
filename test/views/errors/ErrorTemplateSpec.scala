@@ -36,14 +36,13 @@ class ErrorTemplateSpec extends GuiceAppSpec with BaseViewSpec {
     val messageText = "error message"
 
     def view: HtmlFormat.Appendable =
-      inject[error_template].apply(titleText, headingText, messageText, gaEventId = Some("unauthorised"))
+      inject[error_template].apply(titleText, headingText, messageText)
 
     def viewHtmlViaRender: HtmlFormat.Appendable =
       inject[error_template].render(
         titleText,
         headingText,
         messageText,
-        gaEventId = Some("unauthorised"),
         request,
         messages,
         appConfig
@@ -53,8 +52,7 @@ class ErrorTemplateSpec extends GuiceAppSpec with BaseViewSpec {
       inject[error_template].f(
         titleText,
         headingText,
-        messageText,
-        Some("unauthorised")
+        messageText
       )(request, messages, appConfig)
   }
 

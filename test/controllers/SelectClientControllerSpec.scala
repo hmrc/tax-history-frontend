@@ -18,7 +18,7 @@ package controllers
 
 import form.SelectClientForm.selectClientForm
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 import play.api.mvc.{Request, Result}
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
@@ -38,7 +38,7 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
     lazy val controller: SelectClientController = {
 
       val c = new SelectClientController(
-        mock[AuthConnector],
+        mock(classOf[AuthConnector]),
         app.configuration,
         environment,
         messagesControllerComponents,
@@ -63,8 +63,16 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
 
   "SelectClientController" must {
 
-    "load select client page" in new LocalSetup {
+    "load select client page no nino" in new LocalSetup {
       implicit val request: Request[_] = FakeRequest()
+      val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
+      val expectedView: select_client  = app.injector.instanceOf[select_client]
+      status(result) shouldBe OK
+      result rendersTheSameViewAs expectedView(selectClientForm)
+    }
+
+    "load select client page with empty nino" in new LocalSetup {
+      implicit val request: Request[_] = FakeRequest().withFormUrlEncodedBody("clientId" -> "")
       val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
       val expectedView: select_client  = app.injector.instanceOf[select_client]
       status(result) shouldBe OK

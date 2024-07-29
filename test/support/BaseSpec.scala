@@ -25,7 +25,6 @@ import org.scalatest._
 import org.scalatest.concurrent.PatienceConfiguration
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
-import org.scalatestplus.mockito.MockitoSugar
 import org.scalatestplus.play.guice.GuiceOneAppPerSuite
 import play.api.Environment
 import play.api.mvc.{AnyContentAsEmpty, MessagesControllerComponents}
@@ -41,7 +40,6 @@ trait BaseSpec
     with Matchers
     with OptionValues
     with GuiceOneAppPerSuite
-    with MockitoSugar
     with PatienceConfiguration
     with BeforeAndAfterEach
     with Injecting

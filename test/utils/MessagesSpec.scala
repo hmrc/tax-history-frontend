@@ -47,10 +47,10 @@ class MessagesSpec extends GuiceAppSpec {
       }
     }
     "not have the same messages" in {
-      val same = englishMessageKeys.keys.collect({
+      val same = englishMessageKeys.keys.collect {
         case messageKey if englishMessageKeys.get(messageKey) == welshMessagesKeys.get(messageKey) =>
           (messageKey, englishMessageKeys.get(messageKey))
-      })
+      }
 
       // 94% of app needs to be translated into Welsh. 94% allows for:
       //   - Messages which just can't be different from English

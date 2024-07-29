@@ -36,13 +36,11 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
     with TaxHistoryLogger
     with TaxHistorySessionKeys {
 
-  /**
-    * The URI to direct to for login.
+  /** The URI to direct to for login.
     */
   val loginContinue: String
 
-  /**
-    * The URI to direct to for signout.
+  /** The URI to direct to for signout.
     */
   val serviceSignout: String
 
@@ -54,7 +52,6 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   }
 
   // todo : work out what eventualResult is for, and call it that.
-  // scalastyle:off cyclomatic.complexity
   protected def authorisedAgent(
     predicate: Predicate
   )(eventualResult: Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
@@ -95,7 +92,6 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
           Future.successful(ggSignInRedirect)
       }
   }
-  // scalastyle:on cyclomatic.complexity
 
   protected[controllers] def authorisedForAgent(
     eventualResult: Nino => Future[Result]

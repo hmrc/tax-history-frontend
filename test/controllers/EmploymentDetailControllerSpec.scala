@@ -34,7 +34,7 @@ import views.html.taxhistory.employment_detail
 
 import java.util.UUID
 import models.taxhistory.Person
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -46,9 +46,9 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
 
     val controller = new EmploymentDetailController(
-      taxHistoryConnector = mock[TaxHistoryConnector],
-      citizenDetailsConnector = mock[CitizenDetailsConnector],
-      authConnector = mock[AuthConnector],
+      taxHistoryConnector = mock(classOf[TaxHistoryConnector]),
+      citizenDetailsConnector = mock(classOf[CitizenDetailsConnector]),
+      authConnector = mock(classOf[AuthConnector]),
       config = app.configuration,
       env = environment,
       cc = messagesControllerComponents,

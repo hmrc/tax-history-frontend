@@ -21,7 +21,7 @@ import org.apache.pekko.stream.Materializer
 import connectors.CitizenDetailsConnector
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.{MessagesControllerComponents, Request, Result}
@@ -45,9 +45,9 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
     val person: Option[Person]              = Some(Person(Some("firstname"), Some("secondname"), deceased = Some(false)))
 
     lazy val controller: ClientErrorController = new ClientErrorController(
-      mock[CitizenDetailsConnector],
+      mock(classOf[CitizenDetailsConnector]),
       injected[MessagesControllerComponents],
-      mock[AuthConnector],
+      mock(classOf[AuthConnector]),
       app.configuration,
       environment,
       appConfig,

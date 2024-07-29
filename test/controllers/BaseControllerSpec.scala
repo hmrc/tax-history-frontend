@@ -19,7 +19,7 @@ package controllers
 import config.AppConfig
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{mock, when}
 import org.scalatest.concurrent.ScalaFutures
 import play.api.libs.json.JsValue
 import play.api.mvc.{MessagesControllerComponents, Result, Results}
@@ -40,7 +40,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
 
     lazy val controller: Controller = {
       val controller = new Controller(
-        mock[AuthConnector],
+        mock(classOf[AuthConnector]),
         injected[Configuration],
         injected[Environment],
         messagesControllerComponents,

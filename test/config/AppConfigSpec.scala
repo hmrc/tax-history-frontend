@@ -16,8 +16,6 @@
 
 package config
 
-import java.net.URL
-
 import play.api.test.FakeRequest
 import support.BaseSpec
 
@@ -30,15 +28,15 @@ class AppConfigSpec extends BaseSpec {
     "contains correct configured values" must {
 
       "authBaseUrl" in {
-        appConfig.authBaseUrl shouldBe new URL("http://localhost:8500")
+        appConfig.authBaseUrl shouldBe "http://localhost:8500"
       }
 
       "citizenDetailsBaseUrl" in {
-        appConfig.citizenDetailsBaseUrl shouldBe new URL("http://localhost:9337")
+        appConfig.citizenDetailsBaseUrl shouldBe "http://localhost:9337"
       }
 
       "taxHistoryBaseUrl" in {
-        appConfig.taxHistoryBaseUrl shouldBe new URL("http://localhost:9997")
+        appConfig.taxHistoryBaseUrl shouldBe "http://localhost:9997"
       }
 
       "serviceSignOut" in {
