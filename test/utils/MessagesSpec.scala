@@ -36,6 +36,7 @@ class MessagesSpec extends GuiceAppSpec {
     }
 
     "have the correct number of default messages" in {
+      System.out.println(defaultMessageKeys)
       defaultMessageKeys.size mustBe 57
     }
   }

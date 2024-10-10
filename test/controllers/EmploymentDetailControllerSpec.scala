@@ -135,32 +135,14 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
       }
     }
 
-    "calling .getPayAndTax()" when {
+    "calling .getPayAndTax()" should {
+      "return the original PayAndTax() with a studentLoan of 1337" in new LocalSetup {
 
-      "the StudentLoanFlagFeature is DISABLED" should {
+        val actual: Option[PayAndTax] = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString))
+        val expected: Some[PayAndTax] = Some(payAndTax)
 
-        "return a PayAndTax() with no studentLoan" in new LocalSetup {
-
-          val actual: Option[PayAndTax] = await(
-            controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString, turnOnStudentLoanFlagTest = false)
-          )
-          val expected: Some[PayAndTax] = Some(payAndTax.copy(studentLoan = None))
-
-          actual shouldBe expected
-        }
+        actual shouldBe expected
       }
-
-      "the StudentLoanFlagFeature is ENABLED" should {
-
-        "return the original PayAndTax() with a studentLoan of 1337" in new LocalSetup {
-
-          val actual: Option[PayAndTax] = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString))
-          val expected: Some[PayAndTax] = Some(payAndTax)
-
-          actual shouldBe expected
-        }
-      }
-
     }
 
     "successfully load Employment details page with name when citizen details returns 200 OK with a person with name" in new LocalSetup {

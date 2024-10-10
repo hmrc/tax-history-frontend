@@ -67,18 +67,6 @@ class AppConfigSpec extends BaseSpec {
         appConfig.agentInvitationFastTrack shouldBe "http://localhost:9448/invitations/agents/fast-track"
       }
 
-      "studentLoanFlag" in {
-        appConfig.studentLoanFlag shouldBe true
-      }
-
-      "companyBenefitsFlag" in {
-        appConfig.companyBenefitsFlag shouldBe true
-      }
-
-      "eyaWhatsThisFlag" in {
-        appConfig.eyaWhatsThisFlag shouldBe true
-      }
-
       "gtmContainer" in {
         appConfig.gtmContainer shouldBe "c"
       }

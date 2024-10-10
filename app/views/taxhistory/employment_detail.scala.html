@@ -214,10 +214,7 @@
                     <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
                             <th scope="col" class="govuk-table__header">@messages("employmenthistory.employment.details.benefit")</th>
-                            <th scope="col" class="govuk-table__header">@if(appConfig.companyBenefitsFlag) {
-                                @messages("lbl.source")
-                                }
-                            </th>
+                            <th scope="col" class="govuk-table__header">@messages("lbl.source")</th>
                             <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("lbl.amount")</th>
                         </tr>
                     </thead>
@@ -225,13 +222,11 @@
                         @companyBenefits.map { cb =>
                             <tr class="govuk-table__row">
                                 <th class="govuk-table__header">@messages(s"employmenthistory.cb.${cb.iabdType}")</th>
-                                <td class="govuk-table__cell">@if(appConfig.companyBenefitsFlag) {
-                                        @if(cb.isForecastBenefit) {
+                                <td class="govuk-table__cell">@if(cb.isForecastBenefit) {
                                             @messages("employmenthistory.cb.forecast")
                                         } else {
                                             @messages("employmenthistory.cb.P11D")
                                         }
-                                    }
                                 </td>
                                 <td class="govuk-table__cell govuk-table__cell--numeric">@Currency(cb.amount)</td>
                             </tr>
