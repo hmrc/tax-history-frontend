@@ -278,7 +278,7 @@
             </tbody>
         </table>
     </div>
-    @if(allowances.exists(allowance => allowance.iabdType.equals("EarlierYearsAdjustment") && appConfig.eyaWhatsThisFlag)) {
+    @if(allowances.exists(allowance => allowance.iabdType.equals("EarlierYearsAdjustment"))) {
         <details class="govuk-details" data-module="govuk-details">
             <summary class="govuk-details__summary">
                 <span class="govuk-details__summary-text">

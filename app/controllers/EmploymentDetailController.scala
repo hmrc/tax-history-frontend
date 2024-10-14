@@ -87,8 +87,7 @@ class EmploymentDetailController @Inject() (
   private[controllers] def getPayAndTax(
     nino: Nino,
     taxYear: Int,
-    employmentId: String,
-    turnOnStudentLoanFlagTest: Boolean = true
+    employmentId: String
   )(implicit
     hc: HeaderCarrier,
     messages: Messages
@@ -99,9 +98,8 @@ class EmploymentDetailController @Inject() (
         def result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
 
         payAndTaxResponse.status match {
-          case NOT_FOUND                                                   => None
-          case _ if appConfig.studentLoanFlag && turnOnStudentLoanFlagTest => Some(result)
-          case _                                                           => Some(result.copy(studentLoan = None))
+          case NOT_FOUND => None
+          case _         => Some(result)
         }
       }
       .recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))

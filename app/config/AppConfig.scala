@@ -35,9 +35,6 @@ class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
   lazy val betaFeedbackUrl: String                = servicesConfig.getString("betaFeedbackUrl")
   lazy val betaFeedbackUnauthenticatedUrl: String = servicesConfig.getString("betaFeedbackUnauthenticatedUrl")
   lazy val agentInvitationFastTrack: String       = servicesConfig.getString("external-url.agent-invitation.fast-track-url")
-  lazy val studentLoanFlag: Boolean               = servicesConfig.getBoolean("featureFlags.studentLoanFlag")
-  lazy val companyBenefitsFlag: Boolean           = servicesConfig.getBoolean("featureFlags.companyBenefitsFlag")
-  lazy val eyaWhatsThisFlag: Boolean              = servicesConfig.getBoolean("featureFlags.eyaWhatsThisFlag")
   lazy val gtmContainer: String                   = servicesConfig.getString("tracking-consent-frontend.gtm.container")
   lazy val welshEnabled: Boolean                  = servicesConfig.getBoolean("welsh-enabled")
 
