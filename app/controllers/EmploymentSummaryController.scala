@@ -127,7 +127,7 @@ class EmploymentSummaryController @Inject() (
     taxAccountResponse.status match {
       case OK     => taxAccountResponse.json.asOpt[TaxAccount]
       case status =>
-        logger.info(s"Tax Account Status: $status")
+        logger.info(s"[EmploymentSummaryController][getTaxAccountFromResponse] Tax Account Status: $status")
         None
     }
 
@@ -135,7 +135,7 @@ class EmploymentSummaryController @Inject() (
     allowancesResponse.status match {
       case OK     => allowancesResponse.json.as[List[Allowance]]
       case status =>
-        logger.info(s"Allowance Status: $status")
+        logger.info(s"[EmploymentSummaryController][getAllowancesFromResponse] Allowance Status: $status")
         List.empty
     }
 
@@ -146,7 +146,7 @@ class EmploymentSummaryController @Inject() (
     patResponse.status match {
       case OK     => patResponse.json.as[Map[String, PayAndTax]]
       case status =>
-        logger.info(s"All Pay And Tax Status: $status")
+        logger.info(s"[EmploymentSummaryController][getAllPayAndTaxFromResponse] All Pay And Tax Status: $status")
         List.empty
     }
 
@@ -159,7 +159,7 @@ class EmploymentSummaryController @Inject() (
           .asOpt[StatePension]
           .map(statePension => dateUtils.formatStatePensionStartDate(statePension))
       case status =>
-        logger.info(s"State Pension Status: $status")
+        logger.info(s"[EmploymentSummaryController][getStatePensionsFromResponse] State Pension Status: $status")
         None
     }
 

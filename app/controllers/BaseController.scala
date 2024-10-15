@@ -47,7 +47,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   private lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 
   def logout(): Action[AnyContent] = Action.async {
-    logger.info("Sign out of the service")
+    logger.info("[BaseController][logout] Sign out of the service")
     Future.successful(Redirect(serviceSignout).withNewSession)
   }
 
@@ -55,40 +55,40 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   protected def authorisedAgent(
     predicate: Predicate
   )(eventualResult: Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    logger.info("Start authorisation check")
+    logger.info("[BaseController][authorisedAgent] Start authorisation check")
     authorised(predicate)
       .retrieve(affinityGroupAllEnrolls) {
         case Some(affinityG) ~ allEnrols =>
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
             case (`isAnAgent`, Some(_)) =>
-              logger.info("Agent is authorised")
+              logger.info("[BaseController][authorisedAgent] Agent is authorised")
               eventualResult
             case (`isAnAgent`, None)    =>
-              logger.info("No enrolments available for the agent")
+              logger.info("[BaseController][authorisedAgent] No enrolments available for the agent")
               redirectToSubPage
             case _                      =>
-              logger.info("No affinity group is not agent")
+              logger.info("[BaseController][authorisedAgent] No affinity group is not agent")
               redirectToExitPage
           }
         case _                           =>
-          logger.info("No affinity group provided")
+          logger.info("[BaseController][authorisedAgent] No affinity group provided")
           redirectToExitPage
       }
       .recoverWith {
         case i: InsufficientEnrolments =>
-          logger.warn(s"InsufficientEnrolments:${i.getMessage}")
+          logger.warn(s"[BaseController][authorisedAgent] InsufficientEnrolments: ${i.getMessage}")
           Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
         case b: BadGatewayException    =>
-          logger.error(s"[BaseController][authorisedAgent] BadGatewayException:${b.getMessage}")
+          logger.error(s"[BaseController][authorisedAgent] BadGatewayException: ${b.getMessage}")
           Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
         case m: MissingBearerToken     =>
-          logger.warn(s"MissingBearerToken:${m.getMessage}")
+          logger.warn(s"[BaseController][authorisedAgent] MissingBearerToken: ${m.getMessage}")
           Future.successful(ggSignInRedirect)
         case a: AuthorisationException =>
-          logger.warn(s"AuthorisationException:${a.getMessage}")
+          logger.warn(s"[BaseController][authorisedAgent] AuthorisationException: ${a.getMessage}")
           Future.successful(ggSignInRedirect)
         case e                         =>
-          logger.error(s"[BaseController][authorisedAgent] Exception thrown:${e.getMessage}")
+          logger.error(s"[BaseController][authorisedAgent] Exception thrown: ${e.getMessage}")
           Future.successful(ggSignInRedirect)
       }
   }
@@ -102,7 +102,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
           eventualResult(nino)
         )
       case None       =>
-        logger.info("No nino supplied")
+        logger.info("[BaseController][authorisedForAgent] No nino supplied")
         Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
     }
 
@@ -129,7 +129,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
             case _          => Right(person)
           }
         case status =>
-          logger.warn(s"citizenDetails lookup returned with status $status")
+          logger.warn(s"[BaseController][retrieveCitizenDetails] CitizenDetails lookup returned with status $status")
           Left(status)
       }
     }
@@ -148,7 +148,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
     Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
 
   def redirectToClientErrorPage(status: Int): Future[Result] = {
-    logger.info(s"redirectToClientErrorPage status is $status")
+    logger.info(s"[BaseController][redirectToClientErrorPage] Redirect to Client Error Page status is $status")
     status match {
       case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
       case GONE   => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
