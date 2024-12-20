@@ -33,6 +33,7 @@ import views.models.EmploymentViewDetail
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
+import scala.util.{Failure, Success, Try}
 
 class EmploymentDetailController @Inject() (
   val taxHistoryConnector: TaxHistoryConnector,
@@ -99,7 +100,18 @@ class EmploymentDetailController @Inject() (
 
         payAndTaxResponse.status match {
           case NOT_FOUND => None
-          case _         => Some(result)
+          case _         =>
+            Try(payAndTaxResponse.json.as[PayAndTax]) match {
+              case Success(res) =>
+                logger.info(s"[EmploymentDetailController][getPayAndTax] Successful parse to json")
+                Some(result)
+              case Failure(e)   =>
+                logger.error(
+                  s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.body}",
+                  e
+                )
+                Some(result)
+            }
         }
       }
       .recoverWith(recoverWithEmptyDefault("getPayAndTaxDetails", None))
@@ -112,7 +124,18 @@ class EmploymentDetailController @Inject() (
       .map { cbResponse =>
         cbResponse.status match {
           case NOT_FOUND => List.empty
-          case _         => cbResponse.json.as[List[CompanyBenefit]]
+          case _         =>
+            Try(cbResponse.json.as[List[CompanyBenefit]]) match {
+              case Success(res) =>
+                logger.info(s"[EmploymentDetailController][getCompanyBenefits] Successful parse to json")
+                cbResponse.json.as[List[CompanyBenefit]]
+              case Failure(e)   =>
+                logger.error(
+                  s"[EmploymentDetailController][getCompanyBenefits] Invalid json returned in ${cbResponse.body}",
+                  e
+                )
+                cbResponse.json.as[List[CompanyBenefit]]
+            }
         }
       }
       .recoverWith(recoverWithEmptyDefault("getCompanyBenefits", List.empty))
@@ -125,7 +148,18 @@ class EmploymentDetailController @Inject() (
       .map { isResponse =>
         isResponse.status match {
           case NOT_FOUND => None
-          case _         => Some(isResponse.json.as[IncomeSource])
+          case _         =>
+            Try(isResponse.json.as[IncomeSource]) match {
+              case Success(res) =>
+                logger.info(s"[EmploymentDetailController][getIncomeSource] Successful parse to json")
+                Some(isResponse.json.as[IncomeSource])
+              case Failure(e)   =>
+                logger.error(
+                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.body}",
+                  e
+                )
+                Some(isResponse.json.as[IncomeSource])
+            }
         }
       }
       .recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
