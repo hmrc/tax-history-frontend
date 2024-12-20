@@ -23,6 +23,7 @@ import model.api.IncomeSource._
 import model.api._
 import models.taxhistory.Person
 import play.api.i18n.Messages
+import play.api.libs.json.{JsError, JsSuccess}
 import play.api.mvc._
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
@@ -101,16 +102,15 @@ class EmploymentDetailController @Inject() (
         payAndTaxResponse.status match {
           case NOT_FOUND => None
           case _         =>
-            Try(payAndTaxResponse.json.as[PayAndTax]) match {
-              case Success(res) =>
+            payAndTaxResponse.json.validate[PayAndTax] match {
+              case JsSuccess(_, _) =>
                 logger.info(s"[EmploymentDetailController][getPayAndTax] Successful parse to json")
                 Some(result)
-              case Failure(e)   =>
+              case JsError(errors)   =>
                 logger.error(
-                  s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.body}",
-                  e
+                  s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.body}. $errors",
                 )
-                Some(result)
+                throw new RuntimeException("Invalid json returned")
             }
         }
       }
@@ -125,16 +125,15 @@ class EmploymentDetailController @Inject() (
         cbResponse.status match {
           case NOT_FOUND => List.empty
           case _         =>
-            Try(cbResponse.json.as[List[CompanyBenefit]]) match {
-              case Success(res) =>
+            cbResponse.json.validate[List[CompanyBenefit]] match {
+              case JsSuccess(result, _) =>
                 logger.info(s"[EmploymentDetailController][getCompanyBenefits] Successful parse to json")
-                cbResponse.json.as[List[CompanyBenefit]]
-              case Failure(e)   =>
+                result
+              case JsError(errors)   =>
                 logger.error(
-                  s"[EmploymentDetailController][getCompanyBenefits] Invalid json returned in ${cbResponse.body}",
-                  e
+                  s"[EmploymentDetailController][getCompanyBenefits] Invalid json returned in ${cbResponse.body}. $errors",
                 )
-                cbResponse.json.as[List[CompanyBenefit]]
+                throw new RuntimeException("Invalid json returned")
             }
         }
       }
@@ -149,16 +148,15 @@ class EmploymentDetailController @Inject() (
         isResponse.status match {
           case NOT_FOUND => None
           case _         =>
-            Try(isResponse.json.as[IncomeSource]) match {
-              case Success(res) =>
+           isResponse.json.validate[IncomeSource] match {
+              case JsSuccess(result, _)=>
                 logger.info(s"[EmploymentDetailController][getIncomeSource] Successful parse to json")
-                Some(isResponse.json.as[IncomeSource])
-              case Failure(e)   =>
+                Some(result)
+              case JsError(errors)  =>
                 logger.error(
-                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.body}",
-                  e
+                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.body}. $errors",
                 )
-                Some(isResponse.json.as[IncomeSource])
+                throw new RuntimeException("Invalid json returned")
             }
         }
       }
