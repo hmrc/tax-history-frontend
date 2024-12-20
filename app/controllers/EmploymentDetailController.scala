@@ -106,9 +106,9 @@ class EmploymentDetailController @Inject() (
               case JsSuccess(_, _) =>
                 logger.info(s"[EmploymentDetailController][getPayAndTax] Successful parse to json")
                 Some(result)
-              case JsError(errors)   =>
+              case JsError(errors) =>
                 logger.error(
-                  s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.body}. $errors",
+                  s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.status}. $errors"
                 )
                 throw new RuntimeException("Invalid json returned")
             }
@@ -129,9 +129,9 @@ class EmploymentDetailController @Inject() (
               case JsSuccess(result, _) =>
                 logger.info(s"[EmploymentDetailController][getCompanyBenefits] Successful parse to json")
                 result
-              case JsError(errors)   =>
+              case JsError(errors)      =>
                 logger.error(
-                  s"[EmploymentDetailController][getCompanyBenefits] Invalid json returned in ${cbResponse.body}. $errors",
+                  s"[EmploymentDetailController][getCompanyBenefits] Invalid json returned in ${cbResponse.status}. $errors"
                 )
                 throw new RuntimeException("Invalid json returned")
             }
@@ -148,13 +148,13 @@ class EmploymentDetailController @Inject() (
         isResponse.status match {
           case NOT_FOUND => None
           case _         =>
-           isResponse.json.validate[IncomeSource] match {
-              case JsSuccess(result, _)=>
+            isResponse.json.validate[IncomeSource] match {
+              case JsSuccess(result, _) =>
                 logger.info(s"[EmploymentDetailController][getIncomeSource] Successful parse to json")
                 Some(result)
-              case JsError(errors)  =>
+              case JsError(errors)      =>
                 logger.error(
-                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.body}. $errors",
+                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.status}. $errors"
                 )
                 throw new RuntimeException("Invalid json returned")
             }
