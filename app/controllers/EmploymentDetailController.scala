@@ -34,7 +34,6 @@ import views.models.EmploymentViewDetail
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 class EmploymentDetailController @Inject() (
   val taxHistoryConnector: TaxHistoryConnector,

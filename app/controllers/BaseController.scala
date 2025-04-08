@@ -16,6 +16,7 @@
 
 package controllers
 
+import config.AppConfig
 import controllers.auth.AgentAuth
 import models.taxhistory.{Person, SelectTaxYear}
 import play.api.i18n.I18nSupport
@@ -43,12 +44,12 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   /** The URI to direct to for signout.
     */
   val serviceSignout: String
-
+  val appConfig: AppConfig
   private lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 
   def logout(): Action[AnyContent] = Action.async {
     logger.info("[BaseController][logout] Sign out of the service")
-    Future.successful(Redirect(serviceSignout).withNewSession)
+    Future.successful(Redirect(appConfig.signOut, Map("continue" -> Seq(appConfig.exitSurveyUrl))))
   }
 
   // todo : work out what eventualResult is for, and call it that.

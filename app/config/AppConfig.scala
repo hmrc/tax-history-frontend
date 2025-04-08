@@ -38,6 +38,11 @@ class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
   lazy val gtmContainer: String                   = servicesConfig.getString("tracking-consent-frontend.gtm.container")
   lazy val welshEnabled: Boolean                  = servicesConfig.getBoolean("welsh-enabled")
 
+  private val basGatewayBaseUrl: String = servicesConfig.baseUrl("bas-gateway")
+  lazy val signOut: String              = s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state/?continue=$serviceSignOut"
+  private val exitSurveyBaseUrl: String = servicesConfig.baseUrl("feedback-frontend")
+  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/<service>"
+
   lazy val timeout: Int          = servicesConfig.getInt("timeout.timeout")
   lazy val timeoutCountdown: Int = servicesConfig.getInt("timeout.countdown")
 }
