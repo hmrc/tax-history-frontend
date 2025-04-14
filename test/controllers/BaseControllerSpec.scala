@@ -245,7 +245,7 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
       val result: Future[Result] = controller.logout()(fakeRequest)
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(
-        controller.appConfig.signOut + "&continue=" + URLEncoder.encode(controller.appConfig.exitSurveyUrl, "UTF-8")
+        controller.appConfig.signOut + "?continue=" + URLEncoder.encode(controller.appConfig.exitSurveyUrl, "UTF-8")
       )
     }
 
@@ -307,7 +307,6 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
     implicit val appConfig: AppConfig
   ) extends BaseController(cc) {
     val loginContinue: String          = appConfig.loginContinue
-    val serviceSignout: String         = appConfig.serviceSignOut
     val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
   }
 }

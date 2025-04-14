@@ -48,7 +48,6 @@ class EmploymentDetailController @Inject() (
     extends BaseController(cc) {
 
   val loginContinue: String          = appConfig.loginContinue
-  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)(implicit

@@ -39,10 +39,6 @@ class AppConfigSpec extends BaseSpec {
         appConfig.taxHistoryBaseUrl shouldBe "http://localhost:9997"
       }
 
-      "serviceSignOut" in {
-        appConfig.serviceSignOut shouldBe "http://localhost:9514/feedback-survey/?origin=AGENTINDIV"
-      }
-
       "agentAccountHomePage" in {
         appConfig.agentAccountHomePage shouldBe "http://localhost:9401/agent-services-account"
       }

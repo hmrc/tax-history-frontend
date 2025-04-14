@@ -43,7 +43,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
 
   /** The URI to direct to for signout.
     */
-  val serviceSignout: String
+
   val appConfig: AppConfig
   private lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 

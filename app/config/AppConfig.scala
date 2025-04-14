@@ -28,7 +28,6 @@ class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
   lazy val citizenDetailsBaseUrl: String          = servicesConfig.baseUrl("citizen-details")
   lazy val taxHistoryBaseUrl: String              = servicesConfig.baseUrl("tax-history")
   lazy val contactHost: String                    = Try(servicesConfig.getString("contact-frontend.host")).toOption.getOrElse("")
-  lazy val serviceSignOut: String                 = servicesConfig.getString("service-signout.url")
   lazy val agentAccountHomePage: String           = servicesConfig.getString("external-url.agent-account-home-page.url")
   lazy val agentSubscriptionStart: String         = servicesConfig.getString("external-url.agent-subscription-start.url")
   lazy val loginContinue: String                  = servicesConfig.getString("login.continue")
@@ -38,10 +37,10 @@ class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
   lazy val gtmContainer: String                   = servicesConfig.getString("tracking-consent-frontend.gtm.container")
   lazy val welshEnabled: Boolean                  = servicesConfig.getBoolean("welsh-enabled")
 
-  private val basGatewayBaseUrl: String = servicesConfig.baseUrl("bas-gateway")
-  lazy val signOut: String              = s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state/?continue=$serviceSignOut"
-  private val exitSurveyBaseUrl: String = servicesConfig.baseUrl("feedback-frontend")
-  val exitSurveyUrl: String             = s"$exitSurveyBaseUrl/feedback/<service>"
+  private lazy val basGatewayBaseUrl: String = servicesConfig.getString("bas-gateway.host")
+  lazy val signOut: String                   = s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state"
+  private lazy val feedbackBaseUrl: String   = servicesConfig.getString("feedback-frontend.host")
+  val exitSurveyUrl: String                  = s"$feedbackBaseUrl/feedback/tax-history-frontend"
 
   lazy val timeout: Int          = servicesConfig.getInt("timeout.timeout")
   lazy val timeoutCountdown: Int = servicesConfig.getInt("timeout.countdown")

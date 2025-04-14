@@ -47,7 +47,6 @@ class EmploymentSummaryController @Inject() (
 
   private val noRecordHeld           = "No record held"
   val loginContinue: String          = appConfig.loginContinue
-  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   def signIn: Action[AnyContent] = Action { _ =>
