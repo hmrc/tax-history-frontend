@@ -49,7 +49,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
 
   def logout(): Action[AnyContent] = Action.async {
     logger.info("[BaseController][logout] Sign out of the service")
-    Future.successful(Redirect(appConfig.signOut, Map("continue" -> Seq(appConfig.exitSurveyUrl))))
+    Future.successful(Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.exitSurveyUrl))))
   }
 
   // todo : work out what eventualResult is for, and call it that.
