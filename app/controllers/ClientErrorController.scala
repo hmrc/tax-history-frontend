@@ -44,7 +44,6 @@ class ClientErrorController @Inject() (
     extends BaseController(cc) {
 
   lazy val loginContinue: String          = appConfig.loginContinue
-  lazy val serviceSignout: String         = appConfig.serviceSignOut
   lazy val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   def getNotAuthorised: Action[AnyContent] = Action.async { implicit request =>

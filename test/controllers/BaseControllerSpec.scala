@@ -31,6 +31,7 @@ import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.http.{BadGatewayException, HeaderCarrier, HttpResponse}
 
+import java.net.URLEncoder
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -243,7 +244,9 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
     "redirect to feed back survey link" in new TestSetup {
       val result: Future[Result] = controller.logout()(fakeRequest)
       status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(controller.appConfig.serviceSignOut)
+      redirectLocation(result) shouldBe Some(
+        controller.appConfig.signOutUrl + "?continue=" + URLEncoder.encode(controller.appConfig.exitSurveyUrl, "UTF-8")
+      )
     }
 
   }
@@ -304,7 +307,6 @@ class BaseControllerSpec extends ControllerSpec with BaseSpec with ScalaFutures 
     implicit val appConfig: AppConfig
   ) extends BaseController(cc) {
     val loginContinue: String          = appConfig.loginContinue
-    val serviceSignout: String         = appConfig.serviceSignOut
     val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
   }
 }

@@ -37,7 +37,6 @@ class SelectClientController @Inject() (
     extends BaseController(cc) {
 
   val loginContinue: String          = appConfig.loginContinue
-  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   val root: Action[AnyContent] = Action {

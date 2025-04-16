@@ -34,7 +34,6 @@ import views.models.EmploymentViewDetail
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
-import scala.util.{Failure, Success, Try}
 
 class EmploymentDetailController @Inject() (
   val taxHistoryConnector: TaxHistoryConnector,
@@ -49,7 +48,6 @@ class EmploymentDetailController @Inject() (
     extends BaseController(cc) {
 
   val loginContinue: String          = appConfig.loginContinue
-  val serviceSignout: String         = appConfig.serviceSignOut
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)(implicit

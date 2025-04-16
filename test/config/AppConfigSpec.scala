@@ -39,8 +39,12 @@ class AppConfigSpec extends BaseSpec {
         appConfig.taxHistoryBaseUrl shouldBe "http://localhost:9997"
       }
 
-      "serviceSignOut" in {
-        appConfig.serviceSignOut shouldBe "http://localhost:9514/feedback-survey/?origin=AGENTINDIV"
+      "exitSurveyUrl" in {
+        appConfig.exitSurveyUrl shouldBe "http://localhost:9514/feedback/AGENTINDIV"
+      }
+
+      "signOutUrl" in {
+        appConfig.signOutUrl shouldBe "http://localhost:9553/bas-gateway/sign-out-without-state"
       }
 
       "agentAccountHomePage" in {
