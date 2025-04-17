@@ -16,12 +16,13 @@ GET   /data-unavailable                                   controllers.ClientErro
 GET   /no-data/:taxYears                                  controllers.ClientErrorController.getNoData(taxYears:Int)
 GET   /service-unavailable-technical                      controllers.ClientErrorController.getTechnicalError()
 GET   /client-income-record/:taxYear                      controllers.EmploymentSummaryController.getTaxHistory(taxYear:Int)
-GET   /logout                                             controllers.EmploymentSummaryController.logout()
 
 GET   /select-tax-year                                    controllers.SelectTaxYearController.getSelectTaxYearPage()
 POST  /select-tax-year                                    controllers.SelectTaxYearController.submitSelectTaxYearPage()
 
 GET   /keep-alive                                         controllers.SignedOutController.keepAlive()
 GET   /we-signed-you-out                                  controllers.SignedOutController.signedOut()
+GET   /logout                                             controllers.SignedOutController.logout()
+GET   /signed-you-out                                     controllers.SignedOutController.signOutNoSurvey()
 
 GET   /sign-in                                            controllers.EmploymentSummaryController.signIn()

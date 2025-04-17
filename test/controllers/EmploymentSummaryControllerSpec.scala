@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -230,13 +230,6 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.ClientErrorController.getNoData(taxYear).url)
-    }
-  }
-
-  "GET /tax-history/logout" should {
-    "redirect to gg and clear session data" in new LocalSetup {
-      val result: Future[Result] = controller.logout()(fakeRequest.withSession("USER_NINO" -> nino))
-      status(result) shouldBe SEE_OTHER
     }
   }
 

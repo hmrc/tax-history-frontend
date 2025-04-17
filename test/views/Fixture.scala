@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ trait Fixture extends Matchers {
     for (p <- Jsoup.parse(messages(messageKey).paragraphize).getElementsByTag("p").asScala)
       document(view).body().toString must include(p.text())
 
-  def validateConditionalContent(id: String): Assertion                                   =
+  def validateConditionalContent(id: String): Assertion =
     Try {
       document(view).getElementById(id).text
     } match {

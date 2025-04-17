@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,23 +16,44 @@
 
 package controllers
 
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendController
-import views.html.taxhistory.SignedOut
 import config.AppConfig
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.{Configuration, Environment}
+import uk.gov.hmrc.auth.core.AuthConnector
+import views.html.taxhistory.SignedOut
+
 import javax.inject.{Inject, Singleton}
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class SignedOutController @Inject() (
   signedOutView: SignedOut,
-  val mcc: MessagesControllerComponents,
+  override val authConnector: AuthConnector,
+  override val config: Configuration,
+  override val env: Environment,
+  val cc: MessagesControllerComponents,
   implicit val appConfig: AppConfig,
-  implicit val ec: ExecutionContext
-) extends FrontendController(mcc) {
+  implicit val executionContext: ExecutionContext
+) extends BaseController(cc) {
+
+  val loginContinue: String          = appConfig.loginContinue
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
+
+  def logout(): Action[AnyContent] = Action.async {
+    logger.info("[SignedOutController][logout] Sign out of the service")
+    Future.successful(Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.exitSurveyUrl))))
+  }
 
   def signedOut: Action[AnyContent] = Action { implicit request =>
     Ok(signedOutView())
+  }
+
+  def signOutNoSurvey(): Action[AnyContent] = Action {
+    val signOutServiceUrl = appConfig.host + routes.SignedOutController.signedOut().url
+    Redirect(
+      appConfig.signOutUrl,
+      Map("continue" -> Seq(signOutServiceUrl))
+    )
   }
 
   def keepAlive(): Action[AnyContent] = Action {
