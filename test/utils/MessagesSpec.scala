@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,11 +41,10 @@ class MessagesSpec extends GuiceAppSpec {
   }
 
   "All message files" should {
-    "have the same set of keys" in {
+    "have the same set of keys" in
       withClue(mismatchingKeys(englishMessageKeys.keySet, welshMessagesKeys.keySet)) {
         assert(welshMessagesKeys.keySet equals englishMessageKeys.keySet)
       }
-    }
     "not have the same messages" in {
       val same = englishMessageKeys.keys.collect {
         case messageKey if englishMessageKeys.get(messageKey) == welshMessagesKeys.get(messageKey) =>

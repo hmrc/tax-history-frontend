@@ -1,5 +1,5 @@
 @*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@
 
     @if(timeoutActive) {
         @hmrcTimeoutDialogHelper(
-            signOutUrl = routes.EmploymentSummaryController.logout().url,
+            signOutUrl = routes.SignedOutController.logout().url,
             keepAliveUrl = Some(controllers.routes.SignedOutController.keepAlive().url),
             timeoutUrl =  Some(controllers.routes.SignedOutController.signedOut().url),
             timeout = Some(appConfig.timeout),
@@ -105,7 +105,7 @@
                     <span class="hmrc-header__service-name">@messages("service.name")</span>
                     @if(signOut){
                         <nav class="hmrc-sign-out-nav">
-                            <a class="govuk-link hmrc-sign-out-nav__link" href="/tax-history/logout">@messages("global.link.signout")</a>
+                            <a class="govuk-link hmrc-sign-out-nav__link" href="@routes.SignedOutController.logout().url">@messages("global.link.signout")</a>
                         </nav>
                     }
                 </div>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ class CallOpsSpec extends AnyWordSpec with Matchers {
       }
 
       "there are only parameters with no values" in {
-        CallOps.addParamsToUrl(url, "foo" -> None) shouldBe url
+        CallOps.addParamsToUrl(url, "foo" -> None)                shouldBe url
         CallOps.addParamsToUrl(url, "foo" -> None, "bar" -> None) shouldBe url
       }
     }
@@ -58,7 +58,7 @@ class CallOpsSpec extends AnyWordSpec with Matchers {
 
       "one of the parameters to add has no value" in {
         CallOps.addParamsToUrl(url, "foo" -> None, "baz" -> Some("qwaggly")) shouldBe s"$url?baz=qwaggly"
-        CallOps.addParamsToUrl(url, "foo" -> Some("bar"), "baz" -> None) shouldBe s"$url?foo=bar"
+        CallOps.addParamsToUrl(url, "foo" -> Some("bar"), "baz" -> None)     shouldBe s"$url?foo=bar"
       }
 
       "there is an existing query part and one of the parameters to add has no value" in {

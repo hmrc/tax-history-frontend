@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,22 +37,11 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
     with TaxHistoryLogger
     with TaxHistorySessionKeys {
 
-  /** The URI to direct to for login.
-    */
   val loginContinue: String
-
-  /** The URI to direct to for signout.
-    */
-
   val appConfig: AppConfig
+
   private lazy val ggSignInRedirect: Result = toGGLogin(loginContinue)
 
-  def logout(): Action[AnyContent] = Action.async {
-    logger.info("[BaseController][logout] Sign out of the service")
-    Future.successful(Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.exitSurveyUrl))))
-  }
-
-  // todo : work out what eventualResult is for, and call it that.
   protected def authorisedAgent(
     predicate: Predicate
   )(eventualResult: Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {

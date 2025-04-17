@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,6 +36,7 @@ class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
   lazy val agentInvitationFastTrack: String       = servicesConfig.getString("external-url.agent-invitation.fast-track-url")
   lazy val gtmContainer: String                   = servicesConfig.getString("tracking-consent-frontend.gtm.container")
   lazy val welshEnabled: Boolean                  = servicesConfig.getBoolean("welsh-enabled")
+  lazy val host: String                           = servicesConfig.getString("host")
 
   private lazy val basGatewayBaseUrl: String = servicesConfig.getString("bas-gateway.host")
   lazy val signOutUrl: String                = s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state"

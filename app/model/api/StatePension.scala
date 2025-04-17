@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,13 +35,13 @@ case class StatePension(
   def getAmountReceivedTillDate(taxYear: Int): Option[BigDecimal] =
     paymentFrequency match {
       case Some(1) if TaxYear.current.currentYear == taxYear =>
-        //Weekly
+        // Weekly
         startDate.flatMap { start =>
           val noOfWeeksTillDate =
             ChronoUnit.WEEKS.between(start, Instant.now().atOffset(ZoneOffset.UTC).toLocalDate).toInt
 
           val noOfPaymentsTillDate =
-            noOfWeeksTillDate + 1 //noOfWeeksTillDate comes out as one less than the no of payments
+            noOfWeeksTillDate + 1 // noOfWeeksTillDate comes out as one less than the no of payments
 
           Some(noOfPaymentsTillDate * weeklyAmount)
         }

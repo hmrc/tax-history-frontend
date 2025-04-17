@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
 
   private val titleAndHeadingContent: String = "Your agent business does not have an agent services account"
   private val pContent: String               =
-    "If you are authorised to act on behalf of your agent business, you can create an agent services account."
+    "If you are authorised to act on behalf of your agent business, you can create an agent services account ."
 
   private val viewHtmlViaApply: HtmlFormat.Appendable    =
     inject[no_agent_services_account].apply()(fakeRequest, messages, appConfig)

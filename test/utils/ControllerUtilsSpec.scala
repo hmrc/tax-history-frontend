@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 HM Revenue & Customs
+ * Copyright 2025 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -272,19 +272,19 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
     val ongoing  = "Latest tax code issued"
 
     val currentTaxYearTC = List(
-      //Live
+      // Live
       (TaxYear.current.startYear, EmploymentStatus.Live, Some(LocalDate.now().minusDays(1)), previous),
       (TaxYear.current.startYear, EmploymentStatus.Live, Some(LocalDate.now().plusDays(2)), ongoing),
       (TaxYear.current.startYear, EmploymentStatus.Live, None, ongoing),
-      //PotentiallyCeased
+      // PotentiallyCeased
       (TaxYear.current.startYear, EmploymentStatus.PotentiallyCeased, Some(LocalDate.now().minusDays(1)), previous),
       (TaxYear.current.startYear, EmploymentStatus.PotentiallyCeased, Some(LocalDate.now().plusDays(2)), ongoing),
       (TaxYear.current.startYear, EmploymentStatus.PotentiallyCeased, None, ongoing),
-      //Ceased
+      // Ceased
       (TaxYear.current.startYear, EmploymentStatus.Ceased, Some(LocalDate.now().minusDays(1)), previous),
       (TaxYear.current.startYear, EmploymentStatus.Ceased, Some(LocalDate.now().plusDays(2)), previous),
       (TaxYear.current.startYear, EmploymentStatus.Ceased, None, previous),
-      //Unknown
+      // Unknown
       (TaxYear.current.startYear, EmploymentStatus.Unknown, Some(LocalDate.now().minusDays(1)), previous),
       (TaxYear.current.startYear, EmploymentStatus.Unknown, Some(LocalDate.now().plusDays(2)), ongoing),
       (TaxYear.current.startYear, EmploymentStatus.Unknown, None, ongoing)
