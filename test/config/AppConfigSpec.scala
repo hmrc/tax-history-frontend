@@ -68,7 +68,7 @@ class AppConfigSpec extends BaseSpec {
       }
 
       "agentInvitationFastTrack" in {
-        appConfig.agentInvitationFastTrack shouldBe "http://localhost:9435/agent-client-relationships/agents/fast-track"
+        appConfig.agentInvitationFastTrack shouldBe "http://localhost:9448/invitations/agents/fast-track"
       }
 
       "gtmContainer" in {
