@@ -31,6 +31,7 @@ object ControllerUtils {
 
     employment.employmentStatus match {
       case EmploymentStatus.Live    => current
+      //TODO: unknown needs to be removed
       case EmploymentStatus.Unknown => unknown
       case _                        => ceased
     }
@@ -48,7 +49,7 @@ object ControllerUtils {
   def displayTaxCodeHeading(taxYear: Int, employmentStatus: EmploymentStatus, employmentEndDate: Option[LocalDate])(
     implicit messages: Messages
   ): String =
-    if (TaxYear.current.startYear == taxYear && employmentStatus != EmploymentStatus.Ceased) {
+    if (TaxYear.current.startYear == taxYear && (employmentStatus == EmploymentStatus.Live || employmentStatus == EmploymentStatus.PotentiallyCeased)) {
       employmentEndDate match {
         case Some(date) if date.isAfter(LocalDate.now())  => messages("tax.code.subheading.ongoing.employment")
         case Some(date) if date.isBefore(LocalDate.now()) =>
