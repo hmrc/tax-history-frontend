@@ -49,7 +49,7 @@ object ControllerUtils {
   def displayTaxCodeHeading(taxYear: Int, employmentStatus: EmploymentStatus, employmentEndDate: Option[LocalDate])(
     implicit messages: Messages
   ): String =
-    if (TaxYear.current.startYear == taxYear && (employmentStatus == EmploymentStatus.Live || employmentStatus == EmploymentStatus.PotentiallyCeased)) {
+    if (TaxYear.current.startYear == taxYear && (employmentStatus == EmploymentStatus.Live || employmentStatus == EmploymentStatus.Unknown || employmentStatus == EmploymentStatus.PotentiallyCeased)) {
       employmentEndDate match {
         case Some(date) if date.isAfter(LocalDate.now())  => messages("tax.code.subheading.ongoing.employment")
         case Some(date) if date.isBefore(LocalDate.now()) =>
