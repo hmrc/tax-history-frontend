@@ -145,7 +145,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
         val viewDetailsElementsNoRecord: Element =
           document(view).getElementById("view-employment-3")
 
-        viewDetailsElementsNoRecord.html must include("None")
+        viewDetailsElementsNoRecord.html shouldBe null
       }
     }
 
@@ -194,12 +194,6 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
             document(view)
               .getElementsMatchingOwnText(
                 emp.endDate.fold(messages("lbl.end-date.ongoing"))(d => dateUtils.dateToFormattedString(d))
-              )
-              .hasText mustBe true
-          case EmploymentStatus.Unknown                        =>
-            document(view)
-              .getElementsMatchingOwnText(
-                emp.endDate.fold(messages("lbl.date.no-record"))(d => dateUtils.dateToFormattedString(d))
               )
               .hasText mustBe true
         }

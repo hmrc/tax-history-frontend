@@ -78,7 +78,7 @@ trait Constants {
       worksNumber = "00191048716"
     )
 
-  val emp4UnknownEmploymentStatus: Employment =
+  val emp4PermanentlyCeasedEmploymentStatus: Employment =
     Employment(
       employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
       payeReference = "Paye 4",
@@ -90,7 +90,7 @@ trait Constants {
       companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
       payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
       employmentPaymentType = None,
-      employmentStatus = EmploymentStatus.Unknown,
+      employmentStatus = EmploymentStatus.PermanentlyCeased,
       worksNumber = "00191048716"
     )
 
@@ -104,7 +104,7 @@ trait Constants {
       companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
       payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
       employmentPaymentType = Some(OccupationalPension),
-      employmentStatus = EmploymentStatus.Unknown,
+      employmentStatus = EmploymentStatus.Ceased,
       worksNumber = "00191048716"
     )
   val totalIncome: TotalIncome =
@@ -121,7 +121,7 @@ trait Constants {
     )
 
   val employments: List[Employment] =
-    List(emp1LiveOccupationalPension, emp2Live, emp3Ceased, emp4UnknownEmploymentStatus)
+    List(emp1LiveOccupationalPension, emp2Live, emp3Ceased, emp4PermanentlyCeasedEmploymentStatus)
 
   val employmentsWithJobseekers: List[Employment] =
     List(
@@ -129,11 +129,11 @@ trait Constants {
       emp1LiveOccupationalPension.copy(employmentPaymentType = Some(JobseekersAllowance)),
       emp2Live,
       emp3Ceased,
-      emp4UnknownEmploymentStatus
+      emp4PermanentlyCeasedEmploymentStatus
     )
 
   val employmentWithPensions: List[Employment]    = List(emp1LiveOccupationalPension, emp2Live, pension)
-  val employmentsNoPensions: List[Employment]     = List(emp2Live, emp3Ceased, emp4UnknownEmploymentStatus)
+  val employmentsNoPensions: List[Employment]     = List(emp2Live, emp3Ceased, emp4PermanentlyCeasedEmploymentStatus)
   val employmentWithPensionOnly: List[Employment] = List(pension)
 
   val allowance1: Allowance = Allowance(

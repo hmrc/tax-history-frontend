@@ -27,21 +27,12 @@ object ControllerUtils {
   def getEmploymentStatus(employment: Employment)(implicit messages: Messages): String = {
     val current = Messages("lbl.employment.status.current")
     val ceased  = Messages("lbl.employment.status.ceased")
-    val unknown = Messages("lbl.employment.status.unknown")
 
     employment.employmentStatus match {
-      case EmploymentStatus.Live    => current
-      //TODO: unknown needs to be removed
-      case EmploymentStatus.Unknown => unknown
-      case _                        => ceased
+      case EmploymentStatus.Live => current
+      case _                     => ceased
     }
   }
-
-  def hasEmploymentDetails(employment: Employment): Boolean =
-    employment.employmentStatus match {
-      case EmploymentStatus.Unknown => false
-      case _                        => true
-    }
 
   def displaySource(sourceAmount: Option[BigDecimal], amount: BigDecimal): Option[BigDecimal] =
     if (sourceAmount.contains(amount)) None else sourceAmount
@@ -49,7 +40,9 @@ object ControllerUtils {
   def displayTaxCodeHeading(taxYear: Int, employmentStatus: EmploymentStatus, employmentEndDate: Option[LocalDate])(
     implicit messages: Messages
   ): String =
-    if (TaxYear.current.startYear == taxYear && (employmentStatus == EmploymentStatus.Live || employmentStatus == EmploymentStatus.Unknown || employmentStatus == EmploymentStatus.PotentiallyCeased)) {
+    if (
+      TaxYear.current.startYear == taxYear && (employmentStatus == EmploymentStatus.Live || employmentStatus == EmploymentStatus.PotentiallyCeased)
+    ) {
       employmentEndDate match {
         case Some(date) if date.isAfter(LocalDate.now())  => messages("tax.code.subheading.ongoing.employment")
         case Some(date) if date.isBefore(LocalDate.now()) =>
