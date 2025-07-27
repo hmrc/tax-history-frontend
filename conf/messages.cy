@@ -17,7 +17,6 @@ lbl.date.end=Dyddiad dod i ben
 lbl.actions=Camau
 lbl.employment.status.current=Cyfredol
 lbl.employment.status.ceased=Wedi dod i ben
-lbl.employment.status.unknown=Anhysbys
 lbl.none=Dim
 lbl.income=Incwm
 lbl.tax=Treth

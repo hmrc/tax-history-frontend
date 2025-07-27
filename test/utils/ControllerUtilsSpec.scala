@@ -94,35 +94,6 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
       dateUtils.formatEndDate(emp, dateUtils.dateToFormattedString) shouldBe "1 February 2016"
     }
 
-    "return date when Employment Status is unknown and endDate is provided" in {
-      val emp = Employment(
-        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        payeReference = "paye",
-        employerName = "employer",
-        startDate = Some(LocalDate.parse("2016-01-21")),
-        endDate = Some(LocalDate.parse("2016-02-01")),
-        employmentPaymentType = None,
-        employmentStatus = EmploymentStatus.Unknown,
-        worksNumber = "00191048716"
-      )
-
-      dateUtils.formatEndDate(emp, dateUtils.dateToFormattedString) shouldBe "1 February 2016"
-    }
-
-    "return unknown when Employment Status is unknown and no endDate is provided" in {
-      val emp = Employment(
-        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        payeReference = "paye",
-        employerName = "employer",
-        startDate = Some(LocalDate.parse("2016-01-21")),
-        endDate = None,
-        employmentPaymentType = None,
-        employmentStatus = EmploymentStatus.Unknown,
-        worksNumber = "00191048716"
-      )
-
-      dateUtils.formatEndDate(emp, dateUtils.dateToFormattedString) shouldBe Messages("lbl.date.no-record")
-    }
   }
 
   "ControllerUtils - getStartDate" must {
@@ -168,7 +139,7 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
       ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.ceased")
     }
 
-    "return unknown message when employment status is unknown" in {
+    "return Ceased message when employment status is Ceased" in {
       val emp = Employment(
         employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         payeReference = "paye",
@@ -176,48 +147,15 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
         startDate = Some(LocalDate.parse("2016-01-21")),
         endDate = Some(LocalDate.parse("2016-02-01")),
         employmentPaymentType = None,
-        employmentStatus = EmploymentStatus.Unknown,
+        employmentStatus = EmploymentStatus.Ceased,
         worksNumber = "00191048716"
       )
 
-      ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.unknown")
+      ControllerUtils.getEmploymentStatus(emp) shouldBe Messages("lbl.employment.status.Ceased")
     }
   }
 
-  "ControllerUtils - hasEmploymentDetails" must {
-    "return true when employment status is not unknown" in {
-      val emp = Employment(
-        employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-        payeReference = "paye",
-        employerName = "employer",
-        startDate = Some(LocalDate.parse("2016-01-21")),
-        endDate = Some(LocalDate.parse("2016-02-01")),
-        employmentPaymentType = None,
-        employmentStatus = EmploymentStatus.PotentiallyCeased,
-        worksNumber = "00191048716"
-      )
-
-      ControllerUtils.hasEmploymentDetails(emp) shouldBe true
-    }
-
-    "ControllerUtils - hasEmploymentDetails" must {
-      "return false when employment status is unknown" in {
-        val emp = Employment(
-          employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
-          payeReference = "paye",
-          employerName = "employer",
-          startDate = Some(LocalDate.parse("2016-01-21")),
-          endDate = Some(LocalDate.parse("2016-02-01")),
-          employmentPaymentType = None,
-          employmentStatus = EmploymentStatus.Unknown,
-          worksNumber = "00191048716"
-        )
-
-        ControllerUtils.hasEmploymentDetails(emp) shouldBe false
-      }
-    }
-  }
-  "ControllerUtils - displaySource "       must {
+  "ControllerUtils - displaySource " must {
     "return none when both source amount and amount are the same" in {
       val sourceAmount: Option[BigDecimal] = Some(1)
       val amount: BigDecimal               = 1
@@ -284,10 +222,10 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
       (TaxYear.current.startYear, EmploymentStatus.Ceased, Some(LocalDate.now().minusDays(1)), previous),
       (TaxYear.current.startYear, EmploymentStatus.Ceased, Some(LocalDate.now().plusDays(2)), previous),
       (TaxYear.current.startYear, EmploymentStatus.Ceased, None, previous),
-      // Unknown
-      (TaxYear.current.startYear, EmploymentStatus.Unknown, Some(LocalDate.now().minusDays(1)), previous),
-      (TaxYear.current.startYear, EmploymentStatus.Unknown, Some(LocalDate.now().plusDays(2)), ongoing),
-      (TaxYear.current.startYear, EmploymentStatus.Unknown, None, ongoing)
+      // PermanentlyCeased
+      (TaxYear.current.startYear, EmploymentStatus.PermanentlyCeased, Some(LocalDate.now().minusDays(1)), previous),
+      (TaxYear.current.startYear, EmploymentStatus.PermanentlyCeased, Some(LocalDate.now().plusDays(2)), ongoing),
+      (TaxYear.current.startYear, EmploymentStatus.PermanentlyCeased, None, ongoing)
     ).sortBy(_._4).reverse
 
     currentTaxYearTC.foreach { case (taxYear, employmentStatus, employmentEndDate, expectedMessage) =>
@@ -298,7 +236,12 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
 
     val yearsBack = 5
     val statuses  =
-      List(EmploymentStatus.Live, EmploymentStatus.PotentiallyCeased, EmploymentStatus.Ceased, EmploymentStatus.Unknown)
+      List(
+        EmploymentStatus.Live,
+        EmploymentStatus.PotentiallyCeased,
+        EmploymentStatus.Ceased,
+        EmploymentStatus.PermanentlyCeased
+      )
 
     val previousTaxYearsTC =
       statuses.flatMap(status =>
