@@ -14,12 +14,14 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.header._
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
 @import views.models.PageTitle
 
 @this(
     appConfig: AppConfig,
+    govukHeader: GovukHeader,
     govukTemplate: GovukTemplate,
     govukBackLink: GovukBackLink,
     govukPhaseBanner: GovukPhaseBanner,
@@ -165,5 +167,5 @@
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
     mainClasses = None,
-    bodyEndBlock = Some(hmrcScripts())
+    bodyEndBlock = Some(hmrcScripts() )
 )(content)
