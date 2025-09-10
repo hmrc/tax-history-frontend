@@ -26,14 +26,14 @@ object EmploymentStatus {
   case object PotentiallyCeased extends EmploymentStatus
   case object Ceased extends EmploymentStatus
   case object Unknown extends EmploymentStatus
-  case object PermanentlyCeased extends EmploymentStatus
+  private case object PermanentlyCeased extends EmploymentStatus
 
   private val LIVE: Int              = 1
   private val POTENTIALLYCEASED: Int = 2
   private val CEASED: Int            = 3
   private val UNKNOWN: Int           =
     99 // Code 99, Unknown, is internal to tax-history, and is not an wider HMRC employment status
-  private val PERMANENTLYCEASED = 6
+  private val PERMANENTLYCEASED      = 6
 //Unknown is not a possible value in the new hip api
 
   implicit val jsonReads: Reads[EmploymentStatus] =
@@ -42,7 +42,7 @@ object EmploymentStatus {
       case POTENTIALLYCEASED => Reads(_ => JsSuccess(PotentiallyCeased))
       case CEASED            => Reads(_ => JsSuccess(Ceased))
       case UNKNOWN           => Reads(_ => JsSuccess(Unknown))
-      case PERMANENTLYCEASED           => Reads(_ => JsSuccess(PermanentlyCeased))
+      case PERMANENTLYCEASED => Reads(_ => JsSuccess(PermanentlyCeased))
       case _                 => Reads(_ => JsError(JsPath \ "employmentStatus", JsonValidationError("Invalid EmploymentStatus")))
     }
 
@@ -51,6 +51,6 @@ object EmploymentStatus {
     case PotentiallyCeased => Json.obj("employmentStatus" -> POTENTIALLYCEASED)
     case Ceased            => Json.obj("employmentStatus" -> CEASED)
     case Unknown           => Json.obj("employmentStatus" -> UNKNOWN)
-    case PermanentlyCeased              => Json.obj("employmentStatus" -> PERMANENTLYCEASED)
+    case PermanentlyCeased => Json.obj("employmentStatus" -> PERMANENTLYCEASED)
   }
 }
