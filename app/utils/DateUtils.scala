@@ -66,7 +66,7 @@ class DateUtils @Inject() (languageUtils: LanguageUtils) {
     val ongoing = messages("lbl.end-date.ongoing")
     employment.employmentStatus match {
       case EmploymentStatus.PotentiallyCeased => noRecord
-      //TODO: Unknown needs to be removed
+      // TODO: Unknown needs to be removed
       case EmploymentStatus.Unknown           => employment.endDate.fold(noRecord)(date => dateFormat(date))
       case _                                  => employment.endDate.fold(ongoing)(date => dateFormat(date))
     }
