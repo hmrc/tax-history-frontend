@@ -102,7 +102,7 @@
                     </a>
                 </div>
                 <div class="govuk-header__content">
-                    <span class="hmrc-header__service-name">@messages("service.name")</span>
+                    <span class="govuk-header__service-name">@messages("service.name")</span>
                     @if(signOut){
                         <nav class="hmrc-sign-out-nav">
                             <a class="govuk-link hmrc-sign-out-nav__link" href="@routes.SignedOutController.logout().url">@messages("global.link.signout")</a>
@@ -165,5 +165,5 @@
     beforeContentBlock = Some(beforeContentBlock),
     footerBlock = hmrcStandardFooter(),
     mainClasses = None,
-    bodyEndBlock = Some(hmrcScripts())
+    bodyEndBlock = Some(hmrcScripts() )
 )(content)
