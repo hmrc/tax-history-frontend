@@ -57,12 +57,15 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
       inject[no_data],
       inject[technical_error],
       inject[no_agent_services_account]
-    )(stubControllerComponents().executionContext)
+    )(using stubControllerComponents().executionContext)
 
-    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
-    when(controller.authConnector.authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(any(), any()))
+    when(
+      controller.authConnector
+        .authorise(any(), any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(using any(), any())
+    )
       .thenReturn(
         Future.successful(
           new ~[Option[AffinityGroup], Enrolments](Some(AffinityGroup.Agent), Enrolments(newEnrolments))
@@ -72,39 +75,39 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
   "ClientErrorController" should {
     "get Mci restricted page" in new LocalSetup {
-      implicit val request: Request[_] = FakeRequest()
-      val result: Future[Result]       = controller.getMciRestricted().apply(FakeRequest())
+      implicit val request: Request[?] = FakeRequest()
+      val result: Future[Result]       = controller.getMciRestricted.apply(FakeRequest())
       val expectedView: mci_restricted = app.injector.instanceOf[mci_restricted]
       status(result) shouldBe OK
 
-      result rendersTheSameViewAs expectedView()
+      result.rendersTheSameViewAs(expectedView())
     }
 
     "get Not Authorised page with a NINO and relationship" in new LocalSetup {
-      val result: Future[Result] = controller.getNotAuthorised().apply(FakeRequest().withSession("USER_NINO" -> nino))
+      val result: Future[Result] = controller.getNotAuthorised.apply(FakeRequest().withSession("USER_NINO" -> nino))
       status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.not.authorised.title"))
     }
 
     "get Not Authorised page without NINO" in new LocalSetup {
-      val result: Future[Result] = controller.getNotAuthorised().apply(FakeRequest())
+      val result: Future[Result] = controller.getNotAuthorised.apply(FakeRequest())
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(controllers.routes.SelectClientController.getSelectClientPage().url)
     }
 
     "get No Agent Services Account page" in new LocalSetup {
-      val result: Future[Result] = controller.getNoAgentServicesAccountPage().apply(FakeRequest())
+      val result: Future[Result] = controller.getNoAgentServicesAccountPage.apply(FakeRequest())
       status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.no.agent.services.account.title"))
     }
 
     "get deceased page" in new LocalSetup {
-      implicit val request: Request[_] = FakeRequest()
-      val result: Future[Result]       = controller.getDeceased().apply(FakeRequest())
+      implicit val request: Request[?] = FakeRequest()
+      val result: Future[Result]       = controller.getDeceased.apply(FakeRequest())
       val expectedView: deceased       = app.injector.instanceOf[deceased]
       status(result) shouldBe OK
 
-      result rendersTheSameViewAs expectedView()
+      result.rendersTheSameViewAs(expectedView())
     }
 
     "get No Data Available page" in new LocalSetup {
@@ -117,7 +120,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
     }
 
     "get Technical Error page" in new LocalSetup {
-      val result: Future[Result] = controller.getTechnicalError().apply(FakeRequest())
+      val result: Future[Result] = controller.getTechnicalError.apply(FakeRequest())
       status(result)        shouldBe OK
       contentAsString(result) should include(Messages("employmenthistory.technical.error.title"))
     }
@@ -135,7 +138,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
     "redirect to technical error page" when {
       "500 is returned from citizenDetailsConnector" in new LocalSetup {
         val taxYear: Int = 2017
-        when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+        when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
           .thenReturn(
             Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, ""))
           )
@@ -149,8 +152,7 @@ class ClientErrorControllerSpec extends ControllerSpec with BaseSpec {
 
     "return an exception when a query string 'issue' is present in the request" in new LocalSetup {
       val result: Exception = intercept[Exception] {
-        controller
-          .getNotAuthorised()
+        controller.getNotAuthorised
           .apply(
             FakeRequest(
               method = "GET",

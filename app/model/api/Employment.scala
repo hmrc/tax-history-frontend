@@ -78,5 +78,21 @@ object Employment {
       (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
-  )(e => (e.employmentId, e.startDate, e.endDate, e.startDateFormatted, e.endDateFormatted, e.payeReference, e.employerName, e.companyBenefitsURI, e.payAndTaxURI, e.employmentURI, e.employmentPaymentType, e.employmentStatus, e.worksNumber))
+  )(e =>
+    (
+      e.employmentId,
+      e.startDate,
+      e.endDate,
+      e.startDateFormatted,
+      e.endDateFormatted,
+      e.payeReference,
+      e.employerName,
+      e.companyBenefitsURI,
+      e.payAndTaxURI,
+      e.employmentURI,
+      e.employmentPaymentType,
+      e.employmentStatus,
+      e.worksNumber
+    )
+  )
 }

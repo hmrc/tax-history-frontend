@@ -54,7 +54,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
       cc = messagesControllerComponents,
       employmentDetail = injected[employment_detail],
       dateUtils = dateUtils
-    )(stubControllerComponents().executionContext, appConfig)
+    )(using stubControllerComponents().executionContext, appConfig)
 
     val incomeSource: Some[IncomeSource] =
       Some(
@@ -73,7 +73,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-        any[HeaderCarrier],
+        using any[HeaderCarrier],
         any[ExecutionContext]
       )
     )
@@ -86,14 +86,14 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     when(
       controller.taxHistoryConnector
         .getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
     )
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTax), Map.empty)))
 
     when(
       controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-        any[HeaderCarrier]
+        using any[HeaderCarrier]
       )
     )
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employment), Map.empty)))
@@ -101,17 +101,17 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     when(
       controller.taxHistoryConnector
         .getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
     )
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(companyBenefits), Map.empty)))
 
-    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
 
     when(
       controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-        any[HeaderCarrier]
+        using any[HeaderCarrier]
       )
     )
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
@@ -153,7 +153,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     }
 
     "successfully load confirm details page with nino when citizen details returns 200 OK with a person with no name" in new LocalSetup {
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(
           Future.successful(
             HttpResponse(status = OK, json = Json.toJson(Person(None, None, Some(false))), headers = Map.empty)
@@ -175,7 +175,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "redirect to /client-income-record/:year when employment is not found (getEmployment returns 404)" in new LocalSetup {
       when(
         controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
       )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
@@ -189,7 +189,9 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "show employment details page even if getPayAndTaxDetails returns 404" in new LocalSetup {
       when(
         controller.taxHistoryConnector
-          .getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier])
+          .getPayAndTaxDetails(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+            using any[HeaderCarrier]
+          )
       )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
@@ -202,7 +204,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "show employment details page even if getCompanyBenefits returns 404" in new LocalSetup {
       when(
         controller.taxHistoryConnector
-          .getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(any[HeaderCarrier])
+          .getCompanyBenefits(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(using any[HeaderCarrier])
       )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
@@ -215,7 +217,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "show employment details page even if getIncomeSource returns 404" in new LocalSetup {
       when(
         controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
       )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
@@ -229,7 +231,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "show technical error page when getEmployment returns a status other than 200, 401, 404" in new LocalSetup {
       when(
         controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
       )
         .thenReturn(Future.successful(HttpResponse(INTERNAL_SERVER_ERROR, "")))
@@ -243,7 +245,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "show technical error page when getEmployment returns a 4xx response" in new LocalSetup {
       when(
         controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
       )
         .thenReturn(Future.successful(HttpResponse(BAD_REQUEST, "")))
@@ -257,7 +259,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "show technical error page when getEmployment returns a 3xx response" in new LocalSetup {
       when(
         controller.taxHistoryConnector.getEmployment(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
-          any[HeaderCarrier]
+          using any[HeaderCarrier]
         )
       )
         .thenReturn(Future.successful(HttpResponse(SEE_OTHER, "")))
@@ -270,7 +272,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
     "show deceased error page when retrieveCitizenDetails returns Gone" in new LocalSetup {
 
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(GONE, "")))
 
       val result: Future[Result] =
@@ -281,7 +283,7 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
 
     "show no data available error page when retrieveCitizenDetails returns Locked" in new LocalSetup {
 
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier])).thenReturn(
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier])).thenReturn(
         Future.successful(HttpResponse(LOCKED, ""))
       )
 

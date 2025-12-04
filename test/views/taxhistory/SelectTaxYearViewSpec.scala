@@ -154,9 +154,14 @@ class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
       document(view).getElementsByClass("govuk-error-summary__title").text                             shouldBe messages(
         "employmenthistory.select.tax.year.error.heading"
       )
-      document(view).getElementById("selectTaxYear-error").text contains messages(
-        "employmenthistory.select.tax.year.error.message"
-      )
+      document(view)
+        .getElementById("selectTaxYear-error")
+        .text
+        .contains(
+          messages(
+            "employmenthistory.select.tax.year.error.message"
+          )
+        )
     }
 
     "display navigation bar with correct links" in new ViewFixture {

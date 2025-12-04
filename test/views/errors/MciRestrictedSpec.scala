@@ -32,7 +32,7 @@ class MciRestrictedSpec extends GuiceAppSpec with BaseViewSpec {
 
   trait ViewFixture extends Fixture {
     val nino: String                               = TestUtil.randomNino.toString()
-    val view: HtmlFormat.Appendable                = inject[mci_restricted].apply()(request, messages, appConfig)
+    val view: HtmlFormat.Appendable                = inject[mci_restricted].apply()(using request, messages, appConfig)
     val viewHtmlViaRender: HtmlFormat.Appendable   = inject[mci_restricted].render(request, messages, appConfig)
     val viewHtmlViaFunction: HtmlFormat.Appendable = inject[mci_restricted].f()(request, messages, appConfig)
   }

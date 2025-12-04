@@ -42,22 +42,25 @@ class SignedOutControllerSpec extends ControllerSpec with BaseSpec {
 
   "keepAlive" must {
     "return a NoContent" in new LocalSetup {
-      status(controller.keepAlive().apply(fakeRequest)) shouldBe NO_CONTENT
+      status(controller.keepAlive().apply(fakeRequest)).shouldBe(NO_CONTENT)
     }
   }
 
   "signedOut" must {
     "return a NoContent" in new LocalSetup {
-      status(controller.signedOut().apply(fakeRequest)) shouldBe OK
+      status(controller.signedOut.apply(fakeRequest)).shouldBe(OK)
     }
   }
 
   "logout" must {
     "redirect to feed back survey link" in new LocalSetup {
       val result: Future[Result] = controller.logout()(fakeRequest)
-      status(result)           shouldBe SEE_OTHER
-      redirectLocation(result) shouldBe Some(
-        controller.appConfig.signOutUrl + "?continue=" + URLEncoder.encode(controller.appConfig.exitSurveyUrl, "UTF-8")
+      status(result).shouldBe(SEE_OTHER)
+      redirectLocation(result).shouldBe(
+        Some(
+          controller.appConfig.signOutUrl + "?continue=" + URLEncoder
+            .encode(controller.appConfig.exitSurveyUrl, "UTF-8")
+        )
       )
     }
   }
