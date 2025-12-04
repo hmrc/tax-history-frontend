@@ -17,7 +17,7 @@
 package model.api
 
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
-import play.api.libs.functional.syntax.{unlift, _}
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 
@@ -78,5 +78,5 @@ object Employment {
       (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
-  )(unlift(Employment.unapply))
+  )(e => (e.employmentId, e.startDate, e.endDate, e.startDateFormatted, e.endDateFormatted, e.payeReference, e.employerName, e.companyBenefitsURI, e.payAndTaxURI, e.employmentURI, e.employmentPaymentType, e.employmentStatus, e.worksNumber))
 }

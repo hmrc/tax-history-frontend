@@ -49,7 +49,7 @@ class SelectTaxYearController @Inject() (
   val loginContinue: String          = appConfig.loginContinue
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[_]): List[(String, String)] =
+  private def getTaxYears(taxYearList: List[IndividualTaxYear])(implicit request: Request[?]): List[(String, String)] =
     taxYearList.map { taxYear =>
       taxYear.year.toString -> Messages(
         "employmenthistory.select.tax.year.option",
@@ -63,7 +63,7 @@ class SelectTaxYearController @Inject() (
     httpStatus: Status,
     nino: Nino,
     clientName: Option[String]
-  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  )(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] =
     taxHistoryConnector.getTaxYears(nino) map { taxYearResponse =>
       (taxYearResponse.status: @unchecked) match {
         case OK                                                      =>
@@ -84,7 +84,7 @@ class SelectTaxYearController @Inject() (
 
   private def renderSelectTaxYearPage(nino: Nino, form: Form[SelectTaxYear], httpStatus: Status)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[?]
   ): Future[Result] =
     retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) =>

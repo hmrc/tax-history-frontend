@@ -43,8 +43,8 @@ class ClientErrorController @Inject() (
 )(implicit ec: ExecutionContext)
     extends BaseController(cc) {
 
-  lazy val loginContinue: String          = appConfig.loginContinue
-  lazy val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
+  val loginContinue: String          = appConfig.loginContinue
+  val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   def getNotAuthorised: Action[AnyContent] = Action.async { implicit request =>
     getNinoFromSession(request).fold(redirectToSelectClientPage) { _ =>

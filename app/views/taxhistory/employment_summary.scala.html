@@ -38,7 +38,7 @@
   statePension: Option[StatePension],
   incomeTotals: Option[TotalIncome],
   formattedNowDate: String
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
 
 @getName=@{
     person.flatMap(_.getName).getOrElse(nino)

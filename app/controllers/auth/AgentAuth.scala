@@ -44,8 +44,8 @@ abstract class AgentAuth(cc: MessagesControllerComponents)
 
   def extractArn(enrolls: Set[Enrolment]): Option[String] =
     enrolls
-      .find(_.key equals "HMRC-AS-AGENT")
-      .flatMap(_.identifiers.find(_.key equals "AgentReferenceNumber").map(_.value))
+      .find(_.key.equals("HMRC-AS-AGENT"))
+      .flatMap(_.identifiers.find(_.key.equals("AgentReferenceNumber")).map(_.value))
 
   lazy val affinityGroupAllEnrolls: Retrieval[Option[AffinityGroup] ~ Enrolments] = affinityGroup and allEnrolments
   lazy val AgentEnrolmentForPAYE: Enrolment                                       = Enrolment("HMRC-AS-AGENT")

@@ -26,7 +26,7 @@ object SelectTaxYearForm {
       mapping(
         "selectTaxYear" -> optional(text)
           .verifying("employmenthistory.select.tax.year.error.linktext", _.exists(_.nonEmpty))
-      )(SelectTaxYear.apply)(SelectTaxYear.unapply)
+      )(SelectTaxYear.apply)(o => Some(o.taxYear))
     )
 
 }

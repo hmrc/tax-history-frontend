@@ -52,7 +52,7 @@ class EmploymentDetailController @Inject() (
 
   private def renderEmploymentDetailsPage(nino: Nino, taxYear: Int, employmentId: String)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[?]
   ): Future[Result] =
     retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)) flatMap {
       case Left(citizenStatus) => redirectToClientErrorPage(citizenStatus)
@@ -177,7 +177,7 @@ class EmploymentDetailController @Inject() (
     taxYear: Int,
     employmentId: String,
     person: Person
-  )(implicit hc: HeaderCarrier, request: Request[_]) = {
+  )(implicit hc: HeaderCarrier, request: Request[?]) = {
     val employment = dateUtils.formatEmploymentDates(empResponse.json.as[Employment])
     for {
       payAndTax: Option[PayAndTax]          <- getPayAndTax(nino, taxYear, employmentId)

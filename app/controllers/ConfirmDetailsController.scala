@@ -43,7 +43,7 @@ class ConfirmDetailsController @Inject() (
   val loginContinue: String          = appConfig.loginContinue
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
-  private def renderConfirmDetailsPage(nino: Nino)(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  private def renderConfirmDetailsPage(nino: Nino)(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] =
     retrieveCitizenDetails(citizenDetailsConnector.getPersonDetails(nino)).flatMap {
       case Left(citizenStatus) =>
         redirectToClientErrorPage(citizenStatus)

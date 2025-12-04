@@ -64,7 +64,7 @@ class EmploymentSummaryController @Inject() (
 
   private def renderTaxHistoryPage(ninoField: Nino, maybePerson: Either[Int, Person], taxYear: Int)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[?]
   ): Future[Result] =
     maybePerson match {
       case Left(status)  => redirectToClientErrorPage(status)
@@ -73,7 +73,7 @@ class EmploymentSummaryController @Inject() (
 
   private def retrieveTaxHistoryData(ninoField: Nino, person: Option[Person], taxYear: Int)(implicit
     hc: HeaderCarrier,
-    request: Request[_]
+    request: Request[?]
   ): Future[Result] =
     taxHistoryConnector
       .getEmploymentsAndPensions(ninoField, taxYear)
