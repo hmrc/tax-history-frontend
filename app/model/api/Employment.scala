@@ -62,7 +62,7 @@ object Employment {
       (JsPath \ "employmentPaymentType").readNullable[EmploymentPaymentType] and
       JsPath.read[EmploymentStatus] and
       (JsPath \ "worksNumber").read[String]
-  )(Employment.apply _)
+  )(Employment.apply)
 
   implicit val locationWrites: Writes[Employment] = (
     (JsPath \ "employmentId").write[UUID] and
@@ -78,21 +78,5 @@ object Employment {
       (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
-  )(e =>
-    (
-      e.employmentId,
-      e.startDate,
-      e.endDate,
-      e.startDateFormatted,
-      e.endDateFormatted,
-      e.payeReference,
-      e.employerName,
-      e.companyBenefitsURI,
-      e.payAndTaxURI,
-      e.employmentURI,
-      e.employmentPaymentType,
-      e.employmentStatus,
-      e.worksNumber
-    )
-  )
+  )(Tuple.fromProductTyped(_))
 }
