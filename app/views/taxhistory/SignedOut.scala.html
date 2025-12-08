@@ -22,7 +22,7 @@
     twoThirdsMainContent: TwoThirdsMainContent
 )
 
-@()(implicit request:Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request:Request[?], messages: Messages, appConfig: AppConfig)
 
 @govukWrapper(title = PageTitle(messages("signedOut.title")), timeoutActive = false, signOut = false, backLink = None) {
 

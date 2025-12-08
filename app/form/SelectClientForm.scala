@@ -33,7 +33,7 @@ object SelectClientForm {
           .transform(_.toUpperCase, identity[String])
           .verifying("employmenthistory.select.client.error.empty", _.nonEmpty)
           .verifying("employmenthistory.select.client.error.invalid-format", text => text.isEmpty || isValid(text))
-      )(SelectClient.apply)(SelectClient.unapply)
+      )(SelectClient.apply)(o => Some(o.clientId))
     )
 
 }

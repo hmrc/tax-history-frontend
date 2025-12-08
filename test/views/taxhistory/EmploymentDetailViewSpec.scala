@@ -50,7 +50,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientNameOrNino = clientName,
         incomeSource = None,
         employmentViewDetail = createEmploymentViewDetail(isPension = false, incomeName = employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
     val firstName                 = "testFirstName"
     val surname                   = "testSurname"
@@ -149,7 +149,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientNameOrNino = clientName,
           incomeSource = None,
           employmentViewDetail = createEmploymentViewDetail(isPension = false, incomeName = employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
       val preHeaderElement: Element          = document(view).getElementById("pre-header")
       val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
@@ -173,7 +173,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = true, incomeName = employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       val preHeaderElement: Element          = document(view).getElementById("pre-header")
       val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
@@ -196,7 +196,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       val payeReference: Element =
         document(view).getElementById("employment-data-desktop").child(1).child(2)
@@ -229,7 +229,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       val startDate: Element     =
         document(view).getElementById("employment-data-desktop").child(1).child(3)
@@ -262,7 +262,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
           "Your client's year-to-date income record includes these updates."
@@ -292,7 +292,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
           "Your client's year-to-date income record includes these updates."
@@ -328,7 +328,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view)
         .getElementsContainingOwnText(
@@ -357,7 +357,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         document(view)
           .getElementsContainingOwnText(
@@ -381,7 +381,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         val taxableIncome: Element =
           document(view).getElementById("taxable-income")
@@ -402,7 +402,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         document(view).getElementsContainingOwnText("Tax code breakdown").hasText     shouldBe false
         document(view).getElementsContainingOwnText("Latest tax code issued").hasText shouldBe false
@@ -432,7 +432,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           incomeSourceWithDeductions,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         val expectedContent: Seq[(String, String)] =
           Seq(
@@ -450,8 +450,6 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
 
         document(view).getElementById("tax-code-allowances").tagName() shouldBe "h3"
         document(view).getElementById("tax-code-deductions").tagName() shouldBe "h3"
-        //        document(view).getElementsContainingOwnText("There are no deductions.").hasText shouldBe false
-
       }
     }
 
@@ -467,7 +465,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           incomeSourceNoDeductions,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         val expectedContent: Seq[(String, String)] =
           Seq(
@@ -499,7 +497,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
             clientNameOrNino = clientName,
             incomeSource = None,
             employmentViewDetail = createEmploymentViewDetail(isPension = true, employment.employerName)
-          )(request, messages, appConfig)
+          )(using request, messages, appConfig)
 
         document(view)
           .getElementsContainingOwnText(Messages("employmenthistory.employment.details.eyu"))
@@ -545,7 +543,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         val cbTable: Element = document(view).getElementById("cb-table")
         cbTable.getElementsContainingOwnText("Forecast").hasText shouldBe true
@@ -564,7 +562,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
           clientName,
           None,
           createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(request, messages, appConfig)
+        )(using request, messages, appConfig)
 
         val cbTable: Element = document(view).getElementById("cb-table")
         cbTable.getElementsContainingOwnText("Forecast").hasText shouldBe false
@@ -582,7 +580,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view).getElementsMatchingOwnText("Student loan repaid").hasText shouldBe true
       document(view).getElementsMatchingOwnText("£111").hasText                shouldBe true
@@ -598,7 +596,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view).getElementsMatchingOwnText("Student loan repaid").hasText shouldBe false
     }
@@ -612,7 +610,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         incomeSourceNoDeductions,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view)
         .getElementsMatchingOwnText(
@@ -631,7 +629,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         None,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view)
         .getElementsMatchingOwnText("HMRC has no record of company benefits from employer-1 for this tax year.")
@@ -648,7 +646,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         incomeSourceWithDeductionsAndAllowances,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view).getElementById("DeductionTotal").text shouldBe "£2"
       document(view).getElementById("AllowanceTotal").text shouldBe "£2"
@@ -664,7 +662,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         clientName,
         incomeSourceWithDeductionsAndAllowances,
         createEmploymentViewDetail(isPension = false, employment.employerName)
-      )(request, messages, appConfig)
+      )(using request, messages, appConfig)
 
       document(view).getElementById("nav-home").text         shouldBe "Agent services home"
       document(view).getElementById("nav-client").text       shouldBe "Select client"

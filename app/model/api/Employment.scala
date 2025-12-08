@@ -17,7 +17,7 @@
 package model.api
 
 import model.api.EmploymentPaymentType.{JobseekersAllowance, OccupationalPension}
-import play.api.libs.functional.syntax.{unlift, _}
+import play.api.libs.functional.syntax._
 import play.api.libs.json.Reads._
 import play.api.libs.json._
 
@@ -62,7 +62,7 @@ object Employment {
       (JsPath \ "employmentPaymentType").readNullable[EmploymentPaymentType] and
       JsPath.read[EmploymentStatus] and
       (JsPath \ "worksNumber").read[String]
-  )(Employment.apply _)
+  )(Employment.apply)
 
   implicit val locationWrites: Writes[Employment] = (
     (JsPath \ "employmentId").write[UUID] and
@@ -78,5 +78,5 @@ object Employment {
       (JsPath \ "employmentPaymentType").writeNullable[EmploymentPaymentType] and
       JsPath.write[EmploymentStatus] and
       (JsPath \ "worksNumber").write[String]
-  )(unlift(Employment.unapply))
+  )(Tuple.fromProductTyped(_))
 }

@@ -31,7 +31,7 @@ class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
     FakeRequest("GET", "/tax-history/we-signed-you-out").withCSRFToken
 
   private val viewViaApply: HtmlFormat.Appendable = injected[SignedOut].apply()(
-    request = request,
+    using request = request,
     messages = messages,
     appConfig = appConfig
   )
@@ -73,6 +73,6 @@ class SignedOutViewSpec extends GuiceAppSpec with BaseViewSpec {
       (".f", viewViaF)
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 }

@@ -30,7 +30,7 @@ class TechnicalErrorSpec extends GuiceAppSpec with BaseViewSpec {
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   trait ViewFixture extends Fixture {
-    val view: HtmlFormat.Appendable                = inject[technical_error].apply()(request, messages, appConfig)
+    val view: HtmlFormat.Appendable                = inject[technical_error].apply()(using request, messages, appConfig)
     val viewHtmlViaRender: HtmlFormat.Appendable   = inject[technical_error].render(request, messages, appConfig)
     val viewHtmlViaFunction: HtmlFormat.Appendable = inject[technical_error].f()(request, messages, appConfig)
   }

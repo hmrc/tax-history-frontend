@@ -24,7 +24,7 @@
     twoThirdsMainContent: TwoThirdsMainContent
 )
 
-@()(implicit request: Request[_], messages: Messages, config: AppConfig)
+@()(implicit request: Request[?], messages: Messages, config: AppConfig)
 
 @govukWrapper(PageTitle(messages("employmenthistory.mci.restricted.title")), backLink = Some(controllers.routes.SelectClientController.getSelectClientPage().url)) {
 

@@ -21,7 +21,7 @@ import support.BaseSpec
 
 class AppConfigSpec extends BaseSpec {
 
-  implicit val rq: FakeRequest[_] = FakeRequest()
+  implicit val rq: FakeRequest[?] = FakeRequest()
 
   "Application configuration" when {
 

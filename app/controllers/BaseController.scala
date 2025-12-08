@@ -85,7 +85,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
 
   protected[controllers] def authorisedForAgent(
     eventualResult: Nino => Future[Result]
-  )(implicit hc: HeaderCarrier, request: Request[_]): Future[Result] =
+  )(implicit hc: HeaderCarrier, request: Request[?]): Future[Result] =
     getNinoFromSession(request) match {
       case Some(nino) =>
         authorisedAgent(AgentEnrolmentForPAYE.withIdentifier("NI", nino.toString) and AuthProviderAgents)(
@@ -128,10 +128,10 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
     Future.successful(Left(BAD_REQUEST))
   }
 
-  def getNinoFromSession(request: Request[_]): Option[Nino] =
+  def getNinoFromSession(request: Request[?]): Option[Nino] =
     request.session.get(ninoSessionKey).map(Nino(_))
 
-  def getTaxYearFromSession(request: Request[_]): SelectTaxYear =
+  def getTaxYearFromSession(request: Request[?]): SelectTaxYear =
     SelectTaxYear(request.session.get(taxYearSessionKey))
 
   def redirectToSelectClientPage: Future[Result] =

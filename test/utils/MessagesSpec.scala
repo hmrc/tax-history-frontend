@@ -16,7 +16,7 @@
 
 package utils
 
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.{must, mustBe}
 import play.api.i18n.{Lang, Messages}
 import support.GuiceAppSpec
 
@@ -32,7 +32,7 @@ class MessagesSpec extends GuiceAppSpec {
   "Application" should {
     "have the correct message configs" in {
       messagesApi.messages.size mustBe 4
-      messagesApi.messages.keys must contain theSameElementsAs Vector("en", "cy", "default", "default.play")
+      messagesApi.messages.keys must contain.theSameElementsAs(Vector("en", "cy", "default", "default.play"))
     }
 
     "have the correct number of default messages" in {

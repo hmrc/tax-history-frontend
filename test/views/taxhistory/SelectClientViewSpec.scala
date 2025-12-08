@@ -76,13 +76,13 @@ class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec {
 
     "display input field without data in session" in new ViewFixture {
       override val view: Html =
-        inject[select_client].apply(validForm)(fakeRequestWithTaxYear, messages, appConfig)
+        inject[select_client].apply(validForm)(using fakeRequestWithTaxYear, messages, appConfig)
       document(view).body.getElementById("clientId").attr("type") shouldBe "text"
       document(view).body.getElementById("clientId").text()       shouldBe ""
     }
 
     "display input field with data in session" in new ViewFixture {
-      override val view: Html = inject[select_client].apply(validForm)(fakeRequestWithNino, messages, appConfig)
+      override val view: Html = inject[select_client].apply(validForm)(using fakeRequestWithNino, messages, appConfig)
       document(view).body.getElementById("clientId").attr("type")  shouldBe "text"
       document(view).body.getElementById("clientId").attr("value") shouldBe nino
     }
@@ -99,9 +99,14 @@ class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec {
       document(view).getElementsByClass("govuk-error-summary__title").text shouldBe messages(
         "employmenthistory.select.client.error.invalid-format.title"
       )
-      document(view).getElementById("clientId-error").text contains messages(
-        "employmenthistory.select.client.error.invalid-format"
-      )
+      document(view)
+        .getElementById("clientId-error")
+        .text
+        .contains(
+          messages(
+            "employmenthistory.select.client.error.invalid-format"
+          )
+        )
     }
 
     "display navigation bar with correct links" in new ViewFixture {

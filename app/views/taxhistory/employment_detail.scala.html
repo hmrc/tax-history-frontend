@@ -29,7 +29,7 @@
   companyBenefits: List[CompanyBenefit],
   clientNameOrNino: String,
   incomeSource: Option[IncomeSource],
-  employmentViewDetail: EmploymentViewDetail)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+  employmentViewDetail: EmploymentViewDetail)(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
 
 @isCurrentYear = @{
     TaxYear.current.currentYear == taxYear

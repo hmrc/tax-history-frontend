@@ -60,11 +60,11 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       appConfig,
       injected[employment_summary],
       dateUtils
-    )(stubControllerComponents().executionContext)
+    )(using stubControllerComponents().executionContext)
 
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-        any[HeaderCarrier],
+        using any[HeaderCarrier],
         any[ExecutionContext]
       )
     )
@@ -75,23 +75,25 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       )
 
     when(
-      controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier])
+      controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(
+        using any[HeaderCarrier]
+      )
     )
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(employments), Map.empty)))
 
-    when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+    when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(allowances), Map.empty)))
 
-    when(controller.taxHistoryConnector.getTaxAccount(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+    when(controller.taxHistoryConnector.getTaxAccount(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(taxAccount), Map.empty)))
 
-    when(controller.taxHistoryConnector.getStatePension(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+    when(controller.taxHistoryConnector.getStatePension(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(statePension), Map.empty)))
 
-    when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+    when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
 
-    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+    when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(person), Map.empty)))
   }
 
@@ -106,7 +108,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     "return 200 and not show No record held in employment section" in new LocalSetup {
       val noEmployment: Employment = employment.copy(employmentId = UUID.randomUUID(), employerName = "No record held")
       when(
-        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier])
+        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(
+          using any[HeaderCarrier]
+        )
       )
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(noEmployment :: employments), Map.empty)))
 
@@ -116,7 +120,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return 200 when empty list of allowances found" in new LocalSetup {
-      when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.arr(), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -125,7 +129,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return 200 when null allowances found" in new LocalSetup {
-      when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      when(controller.taxHistoryConnector.getAllowances(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -134,7 +138,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return 200 when no tax account found" in new LocalSetup {
-      when(controller.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(any[HeaderCarrier]))
+      when(controller.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -143,7 +147,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return 200 when no pay and tax found" in new LocalSetup {
-      when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -153,7 +157,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return 200 when pay and tax records do not match employment records" in new LocalSetup {
-      when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier]))
+      when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxRandomUUID), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -162,7 +166,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return 200 and show technical error page when no citizen details available" in new LocalSetup {
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -171,7 +175,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
     }
 
     "return not found error page when citizen details returns locked status 423" in new LocalSetup {
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(LOCKED, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -181,7 +185,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return not found error page when citizen details returns deceased indicator" in new LocalSetup {
       val deceasedPerson: Option[Person] = Some(Person(Some("James"), Some("Bond"), Some(true)))
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(deceasedPerson), Map.empty)))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
@@ -191,7 +195,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "show not authorised error page when 401 returned from connector" in new LocalSetup {
       when(
-        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier])
+        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(
+          using any[HeaderCarrier]
+        )
       ).thenReturn(
         Future.successful(HttpResponse(UNAUTHORIZED, json = Json.toJson("{Message:Unauthorised}"), Map.empty))
       )
@@ -203,7 +209,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "show technical error page when any response other than 200, 401, 404 returned from connector" in new LocalSetup {
       when(
-        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier])
+        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(
+          using any[HeaderCarrier]
+        )
       ).thenReturn(
         Future.successful(
           HttpResponse(INTERNAL_SERVER_ERROR, json = Json.toJson("{Message:InternalServerError}"), Map.empty)
@@ -223,7 +231,9 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "redirect to no data available page when no employments found" in new LocalSetup {
       when(
-        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(any[HeaderCarrier])
+        controller.taxHistoryConnector.getEmploymentsAndPensions(argEq(Nino(nino)), argEq(taxYear))(
+          using any[HeaderCarrier]
+        )
       )
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, json = Json.toJson(employments), Map.empty)))
 
@@ -235,7 +245,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
   "GET /tax-history/sign-in" should {
     "display the navigation page" in new LocalSetup {
-      val result: Future[Result] = controller.signIn().apply(fakeRequest)
+      val result: Future[Result] = controller.signIn.apply(fakeRequest)
       status(result) shouldBe SEE_OTHER
     }
   }

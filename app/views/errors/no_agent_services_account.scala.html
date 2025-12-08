@@ -24,7 +24,7 @@
     twoThirdsMainContent: TwoThirdsMainContent
 )
 
-@()(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+@()(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
 
 @govukWrapper(PageTitle(messages("employmenthistory.no.agent.services.account.title"))) {
 

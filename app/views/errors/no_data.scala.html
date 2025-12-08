@@ -28,7 +28,7 @@
 @(person:Person,
   nino:String,
   taxYears: Int
-)(implicit request: Request[_], messages: Messages, appConfig: AppConfig)
+)(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
 
 @govukWrapper(PageTitle(messages("employmenthistory.no.data.title")), backLink =  Some(controllers.routes.SelectTaxYearController.getSelectTaxYearPage().url)) {
 

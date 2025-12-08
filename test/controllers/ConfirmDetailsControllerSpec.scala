@@ -49,11 +49,11 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
       cc = messagesControllerComponents,
       appConfig = appConfig,
       confirmDetails = injected[confirm_details]
-    )(stubControllerComponents().executionContext)
+    )(using stubControllerComponents().executionContext)
 
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-        any[HeaderCarrier],
+        using any[HeaderCarrier],
         any[ExecutionContext]
       )
     ).thenReturn(
@@ -66,9 +66,9 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
   "ConfirmDetailsController" must {
 
     "successfully load confirm details page with name when citizen details returns 200 OK" in new Setup {
-      implicit val request: Request[_] = fakeRequest
+      implicit val request: Request[?] = fakeRequest
 
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(status = OK, json = Json.toJson(person), headers = Map.empty)))
 
       val result: Future[Result] = controller.getConfirmDetailsPage()(fakeRequestWithNino)
@@ -79,9 +79,9 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
     }
 
     "successfully load confirm details page with no name when citizen details returns 200 OK" in new Setup {
-      implicit val request: Request[_] = fakeRequest
+      implicit val request: Request[?] = fakeRequest
 
-      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+      when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(
           Future.successful(
             HttpResponse(status = OK, json = Json.toJson(Person(None, None, Some(false))), headers = Map.empty)
@@ -105,7 +105,7 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
     "successfully redirect to client error page" when {
       def test(errorStatus: Int, url: String): Unit =
         s"citizen details returns $errorStatus" in new Setup {
-          when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(any[HeaderCarrier]))
+          when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
             .thenReturn(Future.successful(HttpResponse(status = errorStatus, body = "")))
 
           val result: Future[Result] = controller.getConfirmDetailsPage()(fakeRequestWithNino)
@@ -120,7 +120,7 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
         (INTERNAL_SERVER_ERROR, ClientErrorController.getTechnicalError().url)
       )
 
-      input.foreach(args => (test _).tupled(args))
+      input.foreach(args => test.tupled(args))
     }
   }
 }

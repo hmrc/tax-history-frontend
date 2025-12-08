@@ -31,7 +31,7 @@ class GovUkWrapperViewSpec extends GuiceAppSpec with BaseViewSpec {
   )(
     mainContent = Html("<h1>page heading</h1>")
   )(
-    request = fakeRequest,
+    using request = fakeRequest,
     messages = messages,
     appConfig = appConfig
   )

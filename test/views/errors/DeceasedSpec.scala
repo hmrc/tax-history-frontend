@@ -30,7 +30,7 @@ class DeceasedSpec extends GuiceAppSpec with BaseViewSpec {
   implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest().withCSRFToken
 
   trait ViewFixture extends Fixture {
-    val view: HtmlFormat.Appendable                = inject[deceased].apply()(request, messages, appConfig)
+    val view: HtmlFormat.Appendable                = inject[deceased].apply()(using request, messages, appConfig)
     val viewHtmlViaRender: HtmlFormat.Appendable   = inject[deceased].render(request, messages, appConfig)
     val viewHtmlViaFunction: HtmlFormat.Appendable = inject[deceased].f()(request, messages, appConfig)
   }

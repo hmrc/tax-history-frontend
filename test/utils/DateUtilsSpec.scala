@@ -17,7 +17,7 @@
 package utils
 
 import model.api.EmploymentStatus
-import org.scalatest.matchers.must.Matchers.convertToAnyMustWrapper
+import org.scalatest.matchers.must.Matchers.mustBe
 import support.GuiceAppSpec
 import views.taxhistory.Constants
 
@@ -28,7 +28,10 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
     "format pension start date if present" in {
       dateUtils.formatStatePensionStartDate(statePension).startDateFormatted.get mustBe "30 December 2000"
 
-      dateUtils.formatStatePensionStartDate(statePension)(welshMessages).startDateFormatted.get mustBe "30 Rhagfyr 2000"
+      dateUtils
+        .formatStatePensionStartDate(statePension)(using welshMessages)
+        .startDateFormatted
+        .get mustBe "30 Rhagfyr 2000"
     }
 
     "return none given no pension start date" in {
@@ -44,7 +47,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
 
       val welshDates = List("21 Ionawr 2016", "21 Mai 2016")
       dateUtils
-        .formatEarlierYearUpdateReceivedDate(payAndTax)(welshMessages)
+        .formatEarlierYearUpdateReceivedDate(payAndTax)(using welshMessages)
         .earlierYearUpdates
         .flatMap(_.receivedDateFormatted) should equal(welshDates)
     }
@@ -55,7 +58,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
       formattedEmployment.endDateFormatted.get mustBe "1 Jan 2017"
 
       val formattedEmploymentWelsh =
-        dateUtils.formatEmploymentDatesAbbrMonth(emp1LiveOccupationalPension)(welshMessages)
+        dateUtils.formatEmploymentDatesAbbrMonth(emp1LiveOccupationalPension)(using welshMessages)
       formattedEmploymentWelsh.startDateFormatted.get mustBe "21 Ion 2016"
       formattedEmploymentWelsh.endDateFormatted.get mustBe "1 Ion 2017"
     }
@@ -65,7 +68,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
       formattedEmployment.startDateFormatted.get mustBe "21 January 2016"
       formattedEmployment.endDateFormatted.get mustBe "1 January 2017"
 
-      val formattedEmploymentWelsh = dateUtils.formatEmploymentDates(emp1LiveOccupationalPension)(welshMessages)
+      val formattedEmploymentWelsh = dateUtils.formatEmploymentDates(emp1LiveOccupationalPension)(using welshMessages)
       formattedEmploymentWelsh.startDateFormatted.get mustBe "21 Ionawr 2016"
       formattedEmploymentWelsh.endDateFormatted.get mustBe "1 Ionawr 2017"
     }
@@ -77,7 +80,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
         .get mustBe "No record"
 
       dateUtils
-        .formatEmploymentDates(emp1LiveOccupationalPension.copy(startDate = None))(welshMessages)
+        .formatEmploymentDates(emp1LiveOccupationalPension.copy(startDate = None))(using welshMessages)
         .startDateFormatted
         .get mustBe "Dim cofnod"
     }
@@ -90,7 +93,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
 
       dateUtils
         .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.PotentiallyCeased))(
-          welshMessages
+          using welshMessages
         )
         .endDateFormatted
         .get mustBe "Dim cofnod"
@@ -104,7 +107,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
 
       dateUtils
         .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Unknown))(
-          welshMessages
+          using welshMessages
         )
         .endDateFormatted
         .get mustBe "1 Ionawr 2017"
@@ -121,7 +124,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
       dateUtils
         .formatEmploymentDates(
           emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Unknown, endDate = None)
-        )(welshMessages)
+        )(using welshMessages)
         .endDateFormatted
         .get mustBe "Dim cofnod"
     }
@@ -134,7 +137,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
 
       dateUtils
         .formatEmploymentDates(emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Live))(
-          welshMessages
+          using welshMessages
         )
         .endDateFormatted
         .get mustBe "1 Ionawr 2017"
@@ -151,7 +154,7 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
       dateUtils
         .formatEmploymentDates(
           emp1LiveOccupationalPension.copy(employmentStatus = EmploymentStatus.Live, endDate = None)
-        )(welshMessages)
+        )(using welshMessages)
         .endDateFormatted
         .get mustBe "Parhaus"
     }

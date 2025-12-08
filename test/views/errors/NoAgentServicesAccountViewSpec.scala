@@ -28,7 +28,7 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
     "If you are authorised to act on behalf of your agent business, you can create an agent services account ."
 
   private val viewHtmlViaApply: HtmlFormat.Appendable    =
-    inject[no_agent_services_account].apply()(fakeRequest, messages, appConfig)
+    inject[no_agent_services_account].apply()(using fakeRequest, messages, appConfig)
   private val viewHtmlViaRender: HtmlFormat.Appendable   =
     inject[no_agent_services_account].render(fakeRequest, messages, appConfig)
   private val viewHtmlViaFunction: HtmlFormat.Appendable =
@@ -76,6 +76,6 @@ class NoAgentServicesAccountViewSpec extends GuiceAppSpec with BaseViewSpec {
       (".f", viewHtmlViaFunction)
     )
 
-    input.foreach(args => (test _).tupled(args))
+    input.foreach(args => test.tupled(args))
   }
 }

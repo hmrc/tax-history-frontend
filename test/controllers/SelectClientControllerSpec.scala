@@ -44,11 +44,11 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         messagesControllerComponents,
         appConfig,
         injected[select_client]
-      )(stubControllerComponents().executionContext)
+      )(using stubControllerComponents().executionContext)
 
       when(
         c.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
-          any[HeaderCarrier],
+          using any[HeaderCarrier],
           any[ExecutionContext]
         )
       )
@@ -64,19 +64,19 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
   "SelectClientController" must {
 
     "load select client page no nino" in new LocalSetup {
-      implicit val request: Request[_] = FakeRequest()
+      implicit val request: Request[?] = FakeRequest()
       val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
       val expectedView: select_client  = app.injector.instanceOf[select_client]
       status(result) shouldBe OK
-      result rendersTheSameViewAs expectedView(selectClientForm)
+      result.rendersTheSameViewAs(expectedView(selectClientForm))
     }
 
     "load select client page with empty nino" in new LocalSetup {
-      implicit val request: Request[_] = FakeRequest().withFormUrlEncodedBody("clientId" -> "")
+      implicit val request: Request[?] = FakeRequest().withFormUrlEncodedBody("clientId" -> "")
       val result: Future[Result]       = controller.getSelectClientPage()(fakeRequest)
       val expectedView: select_client  = app.injector.instanceOf[select_client]
       status(result) shouldBe OK
-      result rendersTheSameViewAs expectedView(selectClientForm)
+      result.rendersTheSameViewAs(expectedView(selectClientForm))
     }
 
     "return Status: 400 when invalid data is entered" in new LocalSetup {
@@ -86,11 +86,10 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
         "clientId" -> invalidTestNINO
       )
 
-      val result: Future[Result] = controller
-        .submitSelectClientPage()
+      val result: Future[Result] = controller.submitSelectClientPage
         .apply(
           FakeRequest()
-            .withFormUrlEncodedBody(invalidSelectClientForm: _*)
+            .withFormUrlEncodedBody(invalidSelectClientForm *)
             .withMethod("POST")
         )
       status(result) shouldBe BAD_REQUEST
@@ -103,9 +102,8 @@ class SelectClientControllerSpec extends ControllerSpec with BaseSpec {
       )
 
       val result: Future[Result] =
-        controller
-          .submitSelectClientPage()
-          .apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm: _*).withMethod("POST"))
+        controller.submitSelectClientPage
+          .apply(FakeRequest().withFormUrlEncodedBody(validSelectClientForm *).withMethod("POST"))
       status(result)           shouldBe SEE_OTHER
       redirectLocation(result) shouldBe Some(routes.ConfirmDetailsController.getConfirmDetailsPage().url)
     }
