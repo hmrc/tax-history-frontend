@@ -236,15 +236,15 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
           .hasText mustBe true
 
         emp.employmentStatus match {
-          case EmploymentStatus.PotentiallyCeased              =>
+          case EmploymentStatus.PotentiallyCeased                                                   =>
             document(view).getElementsMatchingOwnText(messages("lbl.date.no-record")).hasText mustBe true
-          case EmploymentStatus.Live | EmploymentStatus.Ceased =>
+          case EmploymentStatus.Live | EmploymentStatus.Ceased | EmploymentStatus.PermanentlyCeased =>
             document(view)
               .getElementsMatchingOwnText(
                 emp.endDate.fold(messages("lbl.end-date.ongoing"))(d => dateUtils.dateToFormattedString(d))
               )
               .hasText mustBe true
-          case EmploymentStatus.Unknown                        =>
+          case EmploymentStatus.Unknown                                                             =>
             document(view)
               .getElementsMatchingOwnText(
                 emp.endDate.fold(messages("lbl.date.no-record"))(d => dateUtils.dateToFormattedString(d))

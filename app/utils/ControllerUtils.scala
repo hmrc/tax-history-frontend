@@ -31,7 +31,6 @@ object ControllerUtils {
 
     employment.employmentStatus match {
       case EmploymentStatus.Live    => current
-      // TODO: unknown needs to be removed
       case EmploymentStatus.Unknown => unknown
       case _                        => ceased
     }

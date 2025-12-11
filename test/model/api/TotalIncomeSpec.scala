@@ -29,7 +29,7 @@ class TotalIncomeSpec extends TestUtil with BaseSpec {
     startDate = None,
     payeReference = "paye-1",
     employerName = "employer-1",
-    employmentStatus = EmploymentStatus.Unknown,
+    employmentStatus = EmploymentStatus.Live,
     worksNumber = "1",
     employmentPaymentType = None
   )
