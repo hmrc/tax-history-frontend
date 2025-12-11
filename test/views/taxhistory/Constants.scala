@@ -94,6 +94,22 @@ trait Constants {
       worksNumber = "00191048716"
     )
 
+  val emp4PermanentlyCeasedEmploymentStatus: Employment =
+    Employment(
+      employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
+      payeReference = "Paye 6",
+      employerName = "Employer 6",
+      startDate = Some(startDate),
+      endDate = Some(endDate),
+      startDateFormatted = Some(startDateFormatted),
+      endDateFormatted = Some(endDateFormatted),
+      companyBenefitsURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/company-benefits"),
+      payAndTaxURI = Some("/2017/employments/01318d7c-bcd9-47e2-8c38-551e7ccdfae3/pay-and-tax"),
+      employmentPaymentType = None,
+      employmentStatus = EmploymentStatus.PermanentlyCeased,
+      worksNumber = "00191048716"
+    )
+
   val pension: Employment      =
     Employment(
       employmentId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
@@ -121,7 +137,13 @@ trait Constants {
     )
 
   val employments: List[Employment] =
-    List(emp1LiveOccupationalPension, emp2Live, emp3Ceased, emp4UnknownEmploymentStatus)
+    List(
+      emp1LiveOccupationalPension,
+      emp2Live,
+      emp3Ceased,
+      emp4UnknownEmploymentStatus,
+      emp4PermanentlyCeasedEmploymentStatus
+    )
 
   val employmentsWithJobseekers: List[Employment] =
     List(

@@ -17,7 +17,7 @@
 package utils
 
 import play.api.libs.json.{JsValue, Json}
-import uk.gov.hmrc.domain.{Generator, Nino}
+import uk.gov.hmrc.domain.{Nino, NinoGenerator}
 
 import scala.io.Source
 import scala.util.Random
@@ -33,5 +33,8 @@ trait TestUtil {
     Json.parse(jsonString)
   }
 
-  def randomNino: Nino = Nino(new Generator(new Random()).nextNino.value.replaceFirst("MA", "AA"))
+  val ninoGenerator = new NinoGenerator()
+
+  def randomNino: Nino = ninoGenerator.nextNino
+
 }
