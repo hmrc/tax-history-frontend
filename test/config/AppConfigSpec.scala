@@ -58,7 +58,15 @@ class AppConfigSpec extends BaseSpec {
       "loginContinue" in {
         appConfig.loginContinue shouldBe "http://localhost:9996/tax-history/select-client"
       }
+      
+      "welshEnabled" in {
+        appConfig.welshEnabled shouldBe true
+      }
 
+      "forceNavigation" in {
+        appConfig.forceNavigation shouldBe true
+      }
+      
       "betaFeedbackUrl" in {
         appConfig.betaFeedbackUrl shouldBe "http://localhost:9250/contact/beta-feedback"
       }
