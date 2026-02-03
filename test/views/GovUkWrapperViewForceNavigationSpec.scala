@@ -30,7 +30,7 @@ class GovUkWrapperViewForceNavigationSpec extends GuiceAppSpec with BaseViewSpec
   override implicit lazy val app =
     new GuiceApplicationBuilder()
       .configure(
-        "welsh-enabled" -> true,
+        "welsh-enabled"                             -> true,
         "play-frontend-hmrc.forceServiceNavigation" -> false
       )
       .build()
