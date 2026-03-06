@@ -217,7 +217,6 @@ class EmploymentSummaryController @Inject() (
   private def pickTaxTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
     payAndTax.taxTotalIncludingEYU.getOrElse(BigDecimal(0))
 
-
   private[controllers] def buildIncomeTotals(
     allEmployments: List[Employment],
     allPayAndTax: List[(String, PayAndTax)]
