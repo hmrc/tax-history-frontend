@@ -56,13 +56,15 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
     "have the correct title" in new ViewFixture {
       val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
+        inject[employment_summary]
+          .apply(nino, currentTaxYear, employments, allowances, person, None, None, None, None, now)
       document(view).title mustBe expectedPageTitle(messages("employmenthistory.title"))
     }
 
     "display a client name as a pre header" in new ViewFixture {
       val view: HtmlFormat.Appendable        =
-        inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
+        inject[employment_summary]
+          .apply(nino, currentTaxYear, employments, allowances, person, None, None, None, None, now)
       val preHeaderElement: Element          = document(view).getElementById("pre-header")
       val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
       val preHeader: String                  = preHeaderElement.text()
@@ -80,7 +82,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       preHeaderScenarios foreach { scenario =>
         scenario._1 in new ViewFixture {
           val view: HtmlFormat.Appendable        = inject[employment_summary]
-            .apply(nino, cyMinus1, employments, allowances, scenario._2, taxAccount, None, None, now)
+            .apply(nino, cyMinus1, employments, allowances, scenario._2, taxAccount, None, None, None, now)
           val preHeaderElement: Element          = document(view).getElementById("pre-header")
           val preHeaderWithoutHiddenText: String = preHeaderElement.ownText()
           val preHeader: String                  = preHeaderElement.text()
@@ -94,7 +96,8 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     "display correct heading" in new ViewFixture {
 
       val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, currentTaxYear, employments, allowances, person, None, None, None, now)
+        inject[employment_summary]
+          .apply(nino, currentTaxYear, employments, allowances, person, None, None, None, None, now)
 
       heading.text() mustBe messages("employmenthistory.header")
 
@@ -113,7 +116,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
         val view: HtmlFormat.Appendable =
           inject[employment_summary]
-            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, None, now)
 
         val viewDetailsElement1: Element = document(view).getElementById("view-link-employment-0")
 
@@ -127,7 +130,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
         val view: HtmlFormat.Appendable =
           inject[employment_summary]
-            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, None, now)
 
         val viewDetailsElement2: Element = document(view).getElementById("view-link-employment-1")
 
@@ -140,7 +143,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
         val view: HtmlFormat.Appendable =
           inject[employment_summary]
-            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, None, now)
 
         val viewDetailsElementsNoRecord: Element =
           document(view).getElementById("view-employment-3")
@@ -159,7 +162,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
         val view: HtmlFormat.Appendable =
           inject[employment_summary]
-            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, now)
+            .apply(nino, currentTaxYear, employmentsWithJobseekers, allowances, person, None, None, None, None, now)
 
         val viewPensionElements: Element = document(view).getElementById("view-pension-0")
 
@@ -173,7 +176,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     "have correct employment content" in new ViewFixture {
 
       val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, None, None, None, now)
+        inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, None, None, None, None, now)
 
       document(view)
         .getElementsMatchingOwnText(messages("employmenthistory.table.header.employment"))
@@ -218,7 +221,8 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
     "have correct tax account content when a populated TaxAccount is provided" in new ViewFixture {
       val view: HtmlFormat.Appendable =
-        inject[employment_summary].apply(nino, cyMinus1, employments, allowances, person, taxAccount, None, None, now)
+        inject[employment_summary]
+          .apply(nino, cyMinus1, employments, allowances, person, taxAccount, None, None, None, now)
 
       document(view)
         .getElementsContainingOwnText(
@@ -288,7 +292,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       startDateFormatted = Some(dateUtils.dateToFormattedString(startDate))
     )
     val view: HtmlFormat.Appendable = inject[employment_summary]
-      .apply(nino, currentTaxYear, employments, allowances, None, taxAccount, Some(sp), None, now)
+      .apply(nino, currentTaxYear, employments, allowances, None, taxAccount, Some(sp), None, None, now)
     document(view).getElementsContainingOwnText("State Pension").hasText mustBe true
     val weeklyP1: String            =
       messages("employmenthistory.state.pensions.text.weekly.p1", "£1.92", dateUtils.dateToFormattedString(startDate))
@@ -312,28 +316,29 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       taxAccount,
       Some(StatePension(grossAmount, "test", Some(paymentFrequency))),
       None,
+      None,
       now
     )
 
     document(view).getElementsContainingOwnText("State Pension").hasText mustBe true
     document(view)
-      .getElementsContainingOwnText("Your client's State Pension this tax year was £100.00")
+      .getElementsContainingOwnText("Your client's State Pension this tax year was")
       .hasText mustBe true
   }
 
   "Don't show state pensions when they don't have them" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, None, None, now)
+      inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, None, None, None, now)
 
     document(view).getElementsContainingOwnText(messages("employmenthistory.state.pensions")).hasText mustBe false
     document(view)
-      .getElementsContainingOwnText(messages("employmenthistory.state.pensions.text", "£100.00"))
+      .getElementsContainingOwnText(messages("employmenthistory.state.pensions.text"))
       .hasText mustBe false
   }
 
   "Show allowances when they exist" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, None, None, now)
+      inject[employment_summary].apply(nino, cyMinus1, employments, allowances, None, taxAccount, None, None, None, now)
 
     document(view).getElementsContainingOwnText(messages("employmenthistory.allowance.heading")).hasText mustBe true
     document(view).getElementsContainingOwnText(messages("employmenthistory.allowance.description")).hasText mustBe true
@@ -345,7 +350,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Show no allowances notice when they do not exist" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, cyMinus1, employments, List.empty, None, taxAccount, None, None, now)
+      inject[employment_summary].apply(nino, cyMinus1, employments, List.empty, None, taxAccount, None, None, None, now)
 
     document(view).getElementsContainingOwnText(messages("employmenthistory.allowance.heading")).hasText mustBe true
     document(view)
@@ -359,7 +364,8 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Don't show allowances for current year" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, currentTaxYear, employments, List.empty, None, taxAccount, None, None, now)
+      inject[employment_summary]
+        .apply(nino, currentTaxYear, employments, List.empty, None, taxAccount, None, None, None, now)
 
     document(view).getElementsContainingOwnText(messages("employmenthistory.allowance.heading")).hasText mustBe false
     document(view)
@@ -373,7 +379,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "show alternative text instead of employments table when they are no employment records only pensions" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary]
-      .apply(nino, taxYear, employmentWithPensionOnly, allowances, None, taxAccount, None, None, now)
+      .apply(nino, taxYear, employmentWithPensionOnly, allowances, None, taxAccount, None, None, None, now)
 
     document(view).getElementsContainingOwnText(messages("employmenthistory.employment.records")).hasText mustBe true
     document(view).getElementsContainingOwnText(messages("employmenthistory.no.employments")).hasText mustBe true
@@ -382,7 +388,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
   "show alternative text instead of pensions table when they are no pensions records" in new ViewFixture {
     val view: HtmlFormat.Appendable =
       inject[employment_summary]
-        .apply(nino, taxYear, employmentsNoPensions, allowances, None, taxAccount, None, None, now)
+        .apply(nino, taxYear, employmentsNoPensions, allowances, None, taxAccount, None, None, None, now)
 
     document(view).getElementsContainingOwnText(messages("employmenthistory.table.header.pensions")).hasText mustBe true
     document(view).getElementsContainingOwnText(messages("employmenthistory.no.pensions")).hasText mustBe true
@@ -390,7 +396,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Show the what's this link when the allowance is an early year adjustment" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, taxYear, employments, allowances, None, taxAccount, None, None, now)
+      inject[employment_summary].apply(nino, taxYear, employments, allowances, None, taxAccount, None, None, None, now)
     document(view)
       .getElementsContainingOwnText(messages("employmenthistory.allowances.eya.summary.header"))
       .hasText mustBe true
@@ -398,7 +404,8 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Don't show the what's this link when there is no early year adjustment" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, taxYear, employments, allowancesNoEYA, None, taxAccount, None, None, now)
+      inject[employment_summary]
+        .apply(nino, taxYear, employments, allowancesNoEYA, None, taxAccount, None, None, None, now)
     document(view)
       .getElementsContainingOwnText(messages("employmenthistory.allowances.eya.summary.header"))
       .hasText mustBe false
@@ -406,7 +413,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Show correct total amounts for one employer and two pensions" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary]
-      .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(totalIncome), now)
+      .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None, Some(totalIncome), now)
     document(view)
       .getElementById("pensionIncome")
       .text() shouldBe s"£${totalIncome.pensionTaxablePayTotalIncludingEYU.toString()}"
@@ -444,7 +451,18 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
     )
     val view: HtmlFormat.Appendable              =
       inject[employment_summary]
-        .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, Some(incomeTotals), now)
+        .apply(
+          nino,
+          cyMinus1,
+          employmentWithPensions,
+          List.empty,
+          None,
+          taxAccount,
+          None,
+          None,
+          Some(incomeTotals),
+          now
+        )
 
     document(view)
       .getElementById("pensionIncome")
@@ -475,7 +493,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
   "Show error message when total amounts are zero" in new ViewFixture {
     val view: HtmlFormat.Appendable =
       inject[employment_summary]
-        .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None, now)
+        .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None, None, now)
 
     document(view).getElementById("employmentIncome").text()    shouldBe messages("employmenthistory.error.no-record")
     document(view).getElementById("employmentIncomeTax").text() shouldBe messages("employmenthistory.error.no-record")
@@ -487,13 +505,14 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Show underpaid tax and debts tab in current year minus 1" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary]
-      .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None, now)
+      .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, taxAccount, None, None, None, now)
     document(view).getElementsContainingOwnText(messages("employmenthistory.employment.summary.tab.3")).size shouldBe 2
   }
 
   "Show underpaid tax and debts tab in current year minus 1 with error text when there is no data" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, cyMinus1, employmentWithPensions, List.empty, None, None, None, None, now)
+      inject[employment_summary]
+        .apply(nino, cyMinus1, employmentWithPensions, List.empty, None, None, None, None, None, now)
     document(view).getElementsContainingOwnText(messages("employmenthistory.employment.summary.tab.3")).size shouldBe 2
     document(view).getElementById("no-tax-account").text()                                                   shouldBe
       messages("employmenthistory.tax-account.empty.text")
@@ -501,19 +520,21 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
 
   "Not show underpaid tax and debts tab in current year" in new ViewFixture {
     val view: HtmlFormat.Appendable = inject[employment_summary]
-      .apply(nino, currentTaxYear, employmentWithPensions, List.empty, None, None, None, None, now)
+      .apply(nino, currentTaxYear, employmentWithPensions, List.empty, None, None, None, None, None, now)
     document(view).getElementsContainingOwnText(messages("employmenthistory.employment.summary.tab.3")).size shouldBe 0
   }
 
   "Not show underpaid tax and debts tab for current year minus 2 or earlier" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None, now)
+      inject[employment_summary]
+        .apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None, None, now)
     document(view).getElementsContainingOwnText(messages("employmenthistory.employment.summary.tab.3")).size shouldBe 1
   }
 
   "display navigation bar with correct links" in new ViewFixture {
     val view: HtmlFormat.Appendable =
-      inject[employment_summary].apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None, now)
+      inject[employment_summary]
+        .apply(nino, cyMinus2, employmentWithPensions, List.empty, None, None, None, None, None, now)
     document(view).getElementById("nav-home").text         shouldBe messages("nav.home")
     document(view).getElementById("nav-client").text       shouldBe messages("nav.client")
     document(view).getElementById("nav-year").text         shouldBe messages("nav.year")

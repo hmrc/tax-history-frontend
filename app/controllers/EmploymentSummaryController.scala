@@ -27,6 +27,7 @@ import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse}
+import play.api.libs.json.{JsError, JsSuccess}
 import utils.DateUtils
 
 import javax.inject.Inject
@@ -86,6 +87,8 @@ class EmploymentSummaryController @Inject() (
             val taxAccountFuture              = taxHistoryConnector.getTaxAccount(ninoField, taxYear)
             val statePensionFuture            = taxHistoryConnector.getStatePension(ninoField, taxYear)
             val allPayAndTaxFuture            = taxHistoryConnector.getAllPayAndTax(ninoField, taxYear)
+            val employmentId                  = employments.map(emp => emp.employmentId.toString)
+            val incomeSourceFuture            = taxHistoryConnector.getIncomeSource(ninoField, taxYear, employmentId.head)
 
             (for {
               allowanceResponse    <- allowanceFuture
@@ -93,20 +96,23 @@ class EmploymentSummaryController @Inject() (
               statePensionResponse <- statePensionFuture
               allPayAndTaxResponse <- allPayAndTaxFuture
               incomeTotals         <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse).toList)
-            } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals)).map { dataResponse =>
-              Ok(
-                employmentSummary(
-                  nino = ninoField.nino,
-                  taxYear = taxYear,
-                  employments = employments,
-                  allowances = getAllowancesFromResponse(allowancesResponse = dataResponse._1),
-                  person = person,
-                  taxAccount = getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
-                  statePension = getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
-                  incomeTotals = dataResponse._4,
-                  formattedNowDate = dateUtils.nowDateFormatted
+              incomeSource         <- incomeSourceFuture
+            } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals, incomeSource)).map {
+              dataResponse =>
+                Ok(
+                  employmentSummary(
+                    nino = ninoField.nino,
+                    taxYear = taxYear,
+                    employments = employments,
+                    allowances = getAllowancesFromResponse(allowancesResponse = dataResponse._1),
+                    person = person,
+                    taxAccount = getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
+                    statePension = getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
+                    incomeSource = getIncomeSourceFromResponse(dataResponse._5),
+                    incomeTotals = dataResponse._4,
+                    formattedNowDate = dateUtils.nowDateFormatted
+                  )
                 )
-              )
             }
           case status if status > OK && status < INTERNAL_SERVER_ERROR =>
             logger.warn(
@@ -121,6 +127,41 @@ class EmploymentSummaryController @Inject() (
             Future.successful(handleHttpFailureResponse(status, Some(taxYear)))
         }
       }
+
+  private[controllers] def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[IncomeSource]] =
+
+    taxHistoryConnector
+      .getIncomeSource(nino, taxYear, employmentId)
+      .map { isResponse =>
+        isResponse.status match {
+          case NOT_FOUND => None
+          case _         =>
+            isResponse.json.validate[IncomeSource] match {
+              case JsSuccess(result, _) =>
+                logger.info(s"[EmploymentDetailController][getIncomeSource] Successful parse to json")
+                Some(result)
+              case JsError(errors)      =>
+                logger.error(
+                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.status}. $errors"
+                )
+                throw new RuntimeException("Invalid json returned")
+            }
+        }
+      }
+      .recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
+
+  private[controllers] def recoverWithEmptyDefault[U](
+    connectorMethodName: String,
+    emptyValue: U
+  ): PartialFunction[Throwable, Future[U]] = { case e =>
+    logger.error(
+      s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName",
+      e
+    )
+    Future.successful(emptyValue)
+  }
 
   private def getTaxAccountFromResponse(taxAccountResponse: HttpResponse) =
     taxAccountResponse.status match {
@@ -149,6 +190,14 @@ class EmploymentSummaryController @Inject() (
         List.empty
     }
 
+  private def getIncomeSourceFromResponse(incomeSourceResponse: HttpResponse) =
+    incomeSourceResponse.status match {
+      case OK     => incomeSourceResponse.json.asOpt[IncomeSource]
+      case status =>
+        logger.info(s"[EmploymentSummaryController][getAllowancesFromResponse] Allowance Status: $status")
+        None
+    }
+
   private[controllers] def getStatePensionsFromResponse(
     statePensionResponse: HttpResponse
   )(implicit messages: Messages): Option[StatePension] =
@@ -167,6 +216,7 @@ class EmploymentSummaryController @Inject() (
 
   private def pickTaxTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
     payAndTax.taxTotalIncludingEYU.getOrElse(BigDecimal(0))
+
 
   private[controllers] def buildIncomeTotals(
     allEmployments: List[Employment],

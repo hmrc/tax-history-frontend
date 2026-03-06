@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import model.api.{Employment, Allowance}
+@import model.api.{Employment, Allowance, IncomeSource}
 @import models.taxhistory.Person
 @import utils.{Currency, ControllerUtils}
 @import uk.gov.hmrc.time.TaxYear
@@ -36,6 +36,7 @@
   person: Option[Person],
   taxAccount: Option[TaxAccount],
   statePension: Option[StatePension],
+  incomeSource: Option[IncomeSource],  
   incomeTotals: Option[TotalIncome],
   formattedNowDate: String
 )(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
@@ -117,6 +118,7 @@
                 }
 
                 @statePension.map { sp =>
+                    @taxAccount.map { tx =>
                     <h3 id = "StatePensions" class="govuk-heading-m">@messages("employmenthistory.state.pensions")</h3>
                     <div class = "govuk-grid-row">
                         <div class = "govuk-grid-column-two-thirds">
@@ -124,11 +126,26 @@
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted.getOrElse(""))}
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
                             } else {
-                                @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
-                            }
+                                @if(incomeSource.nonEmpty){
+                                    @if(incomeSource.get.deductions.nonEmpty){
+                                        @incomeSource.get.deductions.map { isDeduction =>
+                                            @if(isDeduction.`type`.contains("state pension/state benefits")){
+                                                    @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(isDeduction.adjustedAmount, 2)}")}
+                                                } else {
+                                                     @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                                }
+                                            }
+                                        } else {
+                                                @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                             }
+                                    } else {
+                                        @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                    }
+                                 }
                         </div>
                         <div class ="govuk-grid-column-one-third"></div>
                     </div>
+                    }
                 }
         </div>
         @if(!isCurrentYear) {
