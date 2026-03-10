@@ -36,7 +36,7 @@
   person: Option[Person],
   taxAccount: Option[TaxAccount],
   statePension: Option[StatePension],
-  incomeSource: Option[IncomeSource],  
+  incomeSource: List[Option[IncomeSource]],
   incomeTotals: Option[TotalIncome],
   formattedNowDate: String
 )(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
@@ -126,13 +126,17 @@
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
                             } else {
                                 @if(incomeSource.nonEmpty){
-                                    @for(isDeduction <- incomeSource.get.deductions) {
-                                        @if(isDeduction.`type` == 001){
-                                            @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(isDeduction.amount, 2)}")}
-                                            } else {
-                                            @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                    @incomeSource.map { is =>
+                                        @if(is.get.deductions.nonEmpty) {
+                                            @for(isDeduction <- is.get.deductions) {
+                                                 @if(isDeduction.`type` == 001){
+                                                    @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(isDeduction.amount, 2)}")}
+                                                } else {
+                                                    @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                                }
                                             }
-                                }
+                                        }
+                                    }
                                 } else {
                                 @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
                             }

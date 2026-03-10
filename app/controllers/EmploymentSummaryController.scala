@@ -87,8 +87,10 @@ class EmploymentSummaryController @Inject() (
             val taxAccountFuture              = taxHistoryConnector.getTaxAccount(ninoField, taxYear)
             val statePensionFuture            = taxHistoryConnector.getStatePension(ninoField, taxYear)
             val allPayAndTaxFuture            = taxHistoryConnector.getAllPayAndTax(ninoField, taxYear)
-            val employmentId                  = employments.map(emp => emp.employmentId.toString)
-            val incomeSourceFuture            = taxHistoryConnector.getIncomeSource(ninoField, taxYear, employmentId.head)
+            val employmentId                  = employments.map(emp => emp.employmentId)
+            val incomeSourceList              =
+              employmentId.map(id => getIncomeSource(ninoField, taxYear, id.toString))
+            val incomeSourceFuture            = Future.sequence(incomeSourceList)
 
             (for {
               allowanceResponse    <- allowanceFuture
@@ -96,9 +98,9 @@ class EmploymentSummaryController @Inject() (
               statePensionResponse <- statePensionFuture
               allPayAndTaxResponse <- allPayAndTaxFuture
               incomeTotals         <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse).toList)
-              incomeSource         <- incomeSourceFuture
-            } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals, incomeSource)).map {
-              dataResponse =>
+              incomeSourceResponse <- incomeSourceFuture
+            } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals, incomeSourceResponse))
+              .map { dataResponse =>
                 Ok(
                   employmentSummary(
                     nino = ninoField.nino,
@@ -108,12 +110,12 @@ class EmploymentSummaryController @Inject() (
                     person = person,
                     taxAccount = getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
                     statePension = getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
-                    incomeSource = getIncomeSourceFromResponse(dataResponse._5),
+                    incomeSource = dataResponse._5,
                     incomeTotals = dataResponse._4,
                     formattedNowDate = dateUtils.nowDateFormatted
                   )
                 )
-            }
+              }
           case status if status > OK && status < INTERNAL_SERVER_ERROR =>
             logger.warn(
               s"[EmploymentSummaryController][retrieveTaxHistoryData] Non 200 response calling taxHistory" +
@@ -131,7 +133,6 @@ class EmploymentSummaryController @Inject() (
   private[controllers] def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
     hc: HeaderCarrier
   ): Future[Option[IncomeSource]] =
-
     taxHistoryConnector
       .getIncomeSource(nino, taxYear, employmentId)
       .map { isResponse =>
@@ -188,14 +189,6 @@ class EmploymentSummaryController @Inject() (
       case status =>
         logger.info(s"[EmploymentSummaryController][getAllPayAndTaxFromResponse] All Pay And Tax Status: $status")
         List.empty
-    }
-
-  private def getIncomeSourceFromResponse(incomeSourceResponse: HttpResponse) =
-    incomeSourceResponse.status match {
-      case OK     => incomeSourceResponse.json.asOpt[IncomeSource]
-      case status =>
-        logger.info(s"[EmploymentSummaryController][getAllowancesFromResponse] Allowance Status: $status")
-        None
     }
 
   private[controllers] def getStatePensionsFromResponse(
