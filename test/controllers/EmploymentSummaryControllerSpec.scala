@@ -20,7 +20,7 @@ import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import model.api.EmploymentPaymentType.OccupationalPension
-import model.api._
+import model.api.*
 import models.taxhistory.Person
 import org.mockito.ArgumentMatchers.{any, eq => argEq}
 import org.mockito.Mockito.{mock, when}
@@ -28,10 +28,10 @@ import org.scalatest.concurrent.ScalaFutures
 import play.api.i18n.Messages
 import play.api.libs.json.Json
 import play.api.mvc.Result
-import play.api.test.Helpers.{contentAsString, _}
+import play.api.test.Helpers.*
 import support.fixtures.ControllerFixture
 import support.{BaseSpec, ControllerSpec}
-import uk.gov.hmrc.auth.core._
+import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.authorise.Predicate
 import uk.gov.hmrc.auth.core.retrieve.{Retrieval, ~}
 import uk.gov.hmrc.domain.Nino
@@ -44,6 +44,8 @@ import scala.concurrent.{ExecutionContext, Future}
 class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec with ScalaFutures {
 
   lazy val taxYear: Int = 2016
+
+  lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
 
   trait LocalSetup {
 
@@ -61,6 +63,21 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       injected[employment_summary],
       dateUtils
     )(using stubControllerComponents().executionContext)
+
+    val incomeSource: Option[IncomeSource] =
+      Some(
+        IncomeSource(
+          employmentId = 1,
+          employmentType = 1,
+          actualPUPCodedInCYPlusOneTaxYear = None,
+          deductions = List.empty,
+          allowances = List.empty,
+          taxCode = "",
+          basisOperation = None,
+          employmentTaxDistrictNumber = 1,
+          employmentPayeRef = ""
+        )
+      )
 
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
@@ -89,6 +106,13 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     when(controller.taxHistoryConnector.getStatePension(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(statePension), Map.empty)))
+
+    when(
+      controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+        using any[HeaderCarrier]
+      )
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
 
     when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
@@ -139,6 +163,15 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return 200 when no tax account found" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(using any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
+
+      val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
+      status(result)        shouldBe OK
+      contentAsString(result) should include(Messages("employmenthistory.title"))
+    }
+
+    "return 200 when no income source found" in new LocalSetup {
+      when(controller.taxHistoryConnector.getIncomeSource(any[Nino], any[Int], any[String])(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)

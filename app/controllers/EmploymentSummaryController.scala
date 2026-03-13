@@ -87,10 +87,8 @@ class EmploymentSummaryController @Inject() (
             val taxAccountFuture              = taxHistoryConnector.getTaxAccount(ninoField, taxYear)
             val statePensionFuture            = taxHistoryConnector.getStatePension(ninoField, taxYear)
             val allPayAndTaxFuture            = taxHistoryConnector.getAllPayAndTax(ninoField, taxYear)
-            val employmentId                  = employments.map(emp => emp.employmentId)
-            val incomeSourceList              =
-              employmentId.map(id => getIncomeSource(ninoField, taxYear, id.toString))
-            val incomeSourceFuture            = Future.sequence(incomeSourceList)
+            val employmentId                  = employments.head.employmentId
+            val incomeSourceFuture            = taxHistoryConnector.getIncomeSource(ninoField, taxYear, employmentId.toString)
 
             (for {
               allowanceResponse    <- allowanceFuture
@@ -110,7 +108,7 @@ class EmploymentSummaryController @Inject() (
                     person = person,
                     taxAccount = getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
                     statePension = getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
-                    incomeSource = dataResponse._5,
+                    incomeSource = getIncomeSourceFromResponse(dataResponse._5),
                     incomeTotals = dataResponse._4,
                     formattedNowDate = dateUtils.nowDateFormatted
                   )
@@ -129,40 +127,6 @@ class EmploymentSummaryController @Inject() (
             Future.successful(handleHttpFailureResponse(status, Some(taxYear)))
         }
       }
-
-  private[controllers] def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
-    hc: HeaderCarrier
-  ): Future[Option[IncomeSource]] =
-    taxHistoryConnector
-      .getIncomeSource(nino, taxYear, employmentId)
-      .map { isResponse =>
-        isResponse.status match {
-          case NOT_FOUND => None
-          case _         =>
-            isResponse.json.validate[IncomeSource] match {
-              case JsSuccess(result, _) =>
-                logger.info(s"[EmploymentDetailController][getIncomeSource] Successful parse to json")
-                Some(result)
-              case JsError(errors)      =>
-                logger.error(
-                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.status}. $errors"
-                )
-                throw new RuntimeException("Invalid json returned")
-            }
-        }
-      }
-      .recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
-
-  private[controllers] def recoverWithEmptyDefault[U](
-    connectorMethodName: String,
-    emptyValue: U
-  ): PartialFunction[Throwable, Future[U]] = { case e =>
-    logger.error(
-      s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName",
-      e
-    )
-    Future.successful(emptyValue)
-  }
 
   private def getTaxAccountFromResponse(taxAccountResponse: HttpResponse) =
     taxAccountResponse.status match {
@@ -189,6 +153,14 @@ class EmploymentSummaryController @Inject() (
       case status =>
         logger.info(s"[EmploymentSummaryController][getAllPayAndTaxFromResponse] All Pay And Tax Status: $status")
         List.empty
+    }
+
+  private def getIncomeSourceFromResponse(incomeSourceResponse: HttpResponse) =
+    incomeSourceResponse.status match {
+      case OK     => incomeSourceResponse.json.asOpt[IncomeSource]
+      case status =>
+        logger.info(s"[EmploymentSummaryController][getAllowancesFromResponse] Allowance Status: $status")
+        None
     }
 
   private[controllers] def getStatePensionsFromResponse(
