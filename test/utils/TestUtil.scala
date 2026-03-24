@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 HM Revenue & Customs
+ * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import play.api.libs.json.{JsValue, Json}
 import uk.gov.hmrc.domain.{Nino, NinoGenerator}
 
 import scala.io.Source
-import scala.util.Random
 
 object TestUtil extends TestUtil
 
@@ -33,8 +32,5 @@ trait TestUtil {
     Json.parse(jsonString)
   }
 
-  val ninoGenerator = new NinoGenerator()
-
-  def randomNino: Nino = ninoGenerator.nextNino
-
+  def randomNino: Nino = Nino(NinoGenerator(123456).nextNino.value.replaceFirst("MA", "AA"))
 }
