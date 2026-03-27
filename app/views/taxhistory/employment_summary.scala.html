@@ -36,7 +36,7 @@
   person: Option[Person],
   taxAccount: Option[TaxAccount],
   statePension: Option[StatePension],
-  incomeSource: Option[IncomeSource],
+  incomeSource: List[Option[IncomeSource]],
   incomeTotals: Option[TotalIncome],
   formattedNowDate: String
 )(implicit request: Request[?], messages: Messages, appConfig: AppConfig)
@@ -125,21 +125,16 @@
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted.getOrElse(""))}
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
                             } else {
-                                @if(incomeSource.nonEmpty){
-                                    @if(incomeSource.get.deductions.nonEmpty){
-                                        @incomeSource.get.deductions.map { isDeduction =>
-                                             @if(isDeduction.`type`== 001){
-                                                    @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(isDeduction.amount, 2)}")}
-                                             } else {
-                                                    @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
-                                                }
-                                            }
-                                        } else {
-                                            @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                    @if(incomeSource.nonEmpty && incomeSource.flatten.flatMap(_.deductions).nonEmpty){
+                                        @incomeSource.flatten.flatMap(_.deductions).toSet.map { is =>
+                                                    @(is.`type` match {
+                                                        case 001 => { <p>{messages("employmenthistory.state.pensions.text.yearly", {Currency(is.amount, 2)})}</p>}
+                                                        case _ => {<p>@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")</p>}
+                                            })
                                         }
                                     } else {
-                                @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
-                                }
+                                        @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                    }
                             }
                         </div>
                         <div class ="govuk-grid-column-one-third"></div>

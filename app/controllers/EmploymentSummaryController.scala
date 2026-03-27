@@ -19,10 +19,11 @@ package controllers
 import config.AppConfig
 import connectors.{CitizenDetailsConnector, TaxHistoryConnector}
 import controllers.BaseController
-import model.api._
+import model.api.*
 import models.taxhistory.Person
+import org.apache.pekko.pattern.FutureRef
 import play.api.i18n.Messages
-import play.api.mvc._
+import play.api.mvc.*
 import play.api.{Configuration, Environment}
 import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.domain.Nino
@@ -83,33 +84,30 @@ class EmploymentSummaryController @Inject() (
           case OK                                                      =>
             val employments: List[Employment] = getEmploymentsFromResponse(empResponse)
               .filterNot(emp => emp.employerName.equalsIgnoreCase(noRecordHeld))
-            val allowanceFuture               = taxHistoryConnector.getAllowances(ninoField, taxYear)
-            val taxAccountFuture              = taxHistoryConnector.getTaxAccount(ninoField, taxYear)
-            val statePensionFuture            = taxHistoryConnector.getStatePension(ninoField, taxYear)
-            val allPayAndTaxFuture            = taxHistoryConnector.getAllPayAndTax(ninoField, taxYear)
-            val employmentId                  = employments.head.employmentId
-            val incomeSourceFuture            = taxHistoryConnector.getIncomeSource(ninoField, taxYear, employmentId.toString)
+            val employmentId                  = employments.map(emp => emp.employmentId.toString)
+            val incomeSourceFuture            =
+              Future.sequence(employmentId.map(empId => getIncomeSource(ninoField, taxYear, empId)))
 
             (for {
-              allowanceResponse    <- allowanceFuture
-              taxAccountResponse   <- taxAccountFuture
-              statePensionResponse <- statePensionFuture
-              allPayAndTaxResponse <- allPayAndTaxFuture
+              allowanceResponse    <- taxHistoryConnector.getAllowances(ninoField, taxYear)
+              taxAccountResponse   <- taxHistoryConnector.getTaxAccount(ninoField, taxYear)
+              statePensionResponse <- taxHistoryConnector.getStatePension(ninoField, taxYear)
+              allPayAndTaxResponse <- taxHistoryConnector.getAllPayAndTax(ninoField, taxYear)
               incomeTotals         <- buildIncomeTotals(employments, getAllPayAndTaxFromResponse(allPayAndTaxResponse).toList)
               incomeSourceResponse <- incomeSourceFuture
             } yield (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals, incomeSourceResponse))
-              .map { dataResponse =>
+              .map { (allowanceResponse, taxAccountResponse, statePensionResponse, incomeTotals, incomeSourceResponse) =>
                 Ok(
                   employmentSummary(
                     nino = ninoField.nino,
                     taxYear = taxYear,
                     employments = employments,
-                    allowances = getAllowancesFromResponse(allowancesResponse = dataResponse._1),
+                    allowances = getAllowancesFromResponse(allowancesResponse = allowanceResponse),
                     person = person,
-                    taxAccount = getTaxAccountFromResponse(taxAccountResponse = dataResponse._2),
-                    statePension = getStatePensionsFromResponse(statePensionResponse = dataResponse._3),
-                    incomeSource = getIncomeSourceFromResponse(dataResponse._5),
-                    incomeTotals = dataResponse._4,
+                    taxAccount = getTaxAccountFromResponse(taxAccountResponse = taxAccountResponse),
+                    statePension = getStatePensionsFromResponse(statePensionResponse = statePensionResponse),
+                    incomeSource = incomeSourceResponse,
+                    incomeTotals = incomeTotals,
                     formattedNowDate = dateUtils.nowDateFormatted
                   )
                 )
@@ -155,14 +153,6 @@ class EmploymentSummaryController @Inject() (
         List.empty
     }
 
-  private def getIncomeSourceFromResponse(incomeSourceResponse: HttpResponse) =
-    incomeSourceResponse.status match {
-      case OK     => incomeSourceResponse.json.asOpt[IncomeSource]
-      case status =>
-        logger.info(s"[EmploymentSummaryController][getAllowancesFromResponse] Allowance Status: $status")
-        None
-    }
-
   private[controllers] def getStatePensionsFromResponse(
     statePensionResponse: HttpResponse
   )(implicit messages: Messages): Option[StatePension] =
@@ -175,6 +165,41 @@ class EmploymentSummaryController @Inject() (
         logger.info(s"[EmploymentSummaryController][getStatePensionsFromResponse] State Pension Status: $status")
         None
     }
+
+  def getIncomeSource(nino: Nino, taxYear: Int, employmentId: String)(implicit
+    hc: HeaderCarrier
+  ): Future[Option[IncomeSource]] =
+
+    taxHistoryConnector
+      .getIncomeSource(nino, taxYear, employmentId)
+      .map { isResponse =>
+        isResponse.status match {
+          case NOT_FOUND => None
+          case _         =>
+            isResponse.json.validate[IncomeSource] match {
+              case JsSuccess(result, _) =>
+                logger.info(s"[EmploymentSummaryController][getIncomeSource] Successful parse to json")
+                Some(result)
+              case JsError(errors)      =>
+                logger.error(
+                  s"[EmploymentSummaryController][getIncomeSource] Invalid json returned in ${isResponse.status}. $errors"
+                )
+                throw new RuntimeException("Invalid json returned")
+            }
+        }
+      }
+      .recoverWith(recoverWithEmptyDefault("getIncomeSource", None))
+
+  private[controllers] def recoverWithEmptyDefault[U](
+    connectorMethodName: String,
+    emptyValue: U
+  ): PartialFunction[Throwable, Future[U]] = { case e =>
+    logger.error(
+      s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName",
+      e
+    )
+    Future.successful(emptyValue)
+  }
 
   private def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
     payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))

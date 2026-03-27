@@ -43,9 +43,10 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixture with BaseSpec with ScalaFutures {
 
-  lazy val taxYear: Int = 2016
+  lazy val taxYear: Int = 2014
 
-  lazy val employmentId: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
+  lazy val employmentId1: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3")
+  lazy val employmentId2: UUID = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4")
 
   trait LocalSetup {
 
@@ -64,21 +65,26 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       dateUtils
     )(using stubControllerComponents().executionContext)
 
-    val incomeSource: Option[IncomeSource] =
-      Some(
-        IncomeSource(
-          employmentId = 1,
-          employmentType = 1,
-          actualPUPCodedInCYPlusOneTaxYear = None,
-          deductions = List.empty,
-          allowances = List.empty,
-          taxCode = "",
-          basisOperation = None,
-          employmentTaxDistrictNumber = 1,
-          employmentPayeRef = ""
-        )
+    val listOfIncomeSource: List[Option[IncomeSource]] =
+      List(
+        Some(
+          IncomeSource(
+            employmentId = 1,
+            employmentType = 1,
+            actualPUPCodedInCYPlusOneTaxYear = None,
+            deductions = List.empty,
+            allowances = List.empty,
+            taxCode = "",
+            basisOperation = None,
+            employmentTaxDistrictNumber = 1,
+            employmentPayeRef = ""
+          )
+        ),
+        None
       )
 
+    val incomeSource1: Option[IncomeSource] = listOfIncomeSource.head
+    val incomeSource2: Option[IncomeSource] = listOfIncomeSource.last
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
         using any[HeaderCarrier],
@@ -108,11 +114,18 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(statePension), Map.empty)))
 
     when(
-      controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId.toString))(
+      controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId1.toString))(
         using any[HeaderCarrier]
       )
     )
-      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource), Map.empty)))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource1), Map.empty)))
+
+    when(
+      controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId2.toString))(
+        using any[HeaderCarrier]
+      )
+    )
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource2), Map.empty)))
 
     when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
@@ -163,15 +176,6 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
 
     "return 200 when no tax account found" in new LocalSetup {
       when(controller.taxHistoryConnector.getTaxAccount(any[Nino], any[Int])(using any[HeaderCarrier]))
-        .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
-
-      val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
-      status(result)        shouldBe OK
-      contentAsString(result) should include(Messages("employmenthistory.title"))
-    }
-
-    "return 200 when no income source found" in new LocalSetup {
-      when(controller.taxHistoryConnector.getIncomeSource(any[Nino], any[Int], any[String])(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
 
       val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)

@@ -53,22 +53,22 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
 
       deserialized.shouldBe(update)
 
-      "must serialize and deserialize to/from JSON" in {
+      "serialize and deserialize to/from JSON" in {
         val json = Json.toJson(update)
         json.validate[EarlierYearUpdate] shouldBe JsSuccess(update)
       }
 
-      "must fail to deserialize invalid JSON" in {
+      "fail to deserialize invalid JSON" in {
         val invalidJson = Json.obj("invalid" -> "data")
         invalidJson.validate[EarlierYearUpdate].isError shouldBe true
       }
 
-      "must have a working equals and hashCode" in {
+      "have a working equals and hashCode" in {
         update          shouldEqual update
         update.hashCode shouldEqual update.hashCode
       }
 
-      "must have a working toString" in {
+      "have a working toString" in {
         update.toString should include("EarlierYearUpdate")
       }
     }
@@ -80,16 +80,16 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
 
       val json = Json.toJson(select)
 
-      "must serialize and deserialize to/from JSON" in {
+      "serialize and deserialize to/from JSON" in {
         json.validate[SelectTaxYear] shouldBe JsSuccess(select)
       }
 
-      "must have a working equals and hashCode" in {
+      "have a working equals and hashCode" in {
         select          shouldEqual select
         select.hashCode shouldEqual select.hashCode
       }
 
-      "must have a working toString" in {
+      "have a working toString" in {
         select.toString should include("SelectTaxYear")
       }
     }
@@ -97,21 +97,21 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
     "TaDeduction" should {
       val json = Json.toJson(taDeduction)
 
-      "must serialize and deserialize to/from JSON" in {
+      "serialize and deserialize to/from JSON" in {
         json.validate[TaDeduction] shouldBe JsSuccess(taDeduction)
       }
 
-      "must fail to deserialize invalid JSON" in {
+      "fail to deserialize invalid JSON" in {
         val invalidJson = Json.obj("invalid" -> "data")
         invalidJson.validate[TaDeduction].isError shouldBe true
       }
 
-      "must have a working equals and hashCode" in {
+      "have a working equals and hashCode" in {
         taDeduction          shouldEqual taDeduction
         taDeduction.hashCode shouldEqual taDeduction.hashCode
       }
 
-      "must have a working toString" in {
+      "have a working toString" in {
         taDeduction.toString should include("TaDeduction")
       }
     }
@@ -120,26 +120,26 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
       val json         = Json.toJson(taAllowance)
       val deserialized = json.as[TaAllowance]
 
-      "must serialize and deserialize to/from JSON" in {
+      "serialize and deserialize to/from JSON" in {
         json.validate[TaAllowance] shouldBe JsSuccess(deserialized)
       }
 
-      "must fail to deserialize invalid JSON" in {
+      "fail to deserialize invalid JSON" in {
         val invalidJson = Json.obj("invalid" -> "data")
         invalidJson.validate[TaAllowance].isError shouldBe true
       }
 
-      "must have a working equals and hashCode" in {
+      "have a working equals and hashCode" in {
         deserialized          shouldEqual deserialized
         deserialized.hashCode shouldEqual deserialized.hashCode
       }
 
-      "must have a working toString" in {
+      "have a working toString" in {
         deserialized.toString should include("TaAllowance")
       }
     }
 
-    "IncomeSource" must {
+    "IncomeSource" should {
       val incomeSource = IncomeSource(
         employmentId = 234,
         employmentType = 1,
@@ -152,22 +152,22 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
         employmentPayeRef = "ref5"
       )
 
-      "must serialize and deserialize to/from JSON if all fields are present" in {
+      "serialize and deserialize to/from JSON if all fields are present" in {
         val json = Json.toJson(incomeSource)
         json.validate[IncomeSource] shouldBe JsSuccess(incomeSource)
       }
 
-      "must fail to deserialize invalid JSON" in {
+      "fail to deserialize invalid JSON" in {
         val invalidJson = Json.obj("invalid" -> "data")
         invalidJson.validate[IncomeSource].isError shouldBe true
       }
 
-      "must have a working equals and hashCode" in {
+      "have a working equals and hashCode" in {
         incomeSource          shouldEqual incomeSource
         incomeSource.hashCode shouldEqual incomeSource.hashCode
       }
 
-      "must have a working toString" in {
+      "have a working toString" in {
         incomeSource.toString should include("IncomeSource")
       }
     }
