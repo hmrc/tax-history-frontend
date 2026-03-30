@@ -138,8 +138,8 @@ class EmploymentDetailControllerSpec extends ControllerSpec with ControllerFixtu
     "calling .getPayAndTax()" should {
       "return the original PayAndTax() with a studentLoan of 1337" in new LocalSetup {
 
-        val actual: Option[IncomeSource] = await(controller.getIncomeSource(Nino(nino), taxYear, employmentId.toString))
-        val expected: Some[IncomeSource] = incomeSource
+        val actual: Option[PayAndTax] = await(controller.getPayAndTax(Nino(nino), taxYear, employmentId.toString))
+        val expected: Some[PayAndTax] = Some(payAndTax)
 
         actual shouldBe expected
       }

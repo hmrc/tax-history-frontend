@@ -65,26 +65,22 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       dateUtils
     )(using stubControllerComponents().executionContext)
 
-    val listOfIncomeSource: List[Option[IncomeSource]] =
-      List(
-        Some(
-          IncomeSource(
-            employmentId = 1,
-            employmentType = 1,
-            actualPUPCodedInCYPlusOneTaxYear = None,
-            deductions = List.empty,
-            allowances = List.empty,
-            taxCode = "",
-            basisOperation = None,
-            employmentTaxDistrictNumber = 1,
-            employmentPayeRef = ""
-          )
-        ),
-        None
+    val incomeSource1: Option[IncomeSource] = Some(
+      IncomeSource(
+        employmentId = 1,
+        employmentType = 1,
+        actualPUPCodedInCYPlusOneTaxYear = None,
+        deductions = List.empty,
+        allowances = List.empty,
+        taxCode = "",
+        basisOperation = None,
+        employmentTaxDistrictNumber = 1,
+        employmentPayeRef = ""
       )
+    )
 
-    val incomeSource1: Option[IncomeSource] = listOfIncomeSource.head
-    val incomeSource2: Option[IncomeSource] = listOfIncomeSource.last
+    val incomeSource2: Option[IncomeSource] = None
+
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
         using any[HeaderCarrier],
