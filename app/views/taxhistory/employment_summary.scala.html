@@ -129,7 +129,7 @@
                                         @incomeSource.flatten.flatMap(_.deductions).toSet.map { is =>
                                                     @(is.`type` match {
                                                         case 001 => { <p>{messages("employmenthistory.state.pensions.text.yearly", {Currency(is.amount, 2)})}</p>}
-                                                        case _ => {<p>@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")</p>}
+                                                        case _ => {<p>{messages("employmenthistory.state.pensions.text.yearly",{Currency(sp.grossAmount, 2)})}</p>}
                                             })
                                         }
                                     } else {

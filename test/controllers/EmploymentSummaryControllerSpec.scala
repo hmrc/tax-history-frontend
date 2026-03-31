@@ -65,7 +65,7 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       dateUtils
     )(using stubControllerComponents().executionContext)
 
-    val incomeSource1: Option[IncomeSource] = Some(
+    val incomeSource1: IncomeSource =
       IncomeSource(
         employmentId = 1,
         employmentType = 1,
@@ -77,9 +77,6 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         employmentTaxDistrictNumber = 1,
         employmentPayeRef = ""
       )
-    )
-
-    val incomeSource2: Option[IncomeSource] = None
 
     when(
       controller.authConnector.authorise(any[Predicate], any[Retrieval[~[Option[AffinityGroup], Enrolments]]])(
@@ -114,14 +111,14 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         using any[HeaderCarrier]
       )
     )
-      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource1), Map.empty)))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(Some(incomeSource1)), Map.empty)))
 
     when(
       controller.taxHistoryConnector.getIncomeSource(argEq(Nino(nino)), argEq(taxYear), argEq(employmentId2.toString))(
         using any[HeaderCarrier]
       )
     )
-      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(incomeSource2), Map.empty)))
+      .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(None), Map.empty)))
 
     when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
       .thenReturn(Future.successful(HttpResponse(OK, json = Json.toJson(payAndTaxFixedUUID), Map.empty)))
