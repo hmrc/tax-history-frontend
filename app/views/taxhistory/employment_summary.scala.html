@@ -125,16 +125,15 @@
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p1", s"${Currency(sp.weeklyAmount, 2)}", sp.startDateFormatted.getOrElse(""))}
                                 @p{@messages("employmenthistory.state.pensions.text.weekly.p2", formattedNowDate, s"${Currency.fromOptionBD(sp.getAmountReceivedTillDate(taxYear))}")}
                             } else {
-                                    @if(incomeSource.nonEmpty && incomeSource.flatten.flatMap(_.deductions).nonEmpty){
-                                        @incomeSource.flatten.flatMap(_.deductions).toSet.map { is =>
-                                                    @(is.`type` match {
-                                                        case 001 => { <p>{messages("employmenthistory.state.pensions.text.yearly", {Currency(is.amount, 2)})}</p>}
-                                                        case _ => {<p>{messages("employmenthistory.state.pensions.text.yearly",{Currency(sp.grossAmount, 2)})}</p>}
-                                            })
+                                @if(incomeSource.nonEmpty && incomeSource.flatten.flatMap(_.deductions).nonEmpty){
+                                    @{ incomeSource.flatten.flatMap(_.deductions).filter(is => is.`type` == 1).minByOption(_.amount) match {
+                                            case Some(isp) => {<p id = "adjusted-pension" class="govuk-body">{messages("employmenthistory.state.pensions.text.yearly", {Currency(isp.amount, 2)})}</p>}
+                                            case None => {<p id = "gross-pension" class="govuk-body">{messages("employmenthistory.state.pensions.text.yearly",{Currency(sp.grossAmount, 2)})}</p>}
                                         }
-                                    } else {
-                                        @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
                                     }
+                                } else {
+                                        @p{@messages("employmenthistory.state.pensions.text.yearly", s"${Currency(sp.grossAmount, 2)}")}
+                                }
                             }
                         </div>
                         <div class ="govuk-grid-column-one-third"></div>
