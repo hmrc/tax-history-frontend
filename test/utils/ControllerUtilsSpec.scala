@@ -298,7 +298,13 @@ class ControllerUtilsSpec extends GuiceAppSpec with Constants {
 
     val yearsBack = 5
     val statuses  =
-      List(EmploymentStatus.Live, EmploymentStatus.PotentiallyCeased, EmploymentStatus.Ceased, EmploymentStatus.Unknown)
+      List(
+        EmploymentStatus.Live,
+        EmploymentStatus.PotentiallyCeased,
+        EmploymentStatus.Ceased,
+        EmploymentStatus.Unknown,
+        EmploymentStatus.PermanentlyCeased
+      )
 
     val previousTaxYearsTC =
       statuses.flatMap(status =>

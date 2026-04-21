@@ -16,7 +16,7 @@
 
 package model.api
 
-import model.api.EmploymentStatus.{Ceased, Live, PotentiallyCeased, Unknown}
+import model.api.EmploymentStatus.{Ceased, Live, PermanentlyCeased, PotentiallyCeased, Unknown}
 import play.api.libs.json._
 import support.BaseSpec
 
@@ -36,6 +36,9 @@ class EmploymentStatusSpec extends BaseSpec {
       EmploymentStatus.jsonReads.reads(EmploymentStatus.jsonWrites.writes(EmploymentStatus.Unknown)) shouldBe JsSuccess(
         Unknown
       )
+      EmploymentStatus.jsonReads.reads(
+        EmploymentStatus.jsonWrites.writes(EmploymentStatus.PermanentlyCeased)
+      )                                                                                              shouldBe JsSuccess(PermanentlyCeased)
     }
 
     "throw error on invalid data" in {
