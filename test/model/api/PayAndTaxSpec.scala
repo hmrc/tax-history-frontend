@@ -17,6 +17,7 @@
 package model.api
 
 import java.util.UUID
+import play.api.libs.json.Json
 import support.BaseSpec
 import utils.TestUtil
 
@@ -24,76 +25,59 @@ import java.time.LocalDate
 
 class PayAndTaxSpec extends TestUtil with BaseSpec {
 
-  lazy val payAndTaxNoEyu: PayAndTax = PayAndTax(
+  lazy val payAndTax: PayAndTax = PayAndTax(
     payAndTaxId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
     taxablePayTotal = Some(BigDecimal(76543.21)),
-    taxablePayTotalIncludingEYU = Some(BigDecimal(76543.21)),
     taxTotal = Some(BigDecimal(6666.66)),
-    taxTotalIncludingEYU = Some(BigDecimal(6666.66)),
     studentLoan = None,
-    studentLoanIncludingEYU = None,
-    paymentDate = Some(LocalDate.parse("2016-02-20")),
-    earlierYearUpdates = Nil
+    paymentDate = Some(LocalDate.parse("2016-02-20"))
   )
 
   "PayAndTax" should {
 
     "generate employmentId when none is supplied" in {
-      val payAndTax = PayAndTax(
+      val newPayAndTax = PayAndTax(
         taxablePayTotal = Some(BigDecimal(1212.12)),
-        taxablePayTotalIncludingEYU = Some(BigDecimal(1212.12)),
         taxTotal = Some(BigDecimal(34.34)),
-        taxTotalIncludingEYU = Some(BigDecimal(34.34)),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = Nil
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
-      payAndTax.payAndTaxId.toString.nonEmpty shouldBe true
-      payAndTax.payAndTaxId                  shouldNot be(payAndTaxNoEyu.payAndTaxId)
+      newPayAndTax.payAndTaxId.toString.nonEmpty shouldBe true
+      newPayAndTax.payAndTaxId                  shouldNot be(payAndTax.payAndTaxId)
     }
 
-    "generate a correct list of earlier year updates" in {
-      val payAndTax = PayAndTax(
-        taxablePayTotal = Some(BigDecimal(23450.12)),
-        taxablePayTotalIncludingEYU = Some(BigDecimal(23935.89)),
-        taxTotal = Some(BigDecimal(2856.44)),
-        taxTotalIncludingEYU = Some(BigDecimal(3013.99)),
-        studentLoan = Some(1254.00),
-        studentLoanIncludingEYU = Some(2024.21),
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List(
-          EarlierYearUpdate(
-            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
-            taxablePayEYU = BigDecimal(234.44),
-            taxEYU = BigDecimal(145.55),
-            studentLoanEYU = Some(BigDecimal(234.55)),
-            receivedDate = LocalDate.parse("2016-05-10")
-          ),
-          EarlierYearUpdate(
-            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf551"),
-            taxablePayEYU = BigDecimal(0.0),
-            taxEYU = BigDecimal(12.0),
-            studentLoanEYU = Some(BigDecimal(534.66)),
-            receivedDate = LocalDate.parse("2016-06-15")
-          ),
-          EarlierYearUpdate(
-            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf539"),
-            taxablePayEYU = BigDecimal(251.33),
-            taxEYU = BigDecimal(0.0),
-            studentLoanEYU = None,
-            receivedDate = LocalDate.parse("2016-12-12")
-          )
-        )
+    "ignore EYU fields when deserialising JSON and only use base submission totals" in {
+      val jsonWithEyuData = Json.parse(
+        """{
+          |  "payAndTaxId": "7407debb-5aa2-445d-8633-1875a2ebf559",
+          |  "taxablePayTotal": 5000.00,
+          |  "taxablePayTotalIncludingEYU": 4000.00,
+          |  "taxTotal": 1000.00,
+          |  "taxTotalIncludingEYU": 800.00,
+          |  "studentLoan": null,
+          |  "paymentDate": "2016-02-20",
+          |  "earlierYearUpdates": [
+          |    {
+          |      "earlierYearUpdateId": "11111111-1111-1111-1111-111111111111",
+          |      "taxablePayEYU": -600.00,
+          |      "taxEYU": -120.00,
+          |      "receivedDate": "2016-06-17"
+          |    },
+          |    {
+          |      "earlierYearUpdateId": "22222222-2222-2222-2222-222222222222",
+          |      "taxablePayEYU": -400.00,
+          |      "taxEYU": -80.00,
+          |      "receivedDate": "2016-06-17"
+          |    }
+          |  ]
+          |}""".stripMargin
       )
 
-      payAndTax.earlierYearUpdatesWithStudentLoans.size    should be(2)
-      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.size should be(3)
+      val result = jsonWithEyuData.as[PayAndTax]
 
-      payAndTax.earlierYearUpdatesWithStudentLoans.map(_.studentLoanEYU.get).sum should be(769.21)
-      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map(_.taxablePayEYU).sum   should be(485.77)
-      payAndTax.earlierYearUpdatesWithNonZeroPayOrTax.map(_.taxEYU).sum          should be(157.55)
+      result.taxablePayTotal shouldBe Some(BigDecimal(5000.00))
+      result.taxTotal        shouldBe Some(BigDecimal(1000.00))
     }
   }
 }

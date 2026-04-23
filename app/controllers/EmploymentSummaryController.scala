@@ -176,11 +176,11 @@ class EmploymentSummaryController @Inject() (
         None
     }
 
-  private def pickTaxablePayTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
-    payAndTax.taxablePayTotalIncludingEYU.getOrElse(BigDecimal(0))
+  private def pickTaxablePayTotal(payAndTax: PayAndTax): BigDecimal =
+    payAndTax.taxablePayTotal.getOrElse(BigDecimal(0))
 
-  private def pickTaxTotalIncludingEYU(payAndTax: PayAndTax): BigDecimal =
-    payAndTax.taxTotalIncludingEYU.getOrElse(BigDecimal(0))
+  private def pickTaxTotal(payAndTax: PayAndTax): BigDecimal =
+    payAndTax.taxTotal.getOrElse(BigDecimal(0))
 
   private[controllers] def buildIncomeTotals(
     allEmployments: List[Employment],
@@ -199,8 +199,8 @@ class EmploymentSummaryController @Inject() (
         allPayAndTax.map(tupleEmploymentIdAndPayTax =>
           EmploymentIncomeAndTax(
             employmentId = tupleEmploymentIdAndPayTax._1,
-            income = pickTaxablePayTotalIncludingEYU(tupleEmploymentIdAndPayTax._2),
-            tax = pickTaxTotalIncludingEYU(tupleEmploymentIdAndPayTax._2)
+            income = pickTaxablePayTotal(tupleEmploymentIdAndPayTax._2),
+            tax = pickTaxTotal(tupleEmploymentIdAndPayTax._2)
           )
         )
 
@@ -208,10 +208,10 @@ class EmploymentSummaryController @Inject() (
         Some(
           TotalIncome(
             employmentIncomeAndTax = employmentIncomeAndTax,
-            employmentTaxablePayTotalIncludingEYU = employmentsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
-            pensionTaxablePayTotalIncludingEYU = pensionsPayAndTax.map(pickTaxablePayTotalIncludingEYU).sum,
-            employmentTaxTotalIncludingEYU = employmentsPayAndTax.map(pickTaxTotalIncludingEYU).sum,
-            pensionTaxTotalIncludingEYU = pensionsPayAndTax.map(pickTaxTotalIncludingEYU).sum
+            employmentTaxablePayTotal = employmentsPayAndTax.map(pickTaxablePayTotal).sum,
+            pensionTaxablePayTotal = pensionsPayAndTax.map(pickTaxablePayTotal).sum,
+            employmentTaxTotal = employmentsPayAndTax.map(pickTaxTotal).sum,
+            pensionTaxTotal = pensionsPayAndTax.map(pickTaxTotal).sum
           )
         )
       )

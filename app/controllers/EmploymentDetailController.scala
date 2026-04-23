@@ -89,22 +89,19 @@ class EmploymentDetailController @Inject() (
     taxYear: Int,
     employmentId: String
   )(implicit
-    hc: HeaderCarrier,
-    messages: Messages
+    hc: HeaderCarrier
   ): Future[Option[PayAndTax]] =
     taxHistoryConnector
       .getPayAndTaxDetails(nino, taxYear, employmentId)
       .map { payAndTaxResponse =>
-        def result = dateUtils.formatEarlierYearUpdateReceivedDate(payAndTaxResponse.json.as[PayAndTax])
-
         payAndTaxResponse.status match {
           case NOT_FOUND => None
           case _         =>
             payAndTaxResponse.json.validate[PayAndTax] match {
-              case JsSuccess(_, _) =>
+              case JsSuccess(result, _) =>
                 logger.info(s"[EmploymentDetailController][getPayAndTax] Successful parse to json")
                 Some(result)
-              case JsError(errors) =>
+              case JsError(errors)      =>
                 logger.error(
                   s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.status}. $errors"
                 )

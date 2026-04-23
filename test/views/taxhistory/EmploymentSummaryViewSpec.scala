@@ -476,16 +476,16 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       )
     document(view)
       .getElementById("pensionIncome")
-      .text() shouldBe s"£${totalIncome.pensionTaxablePayTotalIncludingEYU.toString()}"
+      .text() shouldBe s"£${totalIncome.pensionTaxablePayTotal.toString()}"
     document(view)
       .getElementById("employmentIncomeTax")
-      .text() shouldBe s"£${totalIncome.employmentTaxTotalIncludingEYU.toString()}"
+      .text() shouldBe s"£${totalIncome.employmentTaxTotal.toString()}"
     document(view)
       .getElementById("employmentIncome")
-      .text() shouldBe s"£${totalIncome.employmentTaxablePayTotalIncludingEYU.toString()}"
+      .text() shouldBe s"£${totalIncome.employmentTaxablePayTotal.toString()}"
     document(view)
       .getElementById("pensionIncomeTax")
-      .text() shouldBe s"£${totalIncome.pensionTaxTotalIncludingEYU.toString()}"
+      .text() shouldBe s"£${totalIncome.pensionTaxTotal.toString()}"
   }
 
   "Show correct total amounts for two employers and one pension" in new ViewFixture {
@@ -532,10 +532,10 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       .text() shouldBe s"£${incomeTotals.employmentIncomeAndTax.last.tax.toString()}"
     document(view)
       .getElementById("employmentIncomeTax")
-      .text() shouldBe s"£${totalIncome.employmentTaxTotalIncludingEYU.toString()}"
+      .text() shouldBe s"£${totalIncome.employmentTaxTotal.toString()}"
     document(view)
       .getElementById("employmentIncome")
-      .text() shouldBe s"£${totalIncome.employmentTaxablePayTotalIncludingEYU.toString()}"
+      .text() shouldBe s"£${totalIncome.employmentTaxablePayTotal.toString()}"
     document(view)
       .getElementById("employmentIncome0")
       .text() shouldBe s"£${incomeTotals.employmentIncomeAndTax.head.income.toString()}"

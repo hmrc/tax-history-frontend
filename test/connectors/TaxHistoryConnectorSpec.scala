@@ -96,34 +96,21 @@ class TaxHistoryConnectorSpec extends BaseConnectorSpec {
     }
 
     "fetch Employment details from backend" in {
-      lazy val eyuList: List[EarlierYearUpdate] = List(
-        EarlierYearUpdate(
-          earlierYearUpdateId = UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
-          taxablePayEYU = BigDecimal(123.45),
-          taxEYU = BigDecimal(67.89),
-          receivedDate = LocalDate.parse("2015-05-29")
-        )
-      )
-
-      lazy val payAndTaxWithEyu: PayAndTax = PayAndTax(
+      lazy val payAndTax: PayAndTax = PayAndTax(
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
         taxablePayTotal = Some(BigDecimal(1234567.89)),
-        taxablePayTotalIncludingEYU = Some(BigDecimal(2345678.90)),
         taxTotal = Some(BigDecimal(2222.22)),
-        taxTotalIncludingEYU = Some(BigDecimal(3333.33)),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = eyuList
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
-      mockExecuteMethod(Json.toJson(payAndTaxWithEyu).toString(), Status.OK)
+      mockExecuteMethod(Json.toJson(payAndTax).toString(), Status.OK)
 
       val result: HttpResponse =
         connector.getPayAndTaxDetails(Nino(nino), taxYear2014, employmentId.toString).futureValue
 
       result.status shouldBe Status.OK
-      result.json   shouldBe Json.toJson(payAndTaxWithEyu)
+      result.json   shouldBe Json.toJson(payAndTax)
     }
 
     "fetch Employment from backend" in {
@@ -155,13 +142,9 @@ class TaxHistoryConnectorSpec extends BaseConnectorSpec {
     "fetch payAndTax data from backend" in {
       val payAndTax: PayAndTax = PayAndTax(
         taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(BigDecimal(3785.70)),
         taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(BigDecimal(868.25)),
         studentLoan = Some(101.00),
-        studentLoanIncludingEYU = Some(101.00),
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
       mockExecuteMethod(Json.toJson(payAndTax).toString(), Status.OK)
@@ -232,20 +215,9 @@ class TaxHistoryConnectorSpec extends BaseConnectorSpec {
       val payAndTax: PayAndTax = PayAndTax(
         payAndTaxId = UUID.fromString("bb1c1ea4-04d0-4285-a2e6-4ade1e57f12a"),
         taxablePayTotal = Some(BigDecimal(1234567.89)),
-        taxablePayTotalIncludingEYU = Some(BigDecimal(2345678.90)),
         taxTotal = Some(BigDecimal(2222.22)),
-        taxTotalIncludingEYU = Some(BigDecimal(3333.33)),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List(
-          EarlierYearUpdate(
-            UUID.fromString("e6926848-818b-4d01-baa1-02111eb0f514"),
-            BigDecimal(123.45),
-            taxEYU = BigDecimal(67.89),
-            receivedDate = LocalDate.parse("2015-05-29")
-          )
-        )
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
       val allPayAndTaxResponse: Map[String, PayAndTax] = Map("first" -> payAndTax)

@@ -37,10 +37,10 @@ class TotalIncomeSpec extends TestUtil with BaseSpec {
     EmploymentIncomeAndTax(employmentId.toString, BigDecimal(10), BigDecimal(5))
   private val totalIncome                             = TotalIncome(
     employmentIncomeAndTax = List(employmentAndIncomeTax1),
-    employmentTaxablePayTotalIncludingEYU = BigDecimal(10),
-    pensionTaxablePayTotalIncludingEYU = BigDecimal(10),
-    employmentTaxTotalIncludingEYU = BigDecimal(10),
-    pensionTaxTotalIncludingEYU = BigDecimal(10)
+    employmentTaxablePayTotal = BigDecimal(10),
+    pensionTaxablePayTotal = BigDecimal(10),
+    employmentTaxTotal = BigDecimal(10),
+    pensionTaxTotal = BigDecimal(10)
   )
 
   "TotalIncome" should {

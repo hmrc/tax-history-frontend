@@ -38,20 +38,6 @@ class DateUtilsSpec extends GuiceAppSpec with Constants {
       dateUtils.formatStatePensionStartDate(statePension.copy(startDate = None)).startDateFormatted mustBe None
     }
 
-    "format Earlier Year Update Receive date" in {
-      val dates = List("21 January 2016", "21 May 2016")
-      dateUtils
-        .formatEarlierYearUpdateReceivedDate(payAndTax)
-        .earlierYearUpdates
-        .flatMap(_.receivedDateFormatted) should equal(dates)
-
-      val welshDates = List("21 Ionawr 2016", "21 Mai 2016")
-      dateUtils
-        .formatEarlierYearUpdateReceivedDate(payAndTax)(using welshMessages)
-        .earlierYearUpdates
-        .flatMap(_.receivedDateFormatted) should equal(welshDates)
-    }
-
     "format dates abbreviating the month correctly for an employment object" in {
       val formattedEmployment = dateUtils.formatEmploymentDatesAbbrMonth(emp1LiveOccupationalPension)
       formattedEmployment.startDateFormatted.get mustBe "21 Jan 2016"

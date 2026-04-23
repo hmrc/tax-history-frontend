@@ -216,8 +216,8 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
       payrollId.text     should include(employment.worksNumber)
       startDate.text     should include(employment.startDateFormatted.get)
       endDate.text       should include(employment.endDateFormatted.get)
-      taxableIncome.text should include("£4,906.80")
-      incomeTaxPaid.text should include("£1,007.34")
+      taxableIncome.text should include("£4,896.80")
+      incomeTaxPaid.text should include("£979.36")
     }
 
     "not have payroll ID and status for a pension" in new ViewFixture {
@@ -248,74 +248,8 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
         .hasText                                                               shouldBe false
       startDate.text                                                             should include(employment.startDate.get.format(format))
       endDate.text                                                               should include(employment.endDate.get.format(format))
-      taxableIncome.text                                                         should include("£4,906.80")
-      incomeTaxPaid.text                                                         should include("£1,007.34")
-    }
-
-    "have correct Earlier Year Update details" when {
-      "its size is 1" in new ViewFixture {
-        override def view: HtmlFormat.Appendable = inject[employment_detail].apply(
-          taxYear,
-          Some(payAndTax.copy(earlierYearUpdates = List(eyu1))),
-          employment,
-          List.empty,
-          clientName,
-          None,
-          createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(using request, messages, appConfig)
-
-        document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
-          "Your client's year-to-date income record includes these updates."
-
-        document(view)
-          .getElementById("EYUs")
-          .previousElementSibling()
-          .text shouldBe "There is 1 update to this clients income record."
-
-        val eyuPayOrTaxRow0: Element = document(view).select("#eyu-pay-or-tax-table tbody tr").get(0)
-        eyuPayOrTaxRow0.text should include("21 January 2016")
-        eyuPayOrTaxRow0.text should include("£0")
-        eyuPayOrTaxRow0.text should include("£8.99")
-
-        val eyuStudentLoanRow0: Element = document(view).select("#eyu-student-loan-table tbody tr").get(0)
-
-        eyuStudentLoanRow0.text should include("21 January 2016")
-        eyuStudentLoanRow0.text should include("£10")
-      }
-
-      "its size is 2" in new ViewFixture {
-        override def view: HtmlFormat.Appendable = inject[employment_detail].apply(
-          taxYear,
-          Some(payAndTax),
-          employment,
-          List.empty,
-          clientName,
-          None,
-          createEmploymentViewDetail(isPension = false, employment.employerName)
-        )(using request, messages, appConfig)
-
-        document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
-          "Your client's year-to-date income record includes these updates."
-
-        document(view)
-          .getElementById("EYUs")
-          .previousElementSibling()
-          .text shouldBe "There are 2 updates to this clients income record."
-
-        val eyuPayOrTaxRow0: Element = document(view).select("#eyu-pay-or-tax-table tbody tr").get(0)
-        val eyuPayOrTaxRow1: Element = document(view).select("#eyu-pay-or-tax-table tbody tr").get(1)
-        eyuPayOrTaxRow0.text should include("21 January 2016")
-        eyuPayOrTaxRow0.text should include("£0")
-        eyuPayOrTaxRow0.text should include("£8.99")
-        eyuPayOrTaxRow1.text should include("21 May 2016")
-        eyuPayOrTaxRow1.text should include("£10")
-        eyuPayOrTaxRow1.text should include("£18.99")
-
-        val eyuStudentLoanRow0: Element = document(view).select("#eyu-student-loan-table tbody tr").get(0)
-
-        eyuStudentLoanRow0.text should include("21 January 2016")
-        eyuStudentLoanRow0.text should include("£10")
-      }
+      taxableIncome.text                                                         should include("£4,896.80")
+      incomeTaxPaid.text                                                         should include("£979.36")
     }
 
     "have correct company benefits details" in new ViewFixture {
@@ -583,7 +517,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
       )(using request, messages, appConfig)
 
       document(view).getElementsMatchingOwnText("Student loan repaid").hasText shouldBe true
-      document(view).getElementsMatchingOwnText("£111").hasText                shouldBe true
+      document(view).getElementsMatchingOwnText("£101").hasText                shouldBe true
     }
 
     "not show student loans when data is available" in new ViewFixture {

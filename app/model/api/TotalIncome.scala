@@ -18,10 +18,10 @@ package model.api
 
 case class TotalIncome(
   employmentIncomeAndTax: List[EmploymentIncomeAndTax],
-  employmentTaxablePayTotalIncludingEYU: BigDecimal,
-  pensionTaxablePayTotalIncludingEYU: BigDecimal,
-  employmentTaxTotalIncludingEYU: BigDecimal,
-  pensionTaxTotalIncludingEYU: BigDecimal
+  employmentTaxablePayTotal: BigDecimal,
+  pensionTaxablePayTotal: BigDecimal,
+  employmentTaxTotal: BigDecimal,
+  pensionTaxTotal: BigDecimal
 ) {
 
   def getIncomeAndTax(employment: Employment): Option[EmploymentIncomeAndTax] =
