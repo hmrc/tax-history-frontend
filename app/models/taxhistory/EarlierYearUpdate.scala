@@ -14,27 +14,19 @@
  * limitations under the License.
  */
 
-package model.api
+package models.taxhistory
 
 import play.api.libs.json.{Json, OFormat}
 import utils.LocalDateFormat
 
 import java.time.LocalDate
-import java.util.UUID
 
-case class PayAndTax(
-  payAndTaxId: UUID = UUID.randomUUID(),
-  taxablePayTotal: Option[BigDecimal] = None,
-  taxTotal: Option[BigDecimal] = None,
-  studentLoan: Option[BigDecimal] = None,
-  studentLoanIncludingEYU: Option[BigDecimal] = None,
-  paymentDate: Option[LocalDate] = None,
-  earlierYearUpdates: List[EarlierYearUpdate] = Nil
-) {
-  val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate] =
-    earlierYearUpdates.filter(_.studentLoanEYU.isDefined)
-}
+case class EarlierYearUpdate(
+  taxablePayEYU: BigDecimal,
+  taxEYU: BigDecimal,
+  receivedDate: LocalDate
+)
 
-object PayAndTax extends LocalDateFormat {
-  implicit val formats: OFormat[PayAndTax] = Json.format[PayAndTax]
+object EarlierYearUpdate extends LocalDateFormat {
+  implicit val format: OFormat[EarlierYearUpdate] = Json.format[EarlierYearUpdate]
 }

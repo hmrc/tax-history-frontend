@@ -170,12 +170,33 @@ trait Constants {
       startDate = Some(LocalDate.of(2000, 12, 30))
     )
 
+  val eyu1: EarlierYearUpdate =
+    EarlierYearUpdate(
+      taxablePayEYU = 0,
+      taxEYU = 8.99,
+      studentLoanEYU = Some(10.0),
+      receivedDate = startDate,
+      receivedDateFormatted = Some(startDateFormatted)
+    )
+
+  val eyu2: EarlierYearUpdate =
+    EarlierYearUpdate(
+      taxablePayEYU = 10,
+      taxEYU = 18.99,
+      receivedDate = LocalDate.parse("2016-05-21"),
+      receivedDateFormatted = Some("21 May 2016")
+    )
+
+  val eyuList: List[EarlierYearUpdate] = List(eyu1, eyu2)
+
   val payAndTax: PayAndTax =
     PayAndTax(
       taxablePayTotal = Some(4896.80),
       taxTotal = Some(979.36),
       studentLoan = Some(101.00),
-      paymentDate = Some(LocalDate.parse("2016-02-20"))
+      studentLoanIncludingEYU = Some(111.0),
+      paymentDate = Some(LocalDate.parse("2016-02-20")),
+      earlierYearUpdates = eyuList
     )
 
   val payAndTaxNoTotal: PayAndTax =

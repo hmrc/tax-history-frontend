@@ -517,7 +517,7 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
       )(using request, messages, appConfig)
 
       document(view).getElementsMatchingOwnText("Student loan repaid").hasText shouldBe true
-      document(view).getElementsMatchingOwnText("£101").hasText                shouldBe true
+      document(view).getElementsMatchingOwnText("£111").hasText                shouldBe true
     }
 
     "not show student loans when data is available" in new ViewFixture {

@@ -53,6 +53,7 @@
     @payments()
 
     @if(!employment.isJobseekersAllowance) {
+        @studentLoanUpdates()
         @companyBenefitsInfo()
         @taxCodeBreakdown()
     }
@@ -114,7 +115,7 @@
                         @payAndTax.taxTotal.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
                     </dd>
                 </div>
-                @for(studentLoan <- payAndTax.studentLoan) {
+                @for(studentLoan <- payAndTax.studentLoanIncludingEYU.orElse(payAndTax.studentLoan)) {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key govuk-!-font-weight-bold">
                             @messages("employmenthistory.student.loans")
@@ -128,6 +129,39 @@
         }
         case None => {
             <p id="no-payments" class="govuk-body">@messages("employmenthistory.no.pay.and.tax", employment.employerName, employment.startDateFormatted.getOrElse(""))</p>
+        }
+    }
+}
+
+@studentLoanUpdates() = {
+    @payAndTaxOpt.map { payAndTax =>
+        @if(payAndTax.earlierYearUpdatesWithStudentLoans.nonEmpty) {
+            <details class="govuk-details" data-module="govuk-details" id="EYUs">
+                <summary class="govuk-details__summary">
+                    <span class="govuk-details__summary-text">@messages("employmenthistory.eyu.button")</span>
+                </summary>
+                <div class="govuk-details__text">
+                    <p>@messages("employmenthistory.eyu.caveat")</p>
+                    <div class="responsive-table-wrapper">
+                        <table class="govuk-table" id="eyu-student-loan-table">
+                            <thead class="govuk-table__head">
+                            <tr class="govuk-table__row">
+                                <th scope="col" class="govuk-table__header">@messages("employmenthistory.eyu.studentloan")</th>
+                                <th scope="col" class="govuk-table__header govuk-table__header--numeric">@messages("employmenthistory.eyu.date.received")</th>
+                            </tr>
+                            </thead>
+                            <tbody class="govuk-table__body">
+                            @payAndTax.earlierYearUpdatesWithStudentLoans.map { eyu =>
+                            <tr class="govuk-table__row">
+                                <th class="govuk-table__header">@Currency.withPositive(eyu.studentLoanEYU.getOrElse(BigDecimal(0.0)))</th>
+                                <td class="govuk-table__cell govuk-table__cell--numeric">@eyu.receivedDateFormatted.getOrElse("")</td>
+                            </tr>
+                            }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </details>
         }
     }
 }

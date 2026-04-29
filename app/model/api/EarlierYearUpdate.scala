@@ -22,19 +22,15 @@ import utils.LocalDateFormat
 import java.time.LocalDate
 import java.util.UUID
 
-case class PayAndTax(
-  payAndTaxId: UUID = UUID.randomUUID(),
-  taxablePayTotal: Option[BigDecimal] = None,
-  taxTotal: Option[BigDecimal] = None,
-  studentLoan: Option[BigDecimal] = None,
-  studentLoanIncludingEYU: Option[BigDecimal] = None,
-  paymentDate: Option[LocalDate] = None,
-  earlierYearUpdates: List[EarlierYearUpdate] = Nil
-) {
-  val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate] =
-    earlierYearUpdates.filter(_.studentLoanEYU.isDefined)
-}
+case class EarlierYearUpdate(
+  earlierYearUpdateId: UUID = UUID.randomUUID(),
+  taxablePayEYU: BigDecimal,
+  taxEYU: BigDecimal,
+  studentLoanEYU: Option[BigDecimal] = None,
+  receivedDate: LocalDate,
+  receivedDateFormatted: Option[String] = None
+)
 
-object PayAndTax extends LocalDateFormat {
-  implicit val formats: OFormat[PayAndTax] = Json.format[PayAndTax]
+object EarlierYearUpdate extends LocalDateFormat {
+  implicit val formats: OFormat[EarlierYearUpdate] = Json.format[EarlierYearUpdate]
 }

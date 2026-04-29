@@ -17,10 +17,12 @@
 package models
 
 import model.api.{IncomeSource, TaAllowance, TaDeduction}
-import models.taxhistory.SelectTaxYear
+import models.taxhistory.{EarlierYearUpdate, SelectTaxYear}
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
+
+import java.time.LocalDate
 
 class SerializationSpec extends AnyWordSpecLike with Matchers {
 
@@ -38,6 +40,33 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
   )
 
   "All the models" should {
+
+    "EarlierYearUpdate" should {
+      val update = EarlierYearUpdate(
+        taxablePayEYU = BigDecimal.decimal(55L),
+        taxEYU = BigDecimal.decimal(2024L),
+        receivedDate = LocalDate.EPOCH
+      )
+
+      "serialize and deserialize to/from JSON" in {
+        val json = Json.toJson(update)
+        json.validate[EarlierYearUpdate] shouldBe JsSuccess(update)
+      }
+
+      "fail to deserialize invalid JSON" in {
+        val invalidJson = Json.obj("invalid" -> "data")
+        invalidJson.validate[EarlierYearUpdate].isError shouldBe true
+      }
+
+      "have a working equals and hashCode" in {
+        update          shouldEqual update
+        update.hashCode shouldEqual update.hashCode
+      }
+
+      "have a working toString" in {
+        update.toString should include("EarlierYearUpdate")
+      }
+    }
 
     "SelectTaxYear" should {
       val select = SelectTaxYear(
