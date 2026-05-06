@@ -26,8 +26,6 @@ class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
 
   lazy val earlierYearUpdate1: EarlierYearUpdate = EarlierYearUpdate(
     earlierYearUpdateId = UUID.fromString("cf1886e7-ae56-4ec2-84a6-926d64ace287"),
-    taxablePayEYU = BigDecimal(6543.21),
-    taxEYU = BigDecimal(123.45),
     receivedDate = LocalDate.parse("2016-06-26")
   )
 
@@ -35,8 +33,6 @@ class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
 
     "generate employmentId when none is supplied" in {
       val eyu = EarlierYearUpdate(
-        taxablePayEYU = BigDecimal(1.11),
-        taxEYU = BigDecimal(22.22),
         receivedDate = LocalDate.parse("2015-05-29")
       )
 

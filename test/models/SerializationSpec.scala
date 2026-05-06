@@ -43,8 +43,6 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
 
     "EarlierYearUpdate" should {
       val update = EarlierYearUpdate(
-        taxablePayEYU = BigDecimal.decimal(55L),
-        taxEYU = BigDecimal.decimal(2024L),
         receivedDate = LocalDate.EPOCH
       )
 

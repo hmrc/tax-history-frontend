@@ -172,8 +172,6 @@ trait Constants {
 
   val eyu1: EarlierYearUpdate =
     EarlierYearUpdate(
-      taxablePayEYU = 0,
-      taxEYU = 8.99,
       studentLoanEYU = Some(10.0),
       receivedDate = startDate,
       receivedDateFormatted = Some(startDateFormatted)
@@ -181,8 +179,6 @@ trait Constants {
 
   val eyu2: EarlierYearUpdate =
     EarlierYearUpdate(
-      taxablePayEYU = 10,
-      taxEYU = 18.99,
       receivedDate = LocalDate.parse("2016-05-21"),
       receivedDateFormatted = Some("21 May 2016")
     )

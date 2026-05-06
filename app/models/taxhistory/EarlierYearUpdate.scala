@@ -22,8 +22,6 @@ import utils.LocalDateFormat
 import java.time.LocalDate
 
 case class EarlierYearUpdate(
-  taxablePayEYU: BigDecimal,
-  taxEYU: BigDecimal,
   receivedDate: LocalDate
 )
 
