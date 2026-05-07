@@ -36,15 +36,45 @@ class PayAndTaxSpec extends TestUtil with BaseSpec {
   "PayAndTax" should {
 
     "generate employmentId when none is supplied" in {
-      val newPayAndTax = PayAndTax(
+      val payAndTaxWithoutEmploymentId = PayAndTax(
         taxablePayTotal = Some(BigDecimal(1212.12)),
         taxTotal = Some(BigDecimal(34.34)),
         studentLoan = None,
         paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
-      newPayAndTax.payAndTaxId.toString.nonEmpty shouldBe true
-      newPayAndTax.payAndTaxId                  shouldNot be(payAndTax.payAndTaxId)
+      payAndTaxWithoutEmploymentId.payAndTaxId.toString.nonEmpty shouldBe true
+      payAndTaxWithoutEmploymentId.payAndTaxId                  shouldNot be(payAndTax.payAndTaxId)
+    }
+
+    "generate a correct list of earlier year updates" in {
+      val payAndTaxWithEyus = PayAndTax(
+        taxablePayTotal = Some(BigDecimal(23450.12)),
+        taxTotal = Some(BigDecimal(2856.44)),
+        studentLoan = Some(1254.00),
+        studentLoanIncludingEYU = Some(2024.21),
+        paymentDate = Some(LocalDate.parse("2016-02-20")),
+        earlierYearUpdates = List(
+          EarlierYearUpdate(
+            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf559"),
+            studentLoanEYU = Some(BigDecimal(234.55)),
+            receivedDate = LocalDate.parse("2016-05-10")
+          ),
+          EarlierYearUpdate(
+            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf551"),
+            studentLoanEYU = Some(BigDecimal(534.66)),
+            receivedDate = LocalDate.parse("2016-06-15")
+          ),
+          EarlierYearUpdate(
+            earlierYearUpdateId = UUID.fromString("7407debb-5aa2-445d-8633-1875a2ebf539"),
+            studentLoanEYU = None,
+            receivedDate = LocalDate.parse("2016-12-12")
+          )
+        )
+      )
+
+      payAndTaxWithEyus.earlierYearUpdatesWithStudentLoans.size                          should be(2)
+      payAndTaxWithEyus.earlierYearUpdatesWithStudentLoans.map(_.studentLoanEYU.get).sum should be(769.21)
     }
 
     "ignore EYU fields when deserialising JSON and only use base submission totals" in {

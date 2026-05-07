@@ -115,9 +115,9 @@ trait Constants {
         EmploymentIncomeAndTax(emp1LiveOccupationalPension.employmentId.toString, BigDecimal(100), BigDecimal(200))
       ),
       employmentTaxablePayTotal = BigDecimal(100),
-      pensionTaxablePayTotal = BigDecimal(200),
+      pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
       employmentTaxTotal = BigDecimal(300),
-      pensionTaxTotal = BigDecimal(400)
+      pensionTaxTotalIncludingEYU = BigDecimal(400)
     )
 
   val employments: List[Employment] =

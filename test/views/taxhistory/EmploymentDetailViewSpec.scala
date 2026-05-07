@@ -252,6 +252,46 @@ class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Const
       incomeTaxPaid.text                                                         should include("£979.36")
     }
 
+    "have correct Earlier Year Update details" when {
+      "its size is 1" in new ViewFixture {
+        override def view: HtmlFormat.Appendable = inject[employment_detail].apply(
+          taxYear,
+          Some(payAndTax.copy(earlierYearUpdates = List(eyu1))),
+          employment,
+          List.empty,
+          clientName,
+          None,
+          createEmploymentViewDetail(isPension = false, employment.employerName)
+        )(using request, messages, appConfig)
+
+        document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
+          "Your client's year-to-date income record includes these updates."
+
+        val eyuStudentLoanRow0: Element = document(view).select("#eyu-student-loan-table tbody tr").get(0)
+        eyuStudentLoanRow0.text should include("21 January 2016")
+        eyuStudentLoanRow0.text should include("£10")
+      }
+
+      "its size is 2" in new ViewFixture {
+        override def view: HtmlFormat.Appendable = inject[employment_detail].apply(
+          taxYear,
+          Some(payAndTax),
+          employment,
+          List.empty,
+          clientName,
+          None,
+          createEmploymentViewDetail(isPension = false, employment.employerName)
+        )(using request, messages, appConfig)
+
+        document(view).getElementById("EYUs").child(1).child(0).text shouldEqual
+          "Your client's year-to-date income record includes these updates."
+
+        val eyuStudentLoanRow0: Element = document(view).select("#eyu-student-loan-table tbody tr").get(0)
+        eyuStudentLoanRow0.text should include("21 January 2016")
+        eyuStudentLoanRow0.text should include("£10")
+      }
+    }
+
     "have correct company benefits details" in new ViewFixture {
 
       override def view: HtmlFormat.Appendable = inject[employment_detail].apply(

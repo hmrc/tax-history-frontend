@@ -394,8 +394,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
             ),
             employmentTaxablePayTotal = expectedTaxablePayTotal,
             employmentTaxTotal = expectedTaxTotal,
-            pensionTaxablePayTotal = BigDecimal(0),
-            pensionTaxTotal = BigDecimal(0)
+            pensionTaxablePayTotalIncludingEYU = BigDecimal(0),
+            pensionTaxTotalIncludingEYU = BigDecimal(0)
           )
         )
 
@@ -434,8 +434,8 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
           ),
           employmentTaxablePayTotal = BigDecimal(0),
           employmentTaxTotal = BigDecimal(0),
-          pensionTaxablePayTotal = expectedTaxablePayTotal,
-          pensionTaxTotal = expectedTaxTotal
+          pensionTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
+          pensionTaxTotalIncludingEYU = expectedTaxTotal
         )
       )
     }

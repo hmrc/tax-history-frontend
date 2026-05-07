@@ -476,7 +476,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       )
     document(view)
       .getElementById("pensionIncome")
-      .text() shouldBe s"£${totalIncome.pensionTaxablePayTotal.toString()}"
+      .text() shouldBe s"£${totalIncome.pensionTaxablePayTotalIncludingEYU.toString()}"
     document(view)
       .getElementById("employmentIncomeTax")
       .text() shouldBe s"£${totalIncome.employmentTaxTotal.toString()}"
@@ -485,7 +485,7 @@ class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Cons
       .text() shouldBe s"£${totalIncome.employmentTaxablePayTotal.toString()}"
     document(view)
       .getElementById("pensionIncomeTax")
-      .text() shouldBe s"£${totalIncome.pensionTaxTotal.toString()}"
+      .text() shouldBe s"£${totalIncome.pensionTaxTotalIncludingEYU.toString()}"
   }
 
   "Show correct total amounts for two employers and one pension" in new ViewFixture {

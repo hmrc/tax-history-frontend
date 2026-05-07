@@ -209,9 +209,9 @@ class EmploymentSummaryController @Inject() (
           TotalIncome(
             employmentIncomeAndTax = employmentIncomeAndTax,
             employmentTaxablePayTotal = employmentsPayAndTax.map(pickTaxablePayTotal).sum,
-            pensionTaxablePayTotal = pensionsPayAndTax.map(pickTaxablePayTotal).sum,
+            pensionTaxablePayTotalIncludingEYU = pensionsPayAndTax.map(pickTaxablePayTotal).sum,
             employmentTaxTotal = employmentsPayAndTax.map(pickTaxTotal).sum,
-            pensionTaxTotal = pensionsPayAndTax.map(pickTaxTotal).sum
+            pensionTaxTotalIncludingEYU = pensionsPayAndTax.map(pickTaxTotal).sum
           )
         )
       )

@@ -53,7 +53,7 @@
     @payments()
 
     @if(!employment.isJobseekersAllowance) {
-        @studentLoanUpdates()
+        @earlierYearUpdates()
         @companyBenefitsInfo()
         @taxCodeBreakdown()
     }
@@ -115,7 +115,7 @@
                         @payAndTax.taxTotal.map(Currency(_)).getOrElse(Messages("employmenthistory.nopaydata"))
                     </dd>
                 </div>
-                @for(studentLoan <- payAndTax.studentLoanIncludingEYU.orElse(payAndTax.studentLoan)) {
+                @for(studentLoan <- payAndTax.studentLoanIncludingEYU) {
                     <div class="govuk-summary-list__row">
                         <dt class="govuk-summary-list__key govuk-!-font-weight-bold">
                             @messages("employmenthistory.student.loans")
@@ -133,7 +133,7 @@
     }
 }
 
-@studentLoanUpdates() = {
+@earlierYearUpdates() = {
     @payAndTaxOpt.map { payAndTax =>
         @if(payAndTax.earlierYearUpdatesWithStudentLoans.nonEmpty) {
             <details class="govuk-details" data-module="govuk-details" id="EYUs">

@@ -46,6 +46,11 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
         receivedDate = LocalDate.EPOCH
       )
 
+      val json         = Json.toJson(update)
+      val deserialized = json.as[EarlierYearUpdate]
+
+      deserialized.shouldBe(update)
+
       "serialize and deserialize to/from JSON" in {
         val json = Json.toJson(update)
         json.validate[EarlierYearUpdate] shouldBe JsSuccess(update)

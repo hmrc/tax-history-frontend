@@ -101,6 +101,7 @@ class TaxHistoryConnectorSpec extends BaseConnectorSpec {
         taxablePayTotal = Some(BigDecimal(1234567.89)),
         taxTotal = Some(BigDecimal(2222.22)),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
@@ -144,6 +145,7 @@ class TaxHistoryConnectorSpec extends BaseConnectorSpec {
         taxablePayTotal = Some(4896.80),
         taxTotal = Some(979.36),
         studentLoan = Some(101.00),
+        studentLoanIncludingEYU = Some(101.00),
         paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
@@ -217,6 +219,7 @@ class TaxHistoryConnectorSpec extends BaseConnectorSpec {
         taxablePayTotal = Some(BigDecimal(1234567.89)),
         taxTotal = Some(BigDecimal(2222.22)),
         studentLoan = None,
+        studentLoanIncludingEYU = None,
         paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
 
