@@ -16,8 +16,8 @@
 
 package models
 
-import model.api.{IncomeSource, TaAllowance, TaDeduction}
-import models.taxhistory.{EarlierYearUpdate, SelectTaxYear}
+import model.api.{EarlierYearUpdate, IncomeSource, TaAllowance, TaDeduction}
+import models.taxhistory.SelectTaxYear
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
@@ -43,8 +43,6 @@ class SerializationSpec extends AnyWordSpecLike with Matchers {
 
     "EarlierYearUpdate" should {
       val update = EarlierYearUpdate(
-        taxablePayEYU = BigDecimal.decimal(55L),
-        taxEYU = BigDecimal.decimal(2024L),
         receivedDate = LocalDate.EPOCH
       )
 

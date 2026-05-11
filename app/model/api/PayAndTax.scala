@@ -24,20 +24,15 @@ import java.util.UUID
 
 case class PayAndTax(
   payAndTaxId: UUID = UUID.randomUUID(),
-  taxablePayTotal: Option[BigDecimal],
-  taxablePayTotalIncludingEYU: Option[BigDecimal],
-  taxTotal: Option[BigDecimal],
-  taxTotalIncludingEYU: Option[BigDecimal],
-  studentLoan: Option[BigDecimal],
-  studentLoanIncludingEYU: Option[BigDecimal],
-  paymentDate: Option[LocalDate],
-  earlierYearUpdates: List[EarlierYearUpdate]
+  taxablePayTotal: Option[BigDecimal] = None,
+  taxTotal: Option[BigDecimal] = None,
+  studentLoan: Option[BigDecimal] = None,
+  studentLoanIncludingEYU: Option[BigDecimal] = None,
+  paymentDate: Option[LocalDate] = None,
+  earlierYearUpdates: List[EarlierYearUpdate] = Nil
 ) {
-
-  val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate]    = earlierYearUpdates
-    .filter(_.studentLoanEYU.isDefined)
-  val earlierYearUpdatesWithNonZeroPayOrTax: List[EarlierYearUpdate] = earlierYearUpdates
-    .filter(x => x.taxablePayEYU != 0.00 || x.taxEYU != 0.00)
+  val earlierYearUpdatesWithStudentLoans: List[EarlierYearUpdate] =
+    earlierYearUpdates.filter(_.studentLoanEYU.isDefined)
 }
 
 object PayAndTax extends LocalDateFormat {

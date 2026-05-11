@@ -130,9 +130,9 @@ trait Constants {
         EmploymentIncomeAndTax(pension.employmentId.toString, BigDecimal(100), BigDecimal(200)),
         EmploymentIncomeAndTax(emp1LiveOccupationalPension.employmentId.toString, BigDecimal(100), BigDecimal(200))
       ),
-      employmentTaxablePayTotalIncludingEYU = BigDecimal(100),
+      employmentTaxablePayTotal = BigDecimal(100),
       pensionTaxablePayTotalIncludingEYU = BigDecimal(200),
-      employmentTaxTotalIncludingEYU = BigDecimal(300),
+      employmentTaxTotal = BigDecimal(300),
       pensionTaxTotalIncludingEYU = BigDecimal(400)
     )
 
@@ -194,8 +194,6 @@ trait Constants {
 
   val eyu1: EarlierYearUpdate =
     EarlierYearUpdate(
-      taxablePayEYU = 0,
-      taxEYU = 8.99,
       studentLoanEYU = Some(10.0),
       receivedDate = startDate,
       receivedDateFormatted = Some(startDateFormatted)
@@ -203,8 +201,6 @@ trait Constants {
 
   val eyu2: EarlierYearUpdate =
     EarlierYearUpdate(
-      taxablePayEYU = 10,
-      taxEYU = 18.99,
       receivedDate = LocalDate.parse("2016-05-21"),
       receivedDateFormatted = Some("21 May 2016")
     )
@@ -214,9 +210,7 @@ trait Constants {
   val payAndTax: PayAndTax =
     PayAndTax(
       taxablePayTotal = Some(4896.80),
-      taxablePayTotalIncludingEYU = Some(4906.80),
       taxTotal = Some(979.36),
-      taxTotalIncludingEYU = Some(1007.34),
       studentLoan = Some(101.00),
       studentLoanIncludingEYU = Some(111.0),
       paymentDate = Some(LocalDate.parse("2016-02-20")),
@@ -226,25 +220,17 @@ trait Constants {
   val payAndTaxNoTotal: PayAndTax =
     PayAndTax(
       taxablePayTotal = None,
-      taxablePayTotalIncludingEYU = None,
       taxTotal = None,
-      taxTotalIncludingEYU = None,
       studentLoan = Some(101.00),
-      studentLoanIncludingEYU = Some(101.0),
-      paymentDate = Some(LocalDate.parse("2016-02-20")),
-      earlierYearUpdates = List.empty
+      paymentDate = Some(LocalDate.parse("2016-02-20"))
     )
 
   val payAndTaxNoStudentLoan: PayAndTax =
     PayAndTax(
       taxablePayTotal = Some(4896.80),
-      taxablePayTotalIncludingEYU = Some(4906.80),
       taxTotal = Some(979.36),
-      taxTotalIncludingEYU = Some(1007.34),
       studentLoan = None,
-      studentLoanIncludingEYU = None,
-      paymentDate = Some(LocalDate.parse("2016-02-20")),
-      earlierYearUpdates = eyuList
+      paymentDate = Some(LocalDate.parse("2016-02-20"))
     )
 
   val uuid: UUID = UUID.randomUUID()

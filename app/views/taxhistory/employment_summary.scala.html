@@ -209,8 +209,8 @@
                         <td class="govuk-table__cell"></td>
                         <td class="govuk-table__cell"></td>
                         <td class="govuk-table__cell"></td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="employmentIncome">@Html(s"${Currency(incomeTotals.get.employmentTaxablePayTotalIncludingEYU)}")</td>
-                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="employmentIncomeTax">@Html(s"${Currency(incomeTotals.get.employmentTaxTotalIncludingEYU)}")</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.income")" id="employmentIncome">@Html(s"${Currency(incomeTotals.get.employmentTaxablePayTotal)}")</td>
+                        <td class="govuk-table__cell govuk-table__cell--numeric" data-label="@messages("lbl.tax")" id="employmentIncomeTax">@Html(s"${Currency(incomeTotals.get.employmentTaxTotal)}")</td>
                         <td class="govuk-table__cell"></td>
                 }
             </tbody>

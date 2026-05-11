@@ -26,22 +26,44 @@ class EarlierYearUpdateSpec extends TestUtil with BaseSpec {
 
   lazy val earlierYearUpdate1: EarlierYearUpdate = EarlierYearUpdate(
     earlierYearUpdateId = UUID.fromString("cf1886e7-ae56-4ec2-84a6-926d64ace287"),
-    taxablePayEYU = BigDecimal(6543.21),
-    taxEYU = BigDecimal(123.45),
     receivedDate = LocalDate.parse("2016-06-26")
   )
 
-  "Employment" should {
+  "EarlierYearUpdate" should {
 
-    "generate employmentId when none is supplied" in {
+    "generate earlierYearUpdateId when none is supplied" in {
       val eyu = EarlierYearUpdate(
-        taxablePayEYU = BigDecimal(1.11),
-        taxEYU = BigDecimal(22.22),
         receivedDate = LocalDate.parse("2015-05-29")
       )
 
       eyu.earlierYearUpdateId.toString.nonEmpty shouldBe true
       eyu.earlierYearUpdateId                  shouldNot be(earlierYearUpdate1.earlierYearUpdateId)
+    }
+
+    "default studentLoanEYU to None when not supplied" in {
+      val eyu = EarlierYearUpdate(receivedDate = LocalDate.parse("2015-05-29"))
+      eyu.studentLoanEYU shouldBe None
+    }
+
+    "store studentLoanEYU when supplied" in {
+      val eyu = EarlierYearUpdate(
+        studentLoanEYU = Some(BigDecimal(333.33)),
+        receivedDate = LocalDate.parse("2015-05-29")
+      )
+      eyu.studentLoanEYU shouldBe Some(BigDecimal(333.33))
+    }
+
+    "default receivedDateFormatted to None when not supplied" in {
+      val eyu = EarlierYearUpdate(receivedDate = LocalDate.parse("2015-05-29"))
+      eyu.receivedDateFormatted shouldBe None
+    }
+
+    "store receivedDateFormatted when supplied" in {
+      val eyu = EarlierYearUpdate(
+        receivedDate = LocalDate.parse("2015-05-29"),
+        receivedDateFormatted = Some("29 May 2015")
+      )
+      eyu.receivedDateFormatted shouldBe Some("29 May 2015")
     }
   }
 }

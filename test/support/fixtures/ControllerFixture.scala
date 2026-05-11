@@ -63,13 +63,9 @@ trait ControllerFixture {
     PayAndTax(
       payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
       taxablePayTotal = Some(4896.80),
-      taxablePayTotalIncludingEYU = Some(4896.80),
       taxTotal = Some(979.36),
-      taxTotalIncludingEYU = Some(979.36),
       studentLoan = Some(1337),
-      studentLoanIncludingEYU = None,
-      paymentDate = Some(LocalDate.parse("2016-02-20")),
-      earlierYearUpdates = List()
+      paymentDate = Some(LocalDate.parse("2016-02-20"))
     )
 
   val allowance: Allowance = Allowance(
@@ -101,25 +97,17 @@ trait ControllerFixture {
       PayAndTax(
         payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae3"),
         taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(12.34),
         taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       ),
     "01318d7c-bcd9-47e2-8c38-551e7ccdfae4" ->
       PayAndTax(
         payAndTaxId = UUID.fromString("01318d7c-bcd9-47e2-8c38-551e7ccdfae4"),
         taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(90.12),
         taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
   )
 
@@ -127,24 +115,16 @@ trait ControllerFixture {
     UUID.randomUUID().toString ->
       PayAndTax(
         taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(12.34),
         taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(56.78),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       ),
     UUID.randomUUID().toString ->
       PayAndTax(
         taxablePayTotal = Some(4896.80),
-        taxablePayTotalIncludingEYU = Some(90.12),
         taxTotal = Some(979.36),
-        taxTotalIncludingEYU = Some(34.56),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = Some(LocalDate.parse("2016-02-20")),
-        earlierYearUpdates = List.empty
+        paymentDate = Some(LocalDate.parse("2016-02-20"))
       )
   )
 }

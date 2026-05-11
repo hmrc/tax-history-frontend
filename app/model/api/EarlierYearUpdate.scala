@@ -24,8 +24,6 @@ import java.util.UUID
 
 case class EarlierYearUpdate(
   earlierYearUpdateId: UUID = UUID.randomUUID(),
-  taxablePayEYU: BigDecimal,
-  taxEYU: BigDecimal,
   studentLoanEYU: Option[BigDecimal] = None,
   receivedDate: LocalDate,
   receivedDateFormatted: Option[String] = None

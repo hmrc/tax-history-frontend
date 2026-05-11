@@ -195,6 +195,22 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       contentAsString(result) should include(Messages("employmenthistory.title"))
     }
 
+    "display only base submission totals and not EYU-inflated totals on the employment summary page" in new LocalSetup {
+      val payAndTaxWithEyuJson = loadFile("/json/model/api/payAndTaxWithEyu.json")
+
+      when(controller.taxHistoryConnector.getAllPayAndTax(argEq(Nino(nino)), argEq(taxYear))(using any[HeaderCarrier]))
+        .thenReturn(Future.successful(HttpResponse(OK, payAndTaxWithEyuJson.toString, Map.empty)))
+
+      val result: Future[Result] = controller.getTaxHistory(taxYear).apply(fakeRequestWithNino)
+      status(result) shouldBe OK
+
+      val content = contentAsString(result)
+      content    should include("4,896.80")
+      content shouldNot include("6,000")
+      content    should include("979.36")
+      content shouldNot include("1,200")
+    }
+
     "return 200 and show technical error page when no citizen details available" in new LocalSetup {
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(NOT_FOUND, "")))
@@ -313,41 +329,29 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       PayAndTax(
         payAndTaxId = empl1.employmentId,
         taxablePayTotal = Some(1),
-        taxablePayTotalIncludingEYU = Some(100),
         taxTotal = Some(1000),
-        taxTotalIncludingEYU = Some(10000),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = None,
-        earlierYearUpdates = Nil
+        paymentDate = None
       )
 
     val payAndTax2 =
       PayAndTax(
         payAndTaxId = empl2.employmentId,
         taxablePayTotal = Some(2),
-        taxablePayTotalIncludingEYU = Some(200),
         taxTotal = Some(2000),
-        taxTotalIncludingEYU = Some(20000),
         studentLoan = None,
-        studentLoanIncludingEYU = None,
-        paymentDate = None,
-        earlierYearUpdates = Nil
+        paymentDate = None
       )
 
     val payAndTax3 = PayAndTax(
       payAndTaxId = empl3.employmentId,
       taxablePayTotal = Some(2),
-      taxablePayTotalIncludingEYU = None,
       taxTotal = None,
-      taxTotalIncludingEYU = None,
       studentLoan = None,
-      studentLoanIncludingEYU = None,
-      paymentDate = None,
-      earlierYearUpdates = Nil
+      paymentDate = None
     )
 
-    "return Taxable Pay Totals and Tax Totals that are sums of all employment's Totals including Earlier Year Updates" in {
+    "return Taxable Pay Totals and Tax Totals that are sums of all employment's Totals excluding EYU values" in {
 
       val controller        = injected[EmploymentSummaryController]
       val actualTotalIncome =
@@ -362,9 +366,11 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
           )
         )
 
-      val expectedTaxablePayTotal = 300
+      val expectedTaxablePayTotal = 5
+      val expectedTaxTotal        = 3000
 
-      val expectedTaxTotal = 30000
+      val eyuTaxablePayTotal = 900
+      val eyuTaxTotal        = 500
 
       val expectedTotalIncome =
         Some(
@@ -372,31 +378,33 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
             employmentIncomeAndTax = List(
               EmploymentIncomeAndTax(
                 employmentId = empl1.employmentId.toString,
-                income = 100,
-                tax = 10000
+                income = 1,
+                tax = 1000
               ),
               EmploymentIncomeAndTax(
                 employmentId = empl2.employmentId.toString,
-                income = 200,
-                tax = 20000
+                income = 2,
+                tax = 2000
               ),
               EmploymentIncomeAndTax(
                 employmentId = empl3.employmentId.toString,
-                income = 0,
+                income = 2,
                 tax = 0
               )
             ),
-            employmentTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
-            employmentTaxTotalIncludingEYU = expectedTaxTotal,
+            employmentTaxablePayTotal = expectedTaxablePayTotal,
+            employmentTaxTotal = expectedTaxTotal,
             pensionTaxablePayTotalIncludingEYU = BigDecimal(0),
             pensionTaxTotalIncludingEYU = BigDecimal(0)
           )
         )
 
-      actualTotalIncome shouldBe expectedTotalIncome
+      actualTotalIncome                                shouldBe expectedTotalIncome
+      actualTotalIncome.get.employmentTaxablePayTotal shouldNot be(expectedTaxablePayTotal + eyuTaxablePayTotal)
+      actualTotalIncome.get.employmentTaxTotal        shouldNot be(expectedTaxTotal + eyuTaxTotal)
     }
 
-    "return Taxable Pay Totals and Tax Totals that are sums of all pensions's Totals including Earlier Year Updates" in {
+    "return Taxable Pay Totals and Tax Totals that are sums of all pensions's Totals" in {
       val controller  = injected[EmploymentSummaryController]
       val totalIncome = await(
         controller.buildIncomeTotals(
@@ -408,25 +416,24 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
         )
       )
 
-      val expectedTaxablePayTotal =
-        payAndTax1.taxablePayTotalIncludingEYU.get + payAndTax2.taxablePayTotalIncludingEYU.get
-      val expectedTaxTotal        = payAndTax1.taxTotalIncludingEYU.get + payAndTax2.taxTotalIncludingEYU.get
+      val expectedTaxablePayTotal = payAndTax1.taxablePayTotal.get + payAndTax2.taxablePayTotal.get
+      val expectedTaxTotal        = payAndTax1.taxTotal.get + payAndTax2.taxTotal.get
       totalIncome shouldBe Some(
         TotalIncome(
           employmentIncomeAndTax = List(
             EmploymentIncomeAndTax(
               empl1.employmentId.toString,
-              payAndTax1.taxablePayTotalIncludingEYU.get,
-              payAndTax1.taxTotalIncludingEYU.get
+              payAndTax1.taxablePayTotal.get,
+              payAndTax1.taxTotal.get
             ),
             EmploymentIncomeAndTax(
               empl2.employmentId.toString,
-              payAndTax2.taxablePayTotalIncludingEYU.get,
-              payAndTax2.taxTotalIncludingEYU.get
+              payAndTax2.taxablePayTotal.get,
+              payAndTax2.taxTotal.get
             )
           ),
-          employmentTaxablePayTotalIncludingEYU = BigDecimal(0),
-          employmentTaxTotalIncludingEYU = BigDecimal(0),
+          employmentTaxablePayTotal = BigDecimal(0),
+          employmentTaxTotal = BigDecimal(0),
           pensionTaxablePayTotalIncludingEYU = expectedTaxablePayTotal,
           pensionTaxTotalIncludingEYU = expectedTaxTotal
         )
@@ -437,5 +444,6 @@ class EmploymentSummaryControllerSpec extends ControllerSpec with ControllerFixt
       val controller = injected[EmploymentSummaryController]
       await(controller.buildIncomeTotals(Nil, Nil)) shouldBe None
     }
+
   }
 }

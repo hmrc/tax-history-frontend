@@ -18,9 +18,9 @@ package model.api
 
 case class TotalIncome(
   employmentIncomeAndTax: List[EmploymentIncomeAndTax],
-  employmentTaxablePayTotalIncludingEYU: BigDecimal,
+  employmentTaxablePayTotal: BigDecimal,
   pensionTaxablePayTotalIncludingEYU: BigDecimal,
-  employmentTaxTotalIncludingEYU: BigDecimal,
+  employmentTaxTotal: BigDecimal,
   pensionTaxTotalIncludingEYU: BigDecimal
 ) {
 
