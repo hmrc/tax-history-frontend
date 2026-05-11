@@ -16,8 +16,8 @@
 
 package models
 
-import model.api.{IncomeSource, TaAllowance, TaDeduction}
-import models.taxhistory.{EarlierYearUpdate, SelectTaxYear}
+import model.api.{EarlierYearUpdate, IncomeSource, TaAllowance, TaDeduction}
+import models.taxhistory.SelectTaxYear
 import org.scalatest.matchers.should.Matchers
 import org.scalatest.wordspec.AnyWordSpecLike
 import play.api.libs.json.{JsSuccess, Json}
