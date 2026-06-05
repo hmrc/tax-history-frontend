@@ -16,6 +16,7 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichServiceNavigation
 @import views.models.PageTitle
 
 @this(
@@ -29,7 +30,6 @@
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
 )
 
 @(
@@ -67,9 +67,6 @@
 }
 
 @beforeContentBlock = {
-    @if(appConfig.welshEnabled && !appConfig.forceNavigation){
-        @hmrcLanguageSelectHelper()
-    }
     @if(signOut){
         @govukBackLink(BackLink(href = backLink.fold("#")(customUrl => customUrl), content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link")))
     }
@@ -89,7 +86,11 @@
             serviceName = Some(messages("service.name")),
             serviceUrl = Some(appConfig.agentAccountHomePage),
             signOutUrl = if(signOut) Some(routes.SignedOutController.logout().url) else None,
-            isWelshTranslationAvailable = if (appConfig.forceNavigation && appConfig.welshEnabled) true else false,
+            isWelshTranslationAvailable = appConfig.welshEnabled,
+            serviceNavigation = if (appConfig.welshEnabled) Some(ServiceNavigation(
+                serviceName = Some(messages("service.name")),
+                serviceUrl = Some(appConfig.agentAccountHomePage)
+            ).withLanguageToggle()) else None,
             phaseBanner = Some(
                 PhaseBanner(
                     tag = Some(Tag(content = Text("beta"))),
