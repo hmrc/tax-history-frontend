@@ -16,7 +16,6 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
-@import uk.gov.hmrc.govukfrontend.views.html.components.implicits.RichServiceNavigation
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides, Banners}
 @import views.models.PageTitle
 
@@ -117,10 +116,6 @@
         serviceUrl = Some(appConfig.agentAccountHomePage),
         signOutUrl = if (signOut) Some(routes.SignedOutController.logout().url) else None
     ),
-    serviceNavigation = if (appConfig.welshEnabled) Some(ServiceNavigation(
-        serviceName = Some(messages("service.name")),
-        serviceUrl = Some(appConfig.agentAccountHomePage)
-    ).withLanguageToggle()) else None,
     banners = Banners(
         phaseBanner = Some(PhaseBanner(
             tag = Some(Tag(content = Text("beta"))),
