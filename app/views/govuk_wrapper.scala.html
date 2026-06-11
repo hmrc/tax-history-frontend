@@ -16,20 +16,15 @@
 
 @import config.AppConfig
 @import uk.gov.hmrc.govukfrontend.views.html.components._
+@import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage.{HmrcStandardPageParams, ServiceURLs, TemplateOverrides, Banners}
 @import views.models.PageTitle
 
 @this(
     appConfig: AppConfig,
-    govukTemplate: GovukTemplate,
+    hmrcStandardPage: HmrcStandardPage,
     govukBackLink: GovukBackLink,
-    govukPhaseBanner: GovukPhaseBanner,
-    hmrcHead: HmrcHead,
-    hmrcStandardHeader: HmrcStandardHeader,
-    hmrcStandardFooter: HmrcStandardFooter,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
-    hmrcScripts: HmrcScripts,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    hmrcLanguageSelectHelper: HmrcLanguageSelectHelper,
 )
 
 @(
@@ -41,7 +36,7 @@
     backLink: Option[String]= None,
 )(mainContent: Html)(implicit request: RequestHeader, messages: Messages, appConfig: config.AppConfig)
 
-@head ={
+@additionalHead = {
     <meta name="format-detection" content="telephone=no" />
     <link rel="stylesheet" media="all" href='@routes.Assets.versioned("stylesheets/taxhistory.css")' type="text/css"/>
 
@@ -67,16 +62,45 @@
 }
 
 @beforeContentBlock = {
-    @if(appConfig.welshEnabled && !appConfig.forceNavigation){
-        @hmrcLanguageSelectHelper()
-    }
+    <div class="govuk-width-container">
+
+            <!-- ACCOUNT MENU -->
+        <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
+            @if(signOut){
+                <a id="nav-home" href="@appConfig.agentAccountHomePage" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
+                    <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
+                </a>
+            }
+
+            @if(request.path.contains("record") || request.path.contains("/no-data/") || request.path.contains("tax-year") ) {
+                <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
+            }
+
+            <ul class="hmrc-account-menu__main js-hidden">
+                @defining(request.path.contains("record") || request.path.contains("/no-data/")) { navigationCheck =>
+                    @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
+                        <li>
+                            <a id="nav-client" href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">@messages("nav.client")</a>
+                        </li>
+                    }
+
+                    @if(navigationCheck) {
+                        <li>
+                            <a id="nav-year" href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">@messages("nav.year")</a>
+                        </li>
+                    }
+                }
+            </ul>
+        </nav>
+            <!-- END ACCOUNT MENU -->
+    </div>
+
     @if(signOut){
         @govukBackLink(BackLink(href = backLink.fold("#")(customUrl => customUrl), content = Text(messages("lbl.back")), attributes = Map("id" -> "back-link")))
     }
 }
 
 @content = {
-
     @mainContent
 
     <div class="govuk-!-font-size-19">
@@ -84,62 +108,23 @@
     </div>
 }
 
-    @header = {
-        @hmrcStandardHeader(
-            serviceName = Some(messages("service.name")),
-            serviceUrl = Some(appConfig.agentAccountHomePage),
-            signOutUrl = if(signOut) Some(routes.SignedOutController.logout().url) else None,
-            isWelshTranslationAvailable = if (appConfig.forceNavigation && appConfig.welshEnabled) true else false,
-            phaseBanner = Some(
-                PhaseBanner(
-                    tag = Some(Tag(content = Text("beta"))),
-                    content = HtmlContent(feedbackBanner)
-                )
-            )
-        )
-
-        <div class="govuk-width-container">
-
-                <!-- ACCOUNT MENU -->
-            <nav id="secondary-nav" class="hmrc-account-menu" aria-label="Account" data-module="hmrc-account-menu">
-                @if(signOut){
-                    <a id="nav-home" href="@appConfig.agentAccountHomePage" class="hmrc-account-menu__link hmrc-account-menu__link--home hmrc-account-menu__link--active">
-                        <span class="hmrc-account-icon hmrc-account-icon--home">@messages("nav.home")</span>
-                    </a>
-                }
-
-                @if(request.path.contains("record") || request.path.contains("/no-data/") || request.path.contains("tax-year") ) {
-                    <a href="#" class="hmrc-account-menu__link hmrc-account-menu__link--menu js-hidden js-visible" tabindex="-1" aria-hidden="true" aria-expanded="false">@messages("nav.menu")</a>
-                }
-
-                <ul class="hmrc-account-menu__main js-hidden">
-                    @defining(request.path.contains("record") || request.path.contains("/no-data/")) { navigationCheck =>
-                        @if(request.path == "/tax-history/select-tax-year" || navigationCheck) {
-                            <li>
-                                <a id="nav-client" href="@routes.SelectClientController.getSelectClientPage()" class="hmrc-account-menu__link">@messages("nav.client")</a>
-                            </li>
-                        }
-
-                        @if(navigationCheck) {
-                            <li>
-                                <a id="nav-year" href="@routes.SelectTaxYearController.getSelectTaxYearPage()" class="hmrc-account-menu__link">@messages("nav.year")</a>
-                            </li>
-                        }
-                    }
-                </ul>
-            </nav>
-                <!-- END ACCOUNT MENU -->
-        </div>
-    }
-
-
-@govukTemplate(
-    htmlLang = Some(messages.lang.code),
+@hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(title.fullTitle()),
-    headBlock = Some(hmrcHead(headBlock = Some(head))),
-    headerBlock = header,
-    beforeContentBlock = Some(beforeContentBlock),
-    footerBlock = hmrcStandardFooter(),
-    mainClasses = None,
-    bodyEndBlock = Some(hmrcScripts() )
-)(content)
+    serviceName = Some(messages("service.name")),
+    isWelshTranslationAvailable = appConfig.welshEnabled,
+    serviceURLs = ServiceURLs(
+        serviceUrl = Some(appConfig.agentAccountHomePage),
+        signOutUrl = if (signOut) Some(routes.SignedOutController.logout().url) else None
+    ),
+    banners = Banners(
+        phaseBanner = Some(PhaseBanner(
+            tag = Some(Tag(content = Text("beta"))),
+            content = HtmlContent(feedbackBanner)
+        ))
+    ),
+    templateOverrides = TemplateOverrides(
+        additionalHeadBlock = Some(additionalHead),
+        beforeContentBlock = Some(beforeContentBlock),
+        mainContentLayout = Some(TemplateOverrides.noMainContentLayout)
+    )
+))(content)
