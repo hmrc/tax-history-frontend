@@ -41,7 +41,7 @@ class AppConfig @Inject() (val servicesConfig: ServicesConfig) {
   private lazy val basGatewayBaseUrl: String = servicesConfig.getString("bas-gateway.host")
   lazy val signOutUrl: String                = s"$basGatewayBaseUrl/bas-gateway/sign-out-without-state"
   private lazy val feedbackBaseUrl: String   = servicesConfig.getString("feedback-frontend.host")
-  val exitSurveyUrl: String                  = s"$feedbackBaseUrl/feedback/AGENTINDIV"
+  val exitSurveyUrl: String                  = s"$feedbackBaseUrl/feedback/AGENTINDIV?useServiceNavigation"
 
   lazy val timeout: Int          = servicesConfig.getInt("timeout.timeout")
   lazy val timeoutCountdown: Int = servicesConfig.getInt("timeout.countdown")

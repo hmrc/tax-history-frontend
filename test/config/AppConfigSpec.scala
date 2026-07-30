@@ -40,7 +40,7 @@ class AppConfigSpec extends BaseSpec {
       }
 
       "exitSurveyUrl" in {
-        appConfig.exitSurveyUrl shouldBe "http://localhost:9514/feedback/AGENTINDIV"
+        appConfig.exitSurveyUrl shouldBe "http://localhost:9514/feedback/AGENTINDIV?useServiceNavigation"
       }
 
       "signOutUrl" in {
