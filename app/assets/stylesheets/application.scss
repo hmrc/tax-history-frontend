@@ -1,4 +1,9 @@
+$hmrc-assets-path: "/tax-history/assets/lib/hmrc-frontend/hmrc/";
+
+@import "lib/govuk-frontend/dist/govuk/index";
 @import "lib/hmrc-frontend/hmrc/all";
+
+@import "account-menu";
 
 .app-reference-number {
   display: block;
