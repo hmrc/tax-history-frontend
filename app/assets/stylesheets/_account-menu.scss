@@ -1,18 +1,3 @@
-// previously provided by govuk-template, no equivalent in govuk-frontend
-.hidden {
-  display: none;
-  visibility: hidden;
-}
-
-// dirty, dirty, dirty
-// Necessary as there's a specificity problem on the <li>'s in the mobile menu
-// Note: these are relied on by teams not using the account menu, so handle with care
-.hidden,
-.no-js .js-visible,
-.js .js-hidden {
-  display: none !important;
-}
-
 $hmrc-account-menu-grey-1: #4a4a4a;
 $hmrc-account-menu-yellow-1: #ffbf47;
 $hmrc-account-menu-blue-1: #005ea5;
@@ -363,5 +348,3 @@ $hmrc-banner-blue: #005ea5;
     padding: 20px 30px 10px;
   }
 }
-
-/* stylelint-enable no-descending-specificity */
