@@ -30,7 +30,8 @@ class GovUkWrapperViewForceNavigationSpec extends GuiceAppSpec with BaseViewSpec
   override implicit lazy val app =
     new GuiceApplicationBuilder()
       .configure(
-        "welsh-enabled" -> true
+        "welsh-enabled" -> true,
+        "play-frontend-hmrc.forceServiceNavigation" -> false
       )
       .build()
 
@@ -55,7 +56,7 @@ class GovUkWrapperViewForceNavigationSpec extends GuiceAppSpec with BaseViewSpec
     "render the Welsh language selector" in {
       val doc = document(view(welshMessages))
 
-      doc.select(".hmrc-service-navigation-language-select").isEmpty shouldBe false
+      doc.select(".hmrc-language-select").isEmpty shouldBe false
     }
 
     "render html lang as Welsh" in {
