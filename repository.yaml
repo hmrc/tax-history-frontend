@@ -3,6 +3,7 @@ description: Source code for the front end microservice for the Income Record Vi
 repoVisibility: public_0C3F0CE3E6E6448FAD341E7BFA50FCD333E06A20CFF05FCACE61154DDBBADF71
 type: Service
 service-type: Frontend
+serviceNowMapping: SNSVC0005657
 test-repositories:
   - tax-history-performance-tests
   - tax-history-acceptance-tests
