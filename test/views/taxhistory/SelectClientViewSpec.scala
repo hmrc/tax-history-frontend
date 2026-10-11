@@ -111,7 +111,7 @@ class SelectClientViewSpec extends GuiceAppSpec with BaseViewSpec {
 
     "display navigation bar with correct links" in new ViewFixture {
       document(this.view).getElementById("nav-home").text         shouldBe messages("nav.home")
-      validateConditionalContent("nav-client")
+      document(this.view).getElementById("nav-client").text       shouldBe messages("nav.client")
       validateConditionalContent("nav-year")
       document(this.view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }

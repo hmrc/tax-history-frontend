@@ -22,3 +22,5 @@ trait TaxHistorySessionKeys {
   val taxYearSessionKey = "USER_TAX_YEAR"
 
 }
+
+object TaxHistorySessionKeys extends TaxHistorySessionKeys
