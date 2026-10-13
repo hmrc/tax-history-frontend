@@ -37,7 +37,8 @@ import java.time.format.DateTimeFormatter
 
 class EmploymentDetailViewSpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
-  implicit val request: Request[AnyContentAsEmpty.type] = FakeRequest("GET", "/tax-history/single-record").withCSRFToken
+  implicit val request: Request[AnyContentAsEmpty.type] =
+    FakeRequest("GET", "/tax-history/single-record").withSession(ninoSessionKey -> nino).withCSRFToken
 
   trait ViewFixture extends Fixture {
 

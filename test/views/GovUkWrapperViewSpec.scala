@@ -19,6 +19,7 @@ package views
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import play.api.i18n.Messages
+import play.api.test.FakeRequest
 import play.twirl.api.{Html, HtmlFormat}
 import support.GuiceAppSpec
 import views.html.govuk_wrapper
@@ -78,11 +79,82 @@ class GovUkWrapperViewSpec extends GuiceAppSpec with BaseViewSpec {
       }
     }
 
+  private val selectClientUrl   = "/tax-history/select-client"
+  private val confirmDetailsUrl = "/tax-history/select-client-confirm"
+  private val selectTaxYearUrl  = "/tax-history/select-tax-year"
+  private val recordUrl         = "/tax-history/client-income-record/2024"
+
+  private def viewAtPath(path: String, clientSelected: Boolean = true): HtmlFormat.Appendable = {
+    val req =
+      if (clientSelected) FakeRequest("GET", path).withSession(ninoSessionKey -> nino)
+      else FakeRequest("GET", path)
+
+    injected[govuk_wrapper].apply(
+      title = PageTitle("page title")
+    )(
+      mainContent = Html("<h1>page heading</h1>")
+    )(
+      using request = req,
+      messages = messages,
+      appConfig = appConfig
+    )
+  }
+
   "GovUkWrapperView" when {
     renderViewTest(".apply", viewViaApply())
     renderViewTest(".render", viewViaRender)
     renderViewTest(".f", viewViaF)
     languageTest("default language", "en", viewViaApply())
     languageTest("language is toggled to Welsh", "cy", viewViaApply(welshMessages))
+  }
+
+  "the service navigation" should {
+
+    "hide 'Select year' before a client has been selected" in {
+      val doc = document(viewAtPath(selectClientUrl, clientSelected = false))
+
+      doc.getElementById("nav-home").text    shouldBe messages("nav.home")
+      doc.getElementById("nav-client").text  shouldBe messages("nav.client")
+      Option(doc.getElementById("nav-year")) shouldBe None
+    }
+
+    Seq("select client" -> selectClientUrl, "confirm details" -> confirmDetailsUrl).foreach { case (page, url) =>
+      s"hide 'Select year' on the $page page even when a NINO is in the session" in {
+        Option(document(viewAtPath(url)).getElementById("nav-year")) shouldBe None
+      }
+    }
+
+    "display 'Select year' once past the client selection pages" in {
+      val doc = document(viewAtPath(selectTaxYearUrl))
+
+      doc.getElementById("nav-home").text   shouldBe messages("nav.home")
+      doc.getElementById("nav-client").text shouldBe messages("nav.client")
+      doc.getElementById("nav-year").text   shouldBe messages("nav.year")
+    }
+
+    "mark 'Select client' as the current page on the select client page" in {
+      document(viewAtPath(selectClientUrl)).getElementById("nav-client").attr("aria-current") shouldBe "page"
+    }
+
+    "mark 'Select year' as the current page on the select tax year page" in {
+      val doc = document(viewAtPath(selectTaxYearUrl))
+
+      doc.getElementById("nav-year").attr("aria-current")   shouldBe "page"
+      doc.getElementById("nav-client").attr("aria-current") shouldBe ""
+    }
+
+    "mark no link as current on a page outside the navigation" in {
+      val doc = document(viewAtPath(recordUrl))
+
+      doc.getElementById("nav-home").attr("aria-current")   shouldBe ""
+      doc.getElementById("nav-client").attr("aria-current") shouldBe ""
+      doc.getElementById("nav-year").attr("aria-current")   shouldBe ""
+    }
+
+    "render the Welsh language selector inside the service navigation" in {
+      document(viewViaApply(welshMessages))
+        .select(".hmrc-service-navigation-language-select")
+        .isEmpty shouldBe false
+    }
   }
 }

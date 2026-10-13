@@ -63,10 +63,6 @@ class AppConfigSpec extends BaseSpec {
         appConfig.welshEnabled shouldBe true
       }
 
-      "forceNavigation" in {
-        appConfig.forceNavigation shouldBe true
-      }
-
       "betaFeedbackUrl" in {
         appConfig.betaFeedbackUrl shouldBe "http://localhost:9250/contact/beta-feedback"
       }

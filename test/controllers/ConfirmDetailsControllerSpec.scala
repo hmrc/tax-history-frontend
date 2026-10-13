@@ -66,7 +66,7 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
   "ConfirmDetailsController" must {
 
     "successfully load confirm details page with name when citizen details returns 200 OK" in new Setup {
-      implicit val request: Request[?] = fakeRequest
+      implicit val request: Request[?] = fakeRequestWithNino
 
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(Future.successful(HttpResponse(status = OK, json = Json.toJson(person), headers = Map.empty)))
@@ -79,7 +79,7 @@ class ConfirmDetailsControllerSpec extends ControllerSpec with BaseSpec {
     }
 
     "successfully load confirm details page with no name when citizen details returns 200 OK" in new Setup {
-      implicit val request: Request[?] = fakeRequest
+      implicit val request: Request[?] = fakeRequestWithNino
 
       when(controller.citizenDetailsConnector.getPersonDetails(argEq(Nino(nino)))(using any[HeaderCarrier]))
         .thenReturn(
