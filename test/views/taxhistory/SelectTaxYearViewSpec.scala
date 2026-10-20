@@ -33,7 +33,7 @@ import views.html.taxhistory.select_tax_year
 class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
 
   implicit val request: Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "/tax-history/select-tax-year").withCSRFToken
+    FakeRequest("GET", "/tax-history/select-tax-year").withSession(ninoSessionKey -> nino).withCSRFToken
 
   private val maxChar: Int                             = 100
   private val name: Option[String]                     = Some("Test Name")
@@ -167,7 +167,7 @@ class SelectTaxYearViewSpec extends GuiceAppSpec with BaseViewSpec {
     "display navigation bar with correct links" in new ViewFixture {
       document(this.view).getElementById("nav-home").text         shouldBe messages("nav.home")
       document(this.view).getElementById("nav-client").text       shouldBe messages("nav.client")
-      validateConditionalContent("nav-year")
+      document(this.view).getElementById("nav-year").text         shouldBe messages("nav.year")
       document(this.view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
   }

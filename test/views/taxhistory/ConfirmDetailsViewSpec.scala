@@ -28,7 +28,7 @@ import views.{BaseViewSpec, Fixture}
 class ConfirmDetailsViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpec with TestUtil {
 
   implicit val request: Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "/tax-history/select-client-confirm").withCSRFToken
+    FakeRequest("GET", "/tax-history/select-client-confirm").withSession(ninoSessionKey -> nino).withCSRFToken
 
   trait ViewFixture extends Fixture {
     val nino: String                               = randomNino.toString()
@@ -86,7 +86,7 @@ class ConfirmDetailsViewSpec extends GuiceAppSpec with BaseViewSpec with BaseSpe
 
     "display navigation bar with correct links" in new ViewFixture {
       document(view).getElementById("nav-home").text         shouldBe "Agent services home"
-      validateConditionalContent("nav-client")
+      document(view).getElementById("nav-client").text       shouldBe "Select client"
       validateConditionalContent("nav-year")
       document(view).getElementById("nav-home").attr("href") shouldBe appConfig.agentAccountHomePage
     }
