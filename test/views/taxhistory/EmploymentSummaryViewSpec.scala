@@ -36,7 +36,7 @@ import java.util.UUID
 class EmploymentSummaryViewSpec extends GuiceAppSpec with BaseViewSpec with Constants {
 
   implicit val request: Request[AnyContentAsEmpty.type] =
-    FakeRequest("GET", "/tax-history/client-income-record").withSession(ninoSessionKey -> nino).withCSRFToken
+    FakeRequest("GET", "/tax-history/client-income-record/2024").withSession(ninoSessionKey -> nino).withCSRFToken
 
   val firstName   = "testFirstName"
   val surname     = "testSurname"
