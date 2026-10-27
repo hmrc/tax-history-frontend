@@ -136,6 +136,25 @@ class GovUkWrapperViewSpec extends GuiceAppSpec with BaseViewSpec {
       }
     }
 
+    "hide 'Select client' on the no agent services account page, where the user is not an agent" in {
+      val doc = document(viewAtPath("/tax-history/no-agent-services-account"))
+
+      doc.getElementById("nav-home").text      shouldBe messages("nav.home")
+      Option(doc.getElementById("nav-client")) shouldBe None
+      Option(doc.getElementById("nav-year"))   shouldBe None
+    }
+
+    Seq(
+      "not authorised"                -> "/tax-history/not-authorised",
+      "no data available"             -> "/tax-history/no-data-available",
+      "data unavailable"              -> "/tax-history/data-unavailable",
+      "service unavailable technical" -> "/tax-history/service-unavailable-technical"
+    ).foreach { case (page, url) =>
+      s"display 'Select client' on the $page page, where picking another client still works" in {
+        document(viewAtPath(url)).getElementById("nav-client").text shouldBe messages("nav.client")
+      }
+    }
+
     Seq(
       "income record" -> recordUrl,
       "single record" -> "/tax-history/single-record/2024/employments/abc",

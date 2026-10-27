@@ -95,14 +95,16 @@
         request.session.get(controllers.TaxHistorySessionKeys.ninoSessionKey).isDefined &&
             yearNavPaths.exists(request.path.startsWith)
 
-    val navigationItems =
+    val canSelectClient = request.path != routes.ClientErrorController.getNoAgentServicesAccountPage().url
+        val navigationItems =
         if(signOut) {
             Seq(
                 ServiceNavigationItem(
                     content = Text(messages("nav.home")),
                     href = appConfig.agentAccountHomePage,
                     attributes = Map("id" -> "nav-home")
-                ),
+                )
+            ) ++ Option.when(canSelectClient)(
                 ServiceNavigationItem(
                     content = Text(messages("nav.client")),
                     href = selectClientUrl,
