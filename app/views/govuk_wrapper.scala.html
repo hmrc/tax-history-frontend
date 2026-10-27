@@ -83,12 +83,17 @@
 }
 
 @serviceNav = @{
-    val selectClientUrl   = routes.SelectClientController.getSelectClientPage().url
-    val selectTaxYearUrl  = routes.SelectTaxYearController.getSelectTaxYearPage().url
-    val confirmDetailsUrl = routes.ConfirmDetailsController.getConfirmDetailsPage().url
+    val selectClientUrl  = routes.SelectClientController.getSelectClientPage().url
+    val selectTaxYearUrl = routes.SelectTaxYearController.getSelectTaxYearPage().url
+    val yearNavPaths = Seq(
+        selectTaxYearUrl,
+        "/tax-history/client-income-record/",
+        "/tax-history/single-record/",
+        "/tax-history/no-data/"
+    )
     val clientConfirmed =
         request.session.get(controllers.TaxHistorySessionKeys.ninoSessionKey).isDefined &&
-            !Set(selectClientUrl, confirmDetailsUrl).contains(request.path)
+            yearNavPaths.exists(request.path.startsWith)
 
     val navigationItems =
         if(signOut) {

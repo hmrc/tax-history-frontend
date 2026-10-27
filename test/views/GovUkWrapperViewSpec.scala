@@ -124,6 +124,28 @@ class GovUkWrapperViewSpec extends GuiceAppSpec with BaseViewSpec {
       }
     }
 
+    Seq(
+      "not authorised"                -> "/tax-history/not-authorised",
+      "no agent services account"     -> "/tax-history/no-agent-services-account",
+      "no data available"             -> "/tax-history/no-data-available",
+      "data unavailable"              -> "/tax-history/data-unavailable",
+      "service unavailable technical" -> "/tax-history/service-unavailable-technical"
+    ).foreach { case (page, url) =>
+      s"hide 'Select year' on the $page page, where it would redirect straight back" in {
+        Option(document(viewAtPath(url)).getElementById("nav-year")) shouldBe None
+      }
+    }
+
+    Seq(
+      "income record" -> recordUrl,
+      "single record" -> "/tax-history/single-record/2024/employments/abc",
+      "no data"       -> "/tax-history/no-data/2024"
+    ).foreach { case (page, url) =>
+      s"display 'Select year' on the $page page" in {
+        document(viewAtPath(url)).getElementById("nav-year").text shouldBe messages("nav.year")
+      }
+    }
+
     "display 'Select year' once past the client selection pages" in {
       val doc = document(viewAtPath(selectTaxYearUrl))
 
