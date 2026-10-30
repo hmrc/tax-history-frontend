@@ -2,7 +2,7 @@ import sbt.*
 
 object AppDependencies {
 
-  private val bootstrapPlayVersion: String = "10.7.0"
+  private val bootstrapPlayVersion: String = "10.8.0"
   private val domainVersion: String        = "13.0.0"
 
   private val compile: Seq[ModuleID] = Seq(
@@ -15,7 +15,7 @@ object AppDependencies {
   private val test: Seq[ModuleID] = Seq(
     "uk.gov.hmrc" %% "bootstrap-test-play-30" % bootstrapPlayVersion,
     "uk.gov.hmrc" %% "domain-test-play-30"    % domainVersion,
-    "org.jsoup"    % "jsoup"                  % "1.22.2"
+    "org.jsoup"    % "jsoup"                  % "1.23.2"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test
