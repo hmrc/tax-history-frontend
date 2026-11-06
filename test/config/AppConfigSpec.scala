@@ -52,7 +52,7 @@ class AppConfigSpec extends BaseSpec {
       }
 
       "agentSubscriptionStart" in {
-        appConfig.agentSubscriptionStart shouldBe "http://localhost:9437/agent-registration"
+        appConfig.agentSubscriptionStart shouldBe "http://localhost:22201/agent-registration"
       }
 
       "loginContinue" in {
