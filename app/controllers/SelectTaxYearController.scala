@@ -71,12 +71,12 @@ class SelectTaxYearController @Inject() (
           httpStatus(selectTaxYear(form, taxYears, getTaxYearFromSession(request), clientName, nino.toString))
         case status if status > OK && status < INTERNAL_SERVER_ERROR =>
           logger.warn(
-            s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Non 200 response calling taxHistory getTaxYears, received status $status"
+            s"Non 200 response calling taxHistory getTaxYears, received status $status"
           )
           handleHttpFailureResponse(status)
         case status if status >= INTERNAL_SERVER_ERROR               =>
           logger.error(
-            s"[SelectTaxYearController][fetchTaxYearsAndRenderPage] Error calling taxHistory getTaxYears, received status $status"
+            s"Error calling taxHistory getTaxYears, received status $status"
           )
           handleHttpFailureResponse(status)
       }

@@ -40,7 +40,7 @@ class SignedOutController @Inject() (
   val agentSubscriptionStart: String = appConfig.agentSubscriptionStart
 
   def logout(): Action[AnyContent] = Action.async {
-    logger.info("[SignedOutController][logout] Sign out of the service")
+    logger.info("Sign out of the service")
     Future.successful(Redirect(appConfig.signOutUrl, Map("continue" -> Seq(appConfig.exitSurveyUrl))))
   }
 

@@ -65,13 +65,12 @@ class EmploymentDetailController @Inject() (
               Future.successful(Redirect(routes.EmploymentSummaryController.getTaxHistory(taxYear)))
             case status if status > OK && status < INTERNAL_SERVER_ERROR =>
               logger.warn(
-                s"[EmploymentDetailController][renderEmploymentDetailsPage] Non 200 response calling " +
-                  s"taxHistory getEmployment, received status $status"
+                s"Non 200 response calling taxHistory getEmployment, received status $status"
               )
               Future.successful(handleHttpFailureResponse(status))
             case status if status >= INTERNAL_SERVER_ERROR               =>
               logger.error(
-                s"[EmploymentDetailController][renderEmploymentDetailsPage] Error calling taxHistory getEmployment, received status $status"
+                s"Error calling taxHistory getEmployment, received status $status"
               )
               Future.successful(handleHttpFailureResponse(status))
           }
@@ -100,11 +99,11 @@ class EmploymentDetailController @Inject() (
           case _         =>
             payAndTaxResponse.json.validate[PayAndTax] match {
               case JsSuccess(result, _) =>
-                logger.info(s"[EmploymentDetailController][getPayAndTax] Successful parse to json")
+                logger.info("Successful parse of pay and tax json")
                 Some(dateUtils.formatEarlierYearUpdateReceivedDate(result))
               case JsError(errors)      =>
                 logger.error(
-                  s"[EmploymentDetailController][getPayAndTax] Invalid json returned in ${payAndTaxResponse.status}. $errors"
+                  s"Invalid pay and tax json returned in ${payAndTaxResponse.status}. $errors"
                 )
                 throw new RuntimeException("Invalid json returned")
             }
@@ -123,11 +122,11 @@ class EmploymentDetailController @Inject() (
           case _         =>
             cbResponse.json.validate[List[CompanyBenefit]] match {
               case JsSuccess(result, _) =>
-                logger.info(s"[EmploymentDetailController][getCompanyBenefits] Successful parse to json")
+                logger.info("Successful parse of company benefits json")
                 result
               case JsError(errors)      =>
                 logger.error(
-                  s"[EmploymentDetailController][getCompanyBenefits] Invalid json returned in ${cbResponse.status}. $errors"
+                  s"Invalid company benefits json returned in ${cbResponse.status}. $errors"
                 )
                 throw new RuntimeException("Invalid json returned")
             }
@@ -146,11 +145,11 @@ class EmploymentDetailController @Inject() (
           case _         =>
             isResponse.json.validate[IncomeSource] match {
               case JsSuccess(result, _) =>
-                logger.info(s"[EmploymentDetailController][getIncomeSource] Successful parse to json")
+                logger.info("Successful parse of income source json")
                 Some(result)
               case JsError(errors)      =>
                 logger.error(
-                  s"[EmploymentDetailController][getIncomeSource] Invalid json returned in ${isResponse.status}. $errors"
+                  s"Invalid income source json returned in ${isResponse.status}. $errors"
                 )
                 throw new RuntimeException("Invalid json returned")
             }
@@ -163,7 +162,7 @@ class EmploymentDetailController @Inject() (
     emptyValue: U
   ): PartialFunction[Throwable, Future[U]] = { case e =>
     logger.error(
-      s"[EmploymentDetailController][recoverWithEmptyDefault] Failed to call connector method $connectorMethodName",
+      s"Failed to call connector method $connectorMethodName",
       e
     )
     Future.successful(emptyValue)
