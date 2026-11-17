@@ -114,13 +114,12 @@ class EmploymentSummaryController @Inject() (
               }
           case status if status > OK && status < INTERNAL_SERVER_ERROR =>
             logger.warn(
-              s"[EmploymentSummaryController][retrieveTaxHistoryData] Non 200 response calling taxHistory" +
-                s" getEmploymentsAndPensions, received status $status"
+              s"Non 200 response calling taxHistory getEmploymentsAndPensions, received status $status"
             )
             Future.successful(handleHttpFailureResponse(status, Some(taxYear)))
           case status if status >= INTERNAL_SERVER_ERROR               =>
             logger.error(
-              s"[EmploymentSummaryController][retrieveTaxHistoryData] Error calling taxHistory getEmploymentsAndPensions, received status $status"
+              s"Error calling taxHistory getEmploymentsAndPensions, received status $status"
             )
             Future.successful(handleHttpFailureResponse(status, Some(taxYear)))
         }
@@ -130,7 +129,7 @@ class EmploymentSummaryController @Inject() (
     taxAccountResponse.status match {
       case OK     => taxAccountResponse.json.asOpt[TaxAccount]
       case status =>
-        logger.info(s"[EmploymentSummaryController][getTaxAccountFromResponse] Tax Account Status: $status")
+        logger.info(s"Tax Account Status: $status")
         None
     }
 
@@ -138,7 +137,7 @@ class EmploymentSummaryController @Inject() (
     allowancesResponse.status match {
       case OK     => allowancesResponse.json.as[List[Allowance]]
       case status =>
-        logger.info(s"[EmploymentSummaryController][getAllowancesFromResponse] Allowance Status: $status")
+        logger.info(s"Allowance Status: $status")
         List.empty
     }
 
@@ -149,7 +148,7 @@ class EmploymentSummaryController @Inject() (
     patResponse.status match {
       case OK     => patResponse.json.as[Map[String, PayAndTax]]
       case status =>
-        logger.info(s"[EmploymentSummaryController][getAllPayAndTaxFromResponse] All Pay And Tax Status: $status")
+        logger.info(s"All Pay And Tax Status: $status")
         List.empty
     }
 
@@ -158,7 +157,7 @@ class EmploymentSummaryController @Inject() (
       is.status match {
         case OK     => is.json.asOpt[IncomeSource]
         case status =>
-          logger.info(s"[EmploymentSummaryController][getIncomeSourceFromResponse] Income Source Status: $status")
+          logger.info(s"Income Source Status: $status")
           None
       }
     }
@@ -172,7 +171,7 @@ class EmploymentSummaryController @Inject() (
           .asOpt[StatePension]
           .map(statePension => dateUtils.formatStatePensionStartDate(statePension))
       case status =>
-        logger.info(s"[EmploymentSummaryController][getStatePensionsFromResponse] State Pension Status: $status")
+        logger.info(s"State Pension Status: $status")
         None
     }
 
@@ -219,7 +218,7 @@ class EmploymentSummaryController @Inject() (
       Future.successful(None)
     }
   } recover { case e =>
-    logger.error(s"[EmploymentSummaryController][buildIncomeTotals] buildIncomeTotals failed with ${e.getMessage}")
+    logger.error(s"buildIncomeTotals failed with ${e.getMessage}")
     None
   }
 }

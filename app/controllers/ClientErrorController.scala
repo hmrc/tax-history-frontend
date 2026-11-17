@@ -50,7 +50,7 @@ class ClientErrorController @Inject() (
     getNinoFromSession(request).fold(redirectToSelectClientPage) { _ =>
       request.getQueryString("issue") match {
         case Some(issue) =>
-          logger.error(s"[ClientErrorController][getNotAuthorised] Form Error: $issue")
+          logger.error(s"Form Error: $issue")
           throw new Exception(s"Invalid Form Data was submitted to Fast-Track Authorisations")
         case None        =>
           Future successful Ok(notAuthorised(getNinoFromSession(request)))

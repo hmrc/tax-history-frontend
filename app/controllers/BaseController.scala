@@ -45,40 +45,40 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
   protected def authorisedAgent(
     predicate: Predicate
   )(eventualResult: Future[Result])(implicit hc: HeaderCarrier): Future[Result] = {
-    logger.info("[BaseController][authorisedAgent] Start authorisation check")
+    logger.info("Start authorisation check")
     authorised(predicate)
       .retrieve(affinityGroupAllEnrolls) {
         case Some(affinityG) ~ allEnrols =>
           (isAgent(affinityG), extractArn(allEnrols.enrolments)) match {
             case (`isAnAgent`, Some(_)) =>
-              logger.info("[BaseController][authorisedAgent] Agent is authorised")
+              logger.info("Agent is authorised")
               eventualResult
             case (`isAnAgent`, None)    =>
-              logger.info("[BaseController][authorisedAgent] No enrolments available for the agent")
+              logger.info("No enrolments available for the agent")
               redirectToSubPage
             case _                      =>
-              logger.info("[BaseController][authorisedAgent] No affinity group is not agent")
+              logger.info("Affinity group is not agent")
               redirectToExitPage
           }
         case _                           =>
-          logger.info("[BaseController][authorisedAgent] No affinity group provided")
+          logger.info("No affinity group provided")
           redirectToExitPage
       }
       .recoverWith {
         case i: InsufficientEnrolments =>
-          logger.warn(s"[BaseController][authorisedAgent] InsufficientEnrolments: ${i.getMessage}")
+          logger.warn(s"Agent authorisation failed with InsufficientEnrolments: ${i.getMessage}")
           Future.successful(Redirect(controllers.routes.ClientErrorController.getNotAuthorised()))
         case b: BadGatewayException    =>
-          logger.error(s"[BaseController][authorisedAgent] BadGatewayException: ${b.getMessage}")
+          logger.error(s"Agent authorisation failed with BadGatewayException: ${b.getMessage}")
           Future.successful(Redirect(controllers.routes.ClientErrorController.getTechnicalError()))
         case m: MissingBearerToken     =>
-          logger.warn(s"[BaseController][authorisedAgent] MissingBearerToken: ${m.getMessage}")
+          logger.warn(s"Agent authorisation failed with MissingBearerToken: ${m.getMessage}")
           Future.successful(ggSignInRedirect)
         case a: AuthorisationException =>
-          logger.warn(s"[BaseController][authorisedAgent] AuthorisationException: ${a.getMessage}")
+          logger.warn(s"Agent authorisation failed with AuthorisationException: ${a.getMessage}")
           Future.successful(ggSignInRedirect)
         case e                         =>
-          logger.error(s"[BaseController][authorisedAgent] Exception thrown: ${e.getMessage}")
+          logger.error(s"Agent authorisation failed with unexpected exception: ${e.getMessage}")
           Future.successful(ggSignInRedirect)
       }
   }
@@ -92,7 +92,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
           eventualResult(nino)
         )
       case None       =>
-        logger.info("[BaseController][authorisedForAgent] No nino supplied")
+        logger.info("No nino supplied in session for agent authorisation")
         Future.successful(Redirect(routes.SelectClientController.getSelectClientPage()))
     }
 
@@ -119,12 +119,12 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
             case _          => Right(person)
           }
         case status =>
-          logger.warn(s"[BaseController][retrieveCitizenDetails] CitizenDetails lookup returned with status $status")
+          logger.warn(s"CitizenDetails lookup returned with status $status")
           Left(status)
       }
     }
   }.recoverWith { case e =>
-    logger.error(s"[BaseController][retrieveCitizenDetails] citizenDetails lookup failed with ${e.getMessage}")
+    logger.error(s"CitizenDetails lookup failed with ${e.getMessage}")
     Future.successful(Left(BAD_REQUEST))
   }
 
@@ -138,7 +138,7 @@ abstract class BaseController @Inject() (cc: MessagesControllerComponents)(impli
     Future.successful(Redirect(controllers.routes.SelectClientController.getSelectClientPage()))
 
   def redirectToClientErrorPage(status: Int): Future[Result] = {
-    logger.info(s"[BaseController][redirectToClientErrorPage] Redirect to Client Error Page status is $status")
+    logger.info(s"Redirect to Client Error Page status is $status")
     status match {
       case LOCKED => Future.successful(Redirect(controllers.routes.ClientErrorController.getMciRestricted()))
       case GONE   => Future.successful(Redirect(controllers.routes.ClientErrorController.getDeceased()))
